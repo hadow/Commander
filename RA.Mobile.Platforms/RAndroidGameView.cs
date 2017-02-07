@@ -16,7 +16,6 @@ namespace RA.Mobile.Platforms
 		}
 
 
-
 		private readonly AndroidGameWindow _gameWindow;
 		private readonly AndroidTouchEventManager _touchManager;
 
