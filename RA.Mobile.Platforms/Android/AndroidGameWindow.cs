@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using Android.Content;
 namespace RA.Mobile.Platforms
 {
 	public class AndroidGameWindow : GameWindow, IDisposable
@@ -13,6 +14,15 @@ namespace RA.Mobile.Platforms
 		{
 		}
 
+
+        /// <summary>
+        /// 初始化上下文
+        /// </summary>
+        /// <param name="context"></param>
+        private void Initialize(Context context)
+        {
+
+        }
 
 		internal protected override void SetSupportedOrientations(DisplayOrientation orientations)
 		{
