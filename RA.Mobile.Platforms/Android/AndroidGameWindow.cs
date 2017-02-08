@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Drawing;
 using Android.Content;
+using OpenTK;
 namespace RA.Mobile.Platforms
 {
 	public class AndroidGameWindow : GameWindow, IDisposable
 	{
+
+        internal RAndroidGameView GameView { get; private set; }
+
+        private readonly Game _game;
 
 		private Rectangle _clientBounds;
 
@@ -22,6 +27,37 @@ namespace RA.Mobile.Platforms
         private void Initialize(Context context)
         {
 
+            _clientBounds = new Rectangle(0, 0, context.Resources.DisplayMetrics.WidthPixels, context.Resources.DisplayMetrics.HeightPixels);
+
+            GameView = new RAndroidGameView(context, this,_game);
+            GameView.RenderOnUIThread = Game.Activity.RenderOnUIThread;
+            GameView.RenderFrame += OnRenderFrame;
+            GameView.UpdateFrame += OnUpdateFrame;
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="frameEventArgs"></param>
+        private void OnUpdateFrame(object sender,FrameEventArgs frameEventArgs)
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="frameEventArgs"></param>
+        private void OnRenderFrame(object sender,FrameEventArgs frameEventArgs)
+        {
+            if (GameView.GraphicsContext == null || GameView.GraphicsContext.IsDisposed)
+                return;
+            if (!GameView.GraphicsContext.IsCurrent)
+                GameView.MakeCurrent();
         }
 
 		internal protected override void SetSupportedOrientations(DisplayOrientation orientations)
@@ -93,6 +129,15 @@ namespace RA.Mobile.Platforms
 			throw new NotImplementedException();
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newOrientation"></param>
+        internal void SetOrientation(DisplayOrientation newOrientation,bool applyGraphicsChanges)
+        {
+
+
+        }
 		public void Dispose()
 		{
 

@@ -6,6 +6,7 @@ namespace RA.Mobile.Platforms
 {
 	public class ScreenReciever:BroadcastReceiver
 	{
+        public static bool ScreenLocked;
 		public ScreenReciever()
 		{
 		}

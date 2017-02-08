@@ -11,6 +11,7 @@ namespace RA.Mobile.Platforms
 		{
 		}
 
+        public bool RenderOnUIThread = true;
 		private ScreenReciever _screenReciever;
 		private OrientationListener _orientationListener;
 

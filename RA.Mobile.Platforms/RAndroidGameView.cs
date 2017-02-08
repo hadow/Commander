@@ -6,13 +6,15 @@ namespace RA.Mobile.Platforms
 {
 	public class RAndroidGameView:AndroidGameView,View.IOnTouchListener,ISurfaceHolderCallback
 	{
-		public RAndroidGameView(Context context,AndroidGameWindow window):base(context)
-		{
 
+        private readonly Game _game;
+
+		public RAndroidGameView(Context context,AndroidGameWindow window,Game game):base(context)
+		{
 			_touchManager = new AndroidTouchEventManager();
 			_gameWindow = window;
-
-
+            _game = game;
+            
 		}
 
 
@@ -24,6 +26,18 @@ namespace RA.Mobile.Platforms
 		private bool _lostContext;
 		private bool _backPressed;
 
+        public bool TouchEnabled
+        {
+            get
+            {
+                return _touchManager.Enabled;
+            }
+            set
+            {
+                _touchManager.Enabled = value;
+                SetOnTouchListener(value ? this : null);
+            }
+        }
 
 #region IOnTouchListener implementation
 		bool IOnTouchListener.OnTouch(View v, MotionEvent evt)
@@ -31,9 +45,14 @@ namespace RA.Mobile.Platforms
 			return true;
 		}
 
+        public override void Resume()
+        {
+            if(!ScreenReciever.ScreenLocked && Game.Instance.Platform.IsActive)
+                base.Resume();
+        }
 
 
 
 
-	}
+    }
 }
