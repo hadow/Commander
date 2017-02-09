@@ -5,6 +5,9 @@ using System.Text;
 
 namespace RA.Mobile.Platforms
 {
+    /// <summary>
+    /// ÓÎÏ··şÎñÈİÆ÷
+    /// </summary>
     public class GameServiceContainer:IServiceProvider
     {
         Dictionary<Type, object> services;

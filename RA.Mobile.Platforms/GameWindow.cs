@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Drawing;
+using RA.Mobile.Platforms.Input.Touch;
 namespace RA.Mobile.Platforms
 {
 	/// <summary>
@@ -8,9 +8,7 @@ namespace RA.Mobile.Platforms
 	/// </summary>
 	public abstract class GameWindow
 	{
-		public GameWindow()
-		{
-		}
+		
 
 #region Properties
 		[DefaultValue(false)]
@@ -27,10 +25,16 @@ namespace RA.Mobile.Platforms
 
 		private string _title;
 
-#endregion Properties
+        #endregion Properties
 
-		#region Events
-		public event EventHandler<EventArgs> ClientSizeChanged;
+
+        internal TouchPanelState TouchPanelState;
+        public GameWindow()
+        {
+            TouchPanelState = new TouchPanelState(this);
+        }
+        #region Events
+        public event EventHandler<EventArgs> ClientSizeChanged;
 		public event EventHandler<EventArgs> OrientationChanged;
 		public event EventHandler<EventArgs> ScreenDeviceNameChanged;
 

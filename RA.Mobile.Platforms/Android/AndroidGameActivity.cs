@@ -4,9 +4,14 @@ using Android.Content;
 using Android.OS;
 namespace RA.Mobile.Platforms
 {
+    /// <summary>
+    /// 
+    /// </summary>
 	[CLSCompliant(false)]
 	public class AndroidGameActivity:Activity
 	{
+        internal Game Game { private get; set; }
+
 		public AndroidGameActivity()
 		{
 		}
@@ -31,6 +36,7 @@ namespace RA.Mobile.Platforms
 			RegisterReceiver(_screenReciever, filter);
 
 			_orientationListener = new OrientationListener(this);
+            Game.Activity = this;
 		}
 
 

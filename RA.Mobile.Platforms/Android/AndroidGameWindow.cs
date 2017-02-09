@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using Android.Content;
+using Android.Views;
 using OpenTK;
 namespace RA.Mobile.Platforms
 {
+    /// <summary>
+    /// 
+    /// </summary>
 	public class AndroidGameWindow : GameWindow, IDisposable
 	{
 
         internal RAndroidGameView GameView { get; private set; }
+        internal IResumeManager Resumer;
 
         private readonly Game _game;
 
@@ -15,8 +20,12 @@ namespace RA.Mobile.Platforms
 
 		private DisplayOrientation _supportedOrientations = DisplayOrientation.Default;
 		private DisplayOrientation _currentOrientation;
-		public AndroidGameWindow()
+
+		public AndroidGameWindow(AndroidGameActivity activity,Game game)
 		{
+            _game = game;
+            Initialize(activity);
+            game.Services.AddService(typeof(View), GameView);
 		}
 
 
@@ -34,6 +43,8 @@ namespace RA.Mobile.Platforms
             GameView.RenderFrame += OnRenderFrame;
             GameView.UpdateFrame += OnUpdateFrame;
 
+            GameView.RequestFocus();
+            GameView.FocusableInTouchMode = true;
         }
 
 
@@ -137,6 +148,20 @@ namespace RA.Mobile.Platforms
         {
 
 
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bounds"></param>
+        internal void ChangeClientBounds(Rectangle bounds)
+        {
+            if(bounds != _clientBounds)
+            {
+                _clientBounds = bounds;
+                OnClientSizeChanged();
+            }
         }
 		public void Dispose()
 		{

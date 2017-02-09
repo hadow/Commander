@@ -7,6 +7,14 @@ namespace RA.Mobile.Platforms
 	{
 		public AndroidGamePlatform(Game game):base(game)
 		{
+
+            Game.Activity.Game = Game;
+            AndroidGameActivity.Paused += Activity_Paused;
+            AndroidGameActivity.Resumed += Activity_Resumed;
+
+            _gameWindow = new AndroidGameWindow(Game.Activity, game);
+            Window = _gameWindow;
+
 		}
         private bool _initialized;
         private AndroidGameWindow _gameWindow;
@@ -25,6 +33,9 @@ namespace RA.Mobile.Platforms
             throw new NotImplementedException("The Android platform does not support synchronous run loops");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void StartRunLoop()
         {
             _gameWindow.GameView.Resume();
@@ -96,6 +107,11 @@ namespace RA.Mobile.Platforms
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         void Activity_Resumed(object sender,EventArgs e)
         {
             if (!IsActive)
@@ -147,8 +163,23 @@ namespace RA.Mobile.Platforms
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         public override void Exit()
         {
+            Game.Activity.MoveTaskToBack(true);
+        }
+
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                AndroidGameActivity.Paused -= Activity_Paused;
+                AndroidGameActivity.Resumed -= Activity_Resumed;
+            }
+            base.Dispose(disposing);
         }
 
         public override void Log(string Message)

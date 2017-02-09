@@ -2,6 +2,9 @@
 using RA.Mobile.Platforms.Graphics;
 namespace RA.Mobile.Platforms
 {
+    /// <summary>
+    /// 抽象的一个游戏平台
+    /// </summary>
 	abstract partial class GamePlatform:IDisposable
 	{
         protected TimeSpan _inactiveSleepTime = TimeSpan.FromMilliseconds(20.0);

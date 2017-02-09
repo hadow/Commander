@@ -16,7 +16,40 @@ namespace RA.Mobile.Platforms
         private DisplayOrientation _supportedOrientation;
 
         private int _preferredBackBufferWidth;
+
+        public int PreferredBackBufferWidth
+        {
+            get
+            {
+                return _preferredBackBufferWidth;
+            }
+            set
+            {
+                _preferredBackBufferWidth = value;
+            }
+        }
+
+        public int PreferredBackBufferHeight
+        {
+            get
+            {
+                return _preferredBackBufferHeight;
+            }
+            set
+            {
+                _preferredBackBufferHeight = value;
+            }
+        }
         private int _preferredBackBufferHeight;
+
+        private DepthFormat _preferredDepthStencilFormat;
+
+        public DepthFormat PreferredDepthStencilFormat
+        {
+            get { return _preferredDepthStencilFormat; }
+            set { _preferredDepthStencilFormat = value; }
+        }
+
 
         public static readonly int DefaultBackBufferWidth = 800;
         public static readonly int DefaultBackBufferHeight = 480;
@@ -48,6 +81,17 @@ namespace RA.Mobile.Platforms
         {
             
         }
+        
+        public DisplayOrientation SupportedOrientations
+        {
+            get { return _supportedOrientation; }
+            set
+            {
+                _supportedOrientation = value;
+                if (_game.Window != null)
+                    _game.Window.SetSupportedOrientations(_supportedOrientation);
+            }
+        }
 
         public void CreateDevice()
         {
@@ -72,13 +116,65 @@ namespace RA.Mobile.Platforms
         }
 
         /// <summary>
-        /// 
+        /// ÖØÖÃ¿Í»§¶Ë±ß½×
         /// </summary>
         internal void ResetClientBounds()
         {
 #if ANDROID
+
+
+
+
+
+
+
 #endif
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ApplyChanges()
+        {
+            if (_graphicsDevice == null)
+                return;
+        }
+
+        #region IGraphicsDeviceService Members
+
+        public event EventHandler<EventArgs> DeviceCreated;
+        public event EventHandler<EventArgs> DeviceDisposing;
+        public event EventHandler<EventArgs> DeviceReset;
+        public event EventHandler<EventArgs> DeviceReseting;
+
+        internal void OnDeviceDisposing(EventArgs ea)
+        {
+            Raise(DeviceDisposing, ea);
+        }
+
+        internal void OnDeviceReseting(EventArgs ea)
+        {
+            Raise(DeviceReseting, ea);
+        }
+
+        internal void OnDeviceReset(EventArgs ea)
+        {
+            Raise(DeviceReset, ea);
+        }
+        internal void OnDeviceCreated(EventArgs ea)
+        {
+            Raise(DeviceCreated, ea);
+        }
+
+
+
+        private void Raise<TEventArgs>(EventHandler<TEventArgs> handler,TEventArgs evt) where TEventArgs : EventArgs
+        {
+            if (handler != null)
+                handler(this, evt);
+        }
+        #endregion
 
 
         #region IDisposable Members
