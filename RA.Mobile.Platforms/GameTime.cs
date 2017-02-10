@@ -2,6 +2,10 @@ using System;
 
 namespace RA.Mobile.Platforms
 {
+
+    /// <summary>
+    /// сно╥й╠╪Д
+    /// </summary>
     public class GameTime
     {
         public TimeSpan TotalGameTime { get; set; }

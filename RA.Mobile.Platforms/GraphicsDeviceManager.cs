@@ -15,6 +15,30 @@ namespace RA.Mobile.Platforms
         private GraphicsDevice _graphicsDevice;
         private DisplayOrientation _supportedOrientation;
 
+        private bool _wantFullScreen = false;
+
+        public bool IsFullScreen
+        {
+            get
+            {
+                if (_graphicsDevice != null)
+                    return _graphicsDevice.PresentationParameters.IsFullScreen;
+                return _wantFullScreen;
+            }
+            set
+            {
+                _wantFullScreen = value;
+                if(_graphicsDevice!=null)
+                {
+                    _graphicsDevice.PresentationParameters.IsFullScreen = value;
+                }
+#if ANDROID
+                ForceSetFullScreen();
+#endif
+            }
+        }
+
+
         private int _preferredBackBufferWidth;
 
         public int PreferredBackBufferWidth
@@ -81,7 +105,25 @@ namespace RA.Mobile.Platforms
         {
             
         }
-        
+
+#if ANDROID
+
+        internal void ForceSetFullScreen()
+        {
+            if (IsFullScreen)
+            {
+                Game.Activity.Window.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
+                Game.Activity.Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
+            }
+            else
+            {
+                Game.Activity.Window.SetFlags(WindowManagerFlags.ForceNotFullscreen, WindowManagerFlags.ForceNotFullscreen);
+                    
+            }
+        }
+#endif
+
+
         public DisplayOrientation SupportedOrientations
         {
             get { return _supportedOrientation; }

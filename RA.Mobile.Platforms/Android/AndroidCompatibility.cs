@@ -1,24 +1,63 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Android.Views;
+using Android.Content.Res;
 
 namespace RA.Mobile.Platforms.Android
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class AndroidCompatibility
     {
+        public static Lazy<Orientation> NaturalOrientation { get; private set; }
+
+        public static bool FlipLandscape { get; private set; }
+
+        static AndroidCompatibility()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orientation"></param>
+        /// <returns></returns>
         internal static DisplayOrientation GetAbsoluteOrientation(int orientation)
         {
+            if (NaturalOrientation.Value == Orientation.Landscape)
+                orientation += 270;
+
+            int ort = ((orientation + 45) / 90 * 90) % 360;
             var disporientation = DisplayOrientation.Unknown;
+
+            switch (ort)
+            {
+                case 0:
+                    disporientation = DisplayOrientation.Portrait;
+                    break;
+                case 90:
+                    disporientation = FlipLandscape ? DisplayOrientation.LandscapeLeft : DisplayOrientation.LandscapeRight;
+                    break;
+                case 180:
+                    disporientation = DisplayOrientation.PortraitDown;
+                    break;
+                case 270:
+                    disporientation = FlipLandscape ? DisplayOrientation.LandscapeRight : DisplayOrientation.LandscapeLeft;
+                    break;
+                default:
+                    disporientation = DisplayOrientation.LandscapeLeft;
+                    break;
+            }
+
             return disporientation;
         }
 
         public static DisplayOrientation GetAbsoluteOrientation()
         {
             var orientation = Game.Activity.WindowManager.DefaultDisplay.Rotation;
-
-
+            
             int degrees;
             switch (orientation)
             {

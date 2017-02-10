@@ -20,7 +20,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;ANDROID</DefineConstants>
+    <DefineConstants>DEBUG;ANDROID;GLES;OPENGL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Android\AndroidCompatibility.cs" />
+    <Compile Include="Color.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GamePlatform.Mobile.cs" />
@@ -56,10 +57,13 @@
     <Compile Include="GameTime.cs" />
     <Compile Include="GraphicsDeviceManager.cs" />
     <Compile Include="Graphics\DepthFormat.cs" />
+    <Compile Include="Graphics\GraphicsAdapter.cs" />
     <Compile Include="Graphics\GraphicsDevice.cs" />
     <Compile Include="Graphics\GraphicsDevice.OpenGL.cs" />
+    <Compile Include="Graphics\GraphicsExtensions.cs" />
     <Compile Include="Graphics\IGraphicsDeviceService.cs" />
     <Compile Include="Graphics\PresentationParameters.cs" />
+    <Compile Include="Graphics\PrimitiveType.cs" />
     <Compile Include="Graphics\Viewport.cs" />
     <Compile Include="IGraphicsDeviceManager.cs" />
     <Compile Include="Input\Touch\TouchLocationState.cs" />
@@ -79,6 +83,7 @@
     <Compile Include="Android\AndroidGamePlatform.cs" />
     <Compile Include="RAndroidGameView.cs" />
     <Compile Include="Input\Touch\AndroidTouchEventManager.cs" />
+    <Compile Include="ResumeManager.cs" />
     <Compile Include="Threading.cs" />
     <Compile Include="Vector2.cs" />
   </ItemGroup>

@@ -8,10 +8,20 @@ namespace RA.Mobile.Platforms.Graphics
     /// </summary>
     public class PresentationParameters:IDisposable
     {
-
-
         public const int DefaultPresentRate = 60;//Ä¬ÈÏÖ¡ÂÊ
 
+        private bool _isFullScreen;
+        public bool IsFullScreen
+        {
+            get
+            {
+                return _isFullScreen;
+            }
+            set
+            {
+                _isFullScreen = value;
+            }
+        }
         private int _backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
         private int _backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
 

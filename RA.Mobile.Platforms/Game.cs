@@ -20,6 +20,9 @@ namespace RA.Mobile.Platforms
         private long _previousTicks = 0;
         private int _updateFrameLag;
 
+        private bool _shouldExit;
+        private bool _suppressDraw;
+
         private bool _isFixedTimeStep;
         public bool IsFixedTimeStep
         {
@@ -150,7 +153,15 @@ namespace RA.Mobile.Platforms
         /// <param name="manager"></param>
         internal void ApplyChanges(GraphicsDeviceManager manager)
         {
+            Platform.BeginScreenDeviceChange(GraphicsDevice.PresentationParameters.IsFullScreen);
+            if (GraphicsDevice.PresentationParameters.IsFullScreen)
+                Platform.EnterFullScreen();
+            else
+                Platform.ExitFullScreen();
 
+            var viewport = new Viewport(0, 0, GraphicsDevice.PresentationParameters.BackBufferWidth, GraphicsDevice.PresentationParameters.BackBufferHeight);
+            GraphicsDevice.Viewport = viewport;
+            Platform.EndScreenDeviceChange(string.Empty, viewport.Width, viewport.Height);
         }
 
 
@@ -171,10 +182,8 @@ namespace RA.Mobile.Platforms
         {
             AssertNotDisposed();
             Platform.BeforeInitialize();
-
+            Initialize();
         }
-
-
         private void AssertNotDisposed()
         {
             if (_isDisposed)
@@ -235,10 +244,19 @@ namespace RA.Mobile.Platforms
             }
             else
             {
-
+                _gameTime.ElapsedGameTime = _accumulatedElapsedTime;
+                _gameTime.TotalGameTime += _accumulatedElapsedTime;
+                _accumulatedElapsedTime = TimeSpan.Zero;
+                DoUpdate(_gameTime);
             }
 
+            if (_suppressDraw)
+                _suppressDraw = false;
+            else
+                DoDraw(_gameTime);
 
+            if (_shouldExit)
+                Platform.Exit();
         }
 
         /// <summary>
@@ -256,7 +274,28 @@ namespace RA.Mobile.Platforms
 
             }
         }
+        
+        internal void DoDraw(GameTime gameTime)
+        {
+            AssertNotDisposed();
 
+            if(Platform.BeforeDraw(gameTime) && BeginDraw())
+            {
+                Draw(gameTime);
+                EndDraw();
+            }
+        }
+
+        protected virtual bool BeginDraw() { return true; }
+        protected virtual void EndDraw()
+        {
+            Platform.Present();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected virtual void Draw(GameTime gameTime) { }
         /// <summary>
         /// 
         /// </summary>

@@ -7,12 +7,44 @@ namespace RA.Mobile.Platforms.Graphics
     {
 
         private int x;
-        private int y;
-        private int width;
-        private int height;
-        private float minDepth;
-        private float maxDepth;
+        public int X
+        {
+            get { return x; }
+            set { x = value; }
+        }
 
+        private int y;
+        public int Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+        private int width;
+        public int Width
+        {
+            get { return width; }
+            set { width = value; }
+        }
+        private int height;
+        public int Height
+        {
+            get { return height; }
+            set { height = value; }
+        }
+        private float minDepth;
+
+        public float MinDepth
+        {
+            get { return this.minDepth; }
+            set { minDepth = value; }
+        }
+
+        private float maxDepth;
+        public float MaxDepth
+        {
+            get { return this.maxDepth; }
+            set { maxDepth = value; }
+        }
 
         public Viewport(int x,int y,int width,int height)
         {

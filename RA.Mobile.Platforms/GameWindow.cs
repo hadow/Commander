@@ -8,8 +8,6 @@ namespace RA.Mobile.Platforms
 	/// </summary>
 	public abstract class GameWindow
 	{
-		
-
 #region Properties
 		[DefaultValue(false)]
 		public abstract bool AllowUserResizing { get; set; }

@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Drawing;
 using Android.Content;
 using Android.Views;
 using OpenTK;
 namespace RA.Mobile.Platforms
 {
     /// <summary>
-    /// 
+    /// Android Platform游戏视窗口
     /// </summary>
 	public class AndroidGameWindow : GameWindow, IDisposable
 	{
-
         internal RAndroidGameView GameView { get; private set; }
         internal IResumeManager Resumer;
 
@@ -66,6 +64,15 @@ namespace RA.Mobile.Platforms
                 if(!GameView.isResuming && _game.Platform.IsActive && !ScreenReciever.ScreenLocked)
                 {
                     _game.Tick();
+                }
+                else if(_game.GraphicsDevice != null)
+                {
+                    _game.GraphicsDevice.Clear(Color.Black);
+                    if(GameView.isResuming && Resumer != null)
+                    {
+                        Resumer.Draw();
+                    }
+                    _game.Platform.Present();
                 }
             }
         }
@@ -174,6 +181,15 @@ namespace RA.Mobile.Platforms
                 _clientBounds = bounds;
                 OnClientSizeChanged();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        internal DisplayOrientation GetEffectiveSupportedOrientations()
+        {
+            return _supportedOrientations;
         }
 		public void Dispose()
 		{

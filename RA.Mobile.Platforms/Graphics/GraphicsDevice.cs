@@ -1,5 +1,5 @@
 using System;
-
+using OpenTK.Graphics.ES20;
 namespace RA.Mobile.Platforms.Graphics
 {
     /// <summary>
@@ -7,6 +7,13 @@ namespace RA.Mobile.Platforms.Graphics
     /// </summary>
     public partial class GraphicsDevice:IDisposable
     {
+
+        private bool _vertexShaderDirty;
+        private bool VertexShaderDirty
+        {
+            get { return _vertexShaderDirty; }
+        }
+
         private Viewport _viewport;
 
         public Viewport Viewport
@@ -38,18 +45,29 @@ namespace RA.Mobile.Platforms.Graphics
 
         }
 
-
-        private void PlatformSetViewport(ref Viewport value)
+        private int _currentRenderTargetCount;
+        internal bool IsRenderTargetBound
         {
-
+            get
+            {
+                return _currentRenderTargetCount > 0;
+            }
         }
 
-
-
+        
         /// <summary>
         /// 
         /// </summary>
         public void Present()
+        {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="color"></param>
+        public void Clear(Color color)
         {
 
         }
