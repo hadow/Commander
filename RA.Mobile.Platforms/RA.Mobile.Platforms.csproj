@@ -79,6 +79,7 @@
     <Compile Include="Android\AndroidGamePlatform.cs" />
     <Compile Include="RAndroidGameView.cs" />
     <Compile Include="Input\Touch\AndroidTouchEventManager.cs" />
+    <Compile Include="Threading.cs" />
     <Compile Include="Vector2.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using RA.Mobile.Platforms.Graphics;
+using RA.Mobile.Platforms.Input.Touch;
 namespace RA.Mobile.Platforms
 {
     public class Game:IDisposable
@@ -14,6 +13,46 @@ namespace RA.Mobile.Platforms
 #endif
         private bool _isDisposed;
         private static Game _instance = null;
+
+        private TimeSpan _accumulatedElapsedTime;
+        private readonly GameTime _gameTime = new GameTime();
+        private Stopwatch _gameTimer;
+        private long _previousTicks = 0;
+        private int _updateFrameLag;
+
+        private bool _isFixedTimeStep;
+        public bool IsFixedTimeStep
+        {
+            get { return _isFixedTimeStep; }
+            set { _isFixedTimeStep = value; }
+        }
+
+        private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667);//60 fps
+
+        public TimeSpan TargetElapsedTime
+        {
+            get { return _targetElapsedTime; }
+            set
+            {
+                value = Platform.TargetElapsedTimeChanging(value);
+                if (value <= TimeSpan.Zero)
+                {
+                    throw new ArgumentOutOfRangeException("The time must be positive and non-zero,", default(Exception));
+                }
+                if(value != _targetElapsedTime)
+                {
+                    _targetElapsedTime = value;
+                    Platform.TargetElapsedTimeChanged();
+                }
+            }
+        }
+
+        private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
+
+
+
+
+        private TimeSpan _inactiveSleepTime = TimeSpan.FromSeconds(0.02f);
         internal static Game Instance
         {
             get
@@ -143,6 +182,88 @@ namespace RA.Mobile.Platforms
                 string name = GetType().Name;
                 throw new ObjectDisposedException(name, string.Format("The {0} object was used after being Disposed.", name));
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Tick()
+        {
+            RetryTick:
+            var currentTicks = _gameTimer.Elapsed.Ticks;
+            _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks-_previousTicks);
+            _previousTicks = currentTicks;
+            if(IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
+            {
+                var sleepTime = (int)(TargetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+                System.Threading.Thread.Sleep(sleepTime);
+                goto RetryTick;
+            }
+
+            if(_accumulatedElapsedTime > _maxElapsedTime)
+            {
+                _accumulatedElapsedTime = _maxElapsedTime;
+            }
+
+            if (IsFixedTimeStep)
+            {
+                _gameTime.ElapsedGameTime = TargetElapsedTime;
+                var stepCount = 0;
+                while(_accumulatedElapsedTime >= TargetElapsedTime)
+                {
+                    _gameTime.TotalGameTime += TargetElapsedTime;
+                    _accumulatedElapsedTime -= TargetElapsedTime;
+                    ++stepCount;
+                    DoUpdate(_gameTime);
+                }
+
+                _updateFrameLag += Math.Max(0, stepCount - 1);
+                if (_gameTime.IsRunningSlowly)
+                {
+                    if (_updateFrameLag == 0)
+                        _gameTime.IsRunningSlowly = false;
+                }
+                else if(_updateFrameLag >= 5)
+                {
+                    _gameTime.IsRunningSlowly = true;
+                }
+
+                if (stepCount == 1 && _updateFrameLag > 0)
+                    _updateFrameLag--;
+
+                _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
+            }
+            else
+            {
+
+            }
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        internal void  DoUpdate(GameTime gameTime)
+        {
+            AssertNotDisposed();
+            if (Platform.BeforeUpdate(gameTime))
+            {
+                Update(gameTime);
+
+                TouchPanelState.CurrentTimestamp = gameTime.TotalGameTime;
+
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected virtual void Update(GameTime gameTime)
+        {
+
         }
 
         public void Dispose()

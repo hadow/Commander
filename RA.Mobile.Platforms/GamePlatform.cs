@@ -130,6 +130,13 @@ namespace RA.Mobile.Platforms
 
         }
 
+        public virtual TimeSpan TargetElapsedTimeChanging(TimeSpan value)
+        {
+            return value;
+        }
+
+        public virtual void TargetElapsedTimeChanged() { }
+
         #endregion Methods
 
 

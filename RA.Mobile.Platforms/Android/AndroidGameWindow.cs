@@ -56,6 +56,18 @@ namespace RA.Mobile.Platforms
         private void OnUpdateFrame(object sender,FrameEventArgs frameEventArgs)
         {
 
+            if (!GameView.GraphicsContext.IsCurrent)
+                GameView.MakeCurrent();
+
+            Threading.Run();
+
+            if(_game != null)
+            {
+                if(!GameView.isResuming && _game.Platform.IsActive && !ScreenReciever.ScreenLocked)
+                {
+                    _game.Tick();
+                }
+            }
         }
 
         /// <summary>

@@ -3,11 +3,15 @@ using System.Collections.Generic;
 
 namespace RA.Mobile.Platforms.Input.Touch
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class TouchPanelState
     {
 
         private const int MouseTouchId = 1;
-
+        internal static TimeSpan CurrentTimestamp { get; set; }//µ±Ç°•rég´Á
         public TouchPanelState(GameWindow window)
         {
 
