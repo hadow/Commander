@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>RA.Mobile.Platforms</RootNamespace>
     <AssemblyName>RA.Mobile.Platforms</AssemblyName>
-    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -57,13 +57,17 @@
     <Compile Include="GameTime.cs" />
     <Compile Include="GraphicsDeviceManager.cs" />
     <Compile Include="Graphics\DepthFormat.cs" />
+    <Compile Include="Graphics\DisplayMode.cs" />
     <Compile Include="Graphics\GraphicsAdapter.cs" />
     <Compile Include="Graphics\GraphicsDevice.cs" />
     <Compile Include="Graphics\GraphicsDevice.OpenGL.cs" />
+    <Compile Include="Graphics\GraphicsDeviceStatus.cs" />
     <Compile Include="Graphics\GraphicsExtensions.cs" />
+    <Compile Include="Graphics\GraphicsResource.cs" />
     <Compile Include="Graphics\IGraphicsDeviceService.cs" />
     <Compile Include="Graphics\PresentationParameters.cs" />
     <Compile Include="Graphics\PrimitiveType.cs" />
+    <Compile Include="Graphics\SurfaceFormat.cs" />
     <Compile Include="Graphics\Viewport.cs" />
     <Compile Include="IGraphicsDeviceManager.cs" />
     <Compile Include="Input\Touch\TouchLocationState.cs" />

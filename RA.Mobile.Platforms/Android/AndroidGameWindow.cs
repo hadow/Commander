@@ -1,6 +1,7 @@
 ﻿using System;
 using Android.Content;
 using Android.Views;
+using RA.Mobile.Platforms.Input.Touch;
 using OpenTK;
 namespace RA.Mobile.Platforms
 {
@@ -165,8 +166,39 @@ namespace RA.Mobile.Platforms
         /// <param name="newOrientation"></param>
         internal void SetOrientation(DisplayOrientation newOrientation,bool applyGraphicsChanges)
         {
+            DisplayOrientation supported = GetEffectiveSupportedOrientations();
 
+            if((supported & newOrientation) == 0)
+            {
+                if ((supported & DisplayOrientation.LandscapeLeft) != 0)
+                    newOrientation = DisplayOrientation.LandscapeLeft;
+                else if ((supported & DisplayOrientation.LandscapeRight) != 0)
+                    newOrientation = DisplayOrientation.LandscapeRight;
+                else if ((supported & DisplayOrientation.Portrait) != 0)
+                    newOrientation = DisplayOrientation.Portrait;
+                else if ((supported & DisplayOrientation.PortraitDown) != 0)
+                    newOrientation = DisplayOrientation.PortraitDown;
+            }
 
+            DisplayOrientation oldOrientation = CurrentOrientation;
+
+            SetDisplayOrientation(newOrientation);
+            TouchPanel.DisplayOrientation = newOrientation;
+
+            if (applyGraphicsChanges)
+                _game.graphicsDeviceManager.ApplyChanges();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetDisplayOrientation(DisplayOrientation value)
+        {
+            if (value != _currentOrientation)
+            {
+
+            }
         }
 
 

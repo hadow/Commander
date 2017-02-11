@@ -22,6 +22,10 @@ namespace RA.Mobile.Platforms.Input.Touch
         /// <summary>
         /// 
         /// </summary>
+        public DisplayOrientation DisplayOrientation { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="id"></param>
         /// <param name="state"></param>
         /// <param name="position"></param>
