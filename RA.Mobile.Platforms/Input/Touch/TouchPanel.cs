@@ -22,7 +22,14 @@ namespace RA.Mobile.Platforms.Input.Touch
             PrimaryWindow.TouchPanelState.AddEvent(id, state, position, isMouse);
         }
 
-
+        public static DisplayOrientation DisplayOrientation
+        {
+            get { return PrimaryWindow.TouchPanelState.DisplayOrientation; }
+            set
+            {
+                PrimaryWindow.TouchPanelState.DisplayOrientation = value;
+            }
+        }
 
 
 

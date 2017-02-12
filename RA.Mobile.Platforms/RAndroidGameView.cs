@@ -18,7 +18,6 @@ namespace RA.Mobile.Platforms
 	{
 
         private readonly Game _game;
-
 		private readonly AndroidGameWindow _gameWindow;
 		private readonly AndroidTouchEventManager _touchManager;
 
@@ -187,7 +186,9 @@ namespace RA.Mobile.Platforms
             _lostContext = true;
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected override void CreateFrameBuffer()
         {
             int depth = 0;

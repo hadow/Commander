@@ -25,9 +25,6 @@ namespace RA.Droid
 		{
 			base.OnCreate(savedInstanceState);
 
-
-			RA.Platforms.Mobile.SDL2GraphicsDevice gd = new Platforms.Mobile.SDL2GraphicsDevice(new System.Drawing.Size(0, 0), RA.Game.WindowMode.Fullscreen);
-			return;
 			// Create our OpenGL view, and display it
 			view = new GLView1(this);
 			SetContentView(view);

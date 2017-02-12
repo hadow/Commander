@@ -135,10 +135,25 @@ namespace RA.Mobile.Platforms
             }
         }
 
+        /// <summary>
+        /// 创建设备
+        /// </summary>
         public void CreateDevice()
+        {
+            Initialize();
+            OnDeviceCreated(EventArgs.Empty);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void Initialize()
         {
 
         }
+
+
 
         public bool BeginDraw()
         {
@@ -175,7 +190,7 @@ namespace RA.Mobile.Platforms
 
 
         /// <summary>
-        /// 
+        /// 应用改变
         /// </summary>
         public void ApplyChanges()
         {
