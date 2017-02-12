@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using OpenTK.Graphics.ES20;
 
 namespace RA.Mobile.Platforms.Graphics
 {
@@ -10,7 +10,8 @@ namespace RA.Mobile.Platforms.Graphics
     {
         private string _glslCode;
 
-        
+        //
+        private int _shaderHandler = -1;
 
         /// <summary>
         /// 
@@ -28,6 +29,23 @@ namespace RA.Mobile.Platforms.Graphics
                 }
             }
             return -1;
+        }
+
+
+        /// <summary>
+        /// 重置平台上的图形设备
+        /// </summary>
+        private void PlatformGraphicsDeviceResetting()
+        {
+            if(_shaderHandler != -1)
+            {
+                if (GL.IsShader(_shaderHandler))
+                {
+                    GL.DeleteShader(_shaderHandler);
+                    GraphicsExtensions.CheckGLError();
+                }
+                _shaderHandler = -1;
+            }
         }
 
 

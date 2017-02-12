@@ -59,6 +59,7 @@
     <Compile Include="GameTime.cs" />
     <Compile Include="GraphicsDeviceManager.cs" />
     <Compile Include="Graphics\DepthFormat.cs" />
+    <Compile Include="Graphics\DisplayMode.cs" />
     <Compile Include="Graphics\GraphicsAdapter.cs" />
     <Compile Include="Graphics\GraphicsCapabilities.cs" />
     <Compile Include="Graphics\GraphicsCapabilities.OpenGL.cs" />
@@ -66,13 +67,16 @@
     <Compile Include="Graphics\GraphicsDevice.OpenGL.cs" />
     <Compile Include="Graphics\GraphicsDevice.OpenGL.FramebufferHelper.cs" />
     <Compile Include="Graphics\GraphicsExtensions.cs" />
+    <Compile Include="Graphics\GraphicsResource.cs" />
     <Compile Include="Graphics\IGraphicsDeviceService.cs" />
     <Compile Include="Graphics\PresentationParameters.cs" />
     <Compile Include="Graphics\PrimitiveType.cs" />
-    <Compile Include="Graphics\Shader.cs" />
-    <Compile Include="Graphics\Shader.OpenGL.cs" />
-    <Compile Include="Graphics\ShaderProgramCache.cs" />
     <Compile Include="Graphics\Shader\Shader.cs" />
+    <Compile Include="Graphics\Shader\Shader.OpenGL.cs" />
+    <Compile Include="Graphics\Shader\ShaderProgramCache.cs" />
+    <Compile Include="Graphics\States\SamplerState.cs" />
+    <Compile Include="Graphics\Vertices\IndexBuffer.cs" />
+    <Compile Include="Graphics\Vertices\IndexBuffer.OpenGL.cs" />
     <Compile Include="Graphics\Vertices\VertexDeclaration.cs" />
     <Compile Include="Graphics\Vertices\VertexDeclaration.OpenGL.cs" />
     <Compile Include="Graphics\Vertices\VertexElement.cs" />

@@ -21,11 +21,21 @@ namespace RA.Mobile.Platforms.Graphics
 
 
         internal GraphicsCapabilities GraphicsCapabilities { get; private set; }
-
+        /// <summary>
+        /// ¶¥µã×ÅÉ«Æ÷
+        /// </summary>
+        private Shader _vertexShader;
         private bool _vertexShaderDirty;
         private bool VertexShaderDirty
         {
             get { return _vertexShaderDirty; }
+        }
+
+        private Shader _pixelShader;
+        private bool _pixelShaderDirty;
+        private bool PixelShaderDirty
+        {
+            get { return _pixelShaderDirty; }
         }
 
         private Viewport _viewport;
