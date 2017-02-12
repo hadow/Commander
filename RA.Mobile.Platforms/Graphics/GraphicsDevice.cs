@@ -19,6 +19,9 @@ namespace RA.Mobile.Platforms.Graphics
 
         private readonly List<WeakReference> _resources = new List<WeakReference>();
 
+
+        internal GraphicsCapabilities GraphicsCapabilities { get; private set; }
+
         private bool _vertexShaderDirty;
         private bool VertexShaderDirty
         {

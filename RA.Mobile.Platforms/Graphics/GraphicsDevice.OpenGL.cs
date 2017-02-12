@@ -13,11 +13,16 @@ namespace RA.Mobile.Platforms.Graphics
         static List<Action> disposeActions = new List<Action>();
         static object disposeActionsLock = new object();
 
+        internal FramebufferHelper framebufferHelper;
+
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
         internal int MaxVertexAttributes;//最多支持顶点属性
         internal static readonly List<int> _enabledVertexAttributes = new List<int>();//已启用顶点属性
 
+
+        private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
+        private ShaderProgram _shaderProgram = null;
         /// <summary>
         /// 设置顶点属性（Enable Or Disable）
         /// </summary>
@@ -69,7 +74,13 @@ namespace RA.Mobile.Platforms.Graphics
         private void PlatformInitialize()
         {
             _viewport = new Viewport(0, 0, PresentationParameters.BackBufferWidth, PresentationParameters.BackBufferHeight);
-
+            _enabledVertexAttributes.Clear();
+            _programCache.Clear();
+            _shaderProgram = null;
+            if (GraphicsCapabilities.SupportsFramebufferObjectARB)
+            {
+                framebufferHelper = new FramebufferHelper(this);
+            }
         }
 
         /// <summary>
