@@ -38,3 +38,19 @@ Thumbs.db
 
 # dotCover
 *.dotCover
+/RA.Mobile.Platforms/Graphics/SurfaceFormat.cs
+/RA.Mobile.Platforms/Graphics/GraphicsResource.cs
+/RA.Mobile.Platforms/Graphics/GraphicsDeviceStatus.cs
+/RA.Mobile.Platforms/Graphics/DisplayMode.cs
+/CCRA/Resources/values/Strings.xml
+/CCRA/Resources/Resource.Designer.cs
+/CCRA/Resources/layout/Main.axml
+/CCRA/Resources/drawable/Icon.png
+/CCRA/Resources/AboutResources.txt
+/CCRA/Properties/AssemblyInfo.cs
+/CCRA/Properties/AndroidManifest.xml
+/CCRA/MainActivity.cs
+/CCRA/GLView1.cs
+/CCRA/GettingStarted.Xamarin
+/CCRA/CCRA.csproj
+/CCRA/Assets/AboutAssets.txt
