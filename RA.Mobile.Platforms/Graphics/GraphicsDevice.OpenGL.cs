@@ -15,8 +15,35 @@ namespace RA.Mobile.Platforms.Graphics
 
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
-
+        internal int MaxVertexAttributes;//最多支持顶点属性
         internal static readonly List<int> _enabledVertexAttributes = new List<int>();//已启用顶点属性
+
+        /// <summary>
+        /// 设置顶点属性（Enable Or Disable）
+        /// </summary>
+        /// <param name="attrs"></param>
+        internal void SetVertexAttributeArray(bool[] attrs)
+        {
+            for(int i = 0; i < attrs.Length; i++)
+            {
+                if (attrs[i] && !_enabledVertexAttributes.Contains(i))
+                {
+                    _enabledVertexAttributes.Add(i);
+                    GL.EnableVertexAttribArray(i);
+                    GraphicsExtensions.CheckGLError();
+                }
+                else if(!attrs[i] && _enabledVertexAttributes.Contains(i))
+                {
+                    _enabledVertexAttributes.Remove(i);
+                    GL.DisableVertexAttribArray(i);
+                    GraphicsExtensions.CheckGLError();
+                }
+
+            }
+
+
+        }
+
         private static GLPrimitiveType PrimitiveTypeGL(PrimitiveType primitiveType)
         {
             switch(primitiveType)

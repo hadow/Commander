@@ -26,6 +26,8 @@ namespace RA.Mobile.Platforms.Graphics
         Byte4,
         Short2,//tow signed 16-bit integer
         Short4,
+        NormalizedShort2,
+        NormalizedShort4,
 
     }
 

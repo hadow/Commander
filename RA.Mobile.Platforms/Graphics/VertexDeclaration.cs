@@ -44,5 +44,10 @@ namespace RA.Mobile.Platforms.Graphics
             get { return _data.VertexStride; }
         }
 
+        internal VertexElement[] InternalVertexElements
+        {
+            get { return _data.Elements; }
+        }
+
     }
 }
