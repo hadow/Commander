@@ -16,6 +16,7 @@ namespace RA.Mobile.Platforms.Graphics
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
 
+        internal static readonly List<int> _enabledVertexAttributes = new List<int>();//已启用顶点属性
         private static GLPrimitiveType PrimitiveTypeGL(PrimitiveType primitiveType)
         {
             switch(primitiveType)
