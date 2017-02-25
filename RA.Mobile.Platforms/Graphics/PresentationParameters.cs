@@ -38,5 +38,8 @@ namespace RA.Mobile.Platforms.Graphics
         }
         private IntPtr deviceWindowHandle;
 
+
+        public void Dispose() { }
+
     }
 }

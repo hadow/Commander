@@ -3,7 +3,7 @@ using RA.Mobile.Platforms.Android;
 using Android.Content.Res;
 namespace RA.Mobile.Platforms
 {
-	public class AndroidGamePlatform:GamePlatform
+	class AndroidGamePlatform:GamePlatform
 	{
 		public AndroidGamePlatform(Game game):base(game)
 		{
@@ -24,7 +24,7 @@ namespace RA.Mobile.Platforms
         {
             get
             {
-               return GameRunBehaviour.Synchronous;
+               return GameRunBehaviour.Asynchronous;
             }
         }
 
@@ -89,10 +89,16 @@ namespace RA.Mobile.Platforms
             return false;
         }
 
+        /// <summary>
+        /// 进入全屏模式
+        /// </summary>
         public override void EnterFullScreen()
         {
         }
 
+        /// <summary>
+        /// 退出全屏模式
+        /// </summary>
         public override void ExitFullScreen()
         {
         }

@@ -24,6 +24,11 @@ namespace RA.Mobile.Platforms.Graphics
             {
                 return _hashCode;
             }
+
+            public bool Equals(Data data)
+            {
+                return false;
+            }
         }
 
         private static readonly Dictionary<Data, VertexDeclaration> _vertexDeclarationCache;
@@ -47,6 +52,11 @@ namespace RA.Mobile.Platforms.Graphics
         internal VertexElement[] InternalVertexElements
         {
             get { return _data.Elements; }
+        }
+
+        public bool Equals(VertexDeclaration other)
+        {
+            return false;
         }
 
     }

@@ -53,7 +53,7 @@ namespace RA.Mobile.Platforms.Graphics
                 GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)bufferSize, IntPtr.Zero, _isDynamic ? OpenTK.Graphics.ES20.BufferUsage.StreamDraw : OpenTK.Graphics.ES20.BufferUsage.StaticDraw);
                 GraphicsExtensions.CheckGLError();
             }
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
+            GL.BufferSubData(BufferTarget.ElementArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
             GraphicsExtensions.CheckGLError();
 
             dataHandle.Free();

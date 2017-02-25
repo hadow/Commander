@@ -75,6 +75,11 @@ namespace RA.Mobile.Platforms.Graphics
             _usage = elementUsage;
         }
 
+        public bool Equals(VertexElement element)
+        {
+            return false;
+        }
+
 
     }
 }

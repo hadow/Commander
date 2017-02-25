@@ -41,6 +41,10 @@ namespace RA.Mobile.Platforms
             return base.GetHashCode();
         }
 
+        public bool Equals(Rectangle other)
+        {
+            return false;
+        }
 
     }
 }

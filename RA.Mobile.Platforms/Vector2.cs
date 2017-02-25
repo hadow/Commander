@@ -14,7 +14,7 @@ namespace RA.Mobile.Platforms
         #region Private Fields
         private static readonly Vector2 zero = new Vector2(0f, 0f);
         private static readonly Vector2 one = new Vector2(1f, 1f);
-
+        #endregion
 
         public static Vector2 Zero
         {

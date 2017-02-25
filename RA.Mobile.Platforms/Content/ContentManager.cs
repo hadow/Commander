@@ -17,6 +17,8 @@ namespace RA.Mobile.Platforms.Content
 
         }
 
+        public void Dispose() { }
+
 
 
     }

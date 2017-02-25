@@ -15,5 +15,11 @@ namespace RA.Mobile.Platforms
             get;private set;
         }
 
+
+        public bool Equals(Color other)
+        {
+            return false;
+        }
+
     }
 }
