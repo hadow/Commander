@@ -7,7 +7,6 @@ namespace RA.Mobile.Platforms
     /// <summary>
     /// 
     /// </summary>
-	[CLSCompliant(false)]
 	public class AndroidGameActivity:Activity
 	{
         internal Game Game { private get; set; }

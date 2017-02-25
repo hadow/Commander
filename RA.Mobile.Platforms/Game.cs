@@ -22,8 +22,8 @@ namespace RA.Mobile.Platforms
 
         private bool _shouldExit;
         private bool _suppressDraw;
-
-        private bool _isFixedTimeStep;
+        private bool _initialized = false;
+        private bool _isFixedTimeStep = true;
         public bool IsFixedTimeStep
         {
             get { return _isFixedTimeStep; }
@@ -69,7 +69,7 @@ namespace RA.Mobile.Platforms
             _instance = this;
             _services = new GameServiceContainer();
 
-            Platform = GamePlatform.PlatformCreate(this);
+            Platform = GamePlatform.PlatformCreate(this);           //创建移动平台
             Platform.Activated += OnActivated;
             Platform.Deactivated += OnDeactivated;
             _services.AddService(typeof(GamePlatform), Platform);
@@ -131,6 +131,41 @@ namespace RA.Mobile.Platforms
             }
         }
 
+
+        /// <summary>
+        /// Running
+        /// </summary>
+        public void Run()
+        {
+            Run(Platform.DefaultRunBehaviour);
+        }
+
+        public void Run(GameRunBehaviour runBehaviour)
+        {
+            AssertNotDisposed();
+            if(!Platform.BeforeRun())
+            {
+                BeginRun();
+                _gameTimer = Stopwatch.StartNew();
+                return;
+            }
+            if (!_initialized)
+            {
+                DoInitialize();
+                _initialized = true;
+            }
+
+            BeginRun();
+            _gameTimer = Stopwatch.StartNew();
+            switch (runBehaviour)
+            {
+
+            }
+
+        }
+
+        protected virtual void BeginRun() { }
+
         /// <summary>
         /// 
         /// </summary>
@@ -176,7 +211,7 @@ namespace RA.Mobile.Platforms
 
 
         /// <summary>
-        /// 
+        /// 执行初始化操作
         /// </summary>
         internal void DoInitialize()
         {

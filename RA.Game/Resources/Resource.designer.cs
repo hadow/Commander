@@ -9,7 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("RA.Game.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("RA.Game.Resource", IsApplication=true)]
 
 namespace RA.Game
 {
@@ -22,6 +22,11 @@ namespace RA.Game
 		static Resource()
 		{
 			global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+		}
+		
+		public static void UpdateIdValues()
+		{
+			global::RA.Mobile.Platforms.Resource.String.library_name = global::RA.Game.Resource.String.library_name;
 		}
 		
 		public partial class Attribute
@@ -37,11 +42,33 @@ namespace RA.Game
 			}
 		}
 		
-		public partial class String
+		public partial class Drawable
 		{
 			
 			// aapt resource value: 0x7f020000
-			public static int library_name = 2130837504;
+			public const int Icon = 2130837504;
+			
+			static Drawable()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Drawable()
+			{
+			}
+		}
+		
+		public partial class String
+		{
+			
+			// aapt resource value: 0x7f030002
+			public const int ApplicationName = 2130903042;
+			
+			// aapt resource value: 0x7f030001
+			public const int Hello = 2130903041;
+			
+			// aapt resource value: 0x7f030000
+			public const int library_name = 2130903040;
 			
 			static String()
 			{
