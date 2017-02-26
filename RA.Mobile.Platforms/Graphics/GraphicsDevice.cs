@@ -11,6 +11,41 @@ namespace RA.Mobile.Platforms.Graphics
     public partial class GraphicsDevice:IDisposable
     {
 
+        internal GraphicsDevice()
+        {
+            PresentationParameters = new PresentationParameters();
+            PresentationParameters.DepthStencilFormat = DepthFormat.Depth24;
+            Setup();
+            GraphicsCapabilities = new GraphicsCapabilities();
+            GraphicsCapabilities.Initialize(this);
+            Initialize();
+        }
+
+        public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
+        {
+            if (adapter == null)
+                throw new ArgumentNullException("adapter");
+            if (!adapter.IsProfileSupported(graphicsProfile))
+                throw new NoSuitableGraphicsDeviceException(string.Format("Adapter '{0}' does not support the {1} profile.", adapter.Description, graphicsProfile));
+            if (presentationParameters == null)
+                throw new ArgumentNullException("presentationParameters");
+
+            Adapter = adapter;
+            PresentationParameters = presentationParameters;
+            _graphicsProfile = graphicsProfile;
+            Setup();
+            GraphicsCapabilities = new GraphicsCapabilities();
+            GraphicsCapabilities.Initialize(this);
+            Initialize();
+        }
+
+
+        private void Setup()
+        {
+
+        }
+
+
         public event EventHandler<EventArgs> DeviceLost;
         public event EventHandler<EventArgs> DeviceReset;
         public event EventHandler<EventArgs> DeviceResetting;
@@ -18,6 +53,13 @@ namespace RA.Mobile.Platforms.Graphics
         private readonly object _resourceLock = new object();
 
         private readonly List<WeakReference> _resources = new List<WeakReference>();
+
+        private readonly GraphicsProfile _graphicsProfile;
+        public GraphicsProfile GraphicsProfile
+        {
+            get { return _graphicsProfile; }
+        }
+
 
 
         internal GraphicsCapabilities GraphicsCapabilities { get; private set; }

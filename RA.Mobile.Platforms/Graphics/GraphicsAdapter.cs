@@ -16,6 +16,9 @@ namespace RA.Mobile.Platforms.Graphics
             FastSoftware,//软件驱动(仅当设备不支持硬件加速)
         }
 
+        string _description = string.Empty;
+        public string Description { get { return _description; }set { _description = value; } }
+
         private static ReadOnlyCollection<GraphicsAdapter> _adapters;
         GraphicsAdapter() { }
 
@@ -54,6 +57,30 @@ namespace RA.Mobile.Platforms.Graphics
             }
         }
 
+
+
+        /// <summary>
+        /// 图形配置是否支持
+        /// </summary>
+        /// <param name="graphicsProfile"></param>
+        /// <returns></returns>
+        public bool IsProfileSupported(GraphicsProfile graphicsProfile)
+        {
+
+            switch (graphicsProfile)
+            {
+                case GraphicsProfile.Reach:
+                    return true;
+                    break;
+                case GraphicsProfile.HiDef:
+                    bool result = true;
+                    //TODO:check adapter capabilities....
+                    return result;
+                    break;
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
 
 
 

@@ -4,11 +4,24 @@ using System.Collections.Generic;
 namespace RA.Mobile.Platforms.Input.Touch
 {
     /// <summary>
-    /// 
+    /// ´¥¿Ø²Ù×÷Ãæ°å
     /// </summary>
     public static class TouchPanel
     {
         internal static GameWindow PrimaryWindow;
+
+
+        public static int DisplayWidth
+        {
+            get { return PrimaryWindow.TouchPanelState.DisplayWidth; }
+            set { PrimaryWindow.TouchPanelState.DisplayWidth = value; }
+        }
+
+        public static int DisplayHeight
+        {
+            get { return PrimaryWindow.TouchPanelState.DisplayHeight; }
+            set { PrimaryWindow.TouchPanelState.DisplayHeight = value; }
+        }
 
 
         

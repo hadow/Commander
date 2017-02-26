@@ -16,8 +16,30 @@ namespace RA.Mobile.Platforms.Android
 
         static AndroidCompatibility()
         {
-
+            NaturalOrientation = new Lazy<Orientation>(GetDeviceNaturalOrientation);
         }
+
+        /// <summary>
+        /// 获取设备的朝向
+        /// </summary>
+        /// <returns></returns>
+        private static Orientation GetDeviceNaturalOrientation()
+        {
+            var orientation = Game.Activity.Resources.Configuration.Orientation;
+            SurfaceOrientation rotation = Game.Activity.WindowManager.DefaultDisplay.Rotation;
+
+            if(((rotation == SurfaceOrientation.Rotation0 || rotation == SurfaceOrientation.Rotation180) && orientation == Orientation.Landscape) ||
+                ((rotation == SurfaceOrientation.Rotation90 || rotation == SurfaceOrientation.Rotation270) && orientation == Orientation.Portrait))
+            {
+                return Orientation.Landscape;
+            }
+            else
+            {
+                return Orientation.Portrait;
+            }
+        }
+
+
 
         /// <summary>
         /// 

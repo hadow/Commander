@@ -117,8 +117,8 @@ namespace RA.Mobile.Platforms
                 if(_graphicsDeviceManager == null)
                 {
                     _graphicsDeviceManager = (IGraphicsDeviceManager)Services.GetService(typeof(IGraphicsDeviceManager));
-                    if (_graphicsDeviceManager == null)
-                        throw new InvalidOperationException("No Graphics Device Manager");
+                    //if (_graphicsDeviceManager == null)
+                    //    throw new InvalidOperationException("No Graphics Device Manager");
                 }
                 return (GraphicsDeviceManager)_graphicsDeviceManager;
             }
@@ -216,6 +216,12 @@ namespace RA.Mobile.Platforms
         internal void DoInitialize()
         {
             AssertNotDisposed();
+
+            if (GraphicsDevice == null && graphicsDeviceManager != null)
+                _graphicsDeviceManager.CreateDevice();
+
+
+
             Platform.BeforeInitialize();
             Initialize();
         }

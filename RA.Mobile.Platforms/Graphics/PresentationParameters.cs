@@ -4,11 +4,19 @@ using System.Collections.Generic;
 namespace RA.Mobile.Platforms.Graphics
 {
     /// <summary>
-    /// 描述参数
+    /// 图形描述参数
     /// </summary>
     public class PresentationParameters:IDisposable
     {
         public const int DefaultPresentRate = 60;//默认帧率
+
+        private DepthFormat _depthStencilFormat;
+
+        public DepthFormat DepthStencilFormat
+        {
+            get { return _depthStencilFormat; }
+            set { _depthStencilFormat = value; }
+        }
 
         private bool _isFullScreen;
         public bool IsFullScreen
@@ -38,6 +46,7 @@ namespace RA.Mobile.Platforms.Graphics
         }
         private IntPtr deviceWindowHandle;
 
+        public DisplayOrientation DisplayOrientation { get; set; }
 
         public void Dispose() { }
 

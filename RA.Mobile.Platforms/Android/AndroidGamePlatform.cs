@@ -3,6 +3,9 @@ using RA.Mobile.Platforms.Android;
 using Android.Content.Res;
 namespace RA.Mobile.Platforms
 {
+    /// <summary>
+    /// Android 游戏平台
+    /// </summary>
 	class AndroidGamePlatform:GamePlatform
 	{
 		public AndroidGamePlatform(Game game):base(game)

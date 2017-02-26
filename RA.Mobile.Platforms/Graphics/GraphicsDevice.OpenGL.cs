@@ -23,6 +23,14 @@ namespace RA.Mobile.Platforms.Graphics
 
         private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
         private ShaderProgram _shaderProgram = null;
+
+
+        
+
+
+
+
+
         /// <summary>
         /// …Ë÷√∂•µ„ Ù–‘£®Enable Or Disable£©
         /// </summary>

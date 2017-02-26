@@ -8,14 +8,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>RA.Game</RootNamespace>
     <AssemblyName>RA.Game</AssemblyName>
-	<AndroidApplication>true</AndroidApplication>
+    <AndroidApplication>true</AndroidApplication>
     <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
     <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
-	<AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
   </PropertyGroup>
@@ -45,20 +45,33 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eluant">
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actor.cs" />
+    <Compile Include="Graphics\WorldRenderer.cs" />
+    <Compile Include="Map\ActorInitializer.cs" />
     <Compile Include="OurActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\IInputHandler.cs" />
     <Compile Include="Graphics\PlatformInterfaces.cs" />
     <Compile Include="Graphics\Vertex.cs" />
+    <Compile Include="Scripting\ScriptContext.cs" />
+    <Compile Include="Scripting\ScriptGlobal.cs" />
+    <Compile Include="Scripting\ScriptMemberWrapper.cs" />
+    <Compile Include="Scripting\ScriptObjectWrapper.cs" />
+    <Compile Include="Scripting\LuaValueExts.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
+    <Compile Include="Traits\TraitsInterfaces.cs" />
     <Compile Include="WarGame.cs" />
+    <Compile Include="World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -66,7 +79,7 @@
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
-   <ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\Icon.png" />
   </ItemGroup>
   <ItemGroup>

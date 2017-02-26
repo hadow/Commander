@@ -62,6 +62,13 @@ namespace RA.Mobile.Platforms
         private int _prevSurfaceWidth = 0;
         private int _prevSurfaceHeight = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="holder"></param>
+        /// <param name="format"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
         void ISurfaceHolderCallback.SurfaceChanged(ISurfaceHolder holder, Format format, int width, int height)
         {
             if ((int)Build.VERSION.SdkInt >= 19)

@@ -1,18 +1,28 @@
 using System;
 using RA.Mobile.Platforms.Graphics;
-
+using RA.Mobile.Platforms.Input.Touch;
 #if ANDROID
 using Android.Views;
 #endif
 namespace RA.Mobile.Platforms
 {
+
+    public class PreparingDeviceSettingsEventArgs : EventArgs
+    {
+        public GraphicsDeviceInformation GraphicsDeviceInformation;
+
+        public PreparingDeviceSettingsEventArgs(GraphicsDeviceInformation information)
+        {
+            GraphicsDeviceInformation = information;
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
     public class GraphicsDeviceManager:IGraphicsDeviceManager,IGraphicsDeviceService,IDisposable
     {
         readonly Game _game;
-        private GraphicsDevice _graphicsDevice;
+        private GraphicsDevice _graphicsDevice;         //图形绘制设备
         private DisplayOrientation _supportedOrientation;
 
         private bool _wantFullScreen = false;
@@ -80,6 +90,9 @@ namespace RA.Mobile.Platforms
 
         private bool _drawBegun;
         bool disposed;
+
+        public GraphicsProfile GraphicsProfile { get; set; }
+
         public GraphicsDevice GraphicsDevice
         {
             get
@@ -103,7 +116,7 @@ namespace RA.Mobile.Platforms
 
         ~GraphicsDeviceManager()
         {
-            
+            Dispose(false);
         }
 
 #if ANDROID
@@ -146,11 +159,32 @@ namespace RA.Mobile.Platforms
 
 
         /// <summary>
-        /// 
+        /// 初始化创建图形设备
         /// </summary>
         private void Initialize()
         {
+            var presentationParameters = new PresentationParameters();
+            presentationParameters.DepthStencilFormat = DepthFormat.Depth24;
 
+            if(PreparingDeviceSettings != null)
+            {
+                GraphicsDeviceInformation deviceInfo = new GraphicsDeviceInformation();
+                deviceInfo.GraphicsProfile = GraphicsProfile;
+                deviceInfo.Adapter = GraphicsAdapter.DefaultAdapter;
+                deviceInfo.PresentationParameters = presentationParameters;
+
+                PreparingDeviceSettingsEventArgs evtArgs = new PreparingDeviceSettingsEventArgs(deviceInfo);
+                PreparingDeviceSettings(this, evtArgs);
+                //presentationParameters = evtArgs.GraphicsDeviceInformation.PresentationParameters;
+                //GraphicsProfile = evtArgs.GraphicsDeviceInformation.GraphicsProfile;
+            }
+            _graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, presentationParameters);
+
+            ApplyChanges();
+
+            TouchPanel.DisplayWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
+            TouchPanel.DisplayHeight = _graphicsDevice.PresentationParameters.BackBufferHeight;
+            TouchPanel.DisplayOrientation = _graphicsDevice.PresentationParameters.DisplayOrientation;
         }
 
 
@@ -196,6 +230,25 @@ namespace RA.Mobile.Platforms
         {
             if (_graphicsDevice == null)
                 return;
+#if ANDROID
+            ((AndroidGameWindow)_game.Window).SetOrientation(_game.Window.CurrentOrientation,false);
+#endif
+
+            _graphicsDevice.PresentationParameters.DisplayOrientation = _game.Window.CurrentOrientation;
+
+            bool isLandScape = (0 != (_game.Window.CurrentOrientation & (DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight)));
+
+            int w = PreferredBackBufferWidth;
+            int h = PreferredBackBufferHeight;
+
+            _graphicsDevice.PresentationParameters.BackBufferWidth = isLandScape ? Math.Max(w, h) : Math.Min(w,h);
+            _graphicsDevice.PresentationParameters.BackBufferHeight = isLandScape ? Math.Max(w, h) : Math.Min(w, h);
+
+            ResetClientBounds();
+
+            TouchPanel.DisplayWidth = _graphicsDevice.PresentationParameters.BackBufferWidth;
+            TouchPanel.DisplayHeight = _graphicsDevice.PresentationParameters.BackBufferHeight;
+
         }
 
         #region IGraphicsDeviceService Members
@@ -205,6 +258,7 @@ namespace RA.Mobile.Platforms
         public event EventHandler<EventArgs> DeviceReset;
         public event EventHandler<EventArgs> DeviceReseting;
 
+        public event EventHandler<PreparingDeviceSettingsEventArgs> PreparingDeviceSettings;
         internal void OnDeviceDisposing(EventArgs ea)
         {
             Raise(DeviceDisposing, ea);

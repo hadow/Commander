@@ -7,7 +7,12 @@ namespace RA.Game
     public class WarGame:RA.Mobile.Platforms.Game
     {
 
-        public WarGame() { }
+        GraphicsDeviceManager gdm;
+        public WarGame() {
+            gdm = new GraphicsDeviceManager(this);
+            gdm.IsFullScreen = true;
+            gdm.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+        }
 
 
 

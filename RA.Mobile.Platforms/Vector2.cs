@@ -58,5 +58,71 @@ namespace RA.Mobile.Platforms
         {
             return X.GetHashCode() + Y.GetHashCode();
         }
+
+
+        public static Vector2 operator -(Vector2 value)
+        {
+            value.X = -value.X;
+            value.Y = -value.Y;
+            return value;
+        }
+
+        public static Vector2 operator -(Vector2 val1,Vector2 val2)
+        {
+            val1.X -= val2.X;
+            val1.Y -= val2.Y;
+            return val1;
+        }
+
+        public static Vector2 operator +(Vector2 val1,Vector2 val2)
+        {
+            val1.X += val2.X;
+            val1.Y += val2.Y;
+            return val1;
+        }
+
+        public static Vector2 operator *(Vector2 val1,Vector2 val2)
+        {
+            val1.X *= val2.X;
+            val1.Y *= val2.Y;
+            return val1;
+        }
+
+        public static Vector2 operator *(Vector2 val,float scaleFactor)
+        {
+            val.X *= scaleFactor;
+            val.Y *= scaleFactor;
+            return val;
+        }
+
+        public static Vector2 operator /(Vector2 val1,Vector2 val2)
+        {
+            val1.X /= val2.X;
+            val1.Y /= val2.Y;
+            return val1;
+        }
+
+        public static Vector2 operator /(Vector2 val,float divider)
+        {
+            float factor = 1 / divider;
+            val.X *= factor;
+            val.Y *= factor;
+            return val;
+        }
+
+
+        public static bool operator ==(Vector2 val1,Vector2 val2)
+        {
+            return val1.X == val2.X && val1.Y == val2.Y;
+        }
+
+        public static bool operator !=(Vector2 val1,Vector2 val2)
+        {
+            return val1.X != val2.X || val1.Y != val2.Y;
+        }
+
+
+
+
     }
 }

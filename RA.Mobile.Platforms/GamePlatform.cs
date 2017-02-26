@@ -1,5 +1,6 @@
 ﻿using System;
 using RA.Mobile.Platforms.Graphics;
+using RA.Mobile.Platforms.Input.Touch;
 namespace RA.Mobile.Platforms
 {
     /// <summary>
@@ -65,6 +66,7 @@ namespace RA.Mobile.Platforms
                 if(_window == null)
                 {
                     //TODO:
+                    TouchPanel.PrimaryWindow = value;
                 }
                 _window = value;
             }
