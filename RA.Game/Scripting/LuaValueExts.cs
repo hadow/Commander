@@ -16,6 +16,104 @@ namespace RA.Game.Scripting
 
             throw new InvalidOperationException("Cannot convert type {0} to Lua,Class Must implement IScriptBindable.");
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="t"></param>
+        /// <param name="clrObject"></param>
+        /// <returns></returns>
+        public static bool TryGetClrValue(this LuaValue value,Type t,out object clrObject)
+        {
+            object temp;
+
+            var nullable = Nullable.GetUnderlyingType(t);
+            if (nullable != null)
+                t = nullable;
+
+            if(value.TryGetClrObject(out temp))
+            {
+                if(temp.GetType() == t)
+                {
+                    clrObject = temp;
+                    return true;
+                }
+            }
+
+            if(value is LuaNil && !t.IsValueType)
+            {
+                clrObject = null;
+                return true;
+            }
+
+            if(value is LuaBoolean && t.IsAssignableFrom(typeof(bool)))
+            {
+                clrObject = value.ToBoolean();
+                return true;
+            }
+
+            if(value is LuaNumber && t.IsAssignableFrom(typeof(double)))
+            {
+                clrObject = value.ToNumber().Value;
+                return true;
+            }
+            if(value is LuaNumber && t.IsAssignableFrom(typeof(int)))
+            {
+                clrObject = (int)value.ToNumber().Value;
+                return true;
+            }
+            if(value is LuaString && t.IsAssignableFrom(typeof(string)))
+            {
+                clrObject = value.ToString();
+                return true;
+            }
+            if(value is LuaFunction && t.IsAssignableFrom(typeof(LuaFunction)))
+            {
+                clrObject = value;
+                return true;
+            }
+            if(value is LuaTable && t.IsAssignableFrom(typeof(LuaTable)))
+            {
+                clrObject = value;
+                return true;
+            }
+
+            if(value is LuaTable && t.IsArray)
+            {
+                var innerT = t.GetElementType();
+                var table = (LuaTable)value;
+                var array = Array.CreateInstance(innerT, table.Count);
+                var i = 0;
+                foreach(var kv in table)
+                {
+                    using (kv.Key)
+                    {
+                        object element;
+                        if (innerT == typeof(LuaValue))
+                            element = kv.Value;
+                        else
+                        {
+                            var elementHasClrValue = kv.Value.TryGetClrValue(innerT, out element);
+                            if(!elementHasClrValue || !(element is LuaValue))
+                            {
+                                kv.Value.Dispose();
+                            }
+                            if (!elementHasClrValue)
+                                throw new LuaException("Unable to convert table value of type {0} to type{1}");
+                        }
+
+                        array.SetValue(element, i++);
+                    }
+                }
+                clrObject = array;
+                return true;
+            }
+
+            clrObject = t.IsValueType ? Activator.CreateInstance(t) : null;
+            return false;
+        }
     }
 
 }

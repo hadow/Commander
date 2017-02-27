@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using RA.Game.Graphics;
 using Eluant;
-namespace RA.Game
+namespace RA.Game.Scripting
 {
     /// <summary>
     /// 
