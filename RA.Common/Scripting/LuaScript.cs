@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RA.Game;
 using RA.Game.Graphics;
+using RA.Game.Scripting;
 namespace RA.Common.Scripting
 {
     public class LuaScriptInfo:ITraitInfo

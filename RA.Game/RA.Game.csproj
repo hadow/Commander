@@ -20,7 +20,7 @@
     </AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
+    <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
@@ -28,10 +28,19 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+    <BundleAssemblies>False</BundleAssemblies>
+    <AndroidCreatePackagePerAbi>False</AndroidCreatePackagePerAbi>
+    <Debugger>.Net (Xamarin)</Debugger>
+    <AotAssemblies>False</AotAssemblies>
+    <EnableLLVM>False</EnableLLVM>
+    <AndroidEnableMultiDex>False</AndroidEnableMultiDex>
+    <EnableProguard>False</EnableProguard>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,10 +54,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eluant, Version=1.0.6266.38417, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -56,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actor.cs" />
+    <Compile Include="Exts.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="Map\ActorInitializer.cs" />
     <Compile Include="OurActivity.cs" />
@@ -89,10 +95,23 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RA.Mobile.Platforms\RA.Mobile.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>RA.Mobile.Platforms</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="lib\x86\libxlua.so">
+		<Abi>x86</Abi>
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
