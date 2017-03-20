@@ -23,7 +23,12 @@ namespace RA.Game.Scripting
         {
             throw new NotImplementedException();
         }
-        
+
+        protected override string DuplicateKeyError(string memberName)
+        {
+            throw new NotImplementedException();
+        }
+
         public ScriptGlobal(ScriptContext context) : base(context)
         {
             var type = GetType();

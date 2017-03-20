@@ -6,6 +6,9 @@ namespace RA.Game
     public class WarGame:RA.Mobile.Platforms.Game
     {
 
+        public static ModData ModData;
+
+
         GraphicsDeviceManager gdm;
         public WarGame() {
             gdm = new GraphicsDeviceManager(this);

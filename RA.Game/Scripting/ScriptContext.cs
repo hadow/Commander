@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
 using RA.Game.Graphics;
 using Eluant;
 namespace RA.Game.Scripting
@@ -44,8 +46,35 @@ namespace RA.Game.Scripting
                 }
 
                 //Register global tables
-                
+                var bindings = WarGame.ModData.ObjectCreator.GetTypesImplementing<ScriptGlobal>();
+                foreach(var bind in bindings)
+                {
+                    var ctor = bind.GetConstructors(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(c => {
+
+                        var p = c.GetParameters();
+                        return p.Length == 1 && p.First().ParameterType == typeof(ScriptContext);
+                    });
+
+
+                    if (ctor == null)
+                        throw new InvalidOperationException("{0} must define a constructor that takes a ScriptContext context parameter");
+
+                    var binding = (ScriptGlobal)ctor.Invoke(new[] { this });
+                    using (var obj = binding.ToLuaValue(this))
+                        registerGlobal.Call(binding.Name, obj).Dispose();
+
+                }
             }
+
+
+            runtime.MaxMemoryUse = runtime.MemoryUse + MaxUserScriptMemory;
+            //using(var loadScript = (LuaFunction)runtime.Globals["ExecuteSandboxedScript"])
+            //{
+            //    foreach(var s in scripts)
+            //    {
+            //        loadScript.Call(s,world.)
+            //    }
+            //}
         }
 
         public void Tick(Actor actor)

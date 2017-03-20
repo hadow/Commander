@@ -49,6 +49,11 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activies\Attack.cs" />
+    <Compile Include="Scripting\Global\ActorGlobal.cs" />
+    <Compile Include="Scripting\Global\CameraGlobal.cs" />
+    <Compile Include="Scripting\Global\DataTimeGlobal.cs" />
+    <Compile Include="Scripting\Global\MapGlobal.cs" />
+    <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
   </ItemGroup>
   <ItemGroup>
