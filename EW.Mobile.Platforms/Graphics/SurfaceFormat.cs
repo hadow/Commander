@@ -1,5 +1,5 @@
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     public enum SurfaceFormat
     {

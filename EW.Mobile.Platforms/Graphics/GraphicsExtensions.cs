@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.ES20;
 using Android.Util;
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     static class GraphicsExtensions
     {
@@ -69,6 +69,17 @@ namespace RA.Mobile.Platforms.Graphics
             if (error != ErrorCode.NoError)
                 throw new RAGameGLException("GL.GetError() returned" + error);
         }
+#if OPENGL
+
+        public static int GetBoundTexture2D()
+        {
+            var prevTexture = 0;
+            GL.GetInteger(GetPName.TextureBinding2D, out prevTexture);
+            return prevTexture;
+        }
+
+
+#endif
 
 #if OPENGL
         public static void LogGLError(string location)

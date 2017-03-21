@@ -82,6 +82,10 @@
     <Compile Include="Graphics\Shader\ShaderProgramCache.cs" />
     <Compile Include="Graphics\States\SamplerState.cs" />
     <Compile Include="Graphics\SurfaceFormat.cs" />
+    <Compile Include="Graphics\Texture.cs" />
+    <Compile Include="Graphics\Texture.OpenGL.cs" />
+    <Compile Include="Graphics\Texture2D.cs" />
+    <Compile Include="Graphics\Texture2D.OpenGL.cs" />
     <Compile Include="Graphics\Vertices\IndexBuffer.cs" />
     <Compile Include="Graphics\Vertices\IndexBuffer.OpenGL.cs" />
     <Compile Include="Graphics\Vertices\VertexDeclaration.cs" />
