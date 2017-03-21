@@ -10,7 +10,7 @@ namespace RA.Common.Scripting
     {
 
         public readonly HashSet<string> Scripts = new HashSet<string>();
-        public object Create()
+        public object Create(ActorInitializer init)
         {
             return new LuaScript(this);
         }

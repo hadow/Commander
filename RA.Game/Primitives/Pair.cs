@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 
-namespace RA.Game.Primitives
+namespace RA.Primitives
 {
     public  struct Pair<T,U>:IEquatable<Pair<T,U>>
     {
-
-
-
         public T First;
         public U Second;
 

@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-namespace RA.Game.Primitives
+namespace RA.Primitives
 {
     /// <summary>
     /// 
@@ -12,6 +12,23 @@ namespace RA.Game.Primitives
         static readonly Func<Type, List<object>> CreateList = type => new List<object>();
 
         readonly Dictionary<Type, List<object>> data = new Dictionary<Type, List<object>>();
+
+        public void Add(object val)
+        {
+            var t = val.GetType();
+
+            foreach (var i in t.GetInterfaces())
+                InnerAdd(i, val);
+            foreach (var tt in t.BaseTypes())
+                InnerAdd(tt, val);
+        }
+
+
+        void InnerAdd(Type t,object val)
+        {
+            data.GetOrAdd(t, CreateList).Add(val);
+        }
+
 
         public IEnumerator GetEnumerator()
         {
@@ -33,6 +50,38 @@ namespace RA.Game.Primitives
         public bool Contains<T>()
         {
             return data.ContainsKey(typeof(T));
+        }
+
+        public T Get<T>()
+        {
+            return (T)Get(typeof(T), true);
+        }
+
+        object Get(Type t,bool throwsIfMissing)
+        {
+            List<object> ret;
+            if(!data.TryGetValue(t,out ret))
+            {
+                if (throwsIfMissing)
+                    throw new InvalidOperationException("TypeDictionary does not contain instance of type '{0}'".F(t));
+
+                return null;
+            }
+            if (ret.Count > 1)
+                throw new InvalidOperationException("TypeDictionary contains multiple instance of type '{0}'".F(t));
+            return ret[0];
+        }
+    }
+
+    public static class TypeExts
+    {
+        public static IEnumerable<Type> BaseTypes(this Type t)
+        {
+            while (t != null)
+            {
+                yield return t;
+                t = t.BaseType;
+            }
         }
     }
 }

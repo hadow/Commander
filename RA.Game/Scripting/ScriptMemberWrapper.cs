@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using Eluant;
-namespace RA.Game.Scripting
+namespace RA.Scripting
 {
     public class ScriptMemberWrapper
     {

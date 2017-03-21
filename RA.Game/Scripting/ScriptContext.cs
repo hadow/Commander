@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using RA.Game.Graphics;
-using RA.Game.Primitives;
+using RA.Graphics;
+using RA.Primitives;
 using Eluant;
-namespace RA.Game.Scripting
+namespace RA.Scripting
 {
     public interface IScriptNotifyBind
     {

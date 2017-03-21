@@ -1,10 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace RA.Game.Primitives
+namespace RA.Primitives
 {
 
 
+    /// <summary>
+    /// Ö»¶Á×Öµä
+    /// </summary>
+    /// <typeparam name="TKey"></typeparam>
+    /// <typeparam name="TValue"></typeparam>
     public interface IReadOnlyDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {
         int Count { get; }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RA.Game 
+namespace RA 
 {
 	public class SoundDevice
 	{

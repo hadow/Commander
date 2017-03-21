@@ -2,7 +2,7 @@
 using Voxel.Game;
 using System.Drawing;
 using Android.Graphics;
-namespace RA.Game
+namespace RA
 {
 	public enum WindowMode
 	{

@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RA.Game
+namespace RA
 {
     public static class Exts
     {
@@ -39,6 +39,11 @@ namespace RA.Game
         public static Lazy<T> Lazy<T>(Func<T> p)
         {
             return new Lazy<T>(p);
+        }
+
+        public static bool HasAttribute<T>(this MemberInfo mi)
+        {
+            return mi.GetCustomAttributes(typeof(T), true).Length != 0;
         }
     }
 }

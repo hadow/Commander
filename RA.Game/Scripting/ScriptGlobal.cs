@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RA.Game.Scripting
+namespace RA.Scripting
 {
 
 

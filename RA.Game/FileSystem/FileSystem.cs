@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace RA.Game.FileSystem
+namespace RA.FileSystem
 {
 
     /// <summary>
@@ -26,6 +26,9 @@ namespace RA.Game.FileSystem
     }
 
 
+    /// <summary>
+    /// Ö»¶ÁÎÄ¼þ
+    /// </summary>
     public interface IReadOnlyFileSystem
     {
         Stream Open(string filename);

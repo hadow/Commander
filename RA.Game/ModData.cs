@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-
-namespace RA.Game
+using RA.FileSystem;
+namespace RA
 {
 
     /// <summary>
@@ -13,8 +13,8 @@ namespace RA.Game
 
         public readonly ObjectCreator ObjectCreator;
 
-
-
+        public RA.FileSystem.FileSystem ModFiles;
+        public IReadOnlyFileSystem DefaultFileSystem { get { return ModFiles; } }
 
 
 

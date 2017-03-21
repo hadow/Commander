@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Eluant;
-namespace RA.Game.Scripting
+namespace RA.Scripting
 {
 
     /// <summary>

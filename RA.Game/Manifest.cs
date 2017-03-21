@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace RA.Game
+namespace RA
 {
     /// <summary>
     /// 

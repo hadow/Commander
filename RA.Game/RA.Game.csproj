@@ -60,13 +60,19 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\Activity.cs" />
     <Compile Include="Actor.cs" />
     <Compile Include="Exts.cs" />
+    <Compile Include="FieldLoader.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="GameRules\ActorInfo.cs" />
+    <Compile Include="GameRules\Ruleset.cs" />
+    <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="Manifest.cs" />
     <Compile Include="Map\ActorInitializer.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="MiniYaml.cs" />
     <Compile Include="ModData.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="OurActivity.cs" />
@@ -86,6 +92,8 @@
     <Compile Include="Scripting\ScriptObjectWrapper.cs" />
     <Compile Include="Scripting\LuaValueExts.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
+    <Compile Include="Support\PerfTimer.cs" />
+    <Compile Include="Traits\ActivityUtils.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
     <Compile Include="WarGame.cs" />
     <Compile Include="World.cs" />

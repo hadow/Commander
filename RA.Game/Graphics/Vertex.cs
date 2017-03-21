@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-namespace Voxel.Game
+namespace RA.Graphics
 {
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vertex

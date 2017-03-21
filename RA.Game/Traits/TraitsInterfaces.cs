@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using RA.Game.Graphics;
+using RA.Graphics;
 
-namespace RA.Game
+namespace RA
 {
     class TraitsInterfaces
     {
@@ -15,8 +15,13 @@ namespace RA.Game
 
     public interface ITraitInfo : ITraitInfoInterface
     {
-        object Create();
+        object Create(ActorInitializer init);
     }
+
+
+    public interface IRulesetLoaded<TInfo> { void RulesetLoaded(Ruleset rules, TInfo info); }
+
+    public interface IRulesetLoaded : IRulesetLoaded<ActorInfo>, ITraitInfoInterface { }
 
 
     public interface ITick { void Tick(Actor self); }

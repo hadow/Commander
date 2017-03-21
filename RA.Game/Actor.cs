@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using Eluant;
 using Eluant.ObjectBinding;
-using RA.Game.Scripting;
-namespace RA.Game
+using RA.Scripting;
+using RA.Activities;
+using RA.Traits;
+using RA.Primitives;
+namespace RA
 {
     /// <summary>
     /// 
@@ -13,11 +16,49 @@ namespace RA.Game
 
         public readonly ActorInfo Info;
 
+        public readonly World World;
+
+        public readonly uint ActorID;
+
+        Activity currentActivity;
+
+
+        internal Actor(World world,string name,TypeDictionary initDict)
+        {
+            var init = new ActorInitializer(this, initDict);
+            
+            World = world;
+            ActorID = world.NextAID();
+            
+            if(name != null)
+            {
+                name = name.ToLowerInvariant();
+            }
+        }
 
 
 
 
 
+
+
+
+
+        public void Tick()
+        {
+            currentActivity = ActivityUtils.RunActivity(this, currentActivity);
+        }
+
+
+        public bool Equals(Actor other)
+        {
+            return ActorID == other.ActorID;
+        }
+
+        public void Dispose()
+        {
+
+        }
 
 
 

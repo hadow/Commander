@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using RA.Mobile.Platforms;
-namespace RA.Game
+namespace RA
 {
     public class WarGame:RA.Mobile.Platforms.Game
     {

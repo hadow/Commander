@@ -4,7 +4,7 @@ using Android.OS;
 using Android.Views;
 using Android.App;
 using Android.Content.PM;
-namespace RA.Game
+namespace RA
 {
     /// <summary>
     /// 
