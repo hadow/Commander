@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("RA.Common.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.Common.Resource", IsApplication=false)]
 
-namespace RA.Common
+namespace EW.Common
 {
 	
 	

@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("RA.Mobile.Platforms.Resource", IsApplication=false)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.Mobile.Platforms.Resource", IsApplication=false)]
 
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
 	
 	
