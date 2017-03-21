@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 namespace RA.Game.Primitives
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
     public class Cache<T,U>:IReadOnlyDictionary<T,U>
     {
         readonly Dictionary<T, U> cache;

@@ -11,6 +11,8 @@ namespace RA.Game
 
     public interface ITraitInfoInterface { }
 
+    public interface Requires<T> where T : class, ITraitInfoInterface { }
+
     public interface ITraitInfo : ITraitInfoInterface
     {
         object Create();

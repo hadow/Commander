@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using RA.Game.Graphics;
+using RA.Game.Primitives;
 using Eluant;
 namespace RA.Game.Scripting
 {
+    public interface IScriptNotifyBind
+    {
+        void OnScriptBind(ScriptContext context);
+    }
+
+
     /// <summary>
     /// 
     /// </summary>
@@ -21,12 +28,17 @@ namespace RA.Game.Scripting
         readonly LuaFunction tick;
         readonly Type[] knownActorCommands;
         public readonly Type[] PlayerCommands;
+        public readonly Cache<ActorInfo, Type[]> ActorCommands;
 
+        static readonly object[] NoArguments = new object[0];
         public ScriptContext(World world,WorldRenderer worldRenderer,IEnumerable<string> scripts)
         {
             runtime = new MemoryConstrainedLuaRuntime();
             this.World = world;
             this.WorldRenderer = worldRenderer;
+
+
+            ActorCommands = new Cache<ActorInfo, Type[]>(FilterActorCommands);
 
             runtime.Globals["GameDir"] = "";
             tick = (LuaFunction)runtime.Globals["Tick"];
@@ -76,6 +88,25 @@ namespace RA.Game.Scripting
             //    }
             //}
         }
+
+        Type[] FilterActorCommands(ActorInfo ai)
+        {
+            return FilterCommands(ai, knownActorCommands);
+        }
+
+        Type[] FilterCommands(ActorInfo ai,Type[] knownCommands)
+        {
+            var method = typeof(ActorInfo).GetMethod("HasTraitInfo");
+            return knownActorCommands.Where(c => ExtractRequiredTypes(c).All(t => (bool)method.MakeGenericMethod(t).Invoke(ai, NoArguments))).ToArray();
+        }
+
+
+        static IEnumerable<Type> ExtractRequiredTypes(Type t)
+        {
+            var outer = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(Requires<>));
+            return outer.SelectMany(i => i.GetGenericArguments());
+        }
+
 
         public void Tick(Actor actor)
         {

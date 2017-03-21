@@ -6,6 +6,11 @@ namespace RA.Game.Scripting
 {
 
     public interface IScriptBindable { }
+
+
+    /// <summary>
+    /// 封装脚本对象
+    /// </summary>
     public abstract class ScriptObjectWrapper:IScriptBindable,ILuaTableBinding
     {
 
@@ -22,6 +27,24 @@ namespace RA.Game.Scripting
         {
             Context = context;
         }
+
+        protected void Bind(IEnumerable<object> clrObjects)
+        {
+            members = new Dictionary<string, ScriptMemberWrapper>();
+            foreach(var obj in clrObjects)
+            {
+                var wrappable = ScriptMemberWrapper.WrappableMembers(obj.GetType());
+                foreach(var m in wrappable)
+                {
+                    if (members.ContainsKey(m.Name))
+                        throw new LuaException(DuplicateKeyError(m.Name));
+
+                    members.Add(m.Name, new ScriptMemberWrapper(Context, obj, m));
+                }
+            }
+        }
+
+
 
         public LuaValue this[LuaRuntime runtime,LuaValue keyValue]
         {

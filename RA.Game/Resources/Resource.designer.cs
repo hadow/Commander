@@ -26,6 +26,7 @@ namespace RA.Game
 		
 		public static void UpdateIdValues()
 		{
+			global::Eluant.Android.Resource.String.library_name = global::RA.Game.Resource.String.library_name;
 			global::RA.Mobile.Platforms.Resource.String.library_name = global::RA.Game.Resource.String.library_name;
 		}
 		

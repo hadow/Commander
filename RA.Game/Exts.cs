@@ -8,6 +8,12 @@ namespace RA.Game
     public static class Exts
     {
 
+
+        public static string F(this string fmt,params object[] args)
+        {
+            return string.Format(fmt, args);
+        }
+
         public static T[] GetCustomAttributes<T>(this MemberInfo mi,bool inherit) where T:class
         {
             return (T[])mi.GetCustomAttributes(typeof(T), inherit);
@@ -28,6 +34,11 @@ namespace RA.Game
         public static IEnumerable<string> GetNamespaces(this Assembly a)
         {
             return a.GetTypes().Select(t => t.Namespace).Distinct().Where(n => n != null);
+        }
+
+        public static Lazy<T> Lazy<T>(Func<T> p)
+        {
+            return new Lazy<T>(p);
         }
     }
 }

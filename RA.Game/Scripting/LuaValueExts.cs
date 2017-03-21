@@ -17,6 +17,14 @@ namespace RA.Game.Scripting
             throw new InvalidOperationException("Cannot convert type {0} to Lua,Class Must implement IScriptBindable.");
         }
 
+        public static bool TryGetClrValue<T>(this LuaValue value,out T clrObject)
+        {
+            object temp;
+            var ret = value.TryGetClrValue(typeof(T), out temp);
+            clrObject = ret ? (T)temp : default(T);
+            return ret;
+        }
+
 
         /// <summary>
         /// 

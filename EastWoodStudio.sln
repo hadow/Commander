@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RA.Game", "RA.Game\RA.Game.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RA.Mobile.Platforms", "RA.Mobile.Platforms\RA.Mobile.Platforms.csproj", "{62338638-3D8A-4E57-969E-1C82298C0649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant.Android", "..\Eluant\Eluant\Eluant.Android.csproj", "{5913825E-0C80-4660-81B3-C2C55B35ADB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,14 +44,14 @@ Global
 		{62338638-3D8A-4E57-969E-1C82298C0649}.Release|Any CPU.Build.0 = Release|Any CPU
 		{62338638-3D8A-4E57-969E-1C82298C0649}.Release|x86.ActiveCfg = Release|Any CPU
 		{62338638-3D8A-4E57-969E-1C82298C0649}.Release|x86.Build.0 = Release|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.Build.0 = Debug|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.ActiveCfg = Release|Any CPU
-		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.Build.0 = Release|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.Build.0 = Debug|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.ActiveCfg = Release|Any CPU
+		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
