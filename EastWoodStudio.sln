@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Common", "RA.Common\EW.Mods.Common.csproj", "{971CD67F-D10D-4DA6-939A-09CE9A52CDF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Common", "EW.Common\EW.Mods.Common.csproj", "{971CD67F-D10D-4DA6-939A-09CE9A52CDF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Game", "RA.Game\EW.Game.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Game", "EW.Game\EW.Game.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mobile.Platforms", "RA.Mobile.Platforms\EW.Mobile.Platforms.csproj", "{62338638-3D8A-4E57-969E-1C82298C0649}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mobile.Platforms", "EW.Mobile.Platforms\EW.Mobile.Platforms.csproj", "{62338638-3D8A-4E57-969E-1C82298C0649}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant.Android", "..\Eluant\Eluant\Eluant.Android.csproj", "{5913825E-0C80-4660-81B3-C2C55B35ADB6}"
 EndProject

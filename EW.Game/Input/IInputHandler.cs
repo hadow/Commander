@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Voxel.Game
+namespace RA
 {
 	[Flags]
 	public enum MouseButton

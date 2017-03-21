@@ -63,7 +63,7 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RA.Game\EW.Game.csproj">
+    <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game</Name>
     </ProjectReference>

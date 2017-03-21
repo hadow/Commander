@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using RA.Game.Scripting;
+using RA.Scripting;
 namespace RA.Common.Scripting.Global
 {
     [ScriptGlobal("Map")]
