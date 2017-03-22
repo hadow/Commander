@@ -2,7 +2,7 @@
 using Android.Views;
 using Android.App;
 using Android.Content;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 

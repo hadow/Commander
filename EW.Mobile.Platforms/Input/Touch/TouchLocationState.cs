@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RA.Mobile.Platforms.Input.Touch
+namespace EW.Mobile.Platforms.Input.Touch
 {
     public enum TouchLocationState
     {

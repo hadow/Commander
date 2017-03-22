@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.ES20;
 using GLPrimitiveType= OpenTK.Graphics.ES20.BeginMode;
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     /// <summary>
     /// Graphics Device For OPEN GL

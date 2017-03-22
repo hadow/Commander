@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     internal partial class GraphicsCapabilities
     {

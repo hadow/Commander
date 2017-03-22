@@ -3,7 +3,7 @@ using Android.Content;
 using Android.Views;
 using RA.Mobile.Platforms.Input.Touch;
 using OpenTK;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// Android Platform游戏视窗口

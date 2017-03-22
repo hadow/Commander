@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using Android.Views;
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     /// <summary>
     /// Õº–Œ  ≈‰∆˜

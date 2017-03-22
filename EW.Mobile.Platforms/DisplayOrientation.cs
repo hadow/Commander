@@ -1,5 +1,5 @@
 ﻿using System;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
 	[Flags]
 	public enum DisplayOrientation

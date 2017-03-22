@@ -1,8 +1,8 @@
 using System;
 using System.Diagnostics;
-using RA.Mobile.Platforms.Graphics;
-using RA.Mobile.Platforms.Input.Touch;
-namespace RA.Mobile.Platforms
+using EW.Mobile.Platforms.Graphics;
+using EW.Mobile.Platforms.Input.Touch;
+namespace EW.Mobile.Platforms
 {
     public class Game:IDisposable
     {

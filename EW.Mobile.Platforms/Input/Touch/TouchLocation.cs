@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA.Mobile.Platforms.Input.Touch
+namespace EW.Mobile.Platforms.Input.Touch
 {
     /// <summary>
     /// ´¥¿ØÎ»ÖÃ

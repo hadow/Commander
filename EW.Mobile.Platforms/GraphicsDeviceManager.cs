@@ -1,10 +1,10 @@
 using System;
-using RA.Mobile.Platforms.Graphics;
-using RA.Mobile.Platforms.Input.Touch;
+using EW.Mobile.Platforms.Graphics;
+using EW.Mobile.Platforms.Input.Touch;
 #if ANDROID
 using Android.Views;
 #endif
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
 
     public class PreparingDeviceSettingsEventArgs : EventArgs

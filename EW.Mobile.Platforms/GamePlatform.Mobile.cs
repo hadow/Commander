@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 

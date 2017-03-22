@@ -27,6 +27,17 @@ namespace EW.Mobile.Platforms.Graphics
         }
 
         /// <summary>
+        /// 纹理尺寸
+        /// </summary>
+        public Rectangle Bounds
+        {
+            get
+            {
+                return new Rectangle(0, 0, this.width, this.height);
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="graphicsDevice"></param>
@@ -67,6 +78,63 @@ namespace EW.Mobile.Platforms.Graphics
         internal Texture2D(GraphicsDevice graphicsDevice,int width,int height,bool mipmap,SurfaceFormat format,SurfaceType type) : this(graphicsDevice, width, height, mipmap, format, type, false, 1) { }
 
 
+        /// <summary>
+        /// 获取纹理数据
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        public void GetData<T>(T[] data) where T :struct
+        {
+            this.GetData(0, null, data, 0, data.Length);
+        }
 
+        public void GetData<T>(int level,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
+        {
+            this.GetData(level, 0, rect, data, startIndex, elementCount);
+        }
+
+        public void GetData<T>(int level,int arraySlice,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
+        {
+            if (data == null || data.Length == 0)
+                throw new ArgumentException("data cannot be null");
+            if (data.Length < startIndex + elementCount)
+                throw new ArgumentException("The data passed has a length of " + data.Length + " but" + elementCount + "  pixels have been requested.");
+            if (arraySlice > 0 && !GraphicsDevice.GraphicsCapabilities.SupportsTextrueArrays)
+                throw new ArgumentException("Texture arrays are not supported on this graphics device", "arraySlice");
+            if (rect.HasValue && rect.Value.Width * rect.Value.Height != elementCount)
+                throw new ArgumentException("The size of the data passed in is too large or too small for this recources");
+            PlatformGetData<T>(level, arraySlice, rect, data, startIndex, elementCount);
+
+        }
+
+        public void SetData<T>(int level,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
+        {
+            this.SetData(level, 0, rect, data, startIndex, elementCount);
+        }
+
+        public void SetData<T>(int level,int arraySlice,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
+        {
+            Rectangle resizedBounds = new Rectangle(0, 0, Math.Max(Bounds.Width >> level, 1), Math.Max(Bounds.Height >> level, 1));
+
+            if (level >= LevelCount)
+                throw new ArgumentException("Texture only has " + _levelCount + "levels", "level");
+            if (data == null || data.Length == 0)
+                throw new ArgumentException("data cannot be null");
+            if((!rect.HasValue &&(data.Length-startIndex<resizedBounds.Width * resizedBounds.Height)) || (rect.HasValue && (rect.Value.Height * rect.Value.Width > data.Length)))
+            {
+                throw new ArgumentException("data array is to small");
+            }
+
+            if (elementCount + startIndex > data.Length)
+                throw new ArgumentException("ElementCount must be a valid index in the data array", "elementCount");
+            if (arraySlice > 0 && !GraphicsDevice.GraphicsCapabilities.SupportsTextrueArrays)
+                throw new ArgumentException("Texture arrays are not supported on this graphics device", "arraySlice");
+            if (arraySlice >= this.arraySize)
+                throw new ArgumentException("Texture array only has " + arraySize + " textures", "arraySlice");
+            if (rect.HasValue && !resizedBounds.Contains(rect.Value))
+                throw new ArgumentException("Rectangle must be inside the Texture Bounds", "rect");
+            PlatformSetData<T>(level, arraySlice, rect, data, startIndex, elementCount);
+
+        }
     }
 }

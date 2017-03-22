@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 2D ¾ØÐÎ
@@ -44,6 +44,11 @@ namespace RA.Mobile.Platforms
         public bool Equals(Rectangle other)
         {
             return false;
+        }
+
+        public bool Contains(Rectangle value)
+        {
+            return ((this.X <= value.X) && (value.X + value.Width) <= (this.X + this.Width)) && ((this.Y <= value.Y) && (value.Y + value.Height) <= (this.Y + this.Height));
         }
 
     }

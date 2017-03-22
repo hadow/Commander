@@ -2,8 +2,8 @@
 using Android.Views;
 using Android.Content;
 using Android.Hardware;
-using RA.Mobile.Platforms.Android;
-namespace RA.Mobile.Platforms
+using EW.Mobile.Platforms.Android;
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 设备自适应朝向监听

@@ -1,7 +1,7 @@
 ﻿using System;
-using RA.Mobile.Platforms.Graphics;
-using RA.Mobile.Platforms.Input.Touch;
-namespace RA.Mobile.Platforms
+using EW.Mobile.Platforms.Graphics;
+using EW.Mobile.Platforms.Input.Touch;
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 抽象的一个游戏平台

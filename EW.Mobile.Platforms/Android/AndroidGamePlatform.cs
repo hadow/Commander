@@ -1,7 +1,7 @@
 ﻿using System;
-using RA.Mobile.Platforms.Android;
+using EW.Mobile.Platforms.Android;
 using Android.Content.Res;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// Android 游戏平台

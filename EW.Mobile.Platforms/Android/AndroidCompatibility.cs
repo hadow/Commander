@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Android.Views;
 using Android.Content.Res;
 
-namespace RA.Mobile.Platforms.Android
+namespace EW.Mobile.Platforms.Android
 {
     /// <summary>
     /// 

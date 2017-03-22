@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     public sealed class NoSuitableGraphicsDeviceException:Exception
     {

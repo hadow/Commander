@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.Serialization;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 2DœÚ¡ø

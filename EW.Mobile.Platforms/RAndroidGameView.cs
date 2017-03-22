@@ -7,9 +7,9 @@ using Android.Views;
 using Android.Content;
 using Android.Graphics;
 using Android.OS;
-using RA.Mobile.Platforms.Graphics;
-using RA.Mobile.Platforms.Content;
-namespace RA.Mobile.Platforms
+using EW.Mobile.Platforms.Graphics;
+using EW.Mobile.Platforms.Content;
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 游戏视图

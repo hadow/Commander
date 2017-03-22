@@ -56,6 +56,7 @@
     <Compile Include="Android\AndroidCompatibility.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Content\ContentManager.cs" />
+    <Compile Include="Content\ContentTypeReader.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GamePlatform.Mobile.cs" />
     <Compile Include="GameRunBehaviour.cs" />

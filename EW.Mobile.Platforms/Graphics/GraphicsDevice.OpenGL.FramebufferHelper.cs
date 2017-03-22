@@ -5,7 +5,7 @@ using OpenTK.Graphics.ES20;
 using System.Security;
 #endif
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     partial class GraphicsDevice
     {

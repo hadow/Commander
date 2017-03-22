@@ -96,6 +96,21 @@ namespace EW.Mobile.Platforms.Graphics
             }
         }
 #endif
+
+        public static int GetSize(this SurfaceFormat surfaceFormat)
+        {
+            switch (surfaceFormat)
+            {
+                case SurfaceFormat.Dxt1:
+                    return 8;
+                case SurfaceFormat.DXt3:
+                    return 16;
+                default:
+                    throw new ArgumentException();
+
+            }
+        }
+
     }
 
     internal class RAGameGLException : Exception

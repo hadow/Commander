@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 using System.Diagnostics;
-namespace RA.Mobile.Platforms
+namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 2D Point In 2D Space
