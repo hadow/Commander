@@ -130,6 +130,8 @@
     <Compile Include="Input\Touch\AndroidTouchEventManager.cs" />
     <Compile Include="ResumeManager.cs" />
     <Compile Include="Threading.cs" />
+    <Compile Include="Utilities\ReflectionHelper.Default.cs" />
+    <Compile Include="Utilities\ReflectionHelpers.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Vector3.cs" />
     <Compile Include="Vector4.cs" />

@@ -1,7 +1,7 @@
 ﻿using System;
 using Android.Content;
 using Android.Views;
-using RA.Mobile.Platforms.Input.Touch;
+using EW.Mobile.Platforms.Input.Touch;
 using OpenTK;
 namespace EW.Mobile.Platforms
 {
