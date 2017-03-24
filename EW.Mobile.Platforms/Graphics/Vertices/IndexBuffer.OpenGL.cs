@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES20;
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
 
     

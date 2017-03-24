@@ -24,9 +24,12 @@ namespace EW.Mobile.Platforms.Graphics
         private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
         private ShaderProgram _shaderProgram = null;
 
+        private BlendState _blendState;
+        private BlendState _actualBlendState;
+        private bool _blendStateDirty;
 
-        
-
+        internal bool _lastBlendEnable = false;
+        internal BlendState _lastBlendState = new BlendState();
 
 
 
@@ -112,6 +115,70 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
+        private void PlatformDrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration)
+        {
+
+        }
+
+
+        internal void PlatformBeginApplyState()
+        {
+            Threading.EnsureUIThread();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="force"></param>
+        private void PlatformApplyBlend(bool force = false)
+        {
+            _actualBlendState.PlatformApplyState(this, force);
+            ApplyBlendFactor(force);
+        }
+
+
+        private void ApplyBlendFactor(bool force)
+        {
+            if(force || BlendFactor != _lastBlendState.BlendFactor)
+            {
+                GL.BlendColor(this.BlendFactor.R / 255.0f, this.BlendFactor.G / 255.0f, this.BlendFactor.B / 255.0f, this.BlendFactor.A / 255.0f);
+                GraphicsExtensions.CheckGLError();
+                _lastBlendState.BlendFactor = this.BlendFactor;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applyShaders"></param>
+        internal void PlatformApplyState(bool applyShaders)
+        {
+            if (_scissorRectangleDirty)
+            {
+                var scissorRect = _scissorRectangle;
+                if (!IsRenderTargetBound)
+                    scissorRect.Y = _viewport.Height - scissorRect.Y - scissorRect.Height;
+                GL.Scissor(scissorRect.X, scissorRect.Y, scissorRect.Width, scissorRect.Height);
+                GraphicsExtensions.CheckGLError();
+                _scissorRectangleDirty = false;
+            }
+
+            if (!applyShaders)
+                return;
+
+            if (_indexBufferDirty)
+            {
+                if (_indexBuffer != null)
+                {
+                    GL.BindBuffer(BufferTarget.ElementArrayBuffer, _indexBuffer.ibo);
+                    GraphicsExtensions.CheckGLError();
+                }
+                _indexBufferDirty = false;
+            }
+
+            if(_ver)
+            
+        }
         /// <summary>
         /// 
         /// </summary>

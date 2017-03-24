@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using OpenTK.Graphics.ES20;
 #endif
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     public partial class VertexDeclaration
     {

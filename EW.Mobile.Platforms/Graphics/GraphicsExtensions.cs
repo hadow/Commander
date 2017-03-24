@@ -111,6 +111,98 @@ namespace EW.Mobile.Platforms.Graphics
             }
         }
 
+        public static int GetSize(this VertexElementFormat elementFormat)
+        {
+            switch (elementFormat)
+            {
+                case VertexElementFormat.Single:
+                    return 4;
+                case VertexElementFormat.Vector2:
+                    return 8;
+                case VertexElementFormat.Vector3:
+                    return 12;
+                case VertexElementFormat.Vector4:
+                    return 16;
+                case VertexElementFormat.Color:
+                    return 4;
+            }
+            return 0;
+        }
+
+        public static BlendEquationMode GetBlendEquationMode(this BlendFunction function)
+        {
+            switch (function)
+            {
+                case BlendFunction.Add:
+                    return BlendEquationMode.FuncAdd;
+                case BlendFunction.Subtract:
+                    return BlendEquationMode.FuncSubtract;
+                case BlendFunction.ReverseSubtrace:
+                    return BlendEquationMode.FuncReverseSubtract;
+                default:
+                    throw new ArgumentException();
+
+            }
+        }
+
+        public static BlendingFactorSrc GetBlendFactorSrc(this Blend blend)
+        {
+            switch (blend)
+            {
+                case Blend.DestinationAlpha:
+                    return BlendingFactorSrc.DstAlpha;
+                case Blend.DestinationColor:
+                    return BlendingFactorSrc.DstColor;
+                case Blend.InverseDestinationAlpha:
+                    return BlendingFactorSrc.OneMinusDstAlpha;
+                case Blend.InverseDestinationColor:
+                    return BlendingFactorSrc.OneMinusDstColor;
+                case Blend.InverseSourceAlpha:
+                    return BlendingFactorSrc.OneMinusSrcAlpha;
+                case Blend.InverseSourceColor:
+                    return BlendingFactorSrc.OneMinusSrcColor;
+                case Blend.One:
+                    return BlendingFactorSrc.One;
+                case Blend.SourceAlpha:
+                    return BlendingFactorSrc.SrcAlpha;
+                case Blend.SourceAlphaSaturation:
+                    return BlendingFactorSrc.SrcAlphaSaturate;
+                case Blend.SourceColor:
+                    return BlendingFactorSrc.SrcColor;
+                case Blend.Zero:
+                    return BlendingFactorSrc.Zero;
+                default:
+                    return BlendingFactorSrc.One;
+
+            }
+        }
+
+        public static BlendingFactorDest GetBlendFactorDest(this Blend blend)
+        {
+            switch (blend)
+            {
+                case Blend.DestinationAlpha:
+                    return BlendingFactorDest.DstAlpha;
+                case Blend.InverseDestinationAlpha:
+                    return BlendingFactorDest.OneMinusDstAlpha;
+                case Blend.InverseSourceAlpha:
+                    return BlendingFactorDest.OneMinusSrcAlpha;
+                case Blend.InverseSourceColor:
+                    return BlendingFactorDest.OneMinusSrcColor;
+                case Blend.One:
+                    return BlendingFactorDest.One;
+                case Blend.SourceAlpha:
+                    return BlendingFactorDest.SrcAlpha;
+                case Blend.SourceColor:
+                    return BlendingFactorDest.SrcColor;
+                case Blend.Zero:
+                    return BlendingFactorDest.Zero;
+                default:
+                    return BlendingFactorDest.One;
+            }
+        }
+
+
     }
 
     internal class RAGameGLException : Exception

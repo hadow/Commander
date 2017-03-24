@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace RA.Mobile.Platforms.Graphics
+namespace EW.Mobile.Platforms.Graphics
 {
     public enum DepthFormat
     {

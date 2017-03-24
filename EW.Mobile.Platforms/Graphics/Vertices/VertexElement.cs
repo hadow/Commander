@@ -2,6 +2,9 @@ using System;
 
 namespace EW.Mobile.Platforms.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public enum VertexElementUsage
     {
         Position,           //Î»ÖÃ
@@ -15,6 +18,7 @@ namespace EW.Mobile.Platforms.Graphics
 
     /// <summary>
     /// 
+    /// 
     /// </summary>
     public enum VertexElementFormat
     {
@@ -22,7 +26,7 @@ namespace EW.Mobile.Platforms.Graphics
         Vector2,
         Vector3,
         Vector4,
-        Bolor,
+        Color,
         Byte4,
         Short2,//tow signed 16-bit integer
         Short4,
@@ -32,7 +36,7 @@ namespace EW.Mobile.Platforms.Graphics
     }
 
     /// <summary>
-    /// 
+    /// ¶¥µãÔªËØ
     /// </summary>
     public struct VertexElement:IEquatable<VertexElement>
     {

@@ -11,12 +11,47 @@ namespace EW.Mobile.Platforms.Graphics
     public partial class GraphicsDevice:IDisposable
     {
 
+        private IndexBuffer _indexBuffer;
+        private bool _indexBufferDirty;
+
+
+
+        private BlendState _blendStateAdditive;
+        private BlendState _blendStateAlphaBlend;
+        private BlendState _blendStateNonPremultiplied;
+        private BlendState _blendStateOpaque;
+
+        private Color _blendFactor = Color.White;
+        private bool _blendFactorDirty;
+
+        private int _currentRenderTargetCount;
+
+        internal bool IsRenderTargetBound
+        {
+            get { return _currentRenderTargetCount > 0; }
+        }
+
+        private Rectangle _scissorRectangle;//²Ã¼ô¾ØÐÎ·¶Î§
+        private bool _scissorRectangleDirty;
+
+        public Rectangle ScissorRectangle
+        {
+            get { return _scissorRectangle; }
+            set
+            {
+                if (_scissorRectangle == value)
+                    return;
+                _scissorRectangle = value;
+                _scissorRectangleDirty = true;
+            }
+        }
+
         internal GraphicsDevice()
         {
             PresentationParameters = new PresentationParameters();
             PresentationParameters.DepthStencilFormat = DepthFormat.Depth24;
             Setup();
-            GraphicsCapabilities = new GraphicsCapabilities();
+            GraphicsCapabilities = new GraphicsCapabilities(this);
             GraphicsCapabilities.Initialize(this);
             Initialize();
         }
@@ -34,7 +69,7 @@ namespace EW.Mobile.Platforms.Graphics
             PresentationParameters = presentationParameters;
             _graphicsProfile = graphicsProfile;
             Setup();
-            GraphicsCapabilities = new GraphicsCapabilities();
+            GraphicsCapabilities = new GraphicsCapabilities(this);
             GraphicsCapabilities.Initialize(this);
             Initialize();
         }
@@ -111,15 +146,6 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
-        private int _currentRenderTargetCount;
-        internal bool IsRenderTargetBound
-        {
-            get
-            {
-                return _currentRenderTargetCount > 0;
-            }
-        }
-
         
         /// <summary>
         /// 
@@ -186,6 +212,127 @@ namespace EW.Mobile.Platforms.Graphics
         public DisplayMode DisplayMode
         {
             get { return Adapter.CurrentDisplayMode; }
+        }
+
+        public Color BlendFactor
+        {
+            get { return _blendFactor; }
+            set
+            {
+                if (_blendFactor == value)
+                    return;
+                _blendFactor = value;
+                _blendFactorDirty = true;
+            }
+        }
+
+        public BlendState BlendState
+        {
+            get { return _blendState; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("BleneState Null");
+
+                if (_blendState == value)
+                    return;
+
+                _blendState = value;
+
+                var newBlendState = _blendState;
+                if (ReferenceEquals(_blendState, BlendState.Additive))
+                    newBlendState = _blendStateAdditive;
+                else if (ReferenceEquals(_blendState, BlendState.AlphaBlend))
+                    newBlendState = _blendStateAlphaBlend;
+                else if (ReferenceEquals(_blendState, BlendState.NonPremultiplied))
+                    newBlendState = _blendStateNonPremultiplied;
+                else if (ReferenceEquals(_blendState, BlendState.Opaque))
+                    newBlendState = _blendStateOpaque;
+
+                newBlendState.BindToGraphicsDevice(this);
+                _actualBlendState = newBlendState;
+                BlendFactor = _actualBlendState.BlendFactor;
+                _blendStateDirty = true;
+            }
+        }
+
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="primitiveT"></param>
+        /// <param name="vertexData"></param>
+        /// <param name="vertexOffset"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="indexData"></param>
+        /// <param name="indexOffset"></param>
+        /// <param name="primitiveCount"></param>
+        /// <param name="vertexDeclaration"></param>
+        public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,
+            int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration) where T:struct
+        {
+            if (vertexData == null || vertexData.Length == 0)
+                throw new ArgumentNullException("vertexData");
+            if (vertexOffset < 0 || vertexOffset >= vertexData.Length)
+                throw new ArgumentNullException("vertexOffset");
+            if (numVertices <= 0 || numVertices > vertexData.Length)
+                throw new ArgumentNullException("numVertices");
+            if (vertexOffset + numVertices > vertexData.Length)
+                throw new ArgumentOutOfRangeException("numVertices & vertexOffset out of index");
+            if (indexData == null || indexData.Length == 0)
+                throw new ArgumentNullException("indexData");
+            if (indexOffset < 0 || indexOffset >= indexData.Length)
+                throw new ArgumentOutOfRangeException("indexOffset");
+            if (primitiveCount <= 0)
+                throw new ArgumentOutOfRangeException("primitiveCount");
+            if (indexOffset + GetElementCountArray(primitiveT, primitiveCount) > indexData.Length)
+                throw new ArgumentOutOfRangeException("primitiveCount");
+
+            if (vertexDeclaration == null)
+                throw new ArgumentNullException("vertexDeclaration");
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="primitiveT"></param>
+        /// <param name="primitiveCount"></param>
+        /// <returns></returns>
+        private static int GetElementCountArray(PrimitiveType primitiveT,int primitiveCount)
+        {
+            switch (primitiveT)
+            {
+                case PrimitiveType.LineList:
+                    return primitiveCount * 2;
+                case PrimitiveType.LineStrip:
+                    return primitiveCount + 1;
+                case PrimitiveType.TriangleList:
+                    return primitiveCount * 3;
+                case PrimitiveType.TriangleStrip:
+                    return primitiveCount + 2;
+
+            }
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="applyShaders"></param>
+        internal void ApplyState(bool applyShaders)
+        {
+            PlatformBeginApplyState();
+
+            PlatformApplyBlend();
+
+            PlatformApplyState(applyShaders);
+
         }
 
         public void Dispose()
