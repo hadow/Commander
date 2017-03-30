@@ -6,6 +6,11 @@ using Android.Views;
 #endif
 namespace EW.Mobile.Platforms
 {
+    public interface IGraphicsDeviceService
+    {
+        GraphicsDevice GraphicsDevice { get; }
+
+    }
 
     public class PreparingDeviceSettingsEventArgs : EventArgs
     {
