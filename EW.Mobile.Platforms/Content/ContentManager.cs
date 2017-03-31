@@ -58,6 +58,11 @@ namespace EW.Mobile.Platforms.Content
                 if (asset is T)
                     return (T)asset;
             }
+
+            result = ReadAsset<T>(assetName, null);
+
+            loadedAssets[key] = result;
+            return result;
         }
 
         /// <summary>
@@ -82,8 +87,48 @@ namespace EW.Mobile.Platforms.Content
             var stream = OpenStream(assetName);
             using(var xnbReader = new BinaryReader(stream))
             {
-                using(var reader = )
+                using (var reader = GetContentReaderFromXnb(assetName, stream, xnbReader, recordDisposableObject))
+                {
+                    result = reader.ReadAsset<T>();
+                    if (result is GraphicsResource)
+                        ((GraphicsResource)result).Name = originalAssetName;
+                }
             }
+
+            if (result == null)
+                throw new Exception("Could not load " + originalAssetName + " asset!");
+
+            return (T)result;
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="originalAssetName"></param>
+        /// <param name="stream"></param>
+        /// <param name="xnbReader"></param>
+        /// <param name="recordDisposableObject"></param>
+        /// <returns></returns>
+        private ContentReader GetContentReaderFromXnb(string originalAssetName,Stream stream,BinaryReader xnbReader,Action<IDisposable> recordDisposableObject)
+        {
+            byte x = xnbReader.ReadByte();
+            byte n = xnbReader.ReadByte();
+            byte b = xnbReader.ReadByte();
+            byte platform = xnbReader.ReadByte();
+
+            if(x != 'X' || n !='N' || b!='B' || !targetPlatformIdentifiers.Contains((char)platform))
+            {
+                throw new Exception("Asset does not appear to be a valid XNB file,Did you process your content for Windows?");
+            }
+
+            byte version = xnbReader.ReadByte();
+            byte flags = xnbReader.ReadByte();
+
+            Stream decompressedStream = null;
+
+            var reader = new ContentReader(this, decompressedStream, this.graphicsDeviceService.GraphicsDevice, originalAssetName, version, recordDisposableObject);
+            return reader;
         }
 
         /// <summary>
@@ -123,15 +168,39 @@ namespace EW.Mobile.Platforms.Content
             return stream;
         }
 
-        private 
-
         /// <summary>
         /// ÷ÿ‘ÿÕº–Œƒ⁄»›
         /// </summary>
         internal static void ReloadGraphicsContent()
         {
-
+            
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposable"></param>
+        internal void RecordDisposable(IDisposable disposable)
+        {
+            System.Diagnostics.Debug.Assert(disposable != null,"The disposable is null");
+            if (!disposableAssets.Contains(disposable))
+                disposableAssets.Add(disposable);
+        }
+
+
+        public virtual void Unload()
+        {
+            foreach(var disposable in disposableAssets)
+            {
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+
+            disposableAssets.Clear();
+            loadedAssets.Clear();
+        }
+
+
 
         public void Dispose() { }
 

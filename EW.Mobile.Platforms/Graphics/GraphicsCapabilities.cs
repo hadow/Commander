@@ -9,7 +9,7 @@ namespace EW.Mobile.Platforms.Graphics
         {
 
         }
-
+        internal bool SupportsNonPowerOfTwo { get; private set; }
         internal bool SupportsDxt1 { get; private set; }
 
         internal bool SupportsPvrtc { get; private set; }

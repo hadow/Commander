@@ -14,7 +14,7 @@ namespace EW.Mobile.Platforms
     /// </summary>
     public class ResumeManager
     {
-
+        ContentManager content;
         GraphicsDevice device;
 
         SpriteBatch spriteBatch;
@@ -24,6 +24,27 @@ namespace EW.Mobile.Platforms
         Texture2D resumeTexture;
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public virtual void LoadContent()
+        {
+            content.Unload();
+            resumeTexture = content.Load<Texture2D>(resumeTextureName);
+        }
 
+        /// <summary>
+        /// »æÖÆ
+        /// </summary>
+        public virtual void Draw()
+        {
+            int sw = device.PresentationParameters.BackBufferWidth;
+            int sh = device.PresentationParameters.BackBufferHeight;
+
+            int tw = resumeTexture.Width;
+            int th = resumeTexture.Height;
+
+            spriteBatch
+        }
     }
 }

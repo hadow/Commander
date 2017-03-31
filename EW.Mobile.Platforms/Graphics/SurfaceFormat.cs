@@ -24,6 +24,7 @@ namespace EW.Mobile.Platforms.Graphics
         DXt3,
         Dxt5 =6,
 
+        Dxt1a = 70,//DXT1 version where 1-bit alpha is used.
 
 
 

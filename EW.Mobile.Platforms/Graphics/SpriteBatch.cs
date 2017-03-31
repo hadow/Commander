@@ -39,6 +39,31 @@ namespace EW.Mobile.Platforms.Graphics
             _beginCalled = false;
         }
 
+        public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,BlendState blendState = null,
+            SamplerState samplerState = null,DepthStencilState depthStencilState = null,RasterizerState rasterizerState = null)
+        {
+
+
+
+        }
+
+        public void End()
+        {
+            _beginCalled = false;
+
+            if (_sortMode != SpriteSortMode.Immediate)
+                Setup();
+            _batcher.DrawBatch(_sortMode, null);    
+
+        }
+
+        void Setup()
+        {
+
+        }
+
+
+
         void CheckValid(Texture2D texture)
         {
             if (texture == null)
@@ -141,7 +166,6 @@ namespace EW.Mobile.Platforms.Graphics
         {
             if(_sortMode == SpriteSortMode.Immediate)
             {
-                _batcher.dr
             }
         }
 

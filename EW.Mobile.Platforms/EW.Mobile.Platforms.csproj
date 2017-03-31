@@ -57,10 +57,12 @@
     <Compile Include="Android\AndroidCompatibility.cs" />
     <Compile Include="Android\ResumeManager.cs" />
     <Compile Include="Color.cs" />
+    <Compile Include="Content\ContentExtensions.cs" />
     <Compile Include="Content\ContentManager.cs" />
     <Compile Include="Content\ContentReader.cs" />
     <Compile Include="Content\ContentTypeReader.cs" />
     <Compile Include="Content\ContentTypeReaderManager.cs" />
+    <Compile Include="Content\ContenTypeReaders\Texture2DReader.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GamePlatform.Mobile.cs" />
     <Compile Include="GameRunBehaviour.cs" />
@@ -95,7 +97,12 @@
     <Compile Include="Graphics\SpriteSortMode.cs" />
     <Compile Include="Graphics\States\BlendState.cs" />
     <Compile Include="Graphics\States\BlendState.OpenGL.cs" />
+    <Compile Include="Graphics\States\DepthStencilState.cs" />
+    <Compile Include="Graphics\States\DepthStencilState.OpenGL.cs" />
+    <Compile Include="Graphics\States\RasterizerState.cs" />
+    <Compile Include="Graphics\States\RasterizerState.OpenGL.cs" />
     <Compile Include="Graphics\States\SamplerState.cs" />
+    <Compile Include="Graphics\States\SamplerState.OpenGL.cs" />
     <Compile Include="Graphics\States\TargetBlendState.cs" />
     <Compile Include="Graphics\SurfaceFormat.cs" />
     <Compile Include="Graphics\Texture.cs" />
