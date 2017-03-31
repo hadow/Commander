@@ -10,10 +10,22 @@ namespace EW.Mobile.Platforms.Graphics
     /// </summary>
     public partial class GraphicsDevice:IDisposable
     {
+        /// <summary>
+        /// 渲染信息(调试和诊断)
+        /// </summary>
+        internal GraphicsMetrics _graphicsMetrics;
+
+        public GraphicsMetrics Metrics { get { return _graphicsMetrics; } set { _graphicsMetrics = value; } }
 
         private IndexBuffer _indexBuffer;
-        private bool _indexBufferDirty;
 
+        private bool _indexBufferDirty;
+        
+        private bool _vertexBuffersDirty;
+
+
+        private readonly ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
+        private readonly ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
 
 
         private BlendState _blendStateAdditive;
@@ -24,7 +36,7 @@ namespace EW.Mobile.Platforms.Graphics
         private Color _blendFactor = Color.White;
         private bool _blendFactorDirty;
 
-        private int _currentRenderTargetCount;
+        private int _currentRenderTargetCount;  //当前正待渲染目标数量
 
         internal bool IsRenderTargetBound
         {
@@ -44,6 +56,101 @@ namespace EW.Mobile.Platforms.Graphics
                 _scissorRectangle = value;
                 _scissorRectangleDirty = true;
             }
+        }
+
+
+
+
+
+        public event EventHandler<EventArgs> DeviceLost;
+        public event EventHandler<EventArgs> DeviceReset;
+        public event EventHandler<EventArgs> DeviceResetting;
+
+        private readonly object _resourceLock = new object();
+
+        private readonly List<WeakReference> _resources = new List<WeakReference>();
+
+        private readonly GraphicsProfile _graphicsProfile;
+        public GraphicsProfile GraphicsProfile
+        {
+            get { return _graphicsProfile; }
+        }
+
+
+
+        internal GraphicsCapabilities GraphicsCapabilities { get; private set; }
+        /// <summary>
+        /// 顶点着色器
+        /// </summary>
+        private Shader _vertexShader;
+
+        internal Shader VertexShader
+        {
+            get { return _vertexShader; }
+            set
+            {
+                if (_vertexShader == value)
+                    return;
+                _vertexShader = value;
+                _vertexConstantBuffers.Clear();
+                _vertexShaderDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// 标识顶点shader是否已废弃
+        /// </summary>
+        private bool _vertexShaderDirty;
+        private bool VertexShaderDirty
+        {
+            get { return _vertexShaderDirty; }
+        }
+
+        /// <summary>
+        /// 像素着色器
+        /// </summary>
+        private Shader _pixelShader;
+
+        internal Shader PixelShader
+        {
+            get { return _pixelShader; }
+            set
+            {
+                if (_pixelShader == value)
+                    return;
+                _pixelShader = value;
+                _pixelConstantBuffers.Clear();
+                _pixelShaderDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// 标识像素shader 是否已废弃
+        /// </summary>
+        private bool _pixelShaderDirty;
+        private bool PixelShaderDirty
+        {
+            get { return _pixelShaderDirty; }
+        }
+
+        private Viewport _viewport;
+
+        public Viewport Viewport
+        {
+            get
+            {
+                return _viewport;
+            }
+            set
+            {
+                _viewport = value;
+                PlatformSetViewport(ref value);
+            }
+        }
+
+        public PresentationParameters PresentationParameters
+        {
+            get;private set;
         }
 
         internal GraphicsDevice()
@@ -73,68 +180,10 @@ namespace EW.Mobile.Platforms.Graphics
             GraphicsCapabilities.Initialize(this);
             Initialize();
         }
-
-
         private void Setup()
         {
 
         }
-
-
-        public event EventHandler<EventArgs> DeviceLost;
-        public event EventHandler<EventArgs> DeviceReset;
-        public event EventHandler<EventArgs> DeviceResetting;
-
-        private readonly object _resourceLock = new object();
-
-        private readonly List<WeakReference> _resources = new List<WeakReference>();
-
-        private readonly GraphicsProfile _graphicsProfile;
-        public GraphicsProfile GraphicsProfile
-        {
-            get { return _graphicsProfile; }
-        }
-
-
-
-        internal GraphicsCapabilities GraphicsCapabilities { get; private set; }
-        /// <summary>
-        /// 顶点着色器
-        /// </summary>
-        private Shader _vertexShader;
-        private bool _vertexShaderDirty;
-        private bool VertexShaderDirty
-        {
-            get { return _vertexShaderDirty; }
-        }
-
-        private Shader _pixelShader;
-        private bool _pixelShaderDirty;
-        private bool PixelShaderDirty
-        {
-            get { return _pixelShaderDirty; }
-        }
-
-        private Viewport _viewport;
-
-        public Viewport Viewport
-        {
-            get
-            {
-                return _viewport;
-            }
-            set
-            {
-                _viewport = value;
-                PlatformSetViewport(ref value);
-            }
-        }
-
-        public PresentationParameters PresentationParameters
-        {
-            get;private set;
-        }
-
 
         /// <summary>
         /// 初始化
@@ -148,11 +197,15 @@ namespace EW.Mobile.Platforms.Graphics
 
         
         /// <summary>
-        /// 
+        /// 呈现
         /// </summary>
         public void Present()
         {
+            if (_currentRenderTargetCount != 0)
+                throw new InvalidOperationException("Cannot call Present when a render target is active");
 
+            _graphicsMetrics = new GraphicsMetrics();
+            PlatformPresent();
         }
 
         /// <summary>

@@ -4,9 +4,6 @@ using OpenTK.Graphics.ES20;
 namespace EW.Mobile.Platforms.Graphics
 {
 
-    
-
-
     public partial class IndexBuffer
     {
         internal uint ibo;
@@ -23,6 +20,19 @@ namespace EW.Mobile.Platforms.Graphics
                 GraphicsExtensions.CheckGLError();
                 GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)sizeInBytes, IntPtr.Zero, _isDynamic ? OpenTK.Graphics.ES20.BufferUsage.StreamDraw : OpenTK.Graphics.ES20.BufferUsage.StreamDraw);
                 GraphicsExtensions.CheckGLError();
+            }
+        }
+
+
+        private void PlatformSetDataInternal<T>(int offsetInBytes,T[] data,int startIndex,int elementCount,SetDataOptions options) where T : struct
+        {
+            if (Threading.IsOnUIThread())
+            {
+                BufferData(offsetInBytes, data, startIndex, elementCount, options);
+            }
+            else
+            {
+                Threading.BlockOnUIThread(() => BufferData(offsetInBytes, data, startIndex, elementCount, options));
             }
         }
 
@@ -58,6 +68,22 @@ namespace EW.Mobile.Platforms.Graphics
 
             dataHandle.Free();
         }
-        
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                Threading.BlockOnUIThread(()=> {
+
+                    GL.DeleteBuffers(1, ref ibo);
+                    GraphicsExtensions.CheckGLError();
+
+                });
+            }
+
+
+            base.Dispose(disposing);
+        }
+
     }
 }

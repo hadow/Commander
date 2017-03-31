@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using OpenTK.Graphics.ES20;
-
+using GetProgramParameterName = OpenTK.Graphics.ES20.ProgramParameter;
+using Bool = OpenTK.Graphics.ES20.All;
 namespace EW.Mobile.Platforms.Graphics
 {
 
@@ -44,6 +45,86 @@ namespace EW.Mobile.Platforms.Graphics
     {
         private readonly Dictionary<int, ShaderProgram> _programCache = new Dictionary<int, ShaderProgram>();
         bool disposed;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexShader"></param>
+        /// <param name="pixelShader"></param>
+        /// <returns></returns>
+        public ShaderProgram GetProgram(Shader vertexShader,Shader pixelShader)
+        {
+            var key = vertexShader.HashKey | pixelShader.HashKey;
+            if (!_programCache.ContainsKey(key))
+            {
+                _programCache.Add(key, Link(pixelShader, vertexShader));
+            }
+            return _programCache[key];
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pixelShader"></param>
+        /// <param name="vertexShader"></param>
+        /// <returns></returns>
+        private ShaderProgram Link(Shader pixelShader,Shader vertexShader)
+        {
+            var program = GL.CreateProgram();
+            GraphicsExtensions.CheckGLError();
+
+            GL.AttachShader(program, vertexShader.GetShaderHandle());
+            GraphicsExtensions.CheckGLError();
+
+            GL.AttachShader(program, pixelShader.GetShaderHandle());
+            GraphicsExtensions.CheckGLError();
+
+            GL.LinkProgram(program);
+            GraphicsExtensions.CheckGLError();
+
+            GL.UseProgram(program);
+            GraphicsExtensions.CheckGLError();
+
+            vertexShader.GetVertexAttributeLocations(program);
+
+            pixelShader.ApplySamplerTextureUnits(program);
+
+            var linked = 0;
+
+            GL.GetProgram(program, GetProgramParameterName.LinkStatus, out linked);
+
+            if(linked == (int)Bool.False)
+            {
+                GL.DetachShader(program, vertexShader.GetShaderHandle());
+                GL.DetachShader(program, pixelShader.GetShaderHandle());
+
+                GL.DeleteProgram(program);
+
+                throw new InvalidOperationException("Unable to link effect program");
+            }
+
+
+            return new ShaderProgram(program);
+        }
+        /// <summary>
+        /// 清理程序缓存，释放所有shader 小程序
+        /// </summary>
+        public void Clear()
+        {
+            foreach(var pair in _programCache)
+            {
+                if (GL.IsProgram(pair.Value.Program))
+                {
+                    GL.DeleteProgram(pair.Value.Program);
+                    GraphicsExtensions.CheckGLError();
+                }
+            }
+
+            _programCache.Clear();
+        }
+
+
         ~ShaderProgramCache()
         {
             Dispose(false);   
@@ -64,14 +145,6 @@ namespace EW.Mobile.Platforms.Graphics
                     Clear();
                 disposed = true;
             }
-        }
-
-        /// <summary>
-        /// 清理程序缓存，释放所有shader 小程序
-        /// </summary>
-        public void Clear()
-        {
-
         }
 
     }

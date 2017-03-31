@@ -176,9 +176,56 @@ namespace EW.Mobile.Platforms.Graphics
                 _indexBufferDirty = false;
             }
 
-            if(_ver)
+            if (_vertexBuffersDirty)
+            {
+                _vertexBuffersDirty = false;
+            }
+            if (_vertexShader == null)
+                throw new InvalidOperationException("A Vertex Shader Must Be Set!");
+            if (_pixelShader == null)
+                throw new InvalidOperationException("A Pixel Shader Must Be Set!");
+            if(_vertexShaderDirty || _pixelShaderDirty)
+            {
+                ActivateShaderProgram();
+                if (_vertexShaderDirty)
+                {
+                    unchecked
+                    {
+                        _graphicsMetrics._vertexShaderCount++;
+                    }
+                }
+
+                if (_pixelShaderDirty)
+                {
+                    unchecked
+                    {
+                        _graphicsMetrics._pixelShaderCount++;
+                    }
+                }
+                _vertexShaderDirty = _pixelShaderDirty = false;
+            }
+
+            _vertexConstantBuffers.SetConstantBuffers(this, _shaderProgram);
+            _pixelConstantBuffers.SetConstantBuffers(this, _shaderProgram);
+
             
         }
+
+
+        private unsafe void ActivateShaderProgram()
+        {
+            var shaderProgram = _programCache.GetProgram(VertexShader, PixelShader);
+            if (shaderProgram.Program == -1)
+                return;
+            if(_shaderProgram != shaderProgram)
+            {
+                GL.UseProgram(shaderProgram.Program);
+                GraphicsExtensions.CheckGLError();
+                _shaderProgram = shaderProgram;
+            }
+
+        }
+
         /// <summary>
         /// 
         /// </summary>

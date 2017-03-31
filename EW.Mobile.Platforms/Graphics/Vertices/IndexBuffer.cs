@@ -38,5 +38,24 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="offsetInBytes"></param>
+        /// <param name="data"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="elementCount"></param>
+        /// <param name="options"></param>
+        protected void SetDataInternal<T>(int offsetInBytes,T[] data,int startIndex,int elementCount,SetDataOptions options) where T : struct
+        {
+            if (data == null)
+                throw new ArgumentNullException("data");
+            if (data.Length < (startIndex + elementCount))
+                throw new InvalidOperationException("The array specified in the data parameter is not the correct size for the amount of data requested.");
+
+            PlatformSetDataInternal(offsetInBytes, data, startIndex, elementCount, options);
+        }
+
     }
 }
