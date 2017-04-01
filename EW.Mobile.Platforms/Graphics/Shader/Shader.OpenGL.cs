@@ -8,21 +8,39 @@ namespace EW.Mobile.Platforms.Graphics
     
     internal partial class Shader
     {
-        private string _glslCode;
+        private string _glslCode;//着色器源码
 
         //
         private int _shaderHandler = -1;
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="isVertexShader"></param>
+        /// <param name="shaderBytecode"></param>
+        private void PlatformConstruct(bool isVertexShader,byte[] shaderBytecode)
+        {
+            _glslCode = System.Text.Encoding.ASCII.GetString(shaderBytecode);
+        }
+        /// <summary>
+        /// 获取着色器
+        /// </summary>
+        /// <returns></returns>
         internal int GetShaderHandle()
         {
             if (_shaderHandler != -1)
                 return _shaderHandler;
+            //创建着色器(顶点&片段)
             _shaderHandler = GL.CreateShader(Stage == ShaderStage.Vertex ? ShaderType.VertexShader : ShaderType.FragmentShader);
             GraphicsExtensions.CheckGLError();
+            //着色器源码附加到着色器上
             GL.ShaderSource(_shaderHandler, _glslCode);
             GraphicsExtensions.CheckGLError();
+            //编译着色器
             GL.CompileShader(_shaderHandler);
             GraphicsExtensions.CheckGLError();
+            //定义一个整形变形标识编译是否成功
             int compiled = 0;
             GL.GetShader(_shaderHandler, ShaderParameter.CompileStatus, out compiled);
             GraphicsExtensions.CheckGLError();

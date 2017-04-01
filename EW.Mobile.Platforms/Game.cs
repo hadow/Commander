@@ -327,7 +327,15 @@ namespace EW.Mobile.Platforms
             }
         }
 
+        /// <summary>
+        /// 开始绘制
+        /// </summary>
+        /// <returns></returns>
         protected virtual bool BeginDraw() { return true; }
+
+        /// <summary>
+        /// 结束绘制
+        /// </summary>
         protected virtual void EndDraw()
         {
             Platform.Present();

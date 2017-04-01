@@ -17,8 +17,15 @@ namespace EW.Mobile.Platforms.Graphics
 
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
-        internal int MaxVertexAttributes;//最多支持顶点属性
-        internal static readonly List<int> _enabledVertexAttributes = new List<int>();//已启用顶点属性
+        /// <summary>
+        /// //最多支持顶点属性
+        /// </summary>
+        internal int MaxVertexAttributes;
+
+        /// <summary>
+        /// 已启用顶点属性
+        /// </summary>
+        internal static readonly List<int> _enabledVertexAttributes = new List<int>();
 
 
         private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
@@ -31,11 +38,12 @@ namespace EW.Mobile.Platforms.Graphics
         internal bool _lastBlendEnable = false;
         internal BlendState _lastBlendState = new BlendState();
 
-
+        private Vector4 _lastClearColor = Vector4.Zero;
+        private DepthStencilState clearDepthStencilState = new DepthStencilState { StencilEnable = true };
 
 
         /// <summary>
-        /// 设置顶点属性（Enable Or Disable）
+        /// 链接顶点属性（Enable Or Disable）
         /// </summary>
         /// <param name="attrs"></param>
         internal void SetVertexAttributeArray(bool[] attrs)
@@ -95,7 +103,7 @@ namespace EW.Mobile.Platforms.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 设定OpenGL 渲染窗口维度
         /// </summary>
         /// <param name="value"></param>
         private void PlatformSetViewport(ref Viewport value)
@@ -113,6 +121,68 @@ namespace EW.Mobile.Platforms.Graphics
 
             _vertexShaderDirty = true;
 
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void PlatformPresent()
+        {
+            GraphicsExtensions.CheckGLError();
+            lock (disposeActionsLock)
+            {
+                if (disposeActions.Count > 0)
+                {
+                    foreach (var action in disposeActions)
+                        action();
+                    disposeActions.Clear();
+
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="color"></param>
+        /// <param name="depth"></param>
+        /// <param name="stencil"></param>
+        public void PlatformClear(ClearOptions options,Vector4 color,float depth,int stencil)
+        {
+            var prevScissorRect = ScissorRectangle;
+            var prevDepthStencilState = DepthStencilState;
+            var prevBlendState = BlendState;
+
+            ScissorRectangle = _viewport.Bounds;
+
+            DepthStencilState = this.clearDepthStencilState;
+            BlendState = BlendState.Opaque;
+
+            ApplyState(false);
+
+            ClearBufferMask bufferMask = 0;
+
+            if((options & ClearOptions.Target) == ClearOptions.Target)
+            {
+                if(color != _lastClearColor)
+                {
+                    GL.ClearColor(color.X, color.Y, color.Z, color.W);//状态设置
+                    GraphicsExtensions.CheckGLError();
+                    _lastClearColor = color;
+                }
+                bufferMask = bufferMask | ClearBufferMask.ColorBufferBit;
+
+            }
+
+            GL.Clear(bufferMask);//状态应用
+            GraphicsExtensions.CheckGLError();
+
+            ScissorRectangle = prevScissorRect;
+            DepthStencilState = prevDepthStencilState;
+            BlendState = prevBlendState;
         }
 
         private void PlatformDrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration)
@@ -226,23 +296,7 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public void PlatformPresent()
-        {
-            GraphicsExtensions.CheckGLError();
-            lock (disposeActionsLock)
-            {
-                if (disposeActions.Count > 0)
-                {
-                    foreach (var action in disposeActions)
-                        action();
-                    disposeActions.Clear();
-                            
-                }
-            }
-        }
+        
 
     }
 }

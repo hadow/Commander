@@ -1,8 +1,12 @@
 using System;
-using System.Collections.Generic;
+using System.Runtime.Serialization;
 namespace EW.Mobile.Platforms.Graphics
 {
-    
+    /// <summary>
+    /// 视窗口
+    /// </summary>
+    /// 
+    [DataContract]
     public struct Viewport
     {
 
@@ -69,6 +73,22 @@ namespace EW.Mobile.Platforms.Graphics
         public Viewport(Rectangle bounds) : this(bounds.X, bounds.Y, bounds.Width, bounds.Height)
         {
 
+        }
+
+
+        /// <summary>
+        /// 设定&获取 视窗口的边界
+        /// </summary>
+        public Rectangle Bounds
+        {
+            get { return new Rectangle(x, y, width, height); }
+            set
+            {
+                x = value.X;
+                y = value.Y;
+                width = value.Width;
+                height = value.Height;
+            }
         }
     }
 }

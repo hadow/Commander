@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.IO;
 
 namespace EW.Mobile.Platforms.Graphics
 {
@@ -46,6 +46,9 @@ namespace EW.Mobile.Platforms.Graphics
         public int location;
     }
 
+    /// <summary>
+    /// ×ÅÉ«Æ÷
+    /// </summary>
     internal partial class Shader:GraphicsResource
     {
 
@@ -58,9 +61,17 @@ namespace EW.Mobile.Platforms.Graphics
 
 
 
-        internal Shader(GraphicsDevice device)
+        internal Shader(GraphicsDevice device,BinaryReader reader)
         {
             GraphicsDevice = device;
+
+            var isVertexShader = reader.ReadBoolean();
+            Stage = isVertexShader ? ShaderStage.Vertex : ShaderStage.Pixel;
+
+            var shaderLength = reader.ReadInt32();
+            var shaderByteCode = reader.ReadBytes(shaderLength);
+
+            PlatformConstruct(isVertexShader, shaderByteCode);
         }
 
         protected internal override void GraphicsDeviceResetting()

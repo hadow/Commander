@@ -2,6 +2,9 @@ using System;
 using System.Diagnostics;
 namespace EW.Mobile.Platforms.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal abstract partial class VertexInputLayout:IEquatable<VertexInputLayout>
     {
 

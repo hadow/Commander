@@ -22,7 +22,7 @@ namespace EW.Mobile.Platforms.Graphics
 
 
         /// <summary>
-        /// 
+        /// 生成顶点缓冲对象
         /// </summary>
         void GenerateIfRequired()
         {
@@ -32,7 +32,13 @@ namespace EW.Mobile.Platforms.Graphics
                 GraphicsExtensions.CheckGLError();
                 GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbo);
                 GraphicsExtensions.CheckGLError();
+                //定义的顶点数据复制到缓冲的内存中              
+                //parameter1:目标缓冲的类型
+                //parameter2:传输数据的大小(以字节为单位)                           
+                //parameter3:希望发送的实际数据 
+                //parameter4:显卡如何管理给定的数据    (StreamDraw:数据每次绘制都会改变 staticDraw:数据不会或几乎不会改变)
                 GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VertexDeclaration.VertexStride * VertexCount), IntPtr.Zero, _isDynamic ? BufferUsageHint.StreamDraw : BufferUsageHint.StaticDraw);
+
                 GraphicsExtensions.CheckGLError();
             }
         }

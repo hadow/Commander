@@ -5,6 +5,23 @@ using System.Collections.Generic;
 using OpenTK.Graphics.ES20;
 namespace EW.Mobile.Platforms.Graphics
 {
+
+    public enum ClearOptions
+    {
+        /// <summary>
+        /// Color buffer
+        /// </summary>
+        Target = 1,
+        /// <summary>
+        /// Depth buffer
+        /// </summary>
+        DepthBuffer = 2,
+        /// <summary>
+        /// Stencil buffer
+        /// </summary>
+        Stencil = 4
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -20,9 +37,10 @@ namespace EW.Mobile.Platforms.Graphics
         private IndexBuffer _indexBuffer;
 
         private bool _indexBufferDirty;
-        
-        private bool _vertexBuffersDirty;
 
+        private VertexBufferBindings _vertexBuffers;
+        private bool _vertexBuffersDirty;
+        private int _maxVertexBufferSlots;
 
         private readonly ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
         private readonly ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
@@ -46,6 +64,7 @@ namespace EW.Mobile.Platforms.Graphics
         private Rectangle _scissorRectangle;//裁剪矩形范围
         private bool _scissorRectangleDirty;
 
+
         public Rectangle ScissorRectangle
         {
             get { return _scissorRectangle; }
@@ -58,8 +77,18 @@ namespace EW.Mobile.Platforms.Graphics
             }
         }
 
+        private DepthStencilState _depthStencilState;
 
-
+        public DepthStencilState DepthStencilState
+        {
+            get { return _depthStencilState; }
+            set
+            {
+                if (_depthStencilState == value)
+                    return;
+                _depthStencilState = value;
+            }
+        }
 
 
         public event EventHandler<EventArgs> DeviceLost;
@@ -107,7 +136,7 @@ namespace EW.Mobile.Platforms.Graphics
         }
 
         /// <summary>
-        /// 像素着色器
+        /// 片段着色器
         /// </summary>
         private Shader _pixelShader;
 
@@ -163,6 +192,20 @@ namespace EW.Mobile.Platforms.Graphics
             Initialize();
         }
 
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        internal void Initialize()
+        {
+            PlatformInitialize();
+
+            _vertexBuffers = new VertexBufferBindings(_maxVertexBufferSlots);
+            _vertexBuffersDirty = true;
+
+            _vertexShaderDirty = true;
+            _pixelShaderDirty = true;
+        }
+
         public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
         {
             if (adapter == null)
@@ -185,19 +228,11 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
-        /// <summary>
-        /// 初始化
-        /// </summary>
-        internal void Initialize()
-        {
-            PlatformInitialize();
-
-
-        }
+       
 
         
         /// <summary>
-        /// 呈现
+        /// 呈现在屏幕上
         /// </summary>
         public void Present()
         {
@@ -214,7 +249,15 @@ namespace EW.Mobile.Platforms.Graphics
         /// <param name="color"></param>
         public void Clear(Color color)
         {
+            var options = ClearOptions.Target;
+            options |= ClearOptions.DepthBuffer;
+            options |= ClearOptions.Stencil;
+            PlatformClear(options, color.ToVector4(), _viewport.MaxDepth, 0);
 
+            unchecked
+            {
+                _graphicsMetrics._clearCount++;
+            }
         }
 
         /// <summary>

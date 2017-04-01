@@ -3,7 +3,7 @@ using System;
 namespace EW.Mobile.Platforms.Graphics
 {
     /// <summary>
-    /// 
+    /// 顶点缓冲对象管理顶点数据
     /// </summary>
     public partial class VertexBuffer:GraphicsResource
     {
@@ -11,7 +11,7 @@ namespace EW.Mobile.Platforms.Graphics
         private readonly bool _isDynamic;
 
         public int VertexCount { get; private set; }
-
+        //声明的顶点数据
         public VertexDeclaration VertexDeclaration { get; private set; }
 
 

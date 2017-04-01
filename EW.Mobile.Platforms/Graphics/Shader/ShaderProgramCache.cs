@@ -7,7 +7,8 @@ namespace EW.Mobile.Platforms.Graphics
 {
 
     /// <summary>
-    /// shader 小程序
+    /// shader 程序对象
+    /// 由多个着色器合并之后并最终链接完成
     /// </summary>
     internal class ShaderProgram
     {
@@ -64,7 +65,7 @@ namespace EW.Mobile.Platforms.Graphics
 
 
         /// <summary>
-        /// 
+        /// 链接着色器->着色器程序
         /// </summary>
         /// <param name="pixelShader"></param>
         /// <param name="vertexShader"></param>
@@ -108,7 +109,7 @@ namespace EW.Mobile.Platforms.Graphics
             return new ShaderProgram(program);
         }
         /// <summary>
-        /// 清理程序缓存，释放所有shader 小程序
+        /// 清理程序缓存，释放所有shader
         /// </summary>
         public void Clear()
         {
