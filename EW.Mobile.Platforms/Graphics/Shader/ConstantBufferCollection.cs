@@ -38,8 +38,15 @@ namespace EW.Mobile.Platforms.Graphics
                 var buffer = _buffers[i];
                 if(buffer!=null && !buffer.IsDisposed)
                 {
-
+#if OPENGL
+                    buffer.PlatformApply(device, shaderProgram);
+#endif
                 }
+
+                //如果这是最后一个
+                valid &= ~(1 << i);
+                if (valid == 0)
+                    return;
             }
         }
 

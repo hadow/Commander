@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES20;
 using GLPrimitiveType= OpenTK.Graphics.ES20.BeginMode;
 namespace EW.Mobile.Platforms.Graphics
@@ -64,9 +65,28 @@ namespace EW.Mobile.Platforms.Graphics
                 }
 
             }
-
-
+            
         }
+
+
+        /// <summary>
+        /// »æÖÆ»ùÔª
+        /// </summary>
+        /// <param name="primitiveT"></param>
+        /// <param name="vertextStart"></param>
+        /// <param name="vertexCount"></param>
+        private void PlatformDrawPrimitives(PrimitiveType primitiveT,int vertexStart,int vertexCount)
+        {
+            ApplyState(true);
+
+            var programHash = _vertexShader.HashKey | _pixelShader.HashKey;
+            _vertexBuffers.Get(0).VertexBuffer.VertexDeclaration.Apply(_vertexShader, IntPtr.Zero, programHash);
+
+            GL.DrawArrays(PrimitiveTypeGL(primitiveT), vertexStart, vertexCount);
+
+            GraphicsExtensions.CheckGLError();
+        }
+
 
         private static GLPrimitiveType PrimitiveTypeGL(PrimitiveType primitiveType)
         {
@@ -185,9 +205,43 @@ namespace EW.Mobile.Platforms.Graphics
             BlendState = prevBlendState;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="primitiveT"></param>
+        /// <param name="vertexData"></param>
+        /// <param name="vertexOffset"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="indexData"></param>
+        /// <param name="indexOffset"></param>
+        /// <param name="primitiveCount"></param>
+        /// <param name="vertexDeclaration"></param>
         private void PlatformDrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration)
         {
+            ApplyState(true);
 
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GraphicsExtensions.CheckGLError();
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GraphicsExtensions.CheckGLError();
+            _vertexBuffersDirty = _indexBufferDirty = true;
+
+            var vbHandle = GCHandle.Alloc(vertexData, GCHandleType.Pinned);
+            var ibHandle = GCHandle.Alloc(indexData, GCHandleType.Pinned);
+
+            var vertexAddr = (IntPtr)(vbHandle.AddrOfPinnedObject().ToInt64() + vertexDeclaration.VertexStride * vertexOffset);
+            vertexDeclaration.GraphicsDevice = this;
+
+            var programHash = _vertexShader.HashKey | _pixelShader.HashKey;
+            vertexDeclaration.Apply(_vertexShader, vertexAddr, programHash);
+
+            GL.DrawElements(PrimitiveTypeGL(primitiveT), GetElementCountArray(primitiveT, primitiveCount), DrawElementsType.UnsignedShort, (IntPtr)(ibHandle.AddrOfPinnedObject().ToInt64() + (indexOffset * sizeof(short))));
+
+            GraphicsExtensions.CheckGLError();
+
+            ibHandle.Free();
+            vbHandle.Free();
         }
 
 
@@ -282,6 +336,9 @@ namespace EW.Mobile.Platforms.Graphics
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         private unsafe void ActivateShaderProgram()
         {
             var shaderProgram = _programCache.GetProgram(VertexShader, PixelShader);

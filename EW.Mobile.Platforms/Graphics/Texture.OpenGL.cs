@@ -9,7 +9,14 @@ namespace EW.Mobile.Platforms.Graphics
         internal int glTexture = -1;
         internal TextureTarget glTarget;
         internal TextureUnit glTextureUnit = TextureUnit.Texture0;
+        /// <summary>
+        /// 纹理储存格式
+        /// </summary>
         internal PixelInternalFormat glInternalFormat;
+
+        /// <summary>
+        /// 原图格式和数据类型
+        /// </summary>
         internal PixelFormat glFormat;
         internal PixelType glType;
         
