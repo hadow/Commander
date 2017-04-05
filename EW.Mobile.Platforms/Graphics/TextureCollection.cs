@@ -29,5 +29,33 @@ namespace EW.Mobile.Platforms.Graphics
             _dirty = int.MaxValue;
             PlatformInit();
         }
+
+        public Texture this[int index]
+        {
+            get { return _textures[index]; }
+            set
+            {
+                if (_applyToVertexStage && !_graphicsDevice.GraphicsCapabilities.SupportsVertexTextures)
+                    throw new NotSupportedException("Vertex textures are not supported on this device");
+                if (_textures[index] == value)
+                    return;
+
+                _textures[index] = value;
+                _dirty |= 1 << index;
+            }
+        }
+
+
+        internal void SetTextures(GraphicsDevice device)
+        {
+            if (_applyToVertexStage && !device.GraphicsCapabilities.SupportsVertexTextures)
+                return;
+            PlatformSetTextures(device);
+        }
+
+        internal void Dirty()
+        {
+            _dirty = int.MaxValue;
+        }
     }
 }

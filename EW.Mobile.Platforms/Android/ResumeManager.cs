@@ -12,7 +12,7 @@ namespace EW.Mobile.Platforms
     /// <summary>
     /// 
     /// </summary>
-    public class ResumeManager
+    public class ResumeManager:IResumeManager
     {
         ContentManager content;
         GraphicsDevice device;
@@ -22,6 +22,20 @@ namespace EW.Mobile.Platforms
         string resumeTextureName;
 
         Texture2D resumeTexture;
+
+        float rotation;
+        float scale;
+        float rotateSpeed;
+
+        public ResumeManager(IServiceProvider services,SpriteBatch spriteBatch,string resumeTextureName,float scale,float rotateSpeed)
+        {
+            this.content = new ContentManager(services, "Content");
+            this.device = ((IGraphicsDeviceService)services.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
+            this.spriteBatch = spriteBatch;
+            this.resumeTextureName = resumeTextureName;
+            this.scale = scale;
+            this.rotateSpeed = rotateSpeed;
+        }
 
 
         /// <summary>
@@ -44,7 +58,9 @@ namespace EW.Mobile.Platforms
             int tw = resumeTexture.Width;
             int th = resumeTexture.Height;
 
-            spriteBatch
+            spriteBatch.Begin();
+            spriteBatch.Draw(resumeTexture, new Vector2(sw / 2, sh / 2), null, Color.White, rotation, new Vector2(tw / 2, th / 2), scale, SpriteEffects.None, 0);
+            spriteBatch.End();
         }
     }
 }

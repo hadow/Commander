@@ -26,6 +26,20 @@ namespace EW.Mobile.Platforms.Graphics
 
         SpriteSortMode _sortMode;
 
+        BlendState _blendState;
+        SamplerState _samplerState;
+        DepthStencilState _depthStencilState;
+        RasterizerState _rasterizerState;
+
+        Effect _effect;
+
+
+
+
+
+
+
+
         Vector2 _texCoordTL = new Vector2(0,0);
         Vector2 _texCoordBR = new Vector2(0,0);
         public SpriteBatch(GraphicsDevice graphicsDevice)
@@ -96,6 +110,8 @@ namespace EW.Mobile.Platforms.Graphics
                 w = sourceRectangle.Value.Width * scale;
                 h = sourceRectangle.Value.Height * scale;
             }
+
+            DrawInternal(texture, new Vector4(postion.X, postion.Y, w, h),sourceRectangle,color,rotation,origin,effects,layerDepth,true);
         }
 
 
@@ -166,6 +182,7 @@ namespace EW.Mobile.Platforms.Graphics
         {
             if(_sortMode == SpriteSortMode.Immediate)
             {
+                _batcher.DrawBatch(_sortMode, _effect);
             }
         }
 

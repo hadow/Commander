@@ -34,6 +34,50 @@ namespace EW.Mobile.Platforms.Content
 
         };
 
+
+
+        public ContentManager(IServiceProvider serviceProvider,string rootDirectory)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException("serviceProvider");
+            if (string.IsNullOrEmpty(rootDirectory))
+                throw new ArgumentNullException("rootDirectory");
+
+            this.RootDirectory = rootDirectory;
+            this.serviceProvider = serviceProvider;
+
+            AddContentManager(this);
+        }
+
+        private static void AddContentManager(ContentManager contentManager)
+        {
+            bool contains = false;
+            for(int i = ContentManagers.Count - 1; i >= 0; i--)
+            {
+                var contentRef = ContentManagers[i];
+                if (ReferenceEquals(contentRef.Target, contentManager))
+                    contains = true;
+                if (!contentRef.IsAlive)
+                    ContentManagers.RemoveAt(i);
+            }
+
+            if (!contains)
+                ContentManagers.Add(new WeakReference(contentManager));
+        }
+
+        private static void RemoveContentManager(ContentManager contentManager)
+        {
+            lock (ContentManagerLock)
+            {
+                for(int i = ContentManagers.Count - 1; i >= 0; --i)
+                {
+                    var contentRef = ContentManagers[i];
+                    if (!contentRef.IsAlive || ReferenceEquals(contentRef.Target, contentManager))
+                        ContentManagers.RemoveAt(i);
+                }
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -202,7 +246,23 @@ namespace EW.Mobile.Platforms.Content
 
 
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            Dispose(true);
+
+            GC.SuppressFinalize(this);
+            RemoveContentManager(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposed)
+            {
+                if (disposing)
+                    Unload();
+                disposed = true;
+            }
+        }
 
 
 

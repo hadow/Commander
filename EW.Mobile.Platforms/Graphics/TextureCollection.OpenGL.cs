@@ -33,7 +33,33 @@ namespace EW.Mobile.Platforms.Graphics
 
                 GL.ActiveTexture(TextureUnit.Texture0 + i);
                 GraphicsExtensions.CheckGLError();
+
+                if(_targets[i] != 0 && (tex == null || _targets[i] != tex.glTarget))
+                {
+                    GL.BindTexture(_targets[i], 0);
+                    _targets[i] = 0;
+                    GraphicsExtensions.CheckGLError();
+                }
+
+                if(tex != null)
+                {
+                    _targets[i] = tex.glTarget;
+                    GL.BindTexture(tex.glTarget, tex.glTexture);
+                    GraphicsExtensions.CheckGLError();
+
+                    unchecked
+                    {
+                        _graphicsDevice._graphicsMetrics._textureCount++;
+                    }
+                }
+
+                _dirty &= ~mask;
+                if (_dirty == 0)
+                    break;
+
             }
+
+            _dirty = 0;
         }
     }
 }

@@ -17,6 +17,7 @@ namespace EW.Mobile.Platforms.Graphics
         private VertexPositionColorTexture[] _vertexArray;
         private int _batchItemCount;
 
+        private short[] _index;
         private readonly GraphicsDevice _device;
         public SpriteBatcher(GraphicsDevice device)
         {
@@ -29,6 +30,41 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
+        private unsafe void EnsureArrayCapacity(int numBatchItems)
+        {
+            int needCapacity = 6 * numBatchItems;
+            if (_index != null && needCapacity <= _index.Length)
+                return;
+
+            short[] newIndex = new short[6 * numBatchItems];
+            int start = 0;
+            if (_index != null)
+            {
+                _index.CopyTo(newIndex, 0);
+                start = _index.Length / 6;
+            }
+
+            fixed(short* indexFixedPtr = newIndex)
+            {
+                var indexPtr = indexFixedPtr + (start * 6);
+
+                for(var i = start; i < numBatchItems; i++, indexPtr += 6)
+                {
+                    *(indexPtr + 0) = (short)(i * 4);
+                    *(indexPtr + 1) = (short)(i * 4 + 1);
+                    *(indexPtr + 2) = (short)(i * 4 + 2);
+
+                    *(indexPtr + 3) = (short)(i * 4 + 1);
+                    *(indexPtr + 4) = (short)(i * 4 + 3);
+                    *(indexPtr + 5) = (short)(i * 4 + 2);
+                }
+            }
+            _index = newIndex;
+
+            _vertexArray = new VertexPositionColorTexture[4 * numBatchItems];
+        }
+
+
 
         /// <summary>
         /// 
@@ -38,7 +74,15 @@ namespace EW.Mobile.Platforms.Graphics
         {
             if (_batchItemCount >= _batchItemList.Length)
             {
-
+                var oldSize = _batchItemList.Length;
+                var newSize = oldSize + oldSize / 2;
+                newSize = (newSize + 63) & (~63);
+                Array.Resize(ref _batchItemList, newSize);
+                for(int i = oldSize; i < newSize; i++)
+                {
+                    _batchItemList[i] = new SpriteBatchItem();
+                }
+                EnsureArrayCapacity(Math.Min(newSize, MaxBatchSize));
             }
             var item = _batchItemList[_batchItemCount];
             return item;
@@ -68,6 +112,10 @@ namespace EW.Mobile.Platforms.Graphics
             int batchIndex = 0;
             int batchCount = _batchItemCount;
 
+            unchecked
+            {
+                _device._graphicsMetrics._spriteCount += batchCount;
+            }
             while (batchCount > 0)
             {
                 var startIndex = 0;
@@ -89,10 +137,25 @@ namespace EW.Mobile.Platforms.Graphics
                         if (shouldFlush)
                         {
                             FlushVertexArray(startIndex, index, effect, tex);
+                            tex = batchItem.Texture;
+                            startIndex = index = 0;
+                            vertexArrayPtr = vertexArrayFixedPtr;
+                            _device.Textures[0] = tex;
                         }
+
+                        *(vertexArrayPtr + 0) = batchItem.vertexTL;
+                        *(vertexArrayPtr + 1) = batchItem.vertexTR;
+                        *(vertexArrayPtr + 2) = batchItem.vertexBL;
+                        *(vertexArrayPtr + 3) = batchItem.vertexBR;
+
+                        batchItem.Texture = null;
                     }
                 }
+
+                FlushVertexArray(startIndex, index, effect, tex);
+                batchCount -= numBatchesToProcess;
             }
+            _batchItemCount = 0;
         }
 
 
@@ -117,7 +180,7 @@ namespace EW.Mobile.Platforms.Graphics
             }
             else
             {
-                _device
+                _device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, _vertexArray, 0, vertexCount, _index, 0, (vertexCount / 4) * 2, VertexPositionColorTexture.VertexDeclaration);
             }
         }
 

@@ -32,7 +32,14 @@ namespace EW.Mobile.Platforms.Graphics
 
 #endif
             }
+
+            internal virtual void BindFramebuffer(int framebuffer)
+            {
+                GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
+                GraphicsExtensions.CheckGLError();
+            }
         }
 #endif
-            }
+
+    }
 }

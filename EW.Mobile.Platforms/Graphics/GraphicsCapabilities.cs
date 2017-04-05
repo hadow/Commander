@@ -17,6 +17,8 @@ namespace EW.Mobile.Platforms.Graphics
         internal bool SupportsEtc1 { get; private set; }
 
         internal bool SupportsTextrueArrays { get; private set; }
+
+        internal bool SupportsVertexTextures { get; private set; }
         /// <summary>
         /// 
         /// </summary>

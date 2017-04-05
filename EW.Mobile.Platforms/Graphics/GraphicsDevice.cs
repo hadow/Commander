@@ -45,6 +45,7 @@ namespace EW.Mobile.Platforms.Graphics
         private readonly ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
         private readonly ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
 
+        public TextureCollection Textures { get; private set; }
 
         private BlendState _blendStateAdditive;
         private BlendState _blendStateAlphaBlend;
@@ -100,6 +101,10 @@ namespace EW.Mobile.Platforms.Graphics
         private readonly List<WeakReference> _resources = new List<WeakReference>();
 
         private readonly GraphicsProfile _graphicsProfile;
+
+        internal int MaxTextureSlots;
+        internal int MaxVertexTextureSlots;
+
         public GraphicsProfile GraphicsProfile
         {
             get { return _graphicsProfile; }
@@ -223,9 +228,16 @@ namespace EW.Mobile.Platforms.Graphics
             GraphicsCapabilities.Initialize(this);
             Initialize();
         }
+
+        
+
         private void Setup()
         {
+            _viewport = new Viewport(0, 0, DisplayMode.Width, DisplayMode.Height);
 
+            _viewport.MaxDepth = 1.0f;
+
+            Textures = new TextureCollection(this, MaxTextureSlots, false);
         }
 
        

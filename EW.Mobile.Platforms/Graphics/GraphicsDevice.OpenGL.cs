@@ -18,6 +18,8 @@ namespace EW.Mobile.Platforms.Graphics
 
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
+        internal int glFramebuffer = 0;
+
         /// <summary>
         /// //最多支持顶点属性
         /// </summary>
@@ -42,6 +44,9 @@ namespace EW.Mobile.Platforms.Graphics
         private Vector4 _lastClearColor = Vector4.Zero;
         private DepthStencilState clearDepthStencilState = new DepthStencilState { StencilEnable = true };
 
+        private RasterizerState _rasterizerState;
+        private RasterizerState _actualRasterizerState;
+        private bool _rasterizerStateDirty;
 
         /// <summary>
         /// 链接顶点属性（Enable Or Disable）
@@ -332,6 +337,7 @@ namespace EW.Mobile.Platforms.Graphics
             _vertexConstantBuffers.SetConstantBuffers(this, _shaderProgram);
             _pixelConstantBuffers.SetConstantBuffers(this, _shaderProgram);
 
+            Textures.SetTextures(this);
             
         }
 
@@ -353,7 +359,20 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        private void PlatformApplyDefaultRenderTarget()
+        {
+            this.framebufferHelper.BindFramebuffer(this.glFramebuffer);
+
+            _rasterizerStateDirty = true;
+
+            Textures.Dirty();
+        }
+
+
+
 
     }
 }
