@@ -86,6 +86,9 @@
     <Compile Include="Graphics\NoSuitableGraphicsDeviceException.cs" />
     <Compile Include="Graphics\PresentationParameters.cs" />
     <Compile Include="Graphics\PrimitiveType.cs" />
+    <Compile Include="Graphics\RenderTarget2D.cs" />
+    <Compile Include="Graphics\RenderTarget2D.OpenGL.cs" />
+    <Compile Include="Graphics\RenderTargetBinding.cs" />
     <Compile Include="Graphics\Shader\ConstantBuffer.cs" />
     <Compile Include="Graphics\Shader\ConstantBuffer.OpenGL.cs" />
     <Compile Include="Graphics\Shader\ConstantBufferCollection.cs" />

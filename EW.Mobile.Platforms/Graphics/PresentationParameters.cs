@@ -48,6 +48,7 @@ namespace EW.Mobile.Platforms.Graphics
 
         public DisplayOrientation DisplayOrientation { get; set; }
 
+        public RenderTargetUsage RenderTargetUsage { get; set; }
         public void Dispose() { }
 
     }

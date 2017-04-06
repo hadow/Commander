@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace RA.Common.Scripting.Global
+namespace EW.Common.Scripting.Global
 {
     class PlayerGlobal
     {

@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA.Common.Scripting.Global
+namespace EW.Common.Scripting.Global
 {
     class ActorGlobal
     {

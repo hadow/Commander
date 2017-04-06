@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using OpenTK.Graphics.ES20;
+using FramebufferAttachment = OpenTK.Graphics.ES20.All;
+using RenderbufferStorage = OpenTK.Graphics.ES20.All;
 using GLPrimitiveType= OpenTK.Graphics.ES20.BeginMode;
 namespace EW.Mobile.Platforms.Graphics
 {
@@ -10,6 +12,37 @@ namespace EW.Mobile.Platforms.Graphics
     /// </summary>
     public partial class GraphicsDevice
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        private class RenderTargetBindingArrayComparer : IEqualityComparer<RenderTargetBinding[]>
+        {
+            public bool Equals(RenderTargetBinding[] first,RenderTargetBinding[] second)
+            {
+                if (object.ReferenceEquals(first, second))
+                    return true;
+
+                if (first == null || second == null)
+                    return false;
+                if (first.Length != second.Length)
+                    return false;
+
+                for(var i = 0; i < first.Length; i++)
+                {
+                    if (first[i].RenderTarget != second[i].RenderTarget || first[i].ArraySlic != second[i].ArraySlic)
+                        return false;
+                }
+                return true;
+            }
+
+            public int GetHashCode(RenderTargetBinding[] array)
+            {
+
+                return 0;
+            }
+        }
+
+
 
         static List<Action> disposeActions = new List<Action>();
         static object disposeActionsLock = new object();
@@ -48,6 +81,8 @@ namespace EW.Mobile.Platforms.Graphics
         private RasterizerState _actualRasterizerState;
         private bool _rasterizerStateDirty;
 
+        private Dictionary<RenderTargetBinding[], int> glFramebuffers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
+        private Dictionary<RenderTargetBinding[], int> glResolveFramebuffeers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
         /// <summary>
         /// 链接顶点属性（Enable Or Disable）
         /// </summary>
@@ -371,7 +406,124 @@ namespace EW.Mobile.Platforms.Graphics
             Textures.Dirty();
         }
 
+        /// <summary>
+        /// 创建一个渲染目标
+        /// </summary>
+        /// <param name="renderTarget"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="mipMap"></param>
+        /// <param name="preferredFormat"></param>
+        /// <param name="preferredDepthFormat"></param>
+        /// <param name="preferredMultiSampleCount"></param>
+        /// <param name="usage"></param>
+        internal void PlatformCreateRenderTarget(IRenderTarget renderTarget,int width,int height,bool mipMap,SurfaceFormat preferredFormat,DepthFormat preferredDepthFormat,
+            int preferredMultiSampleCount,RenderTargetUsage usage)
+        {
+            var color = 0;
+            var depth = 0;
+            var stencil = 0;
 
+            if(preferredDepthFormat != DepthFormat.None)
+            {
+                var depthInternalFormat = RenderbufferStorage.DepthComponent16;
+                var stencilInternalFormat = (RenderbufferStorage)0;
+                switch (preferredDepthFormat)
+                {
+                    case DepthFormat.Depth16:
+                        depthInternalFormat = RenderbufferStorage.DepthComponent16;
+                        break;
+
+                }
+
+                if(depthInternalFormat != 0)
+                {
+                    this.framebufferHelper.GenRenderbuffer(out depth);
+                    this.framebufferHelper.BindRenderbuffer(depth);
+                }
+            }
+
+            if (color != 0)
+                renderTarget.GLColorBuffer = color;
+            else
+                renderTarget.GLColorBuffer = renderTarget.GLTexture;
+
+            renderTarget.GLDepthBuffer = depth;
+            renderTarget.GLStencilBuffer = stencil;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void PlatformResolveRenderTargets()
+        {
+            if (_currentRenderTargetCount == 0)
+                return;
+
+            var renderTargetBinding = this._currentRenderTargetBindings[0];
+            var renderTarget = renderTargetBinding.RenderTarget as IRenderTarget;
+
+            if(renderTarget.MultiSampleCount > 0 && this.framebufferHelper.SupportsBlitFramebuffer)
+            {
+                var glResolveFramebuffer = 0;
+                if(!this.glResolveFramebuffeers.TryGetValue(this._currentRenderTargetBindings,out glResolveFramebuffer))
+                {
+                    this.framebufferHelper.GenFramebuffer(out glResolveFramebuffer);
+                    this.framebufferHelper.BindFramebuffer(glResolveFramebuffer);
+
+                    for(var i = 0; i < this._currentRenderTargetCount; i++)
+                    {
+                        this.framebufferHelper.FramebufferTexture2D((int)(FramebufferAttachment.ColorAttachment0 + i), (int)renderTarget.GetFramebufferTarget(renderTargetBinding), renderTarget.GLTexture);
+                    }
+
+                    this.glResolveFramebuffeers.Add((RenderTargetBinding[])this._currentRenderTargetBindings.Clone(), glResolveFramebuffer);
+                }
+                else
+                {
+                    this.framebufferHelper.BindFramebuffer(glResolveFramebuffer);
+                }
+            }
+
+            for(var i = 0; i < _currentRenderTargetCount; i++)
+            {
+                renderTargetBinding = _currentRenderTargetBindings[i];
+                renderTarget = renderTargetBinding.RenderTarget as IRenderTarget;
+
+                if (renderTarget.LevelCount > 1)
+                {
+                    GL.BindTexture(renderTarget.GLTarget, renderTarget.GLTexture);
+                    GraphicsExtensions.CheckGLError();
+
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private IRenderTarget PlatformApplyRenderTargets()
+        {
+            var glFramebuffer = 0;
+            if(!this.glFramebuffers.TryGetValue(this._currentRenderTargetBindings,out glFramebuffer))
+            {
+
+            }
+            else
+            {
+                this.framebufferHelper.BindFramebuffer(glFramebuffer);
+            }
+            _rasterizerStateDirty = true;
+
+            Textures.Dirty();
+
+            return _currentRenderTargetBindings[0].RenderTarget as IRenderTarget;
+        }
+
+        private void PlatformDispose()
+        {
+            _programCache.Dispose();
+        }
 
 
     }

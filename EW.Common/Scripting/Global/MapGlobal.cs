@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using RA.Scripting;
-namespace RA.Common.Scripting.Global
+using EW.Scripting;
+namespace EW.Common.Scripting.Global
 {
     [ScriptGlobal("Map")]
     public class MapGlobal:ScriptGlobal

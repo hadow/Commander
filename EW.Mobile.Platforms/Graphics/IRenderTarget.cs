@@ -22,6 +22,11 @@ namespace EW.Mobile.Platforms.Graphics
         PlatformContents,
 
     }
+
+
+    /// <summary>
+    /// äÖÈ¾Ä¿±ê
+    /// </summary>
     internal interface IRenderTarget
     {
 
@@ -49,6 +54,7 @@ namespace EW.Mobile.Platforms.Graphics
 
         int LevelCount { get; }
 
+        TextureTarget GetFramebufferTarget(RenderTargetBinding renderTargetBinding);
 
     }
 }

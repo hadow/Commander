@@ -27,6 +27,8 @@ namespace EW.Mobile.Platforms.Graphics
     /// </summary>
     public partial class GraphicsDevice:IDisposable
     {
+
+        private bool _isDisposed;
         /// <summary>
         /// 渲染信息(调试和诊断)
         /// </summary>
@@ -56,7 +58,7 @@ namespace EW.Mobile.Platforms.Graphics
         private bool _blendFactorDirty;
 
         private int _currentRenderTargetCount;  //当前正待渲染目标数量
-
+        private readonly RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
         internal bool IsRenderTargetBound
         {
             get { return _currentRenderTargetCount > 0; }
@@ -96,6 +98,9 @@ namespace EW.Mobile.Platforms.Graphics
         public event EventHandler<EventArgs> DeviceReset;
         public event EventHandler<EventArgs> DeviceResetting;
 
+        /// <summary>
+        /// 图形资源的添加移除可能来自于多个线程的操作，这时需要lock
+        /// </summary>
         private readonly object _resourceLock = new object();
 
         private readonly List<WeakReference> _resources = new List<WeakReference>();
@@ -182,6 +187,9 @@ namespace EW.Mobile.Platforms.Graphics
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public PresentationParameters PresentationParameters
         {
             get;private set;
@@ -450,6 +458,46 @@ namespace EW.Mobile.Platforms.Graphics
 
         }
 
+        internal void ApplyRenderTargets(RenderTargetBinding[] renderTargets)
+        {
+            var clearTarget = false;
+
+            PlatformResolveRenderTargets();
+
+            Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
+
+
+            int renderTargetWidth;
+            int renderTargetHeight;
+            if(renderTargets == null)
+            {
+                _currentRenderTargetCount = 0;
+                PlatformApplyDefaultRenderTarget();
+
+                clearTarget = PresentationParameters.RenderTargetUsage == RenderTargetUsage.DiscardContents;
+
+                renderTargetWidth = PresentationParameters.BackBufferWidth;
+                renderTargetHeight = PresentationParameters.BackBufferHeight;
+
+            }
+            else
+            {
+                Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
+                _currentRenderTargetCount = renderTargets.Length;
+
+                var renderTarget = PlatformApplyRenderTargets();
+
+
+                clearTarget = renderTarget.RenderTargetUsage == RenderTargetUsage.DiscardContents;
+                renderTargetWidth = renderTarget.Width;
+                renderTargetHeight = renderTarget.Height;
+            }
+
+            Viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
+
+            ScissorRectangle = new Rectangle(0, 0, renderTargetWidth, renderTargetHeight);
+        }
+
         public void Dispose()
         {
 
@@ -457,7 +505,25 @@ namespace EW.Mobile.Platforms.Graphics
 
         protected virtual void Dispose(bool disposing)
         {
+            if (!_isDisposed)
+            {
+                if (disposing)
+                {
+                    lock (_resourceLock)
+                    {
+                        foreach(var resource in _resources.ToArray())
+                        {
+                            var target = resource.Target as IDisposable;
+                            if (target != null)
+                                target.Dispose();
+                        }
+                        _resources.Clear();
+                    }
 
+                    PlatformDispose();
+                }
+                _isDisposed = true;
+            }
         }
     }
 }

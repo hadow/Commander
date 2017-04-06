@@ -10,10 +10,18 @@ namespace EW.Mobile.Platforms.Content
     {
         private Action<IDisposable> recordDisposableObject;
         private ContentManager contentManager;
+        public ContentManager ContentManager
+        {
+            get { return contentManager; }
+        }
         private ContentTypeReaderManager typeReaderManager;
         private GraphicsDevice graphicsDevice;
         internal GraphicsDevice GraphicsDevice { get { return graphicsDevice; } }
         private string assetName;
+        public string AssetName
+        {
+            get { return assetName; }
+        }
         private ContentTypeReader[] typeReaders;
 
         internal ContentTypeReader[] TypeReaders { get { return typeReaders; } }
@@ -35,6 +43,64 @@ namespace EW.Mobile.Platforms.Content
             this.recordDisposableObject = recordDisposableObject;
         }
 
+        internal object ReadAsset<T>()
+        {
+            InitializeTypeReaders();
+
+            object result = ReadObject<T>();
+            return result;
+        }
+
+        public T ReadObject<T>()
+        {
+            return InnerReadObject(default(T));
+        }
+
+        private T InnerReadObject<T>(T existingInstance)
+        {
+            var typeReaderIndex = Read7BitEncodedInt();
+            if (typeReaderIndex == 0)
+                return existingInstance;
+            if (typeReaderIndex > typeReaders.Length)
+                throw new Exception("Incorrect type reader index found!");
+
+            var typeReader = typeReaders[typeReaderIndex - 1];
+            var result = (T)typeReader.Read(this, existingInstance);
+            RecordDisposable(result);
+            return result;
+        }
+
+        /// <summary>
+        /// 记录释放资源对象
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="result"></param>
+        private void RecordDisposable<T>(T result)
+        {
+            var disposable = result as IDisposable;
+            if (disposable == null)
+                return;
+
+            if (recordDisposableObject != null)
+                recordDisposableObject(disposable);
+            else
+                contentManager.RecordDisposable(disposable);
+        }
+
+        /// <summary>
+        /// 初始化类型读取器
+        /// </summary>
+        internal void InitializeTypeReaders()
+        {
+            typeReaderManager = new ContentTypeReaderManager();
+            typeReaders = typeReaderManager.LoadAssetReaders(this);
+        }
+
+
+        internal new int Read7BitEncodedInt()
+        {
+            return base.Read7BitEncodedInt();
+        }
 
     }
 }

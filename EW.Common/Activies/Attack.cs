@@ -1,5 +1,5 @@
 ﻿using System;
-namespace RA.Common
+namespace EW.Common
 {
 	public class Attack
 	{

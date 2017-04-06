@@ -28,10 +28,39 @@ namespace EW.Mobile.Platforms.Graphics
 
         public bool Equals(VertexInputLayout other)
         {
+
+            if (ReferenceEquals(null, other))
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            if (Count != other.Count)
+                return false;
+
+            for(int i = 0; i < Count; i++)
+            {
+                if (!VertexDeclarations[i].Equals(other.VertexDeclarations[i]))
+                    return false;
+            }
+
+            for(int i = 0; i < Count; i++)
+            {
+                if (!InstanceFrequencies[i].Equals(other.InstanceFrequencies[i]))
+                    return false;
+            }
+
             return true;
         }
 
 
+        public static bool operator ==(VertexInputLayout left,VertexInputLayout right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(VertexInputLayout left,VertexInputLayout right)
+        {
+            return !Equals(left, right);
+        }
 
     }
 }

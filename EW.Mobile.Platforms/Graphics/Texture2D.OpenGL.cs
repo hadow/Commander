@@ -63,10 +63,10 @@ namespace EW.Mobile.Platforms.Graphics
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="level"></param>
+        /// <param name="level">多级渐远纹理的级别</param>
         /// <param name="arraySize"></param>
         /// <param name="rect"></param>
-        /// <param name="data"></param>
+        /// <param name="data">图像数据</param>
         /// <param name="startIndex"></param>
         /// <param name="elementCount"></param>
         private void PlatformSetData<T>(int level,int arraySize,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
@@ -183,7 +183,7 @@ namespace EW.Mobile.Platforms.Graphics
 
 
         /// <summary>
-        /// 
+        /// 创建一个帧缓冲的纹理
         /// </summary>
         private void GenerateGLTextureIfRequired()
         {

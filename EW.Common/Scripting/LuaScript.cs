@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RA;
-using RA.Graphics;
-using RA.Scripting;
-namespace RA.Common.Scripting
+using EW.Graphics;
+using EW.Scripting;
+namespace EW.Common.Scripting
 {
     public class LuaScriptInfo:ITraitInfo
     {
