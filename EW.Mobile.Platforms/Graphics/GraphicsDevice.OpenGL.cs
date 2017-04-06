@@ -8,7 +8,7 @@ using GLPrimitiveType= OpenTK.Graphics.ES20.BeginMode;
 namespace EW.Mobile.Platforms.Graphics
 {
     /// <summary>
-    /// Graphics Device For OPEN GL
+    /// Graphics Device For OpenGL ES
     /// </summary>
     public partial class GraphicsDevice
     {
@@ -59,6 +59,10 @@ namespace EW.Mobile.Platforms.Graphics
         internal int MaxVertexAttributes;
 
         /// <summary>
+        /// 最大纹理尺寸
+        /// </summary>
+        internal int MaxTextureSize = 0;
+        /// <summary>
         /// 已启用顶点属性
         /// </summary>
         internal static readonly List<int> _enabledVertexAttributes = new List<int>();
@@ -75,11 +79,14 @@ namespace EW.Mobile.Platforms.Graphics
         internal BlendState _lastBlendState = new BlendState();
 
         private Vector4 _lastClearColor = Vector4.Zero;
-        private DepthStencilState clearDepthStencilState = new DepthStencilState { StencilEnable = true };
+        private float _lastClearDepth = 1.0f;
+        private float _lastClearStencil = 0;
 
-        private RasterizerState _rasterizerState;
-        private RasterizerState _actualRasterizerState;
-        private bool _rasterizerStateDirty;
+
+        private DepthStencilState clearDepthStencilState = new DepthStencilState { StencilEnable = true };
+        internal DepthStencilState _lastDepthStencilState = new DepthStencilState();
+        internal RasterizerState _lastRasterizerState = new RasterizerState();
+        
 
         private Dictionary<RenderTargetBinding[], int> glFramebuffers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
         private Dictionary<RenderTargetBinding[], int> glResolveFramebuffeers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
@@ -106,6 +113,46 @@ namespace EW.Mobile.Platforms.Graphics
 
             }
             
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void PlatformSetup()
+        {
+            MaxTextureSlots = 16;
+
+            GL.GetInteger(GetPName.MaxTextureImageUnits, out MaxTextureSlots);
+            GraphicsExtensions.CheckGLError();
+
+            GL.GetInteger(GetPName.MaxVertexAttribs, out MaxVertexAttributes);
+            GraphicsExtensions.CheckGLError();
+
+            GL.GetInteger(GetPName.MaxTextureSize, out MaxTextureSize);
+            GraphicsExtensions.CheckGLError();
+
+
+            try
+            {
+                string version = GL.GetString(StringName.Version);
+                string[] versionSplit = version.Split(' ');
+                if(versionSplit.Length >2 && versionSplit[0].Equals("OpenGL") && versionSplit[1].Equals("ES"))
+                {
+                    glMajorVersion = Convert.ToInt32(versionSplit[2].Substring(0, 1));
+                    glMinorVersion = Convert.ToInt32(versionSplit[2].Substring(2, 1));
+                }
+                else
+                {
+                    glMajorVersion = 1;
+                    glMinorVersion = 1;
+                }
+            }
+            catch (FormatException)
+            {
+                glMajorVersion = 1;
+                glMinorVersion = 1;
+            }
         }
 
 
@@ -148,7 +195,7 @@ namespace EW.Mobile.Platforms.Graphics
 
 
         /// <summary>
-        /// 平台初始化
+        /// 图形平台初始化
         /// </summary>
         private void PlatformInitialize()
         {
@@ -160,6 +207,10 @@ namespace EW.Mobile.Platforms.Graphics
             {
                 framebufferHelper = new FramebufferHelper(this);
             }
+
+            this.PlatformApplyBlend(true);
+            this.DepthStencilState.PlatformApplyState(this, true);
+            
         }
 
         /// <summary>
@@ -204,7 +255,7 @@ namespace EW.Mobile.Platforms.Graphics
 
 
         /// <summary>
-        /// 
+        /// 清空
         /// </summary>
         /// <param name="options"></param>
         /// <param name="color"></param>
@@ -225,6 +276,7 @@ namespace EW.Mobile.Platforms.Graphics
 
             ClearBufferMask bufferMask = 0;
 
+            //颜色缓冲
             if((options & ClearOptions.Target) == ClearOptions.Target)
             {
                 if(color != _lastClearColor)
@@ -236,10 +288,36 @@ namespace EW.Mobile.Platforms.Graphics
                 bufferMask = bufferMask | ClearBufferMask.ColorBufferBit;
 
             }
+            //模板缓冲
+            if((options & ClearOptions.Stencil)== ClearOptions.Stencil)
+            {
+                if(stencil != _lastClearStencil)
+                {
+                    GL.ClearStencil(stencil);
+                    GraphicsExtensions.CheckGLError();
+                    _lastClearStencil = stencil;
+                }
+                bufferMask = bufferMask | ClearBufferMask.StencilBufferBit;
+            }
+
+            //深度缓冲
+            if((options & ClearOptions.DepthBuffer) == ClearOptions.DepthBuffer)
+            {
+                if(depth != _lastClearDepth)
+                {
+                    GL.ClearDepth(depth);
+                    GraphicsExtensions.CheckGLError();
+                    _lastClearDepth = depth;
+                }
+                bufferMask = bufferMask | ClearBufferMask.DepthBufferBit;
+            }
+
+
 
             GL.Clear(bufferMask);//状态应用
             GraphicsExtensions.CheckGLError();
 
+            //
             ScissorRectangle = prevScissorRect;
             DepthStencilState = prevDepthStencilState;
             BlendState = prevBlendState;

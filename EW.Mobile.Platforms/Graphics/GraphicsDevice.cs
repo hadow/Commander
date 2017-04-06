@@ -49,10 +49,31 @@ namespace EW.Mobile.Platforms.Graphics
 
         public TextureCollection Textures { get; private set; }
 
+
         private BlendState _blendStateAdditive;
         private BlendState _blendStateAlphaBlend;
         private BlendState _blendStateNonPremultiplied;
         private BlendState _blendStateOpaque;
+
+
+
+        private DepthStencilState _depthStencilState;
+        private DepthStencilState _actualDepthStencilState;
+        private bool _depthStencilStateDirty;
+        
+        private DepthStencilState _depthStencilStateDefault;
+        private DepthStencilState _depthStencilStateDepthRead;
+        private DepthStencilState _depthStencilStateNone;
+
+
+        private RasterizerState _rasterizerState;
+        private RasterizerState _actualRasterizerState;
+        private bool _rasterizerStateDirty;
+
+        private RasterizerState _rasterizerStateCullClockwise;
+        private RasterizerState _rasterizerStateCullCounterClockwise;
+        private RasterizerState _rasterizerStateCullNone;
+
 
         private Color _blendFactor = Color.White;
         private bool _blendFactorDirty;
@@ -79,9 +100,10 @@ namespace EW.Mobile.Platforms.Graphics
                 _scissorRectangleDirty = true;
             }
         }
-
-        private DepthStencilState _depthStencilState;
-
+        
+        /// <summary>
+        /// 深度&模板状态
+        /// </summary>
         public DepthStencilState DepthStencilState
         {
             get { return _depthStencilState; }
@@ -90,6 +112,44 @@ namespace EW.Mobile.Platforms.Graphics
                 if (_depthStencilState == value)
                     return;
                 _depthStencilState = value;
+
+                var newDepthStencilState = _depthStencilState;
+                if (ReferenceEquals(_depthStencilState, DepthStencilState.Default))
+                    newDepthStencilState = _depthStencilStateDefault;
+                else if (ReferenceEquals(_depthStencilState, DepthStencilState.DepthRead))
+                    newDepthStencilState = _depthStencilStateDepthRead;
+                else if (ReferenceEquals(_depthStencilState, DepthStencilState.None))
+                    newDepthStencilState = _depthStencilStateNone;
+
+                newDepthStencilState.BindToGraphicsDevice(this);
+
+                _actualDepthStencilState = newDepthStencilState;
+                _depthStencilStateDirty = true;
+            }
+        }
+
+        public RasterizerState RasterizerState
+        {
+            get { return _rasterizerState; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                if (_rasterizerState == value)
+                    return;
+
+                var newRasterizerState = _rasterizerState;
+                if (ReferenceEquals(_rasterizerState, RasterizerState.CullClockwise))
+                    newRasterizerState = _rasterizerStateCullClockwise;
+                else if (ReferenceEquals(_rasterizerState, RasterizerState.CullCounterClockwise))
+                    newRasterizerState = _rasterizerStateCullCounterClockwise;
+                else if (ReferenceEquals(_rasterizerState, RasterizerState.CullNone))
+                    newRasterizerState = _rasterizerStateCullNone;
+
+                newRasterizerState.BindToGraphicsDevice(this);
+                _actualRasterizerState = newRasterizerState;
+
+                _rasterizerStateDirty = true;
             }
         }
 
@@ -205,6 +265,11 @@ namespace EW.Mobile.Platforms.Graphics
             Initialize();
         }
 
+        ~GraphicsDevice()
+        {
+            Dispose(false);
+        }
+
         /// <summary>
         /// 初始化
         /// </summary>
@@ -212,11 +277,25 @@ namespace EW.Mobile.Platforms.Graphics
         {
             PlatformInitialize();
 
+            _blendStateDirty = _depthStencilStateDirty = _rasterizerStateDirty = true;
+            BlendState = BlendState.Opaque;
+            DepthStencilState = DepthStencilState.Default;
+            RasterizerState = RasterizerState.CullCounterClockwise;
+
+
+
             _vertexBuffers = new VertexBufferBindings(_maxVertexBufferSlots);
             _vertexBuffersDirty = true;
-
+            _indexBufferDirty = true;
             _vertexShaderDirty = true;
             _pixelShaderDirty = true;
+
+            //设置默认的裁剪矩形
+            _scissorRectangleDirty = true;
+            ScissorRectangle = _viewport.Bounds;
+
+            //
+            ApplyRenderTargets(null);
         }
 
         public GraphicsDevice(GraphicsAdapter adapter, GraphicsProfile graphicsProfile, PresentationParameters presentationParameters)
@@ -454,6 +533,17 @@ namespace EW.Mobile.Platforms.Graphics
 
             PlatformApplyBlend();
 
+            if (_depthStencilStateDirty)
+            {
+                _actualDepthStencilState.PlatformApplyState(this);
+                _depthStencilStateDirty = false;
+            }
+            if (_rasterizerStateDirty)
+            {
+                _actualRasterizerState.PlatformApplyState(this);
+                _rasterizerStateDirty = false;
+            }
+
             PlatformApplyState(applyShaders);
 
         }
@@ -500,7 +590,8 @@ namespace EW.Mobile.Platforms.Graphics
 
         public void Dispose()
         {
-
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool disposing)
