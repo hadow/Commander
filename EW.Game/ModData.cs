@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 
-using RA.FileSystem;
-namespace RA
+using EW.FileSystem;
+namespace EW
 {
 
     /// <summary>
@@ -13,7 +13,7 @@ namespace RA
 
         public readonly ObjectCreator ObjectCreator;
 
-        public RA.FileSystem.FileSystem ModFiles;
+        public EW.FileSystem.FileSystem ModFiles;
         public IReadOnlyFileSystem DefaultFileSystem { get { return ModFiles; } }
 
 

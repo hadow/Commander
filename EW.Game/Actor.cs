@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Eluant;
 using Eluant.ObjectBinding;
-using RA.Scripting;
-using RA.Activities;
-using RA.Traits;
-using RA.Primitives;
-namespace RA
+using EW.Scripting;
+using EW.Activities;
+using EW.Traits;
+using EW.Primitives;
+namespace EW
 {
     /// <summary>
     /// 

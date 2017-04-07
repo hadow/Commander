@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-namespace RA.Primitives
+namespace EW.Primitives
 {
     /// <summary>
     /// 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using RA.Primitives;
-namespace RA
+using EW.Primitives;
+namespace EW
 {
 
     public interface IActorInit { }

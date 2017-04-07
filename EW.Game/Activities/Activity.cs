@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA.Activities
+namespace EW.Activities
 {
     /// <summary>
     /// 

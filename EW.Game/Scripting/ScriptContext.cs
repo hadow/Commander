@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using RA.Graphics;
-using RA.Primitives;
+using EW.Graphics;
+using EW.Primitives;
 using Eluant;
-namespace RA.Scripting
+namespace EW.Scripting
 {
     public interface IScriptNotifyBind
     {

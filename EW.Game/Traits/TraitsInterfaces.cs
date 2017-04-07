@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using RA.Graphics;
+using EW.Graphics;
 
-namespace RA
+namespace EW
 {
     class TraitsInterfaces
     {

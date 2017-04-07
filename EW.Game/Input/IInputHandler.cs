@@ -1,5 +1,5 @@
 ﻿using System;
-namespace RA
+namespace EW
 {
 	[Flags]
 	public enum MouseButton

@@ -4,7 +4,7 @@ using Android.OS;
 using Android.Views;
 using Android.App;
 using Android.Content.PM;
-namespace RA
+namespace EW
 {
     /// <summary>
     /// 
@@ -15,7 +15,7 @@ namespace RA
         AlwaysRetainTaskState =true,LaunchMode =LaunchMode.SingleInstance,
         ScreenOrientation =ScreenOrientation.SensorLandscape,
         ConfigurationChanges =ConfigChanges.Orientation|ConfigChanges.Keyboard|ConfigChanges.KeyboardHidden)]
-    public class OurActivity:RA.Mobile.Platforms.AndroidGameActivity
+    public class OurActivity: EW.Mobile.Platforms.AndroidGameActivity
     {
 
 

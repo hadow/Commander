@@ -1,7 +1,7 @@
 using System;
 
 
-namespace RA
+namespace EW
 {
     public sealed class WeaponInfo
     {

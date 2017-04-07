@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RA 
+namespace EW
 {
 	public class SoundDevice
 	{

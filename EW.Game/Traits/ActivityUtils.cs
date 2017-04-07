@@ -1,8 +1,8 @@
 using System;
-using RA.Activities;
-using RA.Support;
+using EW.Activities;
+using EW.Support;
 using System.Diagnostics;
-namespace RA.Traits
+namespace EW.Traits
 {
     public static class ActivityUtils
     {

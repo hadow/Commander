@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RA
+namespace EW
 {
     /// <summary>
     /// 虚拟战争世界

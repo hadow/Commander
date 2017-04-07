@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace RA.Scripting
+namespace EW.Scripting
 {
     /// <summary>
     /// 

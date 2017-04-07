@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RA
+namespace EW
 {
     public static class Exts
     {

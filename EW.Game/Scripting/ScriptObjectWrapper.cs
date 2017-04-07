@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Eluant;
 using Eluant.ObjectBinding;
-namespace RA.Scripting
+namespace EW.Scripting
 {
 
     public interface IScriptBindable { }

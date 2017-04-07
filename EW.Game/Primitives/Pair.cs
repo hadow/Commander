@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace RA.Primitives
+namespace EW.Primitives
 {
     public  struct Pair<T,U>:IEquatable<Pair<T,U>>
     {

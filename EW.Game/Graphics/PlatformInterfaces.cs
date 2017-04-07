@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using Android.Graphics;
-using RA.Graphics;
-namespace RA
+using EW.Graphics;
+namespace EW
 {
 	public enum WindowMode
 	{

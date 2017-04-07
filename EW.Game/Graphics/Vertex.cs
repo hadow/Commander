@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-namespace RA.Graphics
+namespace EW.Graphics
 {
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Vertex

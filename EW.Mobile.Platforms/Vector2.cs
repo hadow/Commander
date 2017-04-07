@@ -5,7 +5,7 @@ namespace EW.Mobile.Platforms
     /// <summary>
     /// 2DœÚ¡ø
     /// </summary>
-    public struct Vector2:IEquatable<Vector2>
+    public struct Vector2: IEquatable<Vector2>
     {
         public float X;
         
