@@ -202,6 +202,30 @@ namespace EW.Mobile.Platforms.Graphics
             }
         }
 
+        public static DepthFunction GetDepthFunction(this CompareFunction compare)
+        {
+            switch (compare)
+            {
+                default:
+                case CompareFunction.Always:
+                    return DepthFunction.Always;
+                case CompareFunction.Equal:
+                    return DepthFunction.Equal;
+                case CompareFunction.Greater:
+                    return DepthFunction.Greater;
+                case CompareFunction.GreaterEqual:
+                    return DepthFunction.Gequal;
+                case CompareFunction.Less:
+                    return DepthFunction.Less;
+                case CompareFunction.LessEqual:
+                    return DepthFunction.Lequal;
+                case CompareFunction.Never:
+                    return DepthFunction.Never;
+                case CompareFunction.NotEqual:
+                    return DepthFunction.Notequal;
+            }
+        }
+
 
     }
 

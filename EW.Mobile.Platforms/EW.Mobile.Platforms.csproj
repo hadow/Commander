@@ -56,6 +56,14 @@
   <ItemGroup>
     <Compile Include="Android\AndroidCompatibility.cs" />
     <Compile Include="Android\ResumeManager.cs" />
+    <Compile Include="Audio\NoAudioHardwareException.cs" />
+    <Compile Include="Audio\OALSoundBuffer.cs" />
+    <Compile Include="Audio\OpenAlSoundController.cs" />
+    <Compile Include="Audio\SoundEffect.cs" />
+    <Compile Include="Audio\SoundEffect.OpenAL.cs" />
+    <Compile Include="Audio\SoundEffectInstance.cs" />
+    <Compile Include="Audio\SoundEffectInstance.OpenAL.cs" />
+    <Compile Include="Audio\SoundEffectInstancePool.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Content\ContentExtensions.cs" />
     <Compile Include="Content\ContentManager.cs" />
