@@ -6,7 +6,7 @@
     <ProjectGuid>{971CD67F-D10D-4DA6-939A-09CE9A52CDF9}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>EW.Common</RootNamespace>
+    <RootNamespace>EW.Mods.Common</RootNamespace>
     <AssemblyName>EW.Common</AssemblyName>
     <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
@@ -46,6 +46,7 @@
     <Reference Include="Mono.Android" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activies\Attack.cs" />

@@ -51,5 +51,10 @@ namespace EW.Mobile.Platforms
             return ((this.X <= value.X) && (value.X + value.Width) <= (this.X + this.Width)) && ((this.Y <= value.Y) && (value.Y + value.Height) <= (this.Y + this.Height));
         }
 
+        public bool Contains(int x,int y)
+        {
+            return (((this.X <= x) && (x < (this.X + this.Width))) && ((this.Y <= y) && (y < (this.Y + this.Height))));
+        }
+
     }
 }

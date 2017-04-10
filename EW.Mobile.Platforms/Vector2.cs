@@ -1,11 +1,13 @@
 using System;
 using System.Runtime.Serialization;
+using Eluant;
+using Eluant.ObjectBinding;
 namespace EW.Mobile.Platforms
 {
     /// <summary>
     /// 2DœÚ¡ø
     /// </summary>
-    public struct Vector2: IEquatable<Vector2>
+    public struct Vector2:IEquatable<Vector2>
     {
         public float X;
         

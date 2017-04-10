@@ -20,6 +20,8 @@ namespace EW
 
         public readonly uint ActorID;
 
+
+        public bool Disposed { get; private set; }
         Activity currentActivity;
 
 
