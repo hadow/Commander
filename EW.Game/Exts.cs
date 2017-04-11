@@ -36,6 +36,12 @@ namespace EW
             return a.GetTypes().Select(t => t.Namespace).Distinct().Where(n => n != null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="p"></param>
+        /// <returns></returns>
         public static Lazy<T> Lazy<T>(Func<T> p)
         {
             return new Lazy<T>(p);
@@ -44,6 +50,16 @@ namespace EW
         public static bool HasAttribute<T>(this MemberInfo mi)
         {
             return mi.GetCustomAttributes(typeof(T), true).Length != 0;
+        }
+
+        public static T Clamp<T>( this T val,T min,T max) where T : IComparable<T>
+        {
+            if (val.CompareTo(min) < 0)
+                return min;
+            else if (val.CompareTo(max) > 0)
+                return max;
+            else
+                return val;
         }
     }
 }

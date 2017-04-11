@@ -67,6 +67,7 @@
     <Compile Include="Content\ContentReader.cs" />
     <Compile Include="Content\ContentTypeReader.cs" />
     <Compile Include="Content\ContentTypeReaderManager.cs" />
+    <Compile Include="Content\ContenTypeReaders\StringReader.cs" />
     <Compile Include="Content\ContenTypeReaders\Texture2DReader.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GamePlatform.Mobile.cs" />

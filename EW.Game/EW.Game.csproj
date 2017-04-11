@@ -83,6 +83,7 @@
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="OurActivity.cs" />
     <Compile Include="Primitives\Cache.cs" />
+    <Compile Include="Primitives\ConcurrentCache.cs" />
     <Compile Include="Primitives\Pair.cs" />
     <Compile Include="Primitives\ReadOnlyDictionary.cs" />
     <Compile Include="Primitives\TypeDictionary.cs" />
@@ -99,8 +100,11 @@
     <Compile Include="Scripting\LuaValueExts.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="Support\PerfTimer.cs" />
+    <Compile Include="Sync.cs" />
     <Compile Include="TraitDictionary.cs" />
     <Compile Include="Traits\ActivityUtils.cs" />
+    <Compile Include="Traits\LintAttributes.cs" />
+    <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
     <Compile Include="Traits\World\ActorMap.cs" />
     <Compile Include="WarGame.cs" />

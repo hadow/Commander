@@ -62,7 +62,13 @@ namespace EW
 
         }
 
+        #region Trait
 
+        public T TraitOrDefault<T>()
+        {
+            return World.TraitDict.get
+        }
+        #endregion
 
 
         #region Scripting interface
