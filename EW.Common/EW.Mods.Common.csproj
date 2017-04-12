@@ -57,8 +57,10 @@
     <Compile Include="Scripting\Global\MapGlobal.cs" />
     <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
+    <Compile Include="Scripting\Properties\MobileProperties.cs" />
     <Compile Include="Traits\Attack\AttackBase.cs" />
     <Compile Include="Traits\Buildings\Building.cs" />
+    <Compile Include="Traits\CustomSelectionSize.cs" />
     <Compile Include="Traits\Mobile.cs" />
     <Compile Include="Traits\Upgrades\UpgradableTrait.cs" />
   </ItemGroup>
@@ -72,6 +74,10 @@
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EW.Mobile.Platforms\EW.Mobile.Platforms.csproj">
+      <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
+      <Name>EW.Mobile.Platforms</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

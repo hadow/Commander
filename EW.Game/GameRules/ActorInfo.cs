@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using EW.Primitives;
@@ -13,7 +14,7 @@ namespace EW
 
         public readonly string Name;
         readonly TypeDictionary traits = new TypeDictionary();
-
+        List<ITraitInfo> constructOrderCache = null;
         public ActorInfo(ObjectCreator creator,string name,MiniYaml node)
         {
             try
@@ -77,6 +78,45 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ITraitInfo> TraitsInConstructOrder()
+        {
+            if (constructOrderCache != null)
+                return constructOrderCache;
+
+            var source = traits.WithInterface<ITraitInfo>().Select(i => new
+            {
+                Trait = i,
+                Type = i.GetType(),
+                Dependencies = PrerequisitesOf(i).ToList(),
+            });
+
+            //Dependencies.Any ->true:序列中不包含任何元素 
+            var resolved = source.Where(s => !s.Dependencies.Any()).ToList();
+
+            var unresolved = source.Except(resolved);
+
+            var testResolve = new Func<Type, Type, bool>((a, b) => a == b || a.IsAssignableFrom(b));
+
+            var more = unresolved.Where(u => u.Dependencies.All(d => resolved.Exists(r => testResolve(d, r.Type)) &&
+                !unresolved.Any(u1 => testResolve(d, u1.Type))));
+
+            while (more.Any())
+                resolved.AddRange(more);
+
+            constructOrderCache = resolved.Select(r => r.Trait).ToList();
+
+            return constructOrderCache;
+        }
+
+        public static IEnumerable<Type> PrerequisitesOf(ITraitInfo info)
+        {
+            return info.GetType().GetInterfaces().Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Requires<>)).Select(t => t.GetGenericArguments()[0]);
+        }
+
 
         public bool HasTraitInfo<T>() where T : ITraitInfoInterface
         {
@@ -86,6 +126,11 @@ namespace EW
         public T TraitInfo<T>() where T : ITraitInfoInterface
         {
             return traits.Get<T>();
+        }
+
+        public T TraitInfoOrDefault<T>() where T : ITraitInfoInterface
+        {
+            return traits.GetOrDefault<T>();
         }
 
         public IEnumerable<T> TraitInfos<T>() where T : ITraitInfoInterface

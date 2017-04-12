@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.Traits;
 using EW.Primitives;
+using EW.Mobile.Platforms;
 namespace EW
 {
 
@@ -13,6 +13,20 @@ namespace EW
         ForceQueue = 2,
         ForceMove = 4,
     }
+
+    #region Notify Interface
+
+    public interface INotifyCreated { void Created(Actor self); }
+
+    public interface INotifyAddToWorld { void AddedToWorld(Actor self); }
+
+    public interface INotifyRemovedFromWorld { void RemovedFromWorld(Actor self); }
+
+    public interface INotifySold { void Selling(Actor self); void Sold(Actor self); }
+
+    #endregion
+
+    public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }
 
     /// <summary>
     /// ’º¡Ïµÿ
@@ -92,9 +106,7 @@ namespace EW
 
     }
     public interface IMoveInfo : ITraitInfoInterface { }
-
-    public interface IPositionableInfo : ITraitInfoInterface { }
-
+    
     public interface IOccupySapceInfo : ITraitInfoInterface
     {
         IReadOnlyDictionary<CellPos, SubCell> OccupiedCells(ActorInfo info, CellPos location, SubCell subCell = SubCell.Any);

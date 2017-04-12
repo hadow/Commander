@@ -104,6 +104,7 @@
     <Compile Include="TraitDictionary.cs" />
     <Compile Include="Traits\ActivityUtils.cs" />
     <Compile Include="Traits\LintAttributes.cs" />
+    <Compile Include="Traits\Selectable.cs" />
     <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
     <Compile Include="Traits\World\ActorMap.cs" />

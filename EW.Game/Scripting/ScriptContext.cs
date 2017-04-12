@@ -11,7 +11,27 @@ namespace EW.Scripting
     {
         void OnScriptBind(ScriptContext context);
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class ScriptPropertyGroupAttribute : Attribute
+    {
+        public readonly string Category;
 
+        public ScriptPropertyGroupAttribute(string category) { Category = category; }
+    }
+
+    public abstract class ScriptActorProperties
+    {
+        protected readonly Actor Self;
+        protected readonly ScriptContext Context;
+
+        public ScriptActorProperties(ScriptContext context,Actor self)
+        {
+            Self = self;
+            Context = context;
+        }
+    }
 
     /// <summary>
     /// 

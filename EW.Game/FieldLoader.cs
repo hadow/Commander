@@ -106,6 +106,12 @@ namespace EW
             }
         }
 
+        [AttributeUsage(AttributeTargets.Field)]
+        public sealed class RequireAttribute : SerializeAttribute
+        {
+            public RequireAttribute() : base(true, true) { }
+        }
+
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
         /// <summary>

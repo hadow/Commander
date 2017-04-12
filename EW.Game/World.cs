@@ -12,7 +12,7 @@ namespace EW
         Editor,
     }
     /// <summary>
-    /// 虚拟战争世界
+    /// 世界
     /// </summary>
     public sealed class World:IDisposable
     {
@@ -23,8 +23,12 @@ namespace EW
 
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
+
+        readonly SortedDictionary<uint, Actor> actors = new SortedDictionary<uint, Actor>();
         uint nextAID = 0;
 
+        public event Action<Actor> ActorAdded = _ => { };
+        public event Action<Actor> ActorRemoved = _ => { };
 
         internal World(Map map,OrderManager orderManager,WorldT type)
         {
@@ -33,15 +37,34 @@ namespace EW
 
         public Actor CreateActor(string name,TypeDictionary initDict)
         {
-
+            return CreateActor(true, name, initDict);
         }
 
         public Actor CreateActor(bool addToWorld,string name,TypeDictionary initDict)
         {
             var a = new Actor(this, name, initDict);
-            foreach(var t in a.tra)
+            foreach(var t in a.TraitsImplementing<INotifyCreated>())
+            {
+                t.Created(a);
+            }
+            if (addToWorld)
+            {
+                Add(a);
+            }
+            return a;
         }
 
+        public void Add(Actor a)
+        {
+            a.IsInWorld = true;
+            actors.Add(a.ActorID, a);
+            ActorAdded(a);
+
+            foreach(var t in a.TraitsImplementing<INotifyAddToWorld>())
+            {
+                t.AddedToWorld(a);
+            }
+        }
 
 
         internal uint NextAID()

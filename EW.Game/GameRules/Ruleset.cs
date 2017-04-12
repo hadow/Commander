@@ -4,7 +4,7 @@ using EW.Primitives;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// πÊ‘ÚºØ
     /// </summary>
     public class Ruleset
     {

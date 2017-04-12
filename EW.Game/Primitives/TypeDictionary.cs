@@ -47,6 +47,7 @@ namespace EW.Primitives
         }
 
 
+
         public bool Contains<T>()
         {
             return data.ContainsKey(typeof(T));
@@ -55,6 +56,14 @@ namespace EW.Primitives
         public T Get<T>()
         {
             return (T)Get(typeof(T), true);
+        }
+
+        public T GetOrDefault<T>()
+        {
+            var result = Get(typeof(T),false);
+            if (result == null)
+                return default(T);
+            return (T)result;
         }
 
         object Get(Type t,bool throwsIfMissing)
