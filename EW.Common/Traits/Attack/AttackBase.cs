@@ -1,5 +1,5 @@
 using System;
-
+using System.Collections.Generic;
 
 namespace EW.Mods.Common.Traits
 {
@@ -38,7 +38,9 @@ namespace EW.Mods.Common.Traits
         {
             this.self = self;
 
-            facing = Exts.Lazy(()=>self.tr)
+            facing = Exts.Lazy(() => self.TraitOrDefault<IFacing>());
+            building = Exts.Lazy(() => self.TraitOrDefault<Building>());
+            positionable = Exts.Lazy(() => self.TraitOrDefault<IPositionable>());
         }
     }
 }

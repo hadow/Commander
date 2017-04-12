@@ -15,7 +15,7 @@ namespace EW
         AlwaysRetainTaskState =true,LaunchMode =LaunchMode.SingleInstance,
         ScreenOrientation =ScreenOrientation.SensorLandscape,
         ConfigurationChanges =ConfigChanges.Orientation|ConfigChanges.Keyboard|ConfigChanges.KeyboardHidden)]
-    public class OurActivity: EW.Mobile.Platforms.AndroidGameActivity
+    public class OurActivity: EW.Xna.Platforms.AndroidGameActivity
     {
 
 

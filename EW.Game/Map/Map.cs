@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using EW.FileSystem;
-using EW.Mobile.Platforms;
+using EW.Xna.Platforms;
 namespace EW
 {
     /// <summary>
@@ -15,6 +15,9 @@ namespace EW
         public readonly MapGrid Grid;
 
         public Vector2 MapSize { get; private set; }
+
+        public Ruleset Rules { get; private set; }
+
         public Stream Open(string filename)
         {
             return modData.DefaultFileSystem.Open(filename);

@@ -20,6 +20,15 @@ namespace EW
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="d"></param>
+        /// <param name="k"></param>
+        /// <param name="createFn"></param>
+        /// <returns></returns>
         public static V GetOrAdd<K,V>(this Dictionary<K,V> d,K k,Func<K,V> createFn)
         {
             V ret;

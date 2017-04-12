@@ -7,7 +7,7 @@ using EW.Scripting;
 using EW.Activities;
 using EW.Traits;
 using EW.Primitives;
-using EW.Mobile.Platforms;
+using EW.Xna.Platforms;
 namespace EW
 {
     /// <summary>

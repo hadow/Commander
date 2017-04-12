@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.Traits;
 using EW.Primitives;
-using EW.Mobile.Platforms;
+using EW.Xna.Platforms;
 namespace EW
 {
 
@@ -109,14 +109,14 @@ namespace EW
     
     public interface IOccupySapceInfo : ITraitInfoInterface
     {
-        IReadOnlyDictionary<CellPos, SubCell> OccupiedCells(ActorInfo info, CellPos location, SubCell subCell = SubCell.Any);
+        EW.Primitives.IReadOnlyDictionary<CellPos, SubCell> OccupiedCells(ActorInfo info, CellPos location, SubCell subCell = SubCell.Any);
 
         bool SharesCell { get; }
     }
 
     public interface IFacingInfo : ITraitInfoInterface
     {
-        int GetInitialFaceing();
+        int GetInitialFacing();
     }
 
     public interface IFacing

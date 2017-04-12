@@ -11,7 +11,7 @@ namespace EW
     public class CellLayer<T>:IEnumerable<T>
     {
         public readonly Size Size;
-        readonly EW.Mobile.Platforms.Rectangle bounds;
+        readonly EW.Xna.Platforms.Rectangle bounds;
         /// <summary>
         /// 地图网格类型
         /// </summary>
@@ -25,7 +25,7 @@ namespace EW
         public CellLayer(MapGridT gridT,Size size)
         {
             Size = size;
-            bounds = new Mobile.Platforms.Rectangle(0, 0, Size.Width, Size.Height);
+            bounds = new EW.Xna.Platforms.Rectangle(0, 0, Size.Width, Size.Height);
             GridT = gridT;
             entries = new T[size.Width * size.Height];
         }

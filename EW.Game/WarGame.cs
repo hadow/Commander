@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using EW.Mobile.Platforms;
+using EW.Xna.Platforms;
 namespace EW
 {
 
-    public class WarGame:EW.Mobile.Platforms.Game
+    public class WarGame:EW.Xna.Platforms.Game
     {
 
         public static ModData ModData;

@@ -1,6 +1,6 @@
-using System;
-
-
+using System.Collections.Generic;
+using EW.Primitives;
+using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
@@ -35,9 +35,30 @@ namespace EW.Mods.Common.Traits
                 Cost = cost;
             }
         }
+
+        public readonly bool SharesCell = false;
+        public readonly int InitialFacing = 0;
+        public EW.Primitives.IReadOnlyDictionary<CellPos,SubCell> OccupiedCells(ActorInfo info,CellPos location,SubCell subCell = SubCell.Any)
+        {
+            return new ReadOnlyDictionary<CellPos, SubCell>(new Dictionary<CellPos, SubCell>() { { location, subCell } });
+        }
+
+        bool IOccupySapceInfo.SharesCell { get { return SharesCell; } }
+
+        public int GetInitialFacing() { return InitialFacing; }
+
+        public override  object Create(ActorInitializer init)
+        {
+            return new Mobile(init, this);
+        }
     }
 
-    public class Mobile:UpgradableTrait<>
+    public class Mobile:UpgradableTrait<MobileInfo>
     {
+
+        public Mobile(ActorInitializer init, MobileInfo info): base(info)
+        {
+
+        }
     }
 }

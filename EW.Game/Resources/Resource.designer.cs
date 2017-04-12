@@ -27,7 +27,7 @@ namespace EW.Game
 		public static void UpdateIdValues()
 		{
 			global::Eluant.Android.Resource.String.library_name = global::EW.Game.Resource.String.library_name;
-			global::EW.Mobile.Platforms.Resource.String.library_name = global::EW.Game.Resource.String.library_name;
+			global::EW.Xna.Platforms.Resource.String.library_name = global::EW.Game.Resource.String.library_name;
 		}
 		
 		public partial class Attribute
