@@ -93,23 +93,23 @@ namespace EW.Traits
         /// </summary>
         class ProximityTrigger:IDisposable
         {
-            public WorldPos TopLeft { get; private set; }
+            public WPos TopLeft { get; private set; }
 
-            public WorldPos BottomRight { get; private set; }
+            public WPos BottomRight { get; private set; }
 
             public bool Dirty;
 
             readonly Action<Actor> onActorEntered;
             readonly Action<Actor> onActorExited;
 
-            WorldPos position;
-            WorldDist rang;
-            WorldDist vRange;
+            WPos position;
+            WDist rang;
+            WDist vRange;
 
             IEnumerable<Actor> currentActors = Enumerable.Empty<Actor>();
 
 
-            public ProximityTrigger(WorldPos pos,WorldDist range,WorldDist vRange,Action<Actor> onActorEntered,Action<Actor> onActorExited)
+            public ProximityTrigger(WPos pos,WDist range,WDist vRange,Action<Actor> onActorEntered,Action<Actor> onActorExited)
             {
                 this.onActorEntered = onActorEntered;
                 this.onActorExited = onActorExited;
@@ -127,13 +127,13 @@ namespace EW.Traits
             /// <param name="newPos"></param>
             /// <param name="newRange"></param>
             /// <param name="newVRange"></param>
-            public void Update(WorldPos newPos,WorldDist newRange,WorldDist newVRange)
+            public void Update(WPos newPos,WDist newRange,WDist newVRange)
             {
                 position = newPos;
                 rang = newRange;
                 vRange = newVRange;
 
-                var offset = new WorldVector(newRange, newRange, newVRange);
+                var offset = new WVector(newRange, newRange, newVRange);
 
                 TopLeft = newPos - offset;
                 BottomRight = newPos + offset;

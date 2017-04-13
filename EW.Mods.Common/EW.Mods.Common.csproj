@@ -58,10 +58,12 @@
     <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />
+    <Compile Include="Traits\AmmoPool.cs" />
     <Compile Include="Traits\Armament.cs" />
     <Compile Include="Traits\Attack\AttackBase.cs" />
     <Compile Include="Traits\Buildings\Building.cs" />
     <Compile Include="Traits\CustomSelectionSize.cs" />
+    <Compile Include="Traits\ICommonTraits.cs" />
     <Compile Include="Traits\Mobile.cs" />
     <Compile Include="Traits\Upgrades\UpgradableTrait.cs" />
   </ItemGroup>

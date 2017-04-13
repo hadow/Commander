@@ -47,20 +47,20 @@ namespace EW
             return Contains(cell.ToMPos(GridT));
         }
 
-        public bool Contains(MapPos uv)
+        public bool Contains(MPos uv)
         {
             return bounds.Contains(uv.U, uv.V);
         }
 
         
 
-        int Index(MapPos uv)
+        int Index(MPos uv)
         {
             return uv.V * Size.Width + uv.U;
         }
             
 
-        public T this[MapPos uv]
+        public T this[MPos uv]
         {
             get { return entries[Index(uv)]; }
             set
@@ -70,6 +70,11 @@ namespace EW
                 if (CellEntryChanged != null)
                     CellEntryChanged(uv.ToCPos(GridT));
             }
+        }
+
+        public MPos Clamp(MPos uv)
+        {
+            return uv.Clamp(new Xna.Platforms.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
         }
     }
 }

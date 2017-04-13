@@ -6,6 +6,9 @@ using System.Runtime.Serialization;
 using EW.Primitives;
 namespace EW
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class FieldLoader
     {
 
@@ -150,6 +153,11 @@ namespace EW
         public static object GetValue(string fieldName,Type fieldType,MiniYaml yaml,MemberInfo field)
         {
             return null;
+        }
+
+        public static T GetValue<T>(string field,string value)
+        {
+            return (T)GetValue(field, typeof(T), value, null);
         }
         /// <summary>
         /// 

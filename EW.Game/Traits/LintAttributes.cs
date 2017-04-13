@@ -12,4 +12,7 @@ namespace EW.Traits
 
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class VoiceReferenceAttribute : Attribute { }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class WeaponReferenceAttribute : Attribute { }
 }

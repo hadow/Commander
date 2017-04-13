@@ -61,15 +61,15 @@ namespace EW
         }
 
 
-        public MapPos ToMPos(Map map)
+        public MPos ToMPos(Map map)
         {
             return ToMPos(map.Grid.Type);
         }
 
-        public MapPos ToMPos(MapGridT gridT)
+        public MPos ToMPos(MapGridT gridT)
         {
             //TODO:
-            return default(MapPos);
+            return default(MPos);
         }
         #region Scripting Interface
         public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)

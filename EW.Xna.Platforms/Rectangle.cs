@@ -56,5 +56,22 @@ namespace EW.Xna.Platforms
             return (((this.X <= x) && (x < (this.X + this.Width))) && ((this.Y <= y) && (y < (this.Y + this.Height))));
         }
 
+        public int Right
+        {
+            get { return (this.X + this.Width); }
+        }
+
+        public int Left
+        { get { return this.X; } }
+
+        public int Top
+        {
+            get { return this.Y; }
+        }
+
+        public int Bottom
+        {
+            get { return this.Y + this.Height; }
+        }
     }
 }

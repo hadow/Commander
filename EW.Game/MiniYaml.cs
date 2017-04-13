@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using EW.FileSystem;
 namespace EW
 {
 
@@ -173,6 +174,16 @@ namespace EW
                 ret = null;
             realText = realText.Substring(0, colon).Trim();
             return ret;
+        }
+
+        public static List<MiniYamlNode> Load(IReadOnlyFileSystem fileSystem,IEnumerable<string> files,MiniYaml mapRules)
+        {
+            if(mapRules != null && mapRules.Value != null)
+            {
+                var mapFiles = FieldLoader.GetValue<string[]>("value", mapRules.Value);
+                files = files.Append(mapFiles);
+
+            }
         }
     }
 

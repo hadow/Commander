@@ -6,35 +6,37 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public struct WorldDist:IEquatable<WorldDist>,IComparable,IComparable<WorldDist>
+    public struct WDist:IEquatable<WDist>,IComparable,IComparable<WDist>
     {
+        public static readonly WDist Zero = new WDist(0);
         public readonly int Length;
 
+        public WDist(int r) { Length = r; }
         public int CompareTo(object obj)
         {
-            if (!(obj is WorldDist))
+            if (!(obj is WDist))
                 return 1;
-            return Length.CompareTo(((WorldDist)obj).Length);
+            return Length.CompareTo(((WDist)obj).Length);
         }
 
-        public int CompareTo(WorldDist other)
+        public int CompareTo(WDist other)
         {
             return Length.CompareTo(other.Length);
         }
 
-        public bool Equals(WorldDist other)
+        public bool Equals(WDist other)
         {
             return other == this;
         }
 
         #region Operator
 
-        public static bool operator ==(WorldDist a,WorldDist b)
+        public static bool operator ==(WDist a,WDist b)
         {
             return a.Length == b.Length;
         }
 
-        public static bool operator !=(WorldDist a,WorldDist b)
+        public static bool operator !=(WDist a,WDist b)
         {
             return !(a == b);
         }

@@ -18,11 +18,14 @@ namespace EW
     {
         public readonly Actor WorldActor;
         public readonly Map Map;
-        
+        public readonly WorldT Type;
         public readonly ActorMap ActorMap;
 
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
+
+
+        readonly Queue<Action<World>> frameEndActions = new Queue<Action<World>>();
 
         readonly SortedDictionary<uint, Actor> actors = new SortedDictionary<uint, Actor>();
         uint nextAID = 0;
@@ -30,9 +33,21 @@ namespace EW
         public event Action<Actor> ActorAdded = _ => { };
         public event Action<Actor> ActorRemoved = _ => { };
 
+        public bool ShouldTick { get { return Type != WorldT.Shellmap; } }
         internal World(Map map,OrderManager orderManager,WorldT type)
         {
 
+        }
+
+        public void Tick()
+        {
+            while (frameEndActions.Count != 0)
+                frameEndActions.Dequeue()(this);
+        }
+
+        public void AddFrameEndTask(Action<World> a)
+        {
+            frameEndActions.Enqueue(a);
         }
 
         public Actor CreateActor(string name,TypeDictionary initDict)

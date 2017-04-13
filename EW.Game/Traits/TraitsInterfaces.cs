@@ -5,6 +5,13 @@ using EW.Primitives;
 using EW.Xna.Platforms;
 namespace EW
 {
+    public enum Stance
+    {
+        None = 0,
+        Enemy = 1,      
+        Neutral = 2,    //中立国
+        Ally = 4,       //同盟国
+    }
 
     public enum TargetModifiers
     {
@@ -12,6 +19,27 @@ namespace EW
         ForceAttack = 1,
         ForceQueue = 2,
         ForceMove = 4,
+    }
+
+    public interface IExplodeModifier { bool ShouldExplode(Actor self); }
+
+    /// <summary>
+    /// 弹头接口
+    /// </summary>
+    public interface IWarHead
+    {
+        int Delay { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="victim">受害方</param>
+        /// <param name="firedBy">发射方</param>
+        /// <returns></returns>
+        bool IsValidAgainst(Actor victim, Actor firedBy);
+
+        bool IsValidAgainst(FrozenActor victim,Actor firedBy);
+
+        void DoImpact(Target target, Actor firedBy, IEnumerable<int> damageModifiers);
     }
 
     #region Notify Interface
@@ -33,7 +61,7 @@ namespace EW
     /// </summary>
     public interface IOccupySpace
     {
-        WorldPos CenterPosition { get; }
+        WPos CenterPosition { get; }
 
         CellPos TopLeft { get; }
 
@@ -48,9 +76,9 @@ namespace EW
 
         void SetPosition(Actor self, CellPos cPos, SubCell subCell = SubCell.Any);
 
-        void SetPosition(Actor self, WorldPos wPos);
+        void SetPosition(Actor self, WPos wPos);
 
-        void SetVisualPosition(Actor self, WorldPos wPos);
+        void SetVisualPosition(Actor self, WPos wPos);
     }
 
     /// <summary>
