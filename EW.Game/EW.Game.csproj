@@ -54,6 +54,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -67,6 +70,9 @@
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
+    <Compile Include="FileSystem\Folder.cs" />
+    <Compile Include="FileSystem\ZipFile.cs" />
+    <Compile Include="FileSystem\ZipFolder.cs" />
     <Compile Include="GameRules\ActorInfo.cs" />
     <Compile Include="GameRules\MusicInfo.cs" />
     <Compile Include="GameRules\Ruleset.cs" />
@@ -75,6 +81,8 @@
     <Compile Include="Graphics\SequenceProvider.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="Manifest.cs" />
+    <Compile Include="Map\MapCache.cs" />
+    <Compile Include="Map\MapPreview.cs" />
     <Compile Include="Map\TileSet.cs" />
     <Compile Include="MPos.cs" />
     <Compile Include="Map\ActorInitializer.cs" />

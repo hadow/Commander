@@ -71,6 +71,7 @@ namespace EW
                 return val;
         }
 
+
         public static IEnumerable<T> Append<T>(this IEnumerable<T> ts,params T[] moreTs)
         {
             return ts.Concat(moreTs);

@@ -97,6 +97,8 @@ namespace EW
         /// </summary>
         public readonly MapGrid Grid;
 
+        public IReadOnlyPackage Package { get; private set; }
+
         public Vector2 MapSize { get; private set; }
 
         public Ruleset Rules { get; private set; }
@@ -106,6 +108,17 @@ namespace EW
 
         public ProjectedCellRegion ProjectedCellBounds { get; private set;}
         
+        public Map(ModData modData,IReadOnlyPackage package)
+        {
+            this.modData = modData;
+            Package = package;
+
+            if (!Package.Contains("map.yaml") || !Package.Contains("map.bin"))
+                throw new InvalidDataException("Not a valid map\n File:{0}".F(package.Name));
+
+        }
+
+
         void PostInit()
         {
             try
@@ -123,7 +136,11 @@ namespace EW
 
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public Stream Open(string filename)
         {
             return modData.DefaultFileSystem.Open(filename);
