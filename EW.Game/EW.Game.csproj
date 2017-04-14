@@ -65,8 +65,9 @@
   <ItemGroup>
     <Compile Include="Activities\Activity.cs" />
     <Compile Include="Actor.cs" />
-    <Compile Include="CellPos.cs" />
-    <Compile Include="CellVector.cs" />
+    <Compile Include="CPos.cs" />
+    <Compile Include="CryptoUtil.cs" />
+    <Compile Include="CVect.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
@@ -80,9 +81,12 @@
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
+    <Compile Include="InstalledMods.cs" />
     <Compile Include="Manifest.cs" />
     <Compile Include="Map\MapCache.cs" />
+    <Compile Include="Map\MapPlayers.cs" />
     <Compile Include="Map\MapPreview.cs" />
+    <Compile Include="Map\PlayerReference.cs" />
     <Compile Include="Map\TileSet.cs" />
     <Compile Include="MPos.cs" />
     <Compile Include="Map\ActorInitializer.cs" />
@@ -127,7 +131,7 @@
     <Compile Include="World.cs" />
     <Compile Include="WDist.cs" />
     <Compile Include="WPos.cs" />
-    <Compile Include="WVector.cs" />
+    <Compile Include="WVect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

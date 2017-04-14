@@ -26,11 +26,11 @@ namespace EW.Mods.Common.Pathfinder
         /// <summary>
         /// 跟随最短路径的前一个节点
         /// </summary>
-        public readonly CellPos PreviousPos;
+        public readonly CPos PreviousPos;
 
         public readonly CellStatus Status;
 
-        public CellInfo(int costSoFar,int estimatedTotal,CellPos previousPos,CellStatus status)
+        public CellInfo(int costSoFar,int estimatedTotal,CPos previousPos,CellStatus status)
         {
             this.CostSoFar = costSoFar;
             this.EstimatedTotal = estimatedTotal;

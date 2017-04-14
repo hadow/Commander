@@ -4,14 +4,14 @@ using Eluant.ObjectBinding;
 using EW.Scripting;
 namespace EW
 {
-    public struct CellVector:IEquatable<CellVector>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaUnaryMinusBinding,ILuaEqualityBinding,ILuaTableBinding
+    public struct CVec:IEquatable<CVec>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaUnaryMinusBinding,ILuaEqualityBinding,ILuaTableBinding
     {
 
         public readonly int X, Y;
-        public static readonly CellVector Zero = new CellVector(0, 0);
-        public CellVector(int x,int y) { X = x; Y = y; }
+        public static readonly CVec Zero = new CVec(0, 0);
+        public CVec(int x,int y) { X = x; Y = y; }
 
-        public bool Equals(CellVector other) { return other == this; }
+        public bool Equals(CVec other) { return other == this; }
 
         public override bool Equals(object obj)
         {
@@ -24,27 +24,27 @@ namespace EW
         }
         #region Operator
 
-        public static CellVector operator +(CellVector a ,CellVector b)
+        public static CVec operator +(CVec a ,CVec b)
         {
-            return new CellVector(a.X + b.X, a.Y + b.Y);
+            return new CVec(a.X + b.X, a.Y + b.Y);
         }
 
-        public static CellVector operator -(CellVector a,CellVector b)
+        public static CVec operator -(CVec a,CVec b)
         {
-            return new CellVector(a.X - b.X, a.Y - b.Y);
+            return new CVec(a.X - b.X, a.Y - b.Y);
         }
 
-        public static CellVector operator -(CellVector a)
+        public static CVec operator -(CVec a)
         {
-            return new CellVector(-a.X, -a.Y);
+            return new CVec(-a.X, -a.Y);
         }
 
-        public static bool operator ==(CellVector a,CellVector b)
+        public static bool operator ==(CVec a,CVec b)
         {
             return a.X == b.X && a.Y == b.Y;
         }
 
-        public static bool operator !=(CellVector a,CellVector b)
+        public static bool operator !=(CVec a,CVec b)
         {
             return !(a == b);
         }
@@ -57,7 +57,7 @@ namespace EW
 
         public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellVector a, b;
+            CVec a, b;
             if(!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
             {
                 throw new LuaException("");
@@ -68,7 +68,7 @@ namespace EW
 
         public LuaValue Subtract(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellVector a, b;
+            CVec a, b;
             if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
                 throw new LuaException("");
 
@@ -82,7 +82,7 @@ namespace EW
 
         public LuaValue Equals(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellVector a, b;
+            CVec a, b;
             if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
                 return false;
             return a == b;
@@ -99,7 +99,7 @@ namespace EW
                     case "Y":
                         return Y;
                     default:
-                        throw new LuaException("CellVector does not define a memeber '{0}'".F(key));
+                        throw new LuaException("CVec does not define a memeber '{0}'".F(key));
                 }
             }
             set

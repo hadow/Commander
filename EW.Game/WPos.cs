@@ -29,12 +29,12 @@ namespace EW
             return !(a == b);
         }
 
-        public static WPos operator +(WPos a,WVector b)
+        public static WPos operator +(WPos a,WVect b)
         {
             return new WPos(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
-        public static WPos operator -(WPos a,WVector b)
+        public static WPos operator -(WPos a,WVect b)
         {
             return new WPos(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }

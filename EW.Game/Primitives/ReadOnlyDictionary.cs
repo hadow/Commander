@@ -24,6 +24,13 @@ namespace EW.Primitives
         bool TryGetValue(TKey key, out TValue value);
     }
 
+    public static class ReadOnlyDictionary
+    {
+        public static IReadOnlyDictionary<TKey,TValue> AsReadOnly<TKey,TValue>(this IDictionary<TKey,TValue> dict)
+        {
+            return dict as IReadOnlyDictionary<TKey, TValue> ?? new ReadOnlyDictionary<TKey, TValue>(dict);
+        }
+    }
 
 
 

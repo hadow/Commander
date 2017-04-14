@@ -63,18 +63,18 @@ namespace EW
     {
         WPos CenterPosition { get; }
 
-        CellPos TopLeft { get; }
+        CPos TopLeft { get; }
 
-        IEnumerable<Pair<CellPos, SubCell>> OccupiedCells();
+        IEnumerable<Pair<CPos, SubCell>> OccupiedCells();
     }
     public interface IPositionableInfo : ITraitInfoInterface { }
     public interface IPositionable : IOccupySpace
     {
-        bool IsLeavingCell(CellPos location, SubCell subCell = SubCell.Any);
+        bool IsLeavingCell(CPos location, SubCell subCell = SubCell.Any);
 
-        bool CanEnterCell(CellPos location, Actor ignoreActor = null, bool checkTransientActors = true);
+        bool CanEnterCell(CPos location, Actor ignoreActor = null, bool checkTransientActors = true);
 
-        void SetPosition(Actor self, CellPos cPos, SubCell subCell = SubCell.Any);
+        void SetPosition(Actor self, CPos cPos, SubCell subCell = SubCell.Any);
 
         void SetPosition(Actor self, WPos wPos);
 
@@ -137,7 +137,7 @@ namespace EW
     
     public interface IOccupySapceInfo : ITraitInfoInterface
     {
-        EW.Primitives.IReadOnlyDictionary<CellPos, SubCell> OccupiedCells(ActorInfo info, CellPos location, SubCell subCell = SubCell.Any);
+        EW.Primitives.IReadOnlyDictionary<CPos, SubCell> OccupiedCells(ActorInfo info, CPos location, SubCell subCell = SubCell.Any);
 
         bool SharesCell { get; }
     }

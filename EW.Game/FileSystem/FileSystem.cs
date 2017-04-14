@@ -186,6 +186,94 @@ namespace EW.FileSystem
             return null;
         }
 
+
+        public void UnmountAll()
+        {
+            foreach (var package in mountedPackages.Keys)
+            {
+                if (!modPackages.Contains(package))
+                    package.Dispose();
+            }
+            mountedPackages.Clear();
+            explicitMounts.Clear();
+            modPackages.Clear();
+
+            fileIndex = new Cache<string, List<IReadOnlyPackage>>(_ => new List<IReadOnlyPackage>());
+        }
+
+        public void Mount(string name,string explicitName = null)
+        {
+            var optional = name.StartsWith("~");
+            if (optional)
+                name = name.Substring(1);
+            try
+            {
+                IReadOnlyPackage package;
+                if (name.StartsWith("$"))
+                {
+                    name = name.Substring(1);
+
+                    Manifest mod;
+                    if (!installedMods.TryGetValue(name, out mod))
+                        throw new InvalidOperationException("Could not load mod '{0}'. Available mods:{1}".F(name, installedMods.Keys.JoinWith(", ")));
+
+                    package = mod.Package;
+                    modPackages.Add(package);
+
+                }
+                else
+                {
+                    package = OpenPackage(name);
+                }
+
+                Mount(package, explicitName);
+            }
+            catch
+            {
+                if (!optional)
+                    throw;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="package"></param>
+        /// <param name="explicitName"></param>
+        public void Mount(IReadOnlyPackage package,string explicitName = null)
+        {
+            var mountCount = 0;
+            if(mountedPackages.TryGetValue(package,out mountCount))
+            {
+                mountedPackages[package] = mountCount + 1;
+                foreach(var filename in package.Contents)
+                {
+                    fileIndex[filename].Remove(package);
+                    fileIndex[filename].Add(package);
+                }
+            }
+            else
+            {
+                mountedPackages.Add(package, 1);
+                if (explicitName != null)
+                    explicitMounts.Add(explicitName, package);
+
+                foreach (var filename in package.Contents)
+                    fileIndex[filename].Add(package);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="manifest"></param>
+        public void LoadFromManifest(Manifest manifest)
+        {
+            UnmountAll();
+            foreach (var kv in manifest.Packages)
+                Mount(kv.Key, kv.Value);
+        }
+
         public Stream Open(string filename)
         {
             Stream s = null;

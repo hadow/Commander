@@ -10,6 +10,7 @@ namespace EW
     /// </summary>
     public sealed class ModData:IDisposable
     {
+        public IEnumerable<string> Languages { get; private set; }
 
         int initialThreadId;
 
@@ -21,6 +22,7 @@ namespace EW
 
         public readonly ObjectCreator ObjectCreator;
 
+        public readonly MapCache MapCache;
 
         /// <summary>
         /// ƒ¨»œπÊ‘Ú 
@@ -47,6 +49,32 @@ namespace EW
         {
             get { return defaultSequences.Value; }
         }
+
+
+        public ModData(Manifest mod,InstalledMods mods,bool useLoadScreen = false)
+        {
+            Languages = new string[0];
+
+            ModFiles = new FileSystem.FileSystem(mods);
+
+            Manifest = new Manifest(mod.Id, mod.Package);
+            ModFiles.LoadFromManifest(Manifest);
+
+            ObjectCreator = new ObjectCreator(Manifest, ModFiles);
+            Manifest.LoadCustomData(ObjectCreator);
+
+            MapCache = new MapCache(this);
+        }
+
+
+
+
+
+
+
+
+
+
 
         public void Dispose()
         {

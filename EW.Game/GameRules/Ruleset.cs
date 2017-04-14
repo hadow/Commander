@@ -97,6 +97,13 @@ namespace EW
             return ruleset;
         }
 
+
+        public static Ruleset LoadDefaultsForTileSet(ModData modData,string tileSet)
+        {
+
+        }
+
+
         /// <summary>
         /// 
         /// </summary>

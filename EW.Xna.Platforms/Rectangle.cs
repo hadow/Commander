@@ -9,6 +9,7 @@ namespace EW.Xna.Platforms
     public struct Rectangle:IEquatable<Rectangle>
     {
 
+        private static Rectangle emptyRectangle = new Rectangle();
         public int X;
         public int Y;
 
@@ -72,6 +73,11 @@ namespace EW.Xna.Platforms
         public int Bottom
         {
             get { return this.Y + this.Height; }
+        }
+
+        public static Rectangle Empty
+        {
+            get { return emptyRectangle; }
         }
     }
 }

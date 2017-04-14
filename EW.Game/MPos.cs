@@ -17,15 +17,15 @@ namespace EW
             return mPos.U == this.U && mPos.V == this.V;
         }
 
-        public CellPos ToCPos(Map map)
+        public CPos ToCPos(Map map)
         {
             return ToCPos(map.Grid.Type);
         }
 
-        public CellPos ToCPos(MapGridT gridT)
+        public CPos ToCPos(MapGridT gridT)
         {
             //TODO
-            return default(CellPos);
+            return default(CPos);
         }
 
         public MPos Clamp(Rectangle r)

@@ -8,43 +8,43 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public struct CellPos:IEquatable<CellPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
+    public struct CPos:IEquatable<CPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public readonly int X, Y;
-        public CellPos(int x,int y) { X = x;Y = y; }
+        public CPos(int x,int y) { X = x;Y = y; }
 
-        public static readonly CellPos Zero = new CellPos(0, 0);
+        public static readonly CPos Zero = new CPos(0, 0);
 
-        public static explicit operator CellPos(Vector2 a)
+        public static explicit operator CPos(Vector2 a)
         {
-            return new CellPos((int)a.X, (int)a.Y);
+            return new CPos((int)a.X, (int)a.Y);
         }
-        public bool Equals(CellPos cPos)
+        public bool Equals(CPos cPos)
         {
             return X == cPos.X && Y == cPos.Y;
         }
         #region Operator
 
-        public static CellPos operator +(CellPos a,CellVector b)
+        public static CPos operator +(CPos a,CVec b)
         {
-            return new CellPos(a.X + b.X, a.Y + b.Y);
+            return new CPos(a.X + b.X, a.Y + b.Y);
         }
 
-        public static CellPos operator -(CellPos a,CellVector b)
+        public static CPos operator -(CPos a,CVec b)
         {
-            return new CellPos(a.X - b.X, a.Y - b.Y);
+            return new CPos(a.X - b.X, a.Y - b.Y);
         }
 
-        public static CellVector operator -(CellPos a,CellPos b)
+        public static CVec operator -(CPos a,CPos b)
         {
-            return new CellVector(a.X - b.X, a.Y - b.Y);
+            return new CVec(a.X - b.X, a.Y - b.Y);
         }
 
-        public static bool operator ==(CellPos a,CellPos b)
+        public static bool operator ==(CPos a,CPos b)
         {
             return a.X == b.X && a.Y == b.Y;
         }
-        public static bool operator !=(CellPos a,CellPos b)
+        public static bool operator !=(CPos a,CPos b)
         {
             return !(a == b);
         }
@@ -52,7 +52,7 @@ namespace EW
 
         public override bool Equals(object obj)
         {
-            return obj is CellPos && Equals((CellPos)obj);
+            return obj is CPos && Equals((CPos)obj);
         }
 
         public override int GetHashCode()
@@ -74,28 +74,28 @@ namespace EW
         #region Scripting Interface
         public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellPos a;
-            CellVector b;
+            CPos a;
+            CVec b;
 
             if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
-                throw new LuaException("Attempted to call CellPos.Add(CellPos,CellVector) with invalid arguments ({0},{1})");
+                throw new LuaException("Attempted to call CPos.Add(CPos,CVec) with invalid arguments ({0},{1})");
 
             return new LuaCustomClrObject(a + b);
         }
 
         public LuaValue Subtract(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellPos a;
-            CellVector b;
+            CPos a;
+            CVec b;
             if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
-                throw new LuaException("Attempted to call CellPos.Substrac(CellPos,CellVector) with invalid arguments ({0},{1})");
+                throw new LuaException("Attempted to call CPos.Substrac(CPos,CVec) with invalid arguments ({0},{1})");
 
             return new LuaCustomClrObject(a - b);
         }
 
         public LuaValue Equals(LuaRuntime runtime,LuaValue left,LuaValue right)
         {
-            CellPos a, b;
+            CPos a, b;
             if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
                 return false;
 
@@ -113,12 +113,12 @@ namespace EW
                     case "Y":
                         return Y;
                     default:
-                        throw new LuaException("CellPos does not defina a memeber '{0}'".F(key));
+                        throw new LuaException("CPos does not defina a memeber '{0}'".F(key));
                 }
             }
             set
             {
-                throw new LuaException("CellPos is read-only,Use CellPos.New to Create a new value");
+                throw new LuaException("CPos is read-only,Use CPos.New to Create a new value");
             }
         }
 

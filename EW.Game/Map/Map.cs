@@ -1,11 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using EW.FileSystem;
 using EW.Xna.Platforms;
 namespace EW
 {
+    public enum MapVisibility
+    {
+        Lobby = 1,
+        Shellmap = 2,
+        MissionSelector = 4,
+    }
     class MapField
     {
         enum Type
@@ -50,6 +57,8 @@ namespace EW
     /// </summary>
     public class Map:IReadOnlyFileSystem
     {
+        public const int SupportedMapFormat = 11;
+
         static readonly MapField[] YamlFields =
         {
             new MapField("MapFormat"),
@@ -149,6 +158,41 @@ namespace EW
         public bool Exists(string filename)
         {
             return modData.DefaultFileSystem.Exists(filename);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public static string ComputeUID(IReadOnlyPackage package)
+        {
+            var requiredFiles = new[] { "map.yaml", "map.bin" };
+            var contents = package.Contents.ToList();
+
+            foreach(var required in requiredFiles)
+            {
+                if (!contents.Contains(required))
+                    throw new FileNotFoundException("Required file {0} not present in this map".F(required));
+            }
+
+            using(var ms = new MemoryStream())
+            {
+                foreach(var filename in contents)
+                {
+                    if(filename.EndsWith(".yaml") || filename.EndsWith(".bin") || filename.EndsWith(".lua"))
+                    {
+                        using (var s = package.GetStream(filename))
+                            s.CopyTo(ms);
+                    }
+                }
+
+                ms.Seek(0, SeekOrigin.Begin);
+                return CryptoUtil.SHA1Hash(ms);
+            }
+
+
+
         }
 
     }

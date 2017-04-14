@@ -38,7 +38,7 @@ namespace EW.Traits
         /// </summary>
         class CellTrigger
         {
-            public readonly CellPos[] Footprint;
+            public readonly CPos[] Footprint;
             public bool Dirty;
 
             readonly Action<Actor> onActorEntered;
@@ -46,7 +46,7 @@ namespace EW.Traits
 
             IEnumerable<Actor> currentActors = Enumerable.Empty<Actor>();
             
-            public CellTrigger(CellPos[] footprint,Action<Actor> onActorEntered,Action<Actor> onActorExited)
+            public CellTrigger(CPos[] footprint,Action<Actor> onActorEntered,Action<Actor> onActorExited)
             {
                 Footprint = footprint;
 
@@ -133,7 +133,7 @@ namespace EW.Traits
                 rang = newRange;
                 vRange = newVRange;
 
-                var offset = new WVector(newRange, newRange, newVRange);
+                var offset = new WVect(newRange, newRange, newVRange);
 
                 TopLeft = newPos - offset;
                 BottomRight = newPos + offset;
@@ -212,7 +212,7 @@ namespace EW.Traits
         readonly ActorMapInfo info;
         readonly Map map;
         readonly Dictionary<int, CellTrigger> cellTriggers = new Dictionary<int, CellTrigger>();
-        readonly Dictionary<CellPos, List<CellTrigger>> cellTriggerInfluence = new Dictionary<CellPos, List<CellTrigger>>();
+        readonly Dictionary<CPos, List<CellTrigger>> cellTriggerInfluence = new Dictionary<CPos, List<CellTrigger>>();
         readonly Dictionary<int, ProximityTrigger> proximityTriggers = new Dictionary<int, ProximityTrigger>();
 
         int nextTriggerId;
@@ -268,7 +268,7 @@ namespace EW.Traits
         /// <param name="onEntry"></param>
         /// <param name="OnExit"></param>
         /// <returns></returns>
-        public int AddCellTrigger(CellPos[] cells,Action<Actor> onEntry,Action<Actor> OnExit)
+        public int AddCellTrigger(CPos[] cells,Action<Actor> onEntry,Action<Actor> OnExit)
         {
             var id = nextTriggerId++;
             var t = new CellTrigger(cells, onEntry, OnExit);
@@ -306,7 +306,7 @@ namespace EW.Traits
         /// </summary>
         /// <param name="a"></param>
         /// <returns></returns>
-        public IEnumerable<Actor> GetActorsAt(CellPos a)
+        public IEnumerable<Actor> GetActorsAt(CPos a)
         {
             var uv = a.ToMPos(map);
             if (!influence.Contains(uv))

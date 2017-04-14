@@ -16,7 +16,7 @@ namespace EW
         /// 地图网格类型
         /// </summary>
         public readonly MapGridT GridT;
-        public event Action<CellPos> CellEntryChanged = null;
+        public event Action<CPos> CellEntryChanged = null;
         readonly T[] entries;
         public CellLayer(Map map):this(map.Grid.Type,new Size((int)map.MapSize.X, (int)map.MapSize.Y))
         {
@@ -40,7 +40,7 @@ namespace EW
             return GetEnumerator();
         }
 
-        public bool Contains(CellPos cell)
+        public bool Contains(CPos cell)
         {
             if (GridT == MapGridT.RectangularIsometric && cell.X < cell.Y)
                 return false;

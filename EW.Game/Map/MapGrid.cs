@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 namespace EW
 {
     public enum MapGridT
@@ -8,10 +8,14 @@ namespace EW
         Rectangular,
         RectangularIsometric
     }
-    public class MapGrid
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class MapGrid:IGlobalModData
     {
         public readonly MapGridT Type = MapGridT.Rectangular;
-
+        public readonly Size TileSize = new Size(24, 24);
         /// <summary>
         /// 最大地形高度
         /// </summary>

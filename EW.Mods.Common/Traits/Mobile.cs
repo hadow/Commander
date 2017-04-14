@@ -38,9 +38,9 @@ namespace EW.Mods.Common.Traits
 
         public readonly bool SharesCell = false;
         public readonly int InitialFacing = 0;
-        public EW.Primitives.IReadOnlyDictionary<CellPos,SubCell> OccupiedCells(ActorInfo info,CellPos location,SubCell subCell = SubCell.Any)
+        public EW.Primitives.IReadOnlyDictionary<CPos,SubCell> OccupiedCells(ActorInfo info,CPos location,SubCell subCell = SubCell.Any)
         {
-            return new ReadOnlyDictionary<CellPos, SubCell>(new Dictionary<CellPos, SubCell>() { { location, subCell } });
+            return new ReadOnlyDictionary<CPos, SubCell>(new Dictionary<CPos, SubCell>() { { location, subCell } });
         }
 
         bool IOccupySapceInfo.SharesCell { get { return SharesCell; } }

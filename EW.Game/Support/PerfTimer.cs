@@ -8,7 +8,10 @@ namespace EW.Support
     /// </summary>
     public sealed class PerfTimer:IDisposable
     {
+        public PerfTimer(string name,float thresholdMs = 0)
+        {
 
+        }
 
         public static long LongTickThresholdInStopwatchTicks
         {

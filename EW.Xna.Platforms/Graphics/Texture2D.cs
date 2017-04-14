@@ -1,6 +1,4 @@
 using System;
-
-
 namespace EW.Xna.Platforms.Graphics
 {
     public partial class Texture2D:Texture
@@ -18,6 +16,7 @@ namespace EW.Xna.Platforms.Graphics
 
         public int Width
         {
+            
             get { return width; }
         }
 

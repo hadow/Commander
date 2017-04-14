@@ -29,6 +29,7 @@ namespace EW.Xna.Platforms
 
         public ResumeManager(IServiceProvider services,SpriteBatch spriteBatch,string resumeTextureName,float scale,float rotateSpeed)
         {
+            
             this.content = new ContentManager(services, "Content");
             this.device = ((IGraphicsDeviceService)services.GetService(typeof(IGraphicsDeviceService))).GraphicsDevice;
             this.spriteBatch = spriteBatch;

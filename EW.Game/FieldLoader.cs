@@ -166,7 +166,68 @@ namespace EW
         /// <param name="my"></param>
         public static void Load(object self,MiniYaml my)
         {
+            var loadInfo = TypeLoadInfo[self.GetType()];
+            var missing = new List<string>();
 
+            Dictionary<string, MiniYaml> md = null;
+
+            foreach(var fli in loadInfo)
+            {
+                object val;
+                if (md == null)
+                    md = my.ToDictionary();
+                if(fli.Loader != null)
+                {
+                    if (!fli.Attribute.Required || md.ContainsKey(fli.YamlName))
+                        val = fli.Loader(my);
+                    else
+                    {
+                        missing.Add(fli.YamlName);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if(!TryGetValueFromYaml(fli.YamlName,fli.Field,md,out val))
+                    {
+
+                        if (fli.Attribute.Required)
+                            missing.Add(fli.YamlName);
+                        continue;
+                    }
+                }
+                fli.Field.SetValue(self, val);
+            }
+
+            if (missing.Any())
+                throw new MissingFieldsException(missing.ToArray());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yamlName"></param>
+        /// <param name="field"></param>
+        /// <param name="md"></param>
+        /// <param name="ret"></param>
+        /// <returns></returns>
+        static bool TryGetValueFromYaml(string yamlName,FieldInfo field,Dictionary<string,MiniYaml> md,out object ret)
+        {
+            ret = null;
+
+            MiniYaml yaml;
+            if (!md.TryGetValue(yamlName, out yaml))
+                return false;
+            ret = GetValue(field.Name, field.FieldType, yaml, field);
+
+            return true;
+        }
+
+        public static T Load<T>(MiniYaml y) where T : new()
+        {
+            var t = new T();
+            Load(t, y);
+            return t;
         }
     }
 }

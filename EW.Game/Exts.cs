@@ -5,6 +5,19 @@ using System.Linq;
 
 namespace EW
 {
+    public static class Enum<T>
+    {
+        public static T Parse(string s) { return (T)Enum.Parse(typeof(T), s); }
+    }
+
+
+
+
+
+
+
+
+
     public static class Exts
     {
 
@@ -75,6 +88,11 @@ namespace EW
         public static IEnumerable<T> Append<T>(this IEnumerable<T> ts,params T[] moreTs)
         {
             return ts.Concat(moreTs);
+        }
+
+        public static string JoinWith<T>(this IEnumerable<T> ts,string j)
+        {
+            return string.Join(j, ts);
         }
     }
 }

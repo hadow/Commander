@@ -185,6 +185,23 @@ namespace EW
 
             }
         }
+
+        public static List<MiniYamlNode> FromString(string text,string fileName="<no filename available>")
+        {
+            return FromLines(text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None), fileName);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static List<MiniYamlNode> FromStream(Stream s,string fileName="<no filename available>")
+        {
+            using (var reader = new StreamReader(s))
+                return FromString(reader.ReadToEnd(),fileName);
+        }
     }
 
     [Serializable]

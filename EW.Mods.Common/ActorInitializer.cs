@@ -31,14 +31,14 @@ namespace EW.Mods.Common
         public SubCell Value(World world) { return (SubCell)value; }
     }
 
-    public class LocationInit : IActorInit<CellPos>
+    public class LocationInit : IActorInit<CPos>
     {
-        readonly CellPos value = CellPos.Zero;
+        readonly CPos value = CPos.Zero;
 
         public LocationInit() { }
 
-        public LocationInit(CellPos init) { value = init; }
+        public LocationInit(CPos init) { value = init; }
 
-        public CellPos Value(World world) { return value; }
+        public CPos Value(World world) { return value; }
     }
 }
