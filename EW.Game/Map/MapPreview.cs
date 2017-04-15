@@ -249,6 +249,10 @@ namespace EW
 
             });
 
+            if (Package.Contains("map.png"))
+                using (var dataStream = p.GetStream("map.png"))
+                    newData.Preview = BitmapFactory.DecodeStream(dataStream);
+            innerData = newData;
         }
 
         /// <summary>

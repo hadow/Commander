@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using EW.FileSystem;
@@ -201,6 +202,11 @@ namespace EW
         {
             using (var reader = new StreamReader(s))
                 return FromString(reader.ReadToEnd(),fileName);
+        }
+
+        public static Dictionary<string,MiniYaml> DictFromStream(Stream stream,string fileName = "<no filename available>")
+        {
+            return FromStream(stream, fileName).ToDictionary(x=>x.Key,x=>x.Value);
         }
     }
 

@@ -86,8 +86,14 @@ namespace EW
                                 continue;
 
                             var uid = Map.ComputeUID(mapPackage);
-                            previews[uid].
+                            previews[uid].UpdateFromMap(mapPackage, kv.Key, kv.Value, modData.Manifest.MapCompatibility, mapGrid.Type);
                         }
+                    }
+                    catch(Exception e)
+                    {
+                        if (mapPackage != null)
+                            mapPackage.Dispose();
+
                     }
                 }
             }

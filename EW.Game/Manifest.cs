@@ -33,7 +33,13 @@ namespace EW
 
         readonly Dictionary<string, MiniYaml> yaml;
 
-        public readonly string[] Rules, ServerTraits, Sequences,VoxelSequences,Cursors,Chrome,Assemblies,ChromeLayout,Weapons,Voices,Notifications,Music,Translations,TileSets,Missions;
+        public readonly string[] Rules, 
+                                ServerTraits,
+                                Sequences,VoxelSequences,
+                                Cursors,Chrome,Assemblies,
+                                ChromeLayout,Weapons,Voices,
+                                Notifications,Music,Translations,
+                                TileSets,Missions,MapCompatibility;
 
         readonly string[] reservedModuleNames = { "Metadata", "Folders", "MapFolders", "Packages", "Rules", "Sequences", "Assemblies", "Weapons" };
 
