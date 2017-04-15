@@ -87,6 +87,7 @@
     <Compile Include="Map\MapPlayers.cs" />
     <Compile Include="Map\MapPreview.cs" />
     <Compile Include="Map\PlayerReference.cs" />
+    <Compile Include="Map\TileReference.cs" />
     <Compile Include="Map\TileSet.cs" />
     <Compile Include="MPos.cs" />
     <Compile Include="Map\ActorInitializer.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Scripting\ScriptObjectWrapper.cs" />
     <Compile Include="Scripting\LuaValueExts.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
+    <Compile Include="StreamExts.cs" />
     <Compile Include="Support\PerfTimer.cs" />
     <Compile Include="Sync.cs" />
     <Compile Include="TraitDictionary.cs" />

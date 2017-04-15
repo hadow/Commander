@@ -19,7 +19,12 @@ namespace EW
         public readonly EW.Primitives.IReadOnlyDictionary<string, MusicInfo> Music;
 
         public Ruleset(EW.Primitives.IReadOnlyDictionary<string,ActorInfo> actors,
-                        EW.Primitives.IReadOnlyDictionary<string,WeaponInfo> weapons)
+                        EW.Primitives.IReadOnlyDictionary<string,WeaponInfo> weapons,
+                        EW.Primitives.IReadOnlyDictionary<string,SoundInfo> voices,
+                        EW.Primitives.IReadOnlyDictionary<string,SoundInfo> notifications,
+                        EW.Primitives.IReadOnlyDictionary<string,MusicInfo> music,
+                        TileSet tileSet,
+                        SequenceProvider sequence)
         {
             Actors = actors;
             Weapons = weapons;
@@ -41,7 +46,35 @@ namespace EW
         /// <returns></returns>
         public static Ruleset LoadDefaults(ModData modData)
         {
+            var m = modData.Manifest;
+            var fs = modData.DefaultFileSystem;
 
+            Ruleset ruleset = null;
+            Action f = () =>
+            {
+                var actors = MergeOrDefault("Manifest,Rules", fs, m.Rules, null, null, k => new ActorInfo(modData.ObjectCreator, k.Key.ToLowerInvariant(), k.Value));
+
+                var weapons = MergeOrDefault("Manifest,Weapons", fs, m.Weapons, null, null, k => new WeaponInfo(k.Key.ToLowerInvariant(), k.Value));
+
+                var voices = MergeOrDefault("Manifest,Voices", fs, m.Voices, null, null, k => new SoundInfo(k.Value));
+
+                var notifications = MergeOrDefault("Manifest,Notifications", fs, m.Notifications, null, null, k => new SoundInfo(k.Value));
+
+                var music = MergeOrDefault("Manifest,Music", fs, m.Music, null, null, k => new MusicInfo(k.Key, k.Value));
+
+                ruleset = new Ruleset(actors, weapons, voices, notifications, music, null, null);
+            };
+
+            if (modData.IsOnMainThread)
+            {
+
+            }
+            else
+            {
+                f();
+            }
+
+            return ruleset;
         }
 
         /// <summary>

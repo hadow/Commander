@@ -11,8 +11,7 @@ namespace EW
     }
 
 
-
-
+    
 
 
 
@@ -20,7 +19,19 @@ namespace EW
 
     public static class Exts
     {
+        public enum ISqrtRoundMode { Floor, Nearest, Ceiling }
 
+
+        public static int ISqrt(int number, ISqrtRoundMode rount = ISqrtRoundMode.Floor)
+        {
+            return 0;
+        }
+
+
+        public static uint ISqrt(uint number, ISqrtRoundMode rount = ISqrtRoundMode.Floor)
+        {
+            return 0;
+        }
 
         public static string F(this string fmt,params object[] args)
         {

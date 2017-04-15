@@ -3,10 +3,51 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Drawing;
 using EW.FileSystem;
 using EW.Xna.Platforms;
 namespace EW
 {
+    /// <summary>
+    /// 头文件格式
+    /// </summary>
+    struct BinaryDataHeader
+    {
+        public readonly byte Format;
+        public readonly uint TilesOffset;
+        public readonly uint HeightsOffset;
+        public readonly uint ResourcesOffset;
+
+
+        public BinaryDataHeader(Stream s,Vector2 expectedSize)
+        {
+            Format = s.ReadUInt8();
+            var width = s.ReadUInt16();
+            var height = s.ReadUInt16();
+            if(width!= expectedSize.X || height != expectedSize.Y)
+            {
+                throw new InvalidDataException("Invalid tile data");
+            }
+
+            if (Format == 1)
+            {
+                TilesOffset = 5;
+                HeightsOffset = 0;
+                ResourcesOffset = (uint)(3 * width * height + 5);
+            }
+            else if (Format == 2)
+            {
+                TilesOffset = s.ReadUInt32();
+                HeightsOffset = s.ReadUInt32();
+                ResourcesOffset = s.ReadUInt32();
+
+            }
+            else
+                throw new InvalidDataException("Unknown binary map format '{0}'".F(Format));
+        }
+    }
+
+
     public enum MapVisibility
     {
         Lobby = 1,
@@ -51,12 +92,57 @@ namespace EW
                 
 
         }
+
+        /// <summary>
+        /// 反序列化
+        /// </summary>
+        /// <param name="map"></param>
+        /// <param name="nodes"></param>
+        public void Deserialize(Map map,List<MiniYamlNode> nodes)
+        {
+            var node = nodes.FirstOrDefault(n => n.Key == key);
+            if(node == null)
+            {
+                if (required)
+                    throw new YamlException("Required field '{0}' not found in map.yaml".F(key));
+                return;
+            }
+
+            if (field != null)
+            {
+                if (type == Type.NodeList)
+                    field.SetValue(map, node.Value.Nodes);
+                else if (type == Type.MiniYaml)
+                    field.SetValue(map, node.Value);
+                else
+                    FieldLoader.LoadField(map, fieldName, node.Value.Value);
+            }
+
+            if(property != null)
+            {
+                if (type == Type.NodeList)
+                    property.SetValue(map, node.Value.Nodes, null);
+                else if (type == Type.MiniYaml)
+                    property.SetValue(map, node.Value, null);
+                else
+                    FieldLoader.LoadField(map, fieldName, node.Value.Value);
+            }
+
+                
+        }
+
+
     }
     /// <summary>
     /// 
     /// </summary>
     public class Map:IReadOnlyFileSystem
     {
+
+        //Format versions
+        public int MapFormat { get; private set; }
+        public readonly byte TileFormat = 2;
+
         public const int SupportedMapFormat = 11;
 
         static readonly MapField[] YamlFields =
@@ -86,7 +172,7 @@ namespace EW
         public string Author;
         public string Tileset;
         public bool LockPreview;
-        public Rectangle Bounds;
+        public EW.Xna.Platforms.Rectangle Bounds;
 
         public List<MiniYamlNode> PlayerDefinitions = new List<MiniYamlNode>();
         public List<MiniYamlNode> ActorDefinitions = new List<MiniYamlNode>();
@@ -111,12 +197,17 @@ namespace EW
         public Vector2 MapSize { get; private set; }
 
         public Ruleset Rules { get; private set; }
-
-
-        public CellLayer<byte> Height { get; private set;}
-
+        
         public ProjectedCellRegion ProjectedCellBounds { get; private set;}
         
+
+        public CellLayer<TerrainTile> Tiles { get; private set; }
+
+        public CellLayer<ResourceTile> Resources { get; private set; }
+
+        public CellLayer<byte> Height { get; private set; }
+
+        public CellLayer<byte> CustomTerrain { get; private set; }
         public Map(ModData modData,IReadOnlyPackage package)
         {
             this.modData = modData;
@@ -125,6 +216,48 @@ namespace EW
             if (!Package.Contains("map.yaml") || !Package.Contains("map.bin"))
                 throw new InvalidDataException("Not a valid map\n File:{0}".F(package.Name));
 
+            var yaml = new MiniYaml(null, MiniYaml.FromStream(Package.GetStream("map.yaml"), package.Name));
+            foreach(var field in YamlFields)
+            {
+                field.Deserialize(this, yaml.Nodes);
+            }
+
+            if(MapFormat != SupportedMapFormat)
+            {
+                throw new InvalidDataException("Map format {0} is not supported. \n File:{1}".F(MapFormat, package.Name));
+            }
+            PlayerDefinitions = MiniYaml.NodesOrEmpty(yaml, "Players");
+            ActorDefinitions = MiniYaml.NodesOrEmpty(yaml, "Actors");
+
+            Grid = modData.Manifest.Get<MapGrid>();
+
+            var size = new Size((int)MapSize.X, (int)MapSize.Y);
+            Tiles = new CellLayer<TerrainTile>(Grid.Type, size);
+            Resources = new CellLayer<ResourceTile>(Grid.Type, size);
+            Height = new CellLayer<byte>(Grid.Type, size);
+            
+
+            using(var s = Package.GetStream("map.bin"))
+            {
+                var header = new BinaryDataHeader(s, MapSize);
+
+                if (header.TilesOffset > 0)
+                {
+                    s.Position = header.TilesOffset;
+                    for(var i = 0; i < MapSize.X; i++)
+                    {
+                        for(var j = 0; j < MapSize.Y; j++)
+                        {
+                            var tile = s.ReadUInt16();
+                            var index = s.ReadUInt8();
+                            if (index == byte.MaxValue)
+                                index = (byte)(i % 4 + (j % 4) * 4);
+
+                            Tiles[new MPos(i, j)] = new TerrainTile(tile, index);
+                        }
+                    }
+                }
+            }
         }
 
 

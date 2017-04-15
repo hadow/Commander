@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.FileSystem;
@@ -82,9 +83,31 @@ namespace EW
 
         public readonly string PlayerPalette;
 
+        [FieldLoader.Ignore]
+        public readonly TerrainTypeInfo[] TerrainInfo;
+
+        readonly Dictionary<string, byte> terrainIndexByType = new Dictionary<string, byte>();
+
         public TileSet(IReadOnlyFileSystem fileSystem,string filePath)
         {
             var yaml = MiniYaml.DictFromStream(fileSystem.Open(filePath), filePath);
+
+            FieldLoader.Load(this, yaml["General"]);
+
+            TerrainInfo = yaml["Terrain"].ToDictionary().Values.Select(y => new TerrainTypeInfo(y)).OrderBy(tt => tt.Type).ToArray();
+
+            if (TerrainInfo.Length >= byte.MaxValue)
+                throw new InvalidOperationException("Too many terrain types.");
+
+            for(byte i = 0; i < TerrainInfo.Length; i++)
+            {
+                var tt = TerrainInfo[i].Type;
+                if (terrainIndexByType.ContainsKey(tt))
+                    throw new InvalidOperationException("Duplicate terrain type '{0}' in '{1}'".F(tt, filePath));
+
+                terrainIndexByType.Add(tt, i);
+            }
+
         }
     }
 }

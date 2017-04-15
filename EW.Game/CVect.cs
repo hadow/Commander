@@ -11,6 +11,8 @@ namespace EW
         public static readonly CVec Zero = new CVec(0, 0);
         public CVec(int x,int y) { X = x; Y = y; }
 
+        public int LengthSquard { get { return X * X + Y * Y; } }
+        public int Length { get { return Exts.ISqrt(LengthSquard); } }
         public bool Equals(CVec other) { return other == this; }
 
         public override bool Equals(object obj)
@@ -20,7 +22,7 @@ namespace EW
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return X.GetHashCode() ^ Y.GetHashCode();
         }
         #region Operator
 

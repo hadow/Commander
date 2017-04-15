@@ -115,6 +115,12 @@ namespace EW
             public RequireAttribute() : base(true, true) { }
         }
 
+        [AttributeUsage(AttributeTargets.Field)]
+        public sealed class IgnoreAttribute : SerializeAttribute
+        {
+            public IgnoreAttribute() : base(false) { }
+        }
+
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
         /// <summary>
@@ -201,6 +207,17 @@ namespace EW
 
             if (missing.Any())
                 throw new MissingFieldsException(missing.ToArray());
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public static void LoadField(object target,string key,string value)
+        {
+
         }
 
         /// <summary>

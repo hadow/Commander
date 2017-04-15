@@ -208,6 +208,12 @@ namespace EW
         {
             return FromStream(stream, fileName).ToDictionary(x=>x.Key,x=>x.Value);
         }
+
+        public static List<MiniYamlNode> NodesOrEmpty(MiniYaml y,string s)
+        {
+            var nd = y.ToDictionary();
+            return nd.ContainsKey(s) ? nd[s].Nodes : new List<MiniYamlNode>();
+        }
     }
 
     [Serializable]

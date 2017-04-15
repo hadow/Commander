@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.FileSystem;
+using EW.Primitives;
 namespace EW
 {
 
@@ -64,6 +65,21 @@ namespace EW
             Manifest.LoadCustomData(ObjectCreator);
 
             MapCache = new MapCache(this);
+
+            defaultRules = Exts.Lazy(() => Ruleset.LoadDefaults(this));
+
+            defaultTileSets = Exts.Lazy(() =>
+            {
+                var items = new Dictionary<string, TileSet>();
+                foreach(var file in Manifest.TileSets)
+                {
+                    var t = new TileSet(DefaultFileSystem, file);
+                    items.Add(t.Id, t);
+                }
+                return (EW.Primitives.IReadOnlyDictionary<string,TileSet>)(new ReadOnlyDictionary<string, TileSet>(items));
+            });
+
+            initialThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
 
 
