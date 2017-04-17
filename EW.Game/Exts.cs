@@ -10,13 +10,7 @@ namespace EW
         public static T Parse(string s) { return (T)Enum.Parse(typeof(T), s); }
     }
 
-
     
-
-
-
-
-
     public static class Exts
     {
         public enum ISqrtRoundMode { Floor, Nearest, Ceiling }

@@ -48,14 +48,29 @@ namespace EW.Mods.Common.Traits
         {
 
         }
+
+        public override object Create(ActorInitializer init)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class Armament:UpgradableTrait<ArmamentInfo>,INotifyCreated,ITick,IExplodeModifier
     {
         public readonly WeaponInfo Weapon;
         public readonly Barrel[] Barrels;
 
+        public Armament(Actor self,ArmamentInfo info):base(info)
+        {
+
+        }
+
+
         readonly Actor self;
 
+        public void Tick(Actor self) { }
 
+        public void Created(Actor self) { }
+
+        public bool ShouldExplode(Actor self) { return false; }
     }
 }

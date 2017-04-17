@@ -219,6 +219,12 @@ namespace EW
                 files = files.Append(mapFiles);
 
             }
+
+            var yaml = files.Select(s => MiniYaml.FromStream(fileSystem.Open(s), s));
+            if (mapRules != null && mapRules.Nodes.Any())
+                yaml = yaml.Append(mapRules.Nodes);
+
+            return Merge(yaml);
         }
 
         public static List<MiniYamlNode> FromString(string text,string fileName="<no filename available>")
@@ -247,6 +253,11 @@ namespace EW
         {
             var nd = y.ToDictionary();
             return nd.ContainsKey(s) ? nd[s].Nodes : new List<MiniYamlNode>();
+        }
+
+        public static List<MiniYamlNode> Merge(IEnumerable<List<MiniYamlNode>> sources)
+        {
+            return null;
         }
     }
 

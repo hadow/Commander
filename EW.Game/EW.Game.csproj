@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Activities\Activity.cs" />
     <Compile Include="Actor.cs" />
+    <Compile Include="Arguments.cs" />
     <Compile Include="CPos.cs" />
     <Compile Include="CryptoUtil.cs" />
     <Compile Include="CVect.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="NetWork\OrderManager.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="OurActivity.cs" />
+    <Compile Include="Platform.cs" />
     <Compile Include="Primitives\Cache.cs" />
     <Compile Include="Primitives\ConcurrentCache.cs" />
     <Compile Include="Primitives\Pair.cs" />
@@ -154,9 +156,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
@@ -173,6 +175,8 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

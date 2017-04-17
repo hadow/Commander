@@ -58,19 +58,32 @@ namespace EW.FileSystem
         /// <returns></returns>
         public Stream GetStream(string filename)
         {
+            var entry = pkg.GetEntry(filename);
+            if (entry == null)
+                return null;
 
+            using (var z = pkg.GetInputStream(entry))
+            {
+                var ms = new MemoryStream();
+                z.CopyTo(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                return ms;
+            }
         }
+
         public IEnumerable<string> Contents
         {
             get
             {
+                foreach (ZipEntry entry in pkg)
+                    yield return entry.Name;
 
             }
         }
 
         public bool Contains(string filename)
         {
-
+            return false;
         }
 
         public void Update(string filename,byte[] contents)
