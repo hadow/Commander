@@ -8,6 +8,21 @@ namespace EW
 {
     public interface IGlobalModData { }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class SpriteSequenceFormat : IGlobalModData
+    {
+        public readonly string Type;
+
+        public readonly EW.Primitives.IReadOnlyDictionary<string, MiniYaml> Metadata;
+
+        public SpriteSequenceFormat(MiniYaml yaml)
+        {
+            Type = yaml.Value;
+            Metadata = new ReadOnlyDictionary<string, MiniYaml>(yaml.ToDictionary());
+        }
+    }
     public class ModMetadata
     {
         public string Title;
@@ -31,6 +46,11 @@ namespace EW
 
         public readonly Dictionary<string, string> RequiresMods;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly string[] SpriteFormats = { };
+
         readonly Dictionary<string, MiniYaml> yaml;
 
         public readonly string[] Rules, 
@@ -53,8 +73,6 @@ namespace EW
             yaml = new MiniYaml(null, MiniYaml.FromStream(Package.GetStream("mod.yaml"), "mod.yaml")).ToDictionary();
 
             Metadata = FieldLoader.Load<ModMetadata>(yaml["Metadata"]);
-
-
             
             MiniYaml packages;
             if (yaml.TryGetValue("Packages", out packages))

@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Globalization;
 namespace EW
 {
     public static class Enum<T>
@@ -104,6 +104,54 @@ namespace EW
         public static string JoinWith<T>(this IEnumerable<T> ts,string j)
         {
             return string.Join(j, ts);
+        }
+
+        public static Dictionary<TKey,TElement> ToDictionaryWithConflictLog<TSource,TKey,TElement>(this IEnumerable<TSource> source,Func<TSource,TKey> keySelector,
+            Func<TSource,TElement> elementSelector,string debugName,Func<TKey,string> logKey = null,Func<TElement,string> logValue = null)
+        {
+            logKey = logKey ?? (s => s.ToString());
+            logValue = logValue ?? (s => s.ToString());
+
+            var dupKeys = new Dictionary<TKey,List<string>>();
+            var d = new Dictionary<TKey, TElement>();
+            foreach(var item in source)
+            {
+                var key = keySelector(item);
+                var element = elementSelector(item);
+
+                if (d.ContainsKey(key))
+                {
+                    List<string> dupKeyMessages;
+                    if(!dupKeys.TryGetValue(key,out dupKeyMessages))
+                    {
+                        dupKeyMessages = new List<string>();
+                        dupKeyMessages.Add(logValue(d[key]));
+                        dupKeys.Add(key, dupKeyMessages);
+                    }
+
+                    dupKeyMessages.Add(logValue(element));
+                    continue;
+                }
+                d.Add(key, element);
+            }
+
+            if (dupKeys.Count > 0)
+            {
+                var badKeysFormatted = string.Join(", ", dupKeys.Select(p => "{0} :[{1}]".F(logKey(p.Key), string.Join(",", p.Value))));
+                var msg = "{0},duplicate values found for the following keys:{1}".F(debugName, badKeysFormatted);
+                throw new ArgumentException(msg);
+            }
+            return d;
+        }
+
+        public static bool TryParseIntegerInvariant(string s,out int i)
+        {
+            return int.TryParse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out i);
+        }
+
+        public static int ParseIntegerInvariant(string s)
+        {
+            return int.Parse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);
         }
     }
 }

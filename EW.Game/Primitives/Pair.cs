@@ -30,7 +30,14 @@ namespace EW.Primitives
         {
             return this == other;
         }
-
+        public override bool Equals(object obj)
+        {
+            return obj is Pair<T, U> && Equals(obj);
+        }
+        public override int GetHashCode()
+        {
+            return First.GetHashCode() ^ Second.GetHashCode();
+        }
 
 
     }

@@ -12,6 +12,14 @@ namespace EW
             Y = y;
             Z = z;
         }
+
+        public WPos(WDist x,WDist y,WDist z)
+        {
+            X = x.Length;
+            Y = y.Length;
+            Z = z.Length;
+           
+        }
         public bool Equals(WPos other)
         {
             return other == this;

@@ -80,6 +80,8 @@
     <Compile Include="GameRules\SoundInfo.cs" />
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
+    <Compile Include="Graphics\Sprite.cs" />
+    <Compile Include="Graphics\SpriteLoader.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="InstalledMods.cs" />
     <Compile Include="Manifest.cs" />

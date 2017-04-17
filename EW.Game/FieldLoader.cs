@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Globalization;
 using EW.Primitives;
 namespace EW
 {
@@ -123,6 +124,10 @@ namespace EW
 
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
+        public static Func<string, Type, string, object> InvalidValueAction = (s, t, f) =>
+           {
+               throw new YamlException("FieldLoader: Cannot pars '{0}' into '{1}.{2}'".F(s, f, t));
+           };
         /// <summary>
         /// 
         /// </summary>
@@ -158,6 +163,62 @@ namespace EW
 
         public static object GetValue(string fieldName,Type fieldType,MiniYaml yaml,MemberInfo field)
         {
+            var value = yaml.Value;
+            if (value != null)
+                value = value.Trim();
+
+            if(fieldType == typeof(int))
+            {
+                int res;
+                if (Exts.TryParseIntegerInvariant(value, out res))
+                    return res;
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(ushort))
+            {
+                ushort res;
+                if (ushort.TryParse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out res))
+                    return res;
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(long))
+            {
+                long res;
+                if (long.TryParse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out res))
+                    return res;
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(WPos))
+            {
+                if (value != null)
+                {
+                    var parts = value.Split(',');
+                    if(parts.Length == 3)
+                    {
+                        WDist rx, ry, rz;
+                        if (WDist.TryParse(parts[0], out rx) && WDist.TryParse(parts[1], out ry) && WDist.TryParse(parts[2], out rz))
+                            return new WPos(rx, ry, rz);
+                    }
+                }
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(CPos))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new CPos(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                }
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(CVec))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new CVec(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                }
+            }
             return null;
         }
 
@@ -217,7 +278,17 @@ namespace EW
         /// <param name="value"></param>
         public static void LoadField(object target,string key,string value)
         {
+            const BindingFlags Flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
+            key = key.Trim();
+
+            var field = target.GetType().GetField(key, Flags);
+            if (field != null)
+            {
+                var sa = field.GetCustomAttributes<SerializeAttribute>(false).DefaultIfEmpty(SerializeAttribute.Default).First();
+                if (!sa.FromYamlKey)
+                    field.SetValue(target, GetValue(field.Name, field.FieldType, value, field));
+            }
         }
 
         /// <summary>

@@ -185,7 +185,12 @@ namespace EW
         public readonly MiniYaml NotificationDefinitions;
         public readonly MiniYaml MusicDefinitions;
 
+        //Internal data
         readonly ModData modData;
+        bool initializedCellProjection;
+        CellLayer<PPos[]> cellProjection;
+        CellLayer<List<MPos>> inverseCellProjection;
+        CellLayer<short> cachedTerrainIndexes;
 
         /// <summary>
         /// 地图网格数据 
@@ -257,10 +262,58 @@ namespace EW
                         }
                     }
                 }
+
+                if(header.ResourcesOffset > 0)
+                {
+                    s.Position = header.ResourcesOffset;
+                    for(var i = 0; i < MapSize.X; i++)
+                    {
+                        for(var j = 0; j < MapSize.Y; j++)
+                        {
+                            var type = s.ReadUInt8();
+                            var density = s.ReadUInt8();
+                            Resources[new MPos(i, j)] = new ResourceTile(type, density);
+                        }
+                    }
+                }
+
+                if (header.HeightsOffset > 0)
+                {
+                    s.Position = header.HeightsOffset;
+                    for(var i = 0; i < MapSize.X; i++)
+                    {
+                        for(var j = 0; j < MapSize.Y; j++)
+                        {
+                            Height[new MPos(i, j)] = s.ReadUInt8().Clamp((byte)0, Grid.MaximumTerrainHeight);
+                        }
+                    }
+                }
             }
+
+            if (Grid.MaximumTerrainHeight > 0)
+            {
+                Tiles.CellEntryChanged += UpdateProjection;
+                Height.CellEntryChanged += UpdateProjection;
+            }
+
+            PostInit();
+
+            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        void UpdateProjection(CPos cell)
+        {
+
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         void PostInit()
         {
             try
@@ -268,7 +321,7 @@ namespace EW
                 Rules = Ruleset.Load(modData, this, Tileset, RuleDefinitions, WeaponDefinitions, VoicDefinitions, NotificationDefinitions, MusicDefinitions, SequenceDefinitions);
 
             }
-            catch ()
+            catch (Exception e)
             {
 
             }
@@ -285,11 +338,35 @@ namespace EW
         /// <returns></returns>
         public Stream Open(string filename)
         {
+            if(!filename.Contains("|") && Package.Contains(filename))
+            {
+                return Package.GetStream(filename);
+            }
+
             return modData.DefaultFileSystem.Open(filename);
+        }
+
+        public bool TryGetPackageContaining(string path,out IReadOnlyPackage package,out string filename)
+        {
+            return modData.DefaultFileSystem.TryGetPackageContaining(path, out package, out filename);
+        }
+
+        public bool TryOpen(string filename,out Stream s)
+        {
+            if(!filename.Contains("|"))
+            {
+                s = Package.GetStream(filename);
+                if (s != null)
+                    return true;
+            }
+
+            return modData.DefaultFileSystem.TryOpen(filename, out s);
         }
 
         public bool Exists(string filename)
         {
+            if (!filename.Contains("|") && Package.Contains(filename))
+                return true;
             return modData.DefaultFileSystem.Exists(filename);
         }
 

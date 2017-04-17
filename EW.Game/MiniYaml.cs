@@ -6,7 +6,24 @@ using System.Collections.Generic;
 using EW.FileSystem;
 namespace EW
 {
+    using MiniYamlNodes = List<MiniYamlNode>;
 
+    public static class MiniYamlExts
+    {
+        public static IEnumerable<string> ToLines(this MiniYamlNodes y,bool lowest)
+        {
+            foreach(var kv in y)
+            {
+                foreach (var line in kv.Value.ToLines(kv.Key))
+                    yield return line;
+
+                if (lowest)
+                {
+                    yield return "";
+                }
+            }
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -63,6 +80,23 @@ namespace EW
         {
             Value = value;
             Nodes = nodes ?? new List<MiniYamlNode>();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<string> ToLines(string name)
+        {
+            yield return name + ":" + Value;
+            if(Nodes!=null)
+            {
+                foreach(var line in Nodes.ToLines(false))
+                {
+                    yield return "\t" + line;
+                }
+            }
         }
 
         public Dictionary<string,MiniYaml> ToDictionary()

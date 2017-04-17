@@ -4,6 +4,7 @@ using EW.FileSystem;
 using EW.Primitives;
 using EW.GameRules;
 using EW.Graphics;
+using System.Linq;
 namespace EW
 {
     /// <summary>
@@ -11,6 +12,8 @@ namespace EW
     /// </summary>
     public class Ruleset
     {
+        public readonly TileSet TileSet;
+        public readonly SequenceProvider Sequence;
         
         public readonly EW.Primitives.IReadOnlyDictionary<string, ActorInfo> Actors;
         public readonly EW.Primitives.IReadOnlyDictionary<string, WeaponInfo> Weapons;
@@ -28,6 +31,10 @@ namespace EW
         {
             Actors = actors;
             Weapons = weapons;
+            Voices = voices;
+            Notifications = notifications;
+            TileSet = tileSet;
+            Sequence = sequence;
 
             foreach(var a in Actors.Values)
             {
@@ -113,9 +120,9 @@ namespace EW
 
                 var ts = modData.DefaultTileSets[tileSet];
 
-                var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider();
+                var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider(fileSystem,modData,ts,mapSequences);
 
-                ruleset = new Ruleset(actors, weapons);
+                ruleset = new Ruleset(actors, weapons,voices,notifications,music,ts,sequences);
             };
 
             if (modData.IsOnMainThread)
@@ -133,7 +140,10 @@ namespace EW
 
         public static Ruleset LoadDefaultsForTileSet(ModData modData,string tileSet)
         {
-
+            var dr = modData.DefaultRules;
+            var ts = modData.DefaultTileSets[tileSet];
+            var sequences = modData.DefaultSequences[tileSet];
+            return new Ruleset(dr.Actors, dr.Weapons, dr.Voices, dr.Notifications, dr.Music, ts, sequences);
         }
 
 
@@ -154,7 +164,8 @@ namespace EW
             if (additional == null && defaults != null)
                 return defaults;
 
-            var result = MiniYaml.Load(fileSystem, files, additional);
+            var result = MiniYaml.Load(fileSystem, files, additional).ToDictionaryWithConflictLog(k => k.Key.ToLowerInvariant(), makeObject, "LoadFromManifest<" + name + ">");
+            return new ReadOnlyDictionary<string, T>(result);
         }
     }
 }

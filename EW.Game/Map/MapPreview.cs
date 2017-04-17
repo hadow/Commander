@@ -1,12 +1,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Drawing;
 using System.Collections.Generic;
 using EW.FileSystem;
-using EW.Xna.Platforms;
 using EW.Primitives;
-using EW.FileSystem;
 using Android.Graphics;
 namespace EW
 {
@@ -275,12 +272,35 @@ namespace EW
         }
 
 
-        Stream Open(string filename)
+        Stream IReadOnlyFileSystem.Open(string filename)
         {
             if (filename.Contains("|") && Package.Contains(filename))
                 return Package.GetStream(filename);
 
             return modData.DefaultFileSystem.Open(filename);
+        }
+
+        bool IReadOnlyFileSystem.TryOpen(string filename, out Stream s)
+        {
+            if (!filename.Contains("|"))
+            {
+                s = Package.GetStream(filename);
+                if (s != null)
+                    return true;
+            }
+            return modData.DefaultFileSystem.TryOpen(filename, out s);
+        }
+
+        bool IReadOnlyFileSystem.TryGetPackageContaining(string path, out IReadOnlyPackage package, out string filename)
+        {
+            return modData.DefaultFileSystem.TryGetPackageContaining(path, out package, out filename);
+        }
+
+        bool IReadOnlyFileSystem.Exists(string filename)
+        {
+            if (!filename.Contains("|") && Package.Contains(filename))
+                return true;
+            return modData.DefaultFileSystem.Exists(filename);
         }
 
         public void Dispose()

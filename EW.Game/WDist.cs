@@ -43,6 +43,36 @@ namespace EW
 
         #endregion
 
+        public static bool TryParse(string s,out WDist result)
+        {
+            result = Zero;
+            if (string.IsNullOrEmpty(s))
+                return false;
+            s = s.ToLowerInvariant();
+
+            var components = s.Split('c');
+            var cell = 0;
+            var subCell = 0;
+            switch (components.Length)
+            {
+                case 2:
+                    if (!Exts.TryParseIntegerInvariant(components[0], out cell) || !Exts.TryParseIntegerInvariant(components[1], out subCell))
+                        return false;
+                    break;
+                case 1:
+                    if (!Exts.TryParseIntegerInvariant(components[0], out subCell))
+                        return false;
+                    break;
+                default:
+                    return false;
+            }
+
+            if (cell < 0)
+                subCell = -subCell;
+
+            result = new WDist(1024 * cell + subCell);
+            return true;
+        }
 
     }
 }

@@ -31,6 +31,11 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="className"></param>
+        /// <returns></returns>
         public Type FindType(string className)
         {
             return assemblies.Select(pair => pair.First.GetType(pair.Second + "." + className, false)).FirstOrDefault(t => t != null);
