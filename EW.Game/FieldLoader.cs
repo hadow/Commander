@@ -128,6 +128,11 @@ namespace EW
            {
                throw new YamlException("FieldLoader: Cannot pars '{0}' into '{1}.{2}'".F(s, f, t));
            };
+
+        public static Action<string, Type> UnknownFieldAction = (s, f) =>
+         {
+             throw new NotImplementedException("FieldLoader:Missing field '{0}' on '{1}'".F(s, f.Name));
+         };
         /// <summary>
         /// 
         /// </summary>

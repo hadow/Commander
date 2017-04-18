@@ -5,6 +5,11 @@ using System.Collections.Concurrent;
 
 namespace EW.Primitives
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
     public class ConcurrentCache<T,U>:IReadOnlyDictionary<T,U>
     {
         readonly ConcurrentDictionary<T, U> cache;

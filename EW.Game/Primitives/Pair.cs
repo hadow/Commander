@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace EW.Primitives
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="U"></typeparam>
     public  struct Pair<T,U>:IEquatable<Pair<T,U>>
     {
         public T First;

@@ -27,7 +27,6 @@ namespace EW
         static IEnumerable<Pair<string,string>> GetCandidateMods()
         {
             var basePath = Platform.ResolvePath(Path.Combine(".", "mods"));
-            PlatformID id = Environment.OSVersion.Platform;
             var mods = Directory.GetDirectories(basePath).Select(x => Pair.New(x.Substring(basePath.Length + 1), x)).ToList();
 
             return mods;

@@ -127,6 +127,16 @@ namespace EW
             }
             return ret;
         }
+
+        public static Dictionary<string,MiniYaml> DictFromFile(string path)
+        {
+            return FromFile(path).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        public static List<MiniYamlNode> FromFile(string path)
+        {
+            return FromLines(File.ReadAllLines(path), path);
+        }
         
 
         static List<MiniYamlNode> FromLines(IEnumerable<string> lines,string filename)

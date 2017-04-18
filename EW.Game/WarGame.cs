@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using EW.Xna.Platforms;
 namespace EW
 {
@@ -8,7 +9,7 @@ namespace EW
     {
 
         public static ModData ModData;
-
+        public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
 
 
@@ -22,9 +23,20 @@ namespace EW
             Initialize(new Arguments());
         }
 
+        /// <summary>
+        /// 初始化配置文件
+        /// </summary>
+        /// <param name="args"></param>
+        public static void InitializeSettings(Arguments args)
+        {
+            Settings = new Settings(Platform.ResolvePath(Path.Combine("^","settings.yaml")), args);
+        }
+
         internal static void Initialize(Arguments args)
         {
             string customModPath = null;
+
+            InitializeSettings(args);
 
             Mods = new InstalledMods(customModPath);
         }
