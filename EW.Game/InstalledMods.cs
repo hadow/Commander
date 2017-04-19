@@ -27,6 +27,7 @@ namespace EW
         static IEnumerable<Pair<string,string>> GetCandidateMods()
         {
             var basePath = Platform.ResolvePath(Path.Combine(".", "mods"));
+            string[] directories = Directory.GetDirectories(basePath);
             var mods = Directory.GetDirectories(basePath).Select(x => Pair.New(x.Substring(basePath.Length + 1), x)).ToList();
 
             return mods;
@@ -35,7 +36,7 @@ namespace EW
         /// 
         /// </summary>
         /// <param name="customModPath"></param>
-        /// <returns></returns>
+        /// <returns></returns> 
         static Dictionary<string,Manifest> GetInstalledMods(string customModPath)
         {
 

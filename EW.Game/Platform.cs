@@ -15,15 +15,31 @@ namespace EW
 
         static string GetSupportDir()
         {
-            if (Directory.Exists("Support"))
-                return "Support" + Path.DirectorySeparatorChar;
-
-
+            //if (Directory.Exists("Support"))
+            //    return "Support" + Path.DirectorySeparatorChar;
+            //Java.IO.File externalFile = Android.App.Application.Context.GetExternalFilesDir(null);
+            //var files = externalFile.ListFiles();
+            //Android.Content.Res.Resources resources = Android.App.Application.Context.Resources;
+            //string rootDirector = Directory.GetDirectoryRoot(externalFile.Path);
+            //string[] directories = Directory.GetDirectories(externalFile.Path);
+            //string[] fileList = Android.App.Application.Context.FileList();
+            Java.IO.File fieDir =  Android.App.Application.Context.FilesDir;
+            //if (File.Exists(fieDir.AbsolutePath))
+            //{
+            //    System.Diagnostics.Debug.Print(fieDir.Path);
+            //}
+            var directories = Directory.GetDirectories(fieDir.Path);
+            //var dirContent = directories[3];
+            //directories = Directory.GetDirectories(dirContent);
+            //if (File.Exists(Path.Combine(dirContent, "settings.yaml")))
+            //{
+            //    System.Diagnostics.Debug.Print(Path.Combine(dirContent,"settings.yaml"));
+            //}
             var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             dir = Path.Combine(dir, RootDirectory);
 
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            if (!Directory.Exists(Path.Combine(dir,"mods/cnc")))
+                Directory.CreateDirectory(Path.Combine(dir, "mods/cnc"));
 
             return dir;//+ Path.DirectorySeparatorChar;
         }
@@ -56,7 +72,7 @@ namespace EW
                 return GameDir;
 
             if (path.StartsWith("./", StringComparison.Ordinal) || path.StartsWith(".\\", StringComparison.Ordinal))
-                path = GameDir + path.Substring(2);
+                path = SupportDir + path.Substring(1);
 
             return path;
         }
