@@ -54,6 +54,7 @@ namespace EW
                 
                 var stream = Android.App.Application.Context.Assets.Open("Content/settings.yaml");
                 var stream2 = Android.App.Application.Context.Assets.Open("Content/mods/cnc/mod.yaml");
+ 
                 //if (File.Exists(settingFile))
                 {
                     var yaml = MiniYaml.DictFromStream(stream);

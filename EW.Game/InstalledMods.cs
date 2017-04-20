@@ -27,8 +27,9 @@ namespace EW
         static IEnumerable<Pair<string,string>> GetCandidateMods()
         {
             var basePath = Platform.ResolvePath(Path.Combine(".", "mods"));
-            string[] directories = Directory.GetDirectories(basePath);
-            var mods = Directory.GetDirectories(basePath).Select(x => Pair.New(x.Substring(basePath.Length + 1), x)).ToList();
+            //string[] directories = Directory.GetDirectories(basePath);
+            string[] directories = Android.App.Application.Context.Assets.List(basePath);
+            var mods = directories.Select(x => Pair.New(x, Path.Combine(basePath,x))).ToList();
 
             return mods;
         }
@@ -43,8 +44,8 @@ namespace EW
             var ret = new Dictionary<string, Manifest>();
             var candidates = GetCandidateMods();
 
-            if (customModPath != null)
-                candidates = candidates.Append(Pair.New(Path.GetFileNameWithoutExtension(customModPath), customModPath));
+            //if (customModPath != null)
+            //    candidates = candidates.Append(Pair.New(Path.GetFileNameWithoutExtension(customModPath), customModPath));
 
             foreach(var pair in candidates)
             {
@@ -61,23 +62,24 @@ namespace EW
             IReadOnlyPackage package = null;
             try
             {
-                if (Directory.Exists(path))
-                    package = new Folder(path);
-                else
-                {
-                    try
-                    {
-                        using (var fileStream = File.OpenRead(path))
-                            package = new ZipFile(fileStream, path);
-                    }
-                    catch
-                    {
-                        throw new InvalidOperationException(path + " is not a valid mod package");
-                    }
-                }
+                package = new Folder(path);
+                //if (Directory.Exists(path))
+                //    package = new Folder(path);
+                //else
+                //{
+                //    try
+                //    {
+                //        using (var fileStream = File.OpenRead(path))
+                //            package = new ZipFile(fileStream, path);
+                //    }
+                //    catch
+                //    {
+                //        throw new InvalidOperationException(path + " is not a valid mod package");
+                //    }
+                //}
 
-                if (!package.Contains("mod.yaml"))
-                    throw new InvalidDataException(path + " is not a valid mod package");
+                //if (!package.Contains("mod.yaml"))
+                //    throw new InvalidDataException(path + " is not a valid mod package");
 
                 return new Manifest(id, package);
 

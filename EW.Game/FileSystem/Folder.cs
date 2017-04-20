@@ -1,9 +1,13 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-
+using Android.App;
+using System.Linq;
 namespace EW.FileSystem
 {
+    /// <summary>
+    /// ÎÄ¼þ¼Ð
+    /// </summary>
     public sealed class Folder:IReadWritePackage
     {
         readonly string path;
@@ -12,20 +16,27 @@ namespace EW.FileSystem
         public Folder(string path)
         {
             this.path = path;
-            if (!Directory.Exists(path))
-                Directory.CreateDirectory(path);
+            //if (!Directory.Exists(path))
+            //    Directory.CreateDirectory(path);
         }
-
+        
         public IEnumerable<string> Contents
         {
             get
             {
-                foreach(var filename in Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly))
+                //foreach(var filename in Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly))
+                string[] lists = Application.Context.Assets.List(path);
+                string[] files = lists.Where(x => x.IndexOf('.') != -1).ToArray();
+                string[] directories = lists.SkipWhile(x => x.IndexOf('.') != -1).ToArray();
+                foreach (var filename in files)
                 {
-                    yield return Path.GetFileName(filename);
+                    //yield return Path.GetFileName(filename);
+                    yield return filename;
                 }
-                foreach (var filename in Directory.GetDirectories(path))
-                    yield return Path.GetFileName(filename);
+
+                foreach (var directorname in directories)
+                    //yield return Path.GetFileName(filename);
+                    yield return directorname;
             }
         }
 
@@ -38,7 +49,8 @@ namespace EW.FileSystem
         {
             try
             {
-                return File.OpenRead(Path.Combine(path, filename));
+                //return File.OpenRead(Path.Combine(path, filename));
+                return Android.App.Application.Context.Assets.Open(Path.Combine(path, filename));
             }
             catch { return null; }
         }

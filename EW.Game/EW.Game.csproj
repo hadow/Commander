@@ -54,10 +54,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eluant, Version=1.0.6317.758, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -147,8 +143,14 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />
-    <None Include="Content\mods\cnc\missions.yaml" />
-    <None Include="Content\mods\cnc\mod.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\missions.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\mod.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\covertops.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\downloads.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\firstdecade.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\gdi95.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\nod95.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\installer\origin.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -165,6 +167,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>
@@ -182,8 +188,8 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Content Include="Content\mods\cnc\logo.png" />
-    <Content Include="Content\mods\cnc\preview.png" />
+    <AndroidAsset Include="Content\mods\cnc\logo.png" />
+    <AndroidAsset Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

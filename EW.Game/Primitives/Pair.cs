@@ -47,10 +47,9 @@ namespace EW.Primitives
 
     }
 
+
     public static class Pair
     {
-
-
         public static Pair<T,U> New<T,U>(T t,U u) { return new Pair<T, U>(t, u); }
         static Pair()
         {
