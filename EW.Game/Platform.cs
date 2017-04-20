@@ -17,18 +17,29 @@ namespace EW
         {
             //if (Directory.Exists("Support"))
             //    return "Support" + Path.DirectorySeparatorChar;
-            string[] fileList = Android.App.Application.Context.FileList();
-            foreach(var a in fileList)
-            {
-                System.Diagnostics.Debug.Print(a);
-            }
-            Java.IO.File file = Android.App.Application.Context.GetExternalFilesDir(null);
-
+            //Java.IO.File externalFile = Android.App.Application.Context.GetExternalFilesDir(null);
+            //var files = externalFile.ListFiles();
+            //Android.Content.Res.Resources resources = Android.App.Application.Context.Resources;
+            //string rootDirector = Directory.GetDirectoryRoot(externalFile.Path);
+            //string[] directories = Directory.GetDirectories(externalFile.Path);
+            //string[] fileList = Android.App.Application.Context.FileList();
+            Java.IO.File fieDir =  Android.App.Application.Context.FilesDir;
+            //if (File.Exists(fieDir.AbsolutePath))
+            //{
+            //    System.Diagnostics.Debug.Print(fieDir.Path);
+            //}
+            var directories = Directory.GetDirectories(fieDir.Path);
+            //var dirContent = directories[3];
+            //directories = Directory.GetDirectories(dirContent);
+            //if (File.Exists(Path.Combine(dirContent, "settings.yaml")))
+            //{
+            //    System.Diagnostics.Debug.Print(Path.Combine(dirContent,"settings.yaml"));
+            //}
             var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             dir = Path.Combine(dir, RootDirectory);
 
-            //if (!Directory.Exists(dir))
-            //    Directory.CreateDirectory(dir);
+            if (!Directory.Exists(Path.Combine(dir,"mods/cnc")))
+                Directory.CreateDirectory(Path.Combine(dir, "mods/cnc"));
 
             return dir;//+ Path.DirectorySeparatorChar;
         }
@@ -57,21 +68,11 @@ namespace EW
             //path = uri.LocalPath;
             //path = path.Substring(1);
             //path = path.Replace(Path.DirectorySeparatorChar == '\\' ? '/' : '\\', Path.DirectorySeparatorChar);
-            if (path== ".")
-            {
-                
-
+            if (path == ".")
                 return GameDir;
-            }
 
             if (path.StartsWith("./", StringComparison.Ordinal) || path.StartsWith(".\\", StringComparison.Ordinal))
-            {
-                var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                dir = Path.Combine(dir, RootDirectory, path.Substring(2));
-                //path = GameDir + path.Substring(2);
-                path = dir;
-            }
-                
+                path = SupportDir + path.Substring(1);
 
             return path;
         }
