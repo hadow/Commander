@@ -15,15 +15,20 @@ namespace EW
 
         static string GetSupportDir()
         {
-            if (Directory.Exists("Support"))
-                return "Support" + Path.DirectorySeparatorChar;
-
+            //if (Directory.Exists("Support"))
+            //    return "Support" + Path.DirectorySeparatorChar;
+            string[] fileList = Android.App.Application.Context.FileList();
+            foreach(var a in fileList)
+            {
+                System.Diagnostics.Debug.Print(a);
+            }
+            Java.IO.File file = Android.App.Application.Context.GetExternalFilesDir(null);
 
             var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             dir = Path.Combine(dir, RootDirectory);
 
-            if (!Directory.Exists(dir))
-                Directory.CreateDirectory(dir);
+            //if (!Directory.Exists(dir))
+            //    Directory.CreateDirectory(dir);
 
             return dir;//+ Path.DirectorySeparatorChar;
         }
@@ -52,11 +57,21 @@ namespace EW
             //path = uri.LocalPath;
             //path = path.Substring(1);
             //path = path.Replace(Path.DirectorySeparatorChar == '\\' ? '/' : '\\', Path.DirectorySeparatorChar);
-            if (path == ".")
+            if (path== ".")
+            {
+                
+
                 return GameDir;
+            }
 
             if (path.StartsWith("./", StringComparison.Ordinal) || path.StartsWith(".\\", StringComparison.Ordinal))
-                path = GameDir + path.Substring(2);
+            {
+                var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                dir = Path.Combine(dir, RootDirectory, path.Substring(2));
+                //path = GameDir + path.Substring(2);
+                path = dir;
+            }
+                
 
             return path;
         }

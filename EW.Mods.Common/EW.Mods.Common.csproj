@@ -40,6 +40,14 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eluant, Version=1.0.6317.758, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -47,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorInitializer.cs" />
+    <Compile Include="ModContent.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -66,6 +75,7 @@
     <Compile Include="Traits\ICommonTraits.cs" />
     <Compile Include="Traits\Mobile.cs" />
     <Compile Include="Traits\Upgrades\UpgradableTrait.cs" />
+    <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -74,10 +84,6 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game</Name>

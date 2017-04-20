@@ -27,9 +27,11 @@ namespace EW
         static IEnumerable<Pair<string,string>> GetCandidateMods()
         {
             var basePath = Platform.ResolvePath(Path.Combine(".", "mods"));
-            var mods = Directory.GetDirectories(basePath).Select(x => Pair.New(x.Substring(basePath.Length + 1), x)).ToList();
+            
+            //var directories = Directory.GetDirectories(basePath);
+            //var mods = directories.Select(x => Pair.New(x.Substring(basePath.Length + 1), x)).ToList();
 
-            return mods;
+            return null;
         }
         /// <summary>
         /// 
@@ -40,17 +42,25 @@ namespace EW
         {
 
             var ret = new Dictionary<string, Manifest>();
-            var candidates = GetCandidateMods();
 
-            if (customModPath != null)
-                candidates = candidates.Append(Pair.New(Path.GetFileNameWithoutExtension(customModPath), customModPath));
 
-            foreach(var pair in candidates)
+            Java.IO.File[] externalFilesDirs = Android.App.Application.Context.GetExternalFilesDirs(null);
+            foreach(var ef in externalFilesDirs)
             {
-                var mod = LoadMod(pair.First, pair.Second);
-                if (mod != null)
-                    ret[pair.First] = mod;
+                System.Diagnostics.Debug.Print(ef.AbsolutePath);
             }
+            //var candidates = GetCandidateMods();
+
+            //if (customModPath != null)
+            //    candidates = candidates.Append(Pair.New(Path.GetFileNameWithoutExtension(customModPath), customModPath));
+
+            //foreach(var pair in candidates)
+            //{
+            //    var mod = LoadMod(pair.First, pair.Second);
+            //    if (mod != null)
+            //        ret[pair.First] = mod;
+            //}
+
             return ret;
         }
 

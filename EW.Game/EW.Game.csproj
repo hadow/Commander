@@ -54,6 +54,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Eluant, Version=1.0.6317.758, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -69,6 +73,7 @@
     <Compile Include="CPos.cs" />
     <Compile Include="CryptoUtil.cs" />
     <Compile Include="CVect.cs" />
+    <Compile Include="Download.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
@@ -142,6 +147,8 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />
+    <None Include="Content\mods\cnc\missions.yaml" />
+    <None Include="Content\mods\cnc\mod.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -158,10 +165,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>
@@ -176,6 +179,11 @@
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libxlua.so">
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Content\mods\cnc\logo.png" />
+    <Content Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

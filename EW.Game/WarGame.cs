@@ -38,6 +38,7 @@ namespace EW
 
             InitializeSettings(args);
 
+            customModPath = Android.App.Application.Context.FilesDir.Path;
             Mods = new InstalledMods(customModPath);
         }
 
