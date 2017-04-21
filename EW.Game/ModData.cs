@@ -61,6 +61,7 @@ namespace EW
 
             ModFiles = new FileSystem.FileSystem(mods);
 
+            //local copy of the manifest
             Manifest = new Manifest(mod.Id, mod.Package);
             ModFiles.LoadFromManifest(Manifest);
 

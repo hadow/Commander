@@ -40,8 +40,25 @@ namespace EW
 
             customModPath = Android.App.Application.Context.FilesDir.Path;
             Mods = new InstalledMods(customModPath);
+
+            InitializeMod(Settings.Game.Mod, args);
         }
 
+        /// <summary>
+        /// ≥ı ºªØMod
+        /// </summary>
+        /// <param name="mode"></param>
+        /// <param name="args"></param>
+        public static void InitializeMod(string mod,Arguments args)
+        {
+            if (ModData != null)
+            {
+
+                ModData = null;
+            }
+
+            ModData = new ModData(Mods[mod], Mods, true);
+        }
 
 
         protected override void Update(GameTime gameTime)

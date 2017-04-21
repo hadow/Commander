@@ -73,7 +73,7 @@ namespace EW.FileSystem
 
 
         /// <summary>
-        /// 
+        /// 打开包文件(.mix,)
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
@@ -81,6 +81,8 @@ namespace EW.FileSystem
         {
             if (filename.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase))
                 return new ZipFile(this, filename);
+            if(filename.EndsWith(".mix",StringComparison.InvariantCultureIgnoreCase))
+                return new 
             IReadOnlyPackage parent;
             string subPath = null;
             if (TryGetPackageContaining(filename, out parent, out subPath))
@@ -201,6 +203,11 @@ namespace EW.FileSystem
             fileIndex = new Cache<string, List<IReadOnlyPackage>>(_ => new List<IReadOnlyPackage>());
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="explicitName"></param>
         public void Mount(string name,string explicitName = null)
         {
             var optional = name.StartsWith("~");
@@ -274,6 +281,12 @@ namespace EW.FileSystem
                 Mount(kv.Key, kv.Value);
         }
 
+
+        /// <summary>
+        /// 打开文件流
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public Stream Open(string filename)
         {
             Stream s = null;

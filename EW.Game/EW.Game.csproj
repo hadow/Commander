@@ -74,6 +74,8 @@
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="FileSystem\Folder.cs" />
+    <Compile Include="FileSystem\MixFile.cs" />
+    <Compile Include="FileSystem\PackageEntry.cs" />
     <Compile Include="FileSystem\ZipFile.cs" />
     <Compile Include="FileSystem\ZipFolder.cs" />
     <Compile Include="GameRules\ActorInfo.cs" />

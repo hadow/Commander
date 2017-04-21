@@ -109,6 +109,14 @@ namespace EW
             return ToDictionary(StringIdentity, elementSelector);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="TKey"></typeparam>
+        /// <typeparam name="TElement"></typeparam>
+        /// <param name="keySelector"></param>
+        /// <param name="elementSelector"></param>
+        /// <returns></returns>
         public Dictionary<TKey,TElement> ToDictionary<TKey,TElement>(Func<string,TKey> keySelector,Func<MiniYaml,TElement> elementSelector)
         {
             var ret = new Dictionary<TKey, TElement>();
