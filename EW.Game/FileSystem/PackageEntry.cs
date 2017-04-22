@@ -33,6 +33,17 @@ namespace EW.FileSystem
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public static uint HashFilename(string name,PackageHashT type)
+        {
+
+        }
+
 
     }
 }

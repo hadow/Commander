@@ -73,6 +73,8 @@
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileFormats\CRC32.cs" />
+    <Compile Include="FileFormats\XccGlobalDatabase.cs" />
+    <Compile Include="FileFormats\XccLocalDatabase.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="FileSystem\Folder.cs" />
     <Compile Include="FileSystem\MixFile.cs" />
