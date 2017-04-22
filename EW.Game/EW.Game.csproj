@@ -72,6 +72,7 @@
     <Compile Include="Download.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
+    <Compile Include="FileFormats\CRC32.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="FileSystem\Folder.cs" />
     <Compile Include="FileSystem\MixFile.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Primitives\ConcurrentCache.cs" />
     <Compile Include="Primitives\Pair.cs" />
     <Compile Include="Primitives\ReadOnlyDictionary.cs" />
+    <Compile Include="Primitives\SegmentStream.cs" />
     <Compile Include="Primitives\TypeDictionary.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

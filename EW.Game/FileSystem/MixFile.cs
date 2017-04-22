@@ -50,7 +50,7 @@ namespace EW.FileSystem
         }
 
         /// <summary>
-        /// 
+        /// 解析头文件
         /// </summary>
         /// <param name="s"></param>
         /// <param name="offset"></param>
@@ -58,7 +58,18 @@ namespace EW.FileSystem
         /// <returns></returns>
         static List<PackageEntry> ParseHeader(Stream s,long offset,out long headerEnd)
         {
+            s.Seek(offset, SeekOrigin.Begin);
+            var numFiles = s.ReadUInt16();          //文件数量
+            s.ReadUInt32();                         //Data Size
 
+            var items = new List<PackageEntry>();
+            for(var i = 0; i < numFiles; i++)
+            {
+                items.Add(new PackageEntry(s));
+            }
+
+            headerEnd = offset + 6 + numFiles * PackageEntry.Size;
+            return items;
         }
 
         /// <summary>
@@ -68,6 +79,9 @@ namespace EW.FileSystem
         /// <returns></returns>
         public Stream GetContent(PackageEntry entry)
         {
+            Stream parentStream;
+            var baseOffset = dataStart + entry.Offset;
+            var nestedOffset = baseOffset = 
 
         }
 

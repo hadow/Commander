@@ -4,11 +4,15 @@ using System.Collections.Generic;
 
 namespace EW.FileSystem
 {
+    public enum PackageHashT { Classic,CRC32}
+
     /// <summary>
     /// 
     /// </summary>
     public class PackageEntry
     {
+
+        public const int Size = 12;
         public readonly uint Hash;
         public readonly uint Offset;
         public readonly uint Length;
