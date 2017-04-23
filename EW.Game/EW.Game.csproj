@@ -157,9 +157,13 @@
     <AndroidAsset Include="Content\mods\cnc\installer\gdi95.yaml" />
     <AndroidAsset Include="Content\mods\cnc\installer\nod95.yaml" />
     <AndroidAsset Include="Content\mods\cnc\installer\origin.yaml" />
-    <AndroidAsset Include="Content\mods\cnc\bits\snow.mix">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </AndroidAsset>
+    <AndroidAsset Include="Content\mods\cnc\bits\snow.mix" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\b06.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\br10.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\br5.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\p08.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\p09.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\desert\p10.des" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>

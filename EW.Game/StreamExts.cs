@@ -48,6 +48,17 @@ namespace EW
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static byte[] ReadAllBytes(this Stream s)
+        {
+            using (s)
+                return s.ReadBytes((int)(s.Length - s.Position));
+        }
+
 
     }
 }

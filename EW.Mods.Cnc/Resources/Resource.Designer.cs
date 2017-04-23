@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.Game.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.Mods.Cnc.Resource", IsApplication=false)]
 
-namespace EW.Game
+namespace EW.Mods.Cnc
 {
 	
 	
@@ -22,12 +22,6 @@ namespace EW.Game
 		static Resource()
 		{
 			global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-		}
-		
-		public static void UpdateIdValues()
-		{
-			global::Eluant.Android.Resource.String.library_name = global::EW.Game.Resource.String.library_name;
-			global::EW.Xna.Platforms.Resource.String.library_name = global::EW.Game.Resource.String.library_name;
 		}
 		
 		public partial class Attribute
@@ -43,33 +37,14 @@ namespace EW.Game
 			}
 		}
 		
-		public partial class Drawable
-		{
-			
-			// aapt resource value: 0x7f020000
-			public const int Icon = 2130837504;
-			
-			static Drawable()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Drawable()
-			{
-			}
-		}
-		
 		public partial class String
 		{
 			
-			// aapt resource value: 0x7f030002
-			public const int ApplicationName = 2130903042;
+			// aapt resource value: 0x7f020001
+			public static int ApplicationName = 2130837505;
 			
-			// aapt resource value: 0x7f030001
-			public const int Hello = 2130903041;
-			
-			// aapt resource value: 0x7f030000
-			public const int library_name = 2130903040;
+			// aapt resource value: 0x7f020000
+			public static int Hello = 2130837504;
 			
 			static String()
 			{
