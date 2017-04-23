@@ -59,6 +59,12 @@ namespace EW
             }
         }
 
+        /// <summary>
+        /// 转化属性
+        /// </summary>
+        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+        public sealed class TranslateAttribute : Attribute { }
+
         [AttributeUsage(AttributeTargets.Field)]
         public class SerializeAttribute : Attribute
         {
@@ -124,6 +130,11 @@ namespace EW
 
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
+        /// <summary>
+        /// 成员变量是否带有转化属性
+        /// </summary>
+        static readonly ConcurrentCache<MemberInfo, bool> MemberHasTranslateAttribute = new ConcurrentCache<MemberInfo, bool>(member => member.HasAttribute<TranslateAttribute>());
+
         public static Func<string, Type, string, object> InvalidValueAction = (s, t, f) =>
            {
                throw new YamlException("FieldLoader: Cannot pars '{0}' into '{1}.{2}'".F(s, f, t));
@@ -171,7 +182,7 @@ namespace EW
             var value = yaml.Value;
             if (value != null)
                 value = value.Trim();
-
+            
             if(fieldType == typeof(int))
             {
                 int res;
@@ -192,6 +203,14 @@ namespace EW
                 if (long.TryParse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out res))
                     return res;
                 return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(string))
+            {
+                if(field!=null && MemberHasTranslateAttribute[field] && value != null)
+                {
+
+                }
+                return value;
             }
             else if(fieldType == typeof(WPos))
             {

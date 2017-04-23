@@ -49,9 +49,19 @@ namespace EW.FileSystem
         {
             try
             {
+                var filePath = Path.Combine(path, filename);
                 //return File.OpenRead(Path.Combine(path, filename));
-                return Android.App.Application.Context.Assets.Open(Path.Combine(path, filename));
+                var stream = Android.App.Application.Context.Assets.Open(filePath);
+#if ANDROID
+                MemoryStream memStream = new MemoryStream();
+                stream.CopyTo(memStream);
+                memStream.Seek(0, SeekOrigin.Begin);
+                stream.Close();
+                stream = memStream;
+#endif
+                return memStream;
             }
+
             catch { return null; }
         }
 

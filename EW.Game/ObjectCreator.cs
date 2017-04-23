@@ -6,8 +6,12 @@ using EW.Primitives;
 using System.Linq;
 namespace EW
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ObjectCreator
     {
+        static readonly Dictionary<string, Assembly> ResolvedAssemblies = new Dictionary<string, Assembly>();
         readonly Pair<Assembly, string>[] assemblies;
         readonly Cache<string, Type> typeCache;
         readonly Cache<Type, ConstructorInfo> ctorCache;
@@ -26,9 +30,48 @@ namespace EW
 
         public ObjectCreator(Manifest manifest,FileSystem.FileSystem modeFiles)
         {
+            typeCache = new Cache<string, Type>(FindType);
+            ctorCache = new Cache<Type, ConstructorInfo>(GetCtor);
 
+            var assemblyList = new List<Assembly>() { typeof(WarGame).Assembly };
 
+            foreach(var path in manifest.Assemblies)
+            {
+                var data = modeFiles.Open(path).ReadAllBytes();
 
+                var hash = CryptoUtil.SHA1Hash(data);
+
+                Assembly assembly;
+                if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
+                {
+                    assembly = Assembly.Load(data);
+                    ResolvedAssemblies.Add(hash, assembly);
+                }
+
+                assemblyList.Add(assembly);
+            }
+
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            assemblies = assemblyList.SelectMany(asm => asm.GetNamespaces().Select(ns => Pair.New(asm, ns))).ToArray();
+            AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        Assembly ResolveAssembly(object sender,ResolveEventArgs e)
+        {
+            foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if(a.FullName == e.Name)
+                {
+                    return a;
+                }
+            }
+            return assemblies.Select(a => a.First).FirstOrDefault(a => a.FullName == e.Name);
         }
 
         /// <summary>

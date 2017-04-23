@@ -20,8 +20,10 @@ namespace EW
         {
             mods = GetInstalledMods(customPath);
         }
+
+
         /// <summary>
-        /// 
+        /// 可供选择的Mod
         /// </summary>
         /// <returns></returns>
         static IEnumerable<Pair<string,string>> GetCandidateMods()

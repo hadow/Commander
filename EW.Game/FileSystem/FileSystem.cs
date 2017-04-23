@@ -51,6 +51,10 @@ namespace EW.FileSystem
         /// 
         /// </summary>
         readonly Dictionary<IReadOnlyPackage, int> mountedPackages = new Dictionary<IReadOnlyPackage, int>();
+
+        /// <summary>
+        /// 显示挂载
+        /// </summary>
         readonly Dictionary<string, IReadOnlyPackage> explicitMounts = new Dictionary<string, IReadOnlyPackage>();
         public IEnumerable<IReadOnlyPackage> MountedPackages { get { return mountedPackages.Keys; } }
 
@@ -60,6 +64,9 @@ namespace EW.FileSystem
         /// </summary>
         readonly List<IReadOnlyPackage> modPackages = new List<IReadOnlyPackage>();
 
+        /// <summary>
+        /// 文件包索引
+        /// </summary>
         Cache<string, List<IReadOnlyPackage>> fileIndex = new Cache<string, List<IReadOnlyPackage>>(_ => new List<IReadOnlyPackage>());
         /// <summary>
         /// 已安装Mod
@@ -81,8 +88,8 @@ namespace EW.FileSystem
         {
             if (filename.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase))
                 return new ZipFile(this, filename);
-            if(filename.EndsWith(".mix",StringComparison.InvariantCultureIgnoreCase))
-                return new 
+            if (filename.EndsWith(".mix", StringComparison.InvariantCultureIgnoreCase))
+                return new MixFile(this, filename);
             IReadOnlyPackage parent;
             string subPath = null;
             if (TryGetPackageContaining(filename, out parent, out subPath))
@@ -189,6 +196,9 @@ namespace EW.FileSystem
         }
 
 
+        /// <summary>
+        /// 卸载所有已装载文件
+        /// </summary>
         public void UnmountAll()
         {
             foreach (var package in mountedPackages.Keys)
@@ -204,7 +214,7 @@ namespace EW.FileSystem
         }
 
         /// <summary>
-        /// 
+        /// 装载文件
         /// </summary>
         /// <param name="name"></param>
         /// <param name="explicitName"></param>
@@ -237,8 +247,8 @@ namespace EW.FileSystem
             }
             catch
             {
-                if (!optional)
-                    throw;
+                //if (!optional)
+                //    throw;
             }
         }
 
@@ -290,7 +300,11 @@ namespace EW.FileSystem
         public Stream Open(string filename)
         {
             Stream s = null;
+            if (!TryOpen(filename, out s))
+            {
 
+                //throw new FileNotFoundException("File not found:{0}".F(filename), filename);
+            }
 
             return s;
         }

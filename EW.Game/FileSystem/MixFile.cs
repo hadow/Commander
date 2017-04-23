@@ -33,6 +33,18 @@ namespace EW.FileSystem
                 var isEncrypted = false;
                 if (!isCncMix)
                     isEncrypted = (s.ReadUInt16() & 0x2) != 0;
+
+                List<PackageEntry> entries;
+                //if (isEncrypted)
+                //{
+                //    entries = ParseHeader()
+                //}
+                //else
+                {
+                    entries = ParseHeader(s, isCncMix ? 0 : 4, out dataStart);
+                }
+                
+
             }
             catch (Exception)
             {
@@ -70,12 +82,36 @@ namespace EW.FileSystem
 
             if(context.Exists("global mix database.dat"))
             {
-                using(var db = new XccLocalDatabase(context.Open("global mix database.dat")))
+                using(var db = new XccGlobalDatabase(context.Open("global mix database.dat")))
                 {
                     foreach (var e in db.Entries)
                         allPossibleFilenames.Add(e);
                 }
             }
+
+            foreach(var filename in allPossibleFilenames)
+            {
+                var classicHash = PackageEntry.HashFilename(filename, PackageHashT.Classic);
+                var crcHash = PackageEntry.HashFilename(filename, PackageHashT.CRC32);
+
+                PackageEntry e;
+
+                if (entries.TryGetValue(classicHash, out e))
+                    classicIndex.Add(filename, e);
+
+                if (entries.TryGetValue(crcHash, out e))
+                    crcIndex.Add(filename, e);
+            }
+
+            var bestIndex = crcIndex.Count > classicIndex.Count ? crcIndex : classicIndex;
+
+            var unknown = entries.Count - bestIndex.Count;
+            if(unknown>0)
+            {
+
+            }
+
+            return bestIndex;
         }
 
         /// <summary>
@@ -124,10 +160,18 @@ namespace EW.FileSystem
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public Stream GetStream(string filename)
         {
             PackageEntry e;
-            if()
+            if (!index.TryGetValue(filename, out e))
+                return null;
+
+            return GetContent(e);
         }
 
 

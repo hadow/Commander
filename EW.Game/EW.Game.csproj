@@ -157,6 +157,9 @@
     <AndroidAsset Include="Content\mods\cnc\installer\gdi95.yaml" />
     <AndroidAsset Include="Content\mods\cnc\installer\nod95.yaml" />
     <AndroidAsset Include="Content\mods\cnc\installer\origin.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\bits\snow.mix">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AndroidAsset>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +199,10 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

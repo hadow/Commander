@@ -13,5 +13,11 @@ namespace EW
                 return new string(csp.ComputeHash(data).SelectMany(a => a.ToString("x2")).ToArray());
         }
 
+        public static string SHA1Hash(byte[] data)
+        {
+            using (var csp = SHA1.Create())
+                return new string(csp.ComputeHash(data).SelectMany(a => a.ToString("x2")).ToArray());
+        }
+
     }
 }
