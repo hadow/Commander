@@ -48,8 +48,8 @@ namespace EW.FileSystem
             }
             catch (Exception)
             {
-                Dispose();
-                throw;
+                //Dispose();
+                //throw;
             }
         }
 

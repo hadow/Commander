@@ -94,7 +94,7 @@ namespace EW.FileSystem
             string subPath = null;
             if (TryGetPackageContaining(filename, out parent, out subPath))
                 return OpenPackage(subPath, parent);
-            return new Folder(filename);
+            return new Folder(Platform.ResolvePath(filename));
         }
 
         /// <summary>
@@ -302,7 +302,6 @@ namespace EW.FileSystem
             Stream s = null;
             if (!TryOpen(filename, out s))
             {
-
                 //throw new FileNotFoundException("File not found:{0}".F(filename), filename);
             }
 
