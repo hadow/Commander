@@ -34,8 +34,6 @@ namespace EW
         public MapGrid(MiniYaml yaml)
         {
             FieldLoader.Load(this, yaml);
-
-
         }
 
         /// <summary>

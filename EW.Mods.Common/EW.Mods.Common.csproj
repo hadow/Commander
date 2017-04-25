@@ -40,9 +40,6 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eluant">
-      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -54,6 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorInitializer.cs" />
+    <Compile Include="ColorValidator.cs" />
+    <Compile Include="Graphics\DefaultSpriteSequence.cs" />
+    <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="ModContent.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -66,6 +66,10 @@
     <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />
+    <Compile Include="SpriteLoaders\ShpTDLoader.cs" />
+    <Compile Include="SpriteLoaders\ShpTSLoader.cs" />
+    <Compile Include="SpriteLoaders\TmpRALoader.cs" />
+    <Compile Include="SpriteLoaders\TmpTDLoader.cs" />
     <Compile Include="Traits\AmmoPool.cs" />
     <Compile Include="Traits\Armament.cs" />
     <Compile Include="Traits\Attack\AttackBase.cs" />
@@ -83,6 +87,10 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game</Name>
@@ -92,5 +100,6 @@
       <Name>EW.Xna.Platforms</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

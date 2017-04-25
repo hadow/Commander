@@ -70,10 +70,20 @@ namespace EW
                                 Missions,
                                 MapCompatibility;
 
-        readonly string[] reservedModuleNames = { "Metadata", "Folders", "MapFolders", "Packages", "Rules", "Sequences", "Assemblies", "Weapons" };
+        readonly string[] reservedModuleNames = { "Metadata", "Folders", "MapFolders","Cursors",
+                                                "Packages", "Rules", "Sequences","VoxelSequences",
+                                                "Assemblies", "Weapons","RequiresMods","Fonts",
+                                                "SoundFormats","SpriteFormats","Missions","Music","Videos","Notifications",
+                                                "TileSets","Chrome","ChromeLayout","Voices","Translations","ServerTraits",
+                                                "LoadScreen","ChromeMetrics","SupportsMapsFrom",};
 
+        /// <summary>
+        /// 
+        /// </summary>
         readonly TypeDictionary modules = new TypeDictionary();
+
         bool customDataLoaded;
+
         public Manifest(string modId,IReadOnlyPackage package)
         {
             Id = modId;
@@ -82,7 +92,9 @@ namespace EW
             yaml = new MiniYaml(null, MiniYaml.FromStream(Package.GetStream("mod.yaml"), "mod.yaml")).ToDictionary();
 
             Metadata = FieldLoader.Load<ModMetadata>(yaml["Metadata"]);
-            
+
+            MapFolders = YamlDictionary(yaml, "MapFolders");
+
             MiniYaml packages;
             if (yaml.TryGetValue("Packages", out packages))
                 Packages = packages.ToDictionary(x => x.Value).AsReadOnly();
@@ -96,6 +108,18 @@ namespace EW
             TileSets = YamlList(yaml, "TileSets");
             Missions = YamlList(yaml, "Missions");
             ServerTraits = YamlList(yaml, "ServerTraits");
+
+            var compat = new List<string> { Id };
+
+            if (yaml.ContainsKey("SupportsMapsFrom"))
+                compat.AddRange(yaml["SupportsMapsFrom"].Value.Split(',').Select(c => c.Trim()));
+
+            MapCompatibility = compat.ToArray();
+
+            if (yaml.ContainsKey("SpriteFormats"))
+            {
+                SpriteFormats = FieldLoader.GetValue<string[]>("SpriteFormats", yaml["SpriteFormats"].Value);
+            }
         }
 
         /// <summary>
@@ -128,7 +152,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 加载自定义YAML Data
         /// </summary>
         /// <param name="oc"></param>
         public void LoadCustomData(ObjectCreator oc)

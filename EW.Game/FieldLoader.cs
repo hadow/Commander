@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
 using EW.Primitives;
@@ -177,6 +178,14 @@ namespace EW
             return GetValue(fieldName, fieldType, new MiniYaml(value), field);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fieldName"></param>
+        /// <param name="fieldType"></param>
+        /// <param name="yaml"></param>
+        /// <param name="field"></param>
+        /// <returns></returns>
         public static object GetValue(string fieldName,Type fieldType,MiniYaml yaml,MemberInfo field)
         {
             var value = yaml.Value;
@@ -242,6 +251,38 @@ namespace EW
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     return new CVec(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
+            }
+            else if (fieldType.IsEnum)
+            {
+                try
+                {
+                    return Enum.Parse(fieldType, value, true);
+                }
+                catch (ArgumentException)
+                {
+                    return InvalidValueAction(value, fieldType, fieldName);
+                }
+            }
+            else if(fieldType == typeof(Size))
+            {
+                if (value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new Size(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                }
+            }
+            else if(fieldType.IsArray && fieldType.GetArrayRank() == 1) //获取Rank属性,例如，一维数组返回1，二维数组返回2
+            {
+                if (value == null)
+                    return Array.CreateInstance(fieldType.GetElementType(), 0);
+                var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                var ret = Array.CreateInstance(fieldType.GetElementType(), parts.Length);
+                for(var i = 0; i < parts.Length; i++)
+                {
+                    ret.SetValue(GetValue(fieldName, fieldType.GetElementType(), parts[i].Trim(), field), i);
+                }
+                return ret;
             }
             return null;
         }

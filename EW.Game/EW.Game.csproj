@@ -54,10 +54,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eluant, Version=1.0.6319.41162, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -90,6 +86,7 @@
     <Compile Include="GameRules\Ruleset.cs" />
     <Compile Include="GameRules\SoundInfo.cs" />
     <Compile Include="GameRules\WeaponInfo.cs" />
+    <Compile Include="GameSpeeds.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
@@ -168,6 +165,222 @@
     <AndroidAsset Include="Content\mods\cnc\bits\desert\p08.des" />
     <AndroidAsset Include="Content\mods\cnc\bits\desert\p09.des" />
     <AndroidAsset Include="Content\mods\cnc\bits\desert\p10.des" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\b1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\b2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\b3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bib1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bib2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bib3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bridge1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bridge1d.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bridge2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\bridge2d.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\clear1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr4.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr5.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\cr6.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d06.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d09.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d15.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d16.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d17.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d18.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d19.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d20.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d21.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d22.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d23.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d24.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d25.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d26.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d27.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d28.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d29.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d30.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d31.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d32.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d33.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d34.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d35.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d36.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d37.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d38.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d39.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d40.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d41.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d42.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\d43.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\falls1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\falls2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ford1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ford2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\jungle.pal" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\p14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv06.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv09.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\rv13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s06.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s09.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s15.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s16.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s17.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s18.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s19.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s20.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s21.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s22.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s23.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s24.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s25.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s26.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s27.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s28.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s29.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s30.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s31.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s32.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s33.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s34.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s35.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s36.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s37.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\s38.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc4.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc5.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sc6.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh15.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh16.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh17.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh18.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh32.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh33.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh34.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh35.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh4.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh5.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh6.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh7.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh8.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sh9.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\split2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\split3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sr1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\sr2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t06.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t15.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t16.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\t17.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\tc01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\tc02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\tc03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\tc04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\tc05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti3.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti4.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti5.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti6.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti7.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti8.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\ti9.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v01.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v02.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v03.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v04.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v05.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v06.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v07.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v08.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v09.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v10.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v11.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v12.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v13.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v14.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v15.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v16.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v17.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\v18.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\w1.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\jungle\w2.jun" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\armorcrate.shp" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\armorup.aud" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\firepowercrate.shp" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\firepowerup.aud" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\rangeup.aud" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\rateoffireup.aud" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\speedcrate.shp" />
+    <AndroidAsset Include="Content\mods\cnc\bits\ss\speedup.aud" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +397,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>
@@ -199,16 +416,18 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\mods\cnc\maps\" />
+  </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

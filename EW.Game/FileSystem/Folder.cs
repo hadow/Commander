@@ -27,7 +27,7 @@ namespace EW.FileSystem
                 //foreach(var filename in Directory.GetFiles(path, "*", SearchOption.TopDirectoryOnly))
                 string[] lists = Application.Context.Assets.List(path);
                 string[] files = lists.Where(x => x.IndexOf('.') != -1).ToArray();
-                string[] directories = lists.SkipWhile(x => x.IndexOf('.') != -1).ToArray();
+                string[] directories = lists.SkipWhile(x => x.IndexOf('.') == -1).ToArray();
                 foreach (var filename in files)
                 {
                     //yield return Path.GetFileName(filename);

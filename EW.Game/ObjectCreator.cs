@@ -7,7 +7,7 @@ using System.Linq;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// 创建自定义YAML对象
     /// </summary>
     public class ObjectCreator
     {
@@ -127,7 +127,7 @@ namespace EW
             }
 
             var ctor = ctorCache[type];
-            if (ctor != null)
+            if (ctor == null)
                 return (T)CreateBasic(type);
             else
                 return (T)CreateUsingArgs(ctor, args);

@@ -116,7 +116,13 @@ namespace EW.FileSystem
             if(parent is ZipFolder)
             {
                 var folder = (ZipFolder)parent;
-
+                return new ZipFolder(this, folder.Parent, folder.Name + "/" + filename, filename);
+            }
+            if(parent is Folder)
+            {
+                var subFolder = Platform.ResolvePath(Path.Combine(parent.Name, filename));
+                //if (Directory.Exists(subFolder))
+                    return new Folder(subFolder);
             }
             return null;
         }
