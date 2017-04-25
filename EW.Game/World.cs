@@ -33,6 +33,8 @@ namespace EW
         public event Action<Actor> ActorAdded = _ => { };
         public event Action<Actor> ActorRemoved = _ => { };
 
+        public Player[] Players = new Player[0];
+
         public bool ShouldTick { get { return Type != WorldT.Shellmap; } }
         internal World(Map map,OrderManager orderManager,WorldT type)
         {

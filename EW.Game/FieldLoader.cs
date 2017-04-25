@@ -129,6 +129,15 @@ namespace EW
             public IgnoreAttribute() : base(false) { }
         }
 
+        [AttributeUsage(AttributeTargets.Field)]
+        public sealed class FieldFromYamlKeyAttribute : SerializeAttribute
+        {
+            public FieldFromYamlKeyAttribute()
+            {
+                FromYamlKey = true;
+            }
+        }
+
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
         /// <summary>

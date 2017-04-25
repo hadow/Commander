@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Primitives;
 namespace EW
@@ -22,13 +23,13 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public class ActorInitializer:IActorInitializer
+    public class ActorInitializer : IActorInitializer
     {
         public readonly Actor Self;
         public World World { get { return Self.World; } }
 
         internal TypeDictionary Dict;
-        public ActorInitializer(Actor actor,TypeDictionary dict)
+        public ActorInitializer(Actor actor, TypeDictionary dict)
         {
             Self = actor;
             Dict = dict;
@@ -39,7 +40,7 @@ namespace EW
             return Dict.Get<T>();
         }
 
-        public U Get<T,U>() where T : IActorInit<U>
+        public U Get<T, U>() where T : IActorInit<U>
         {
             return Dict.Get<T>().Value(World);
         }
@@ -50,5 +51,50 @@ namespace EW
         }
 
 
+
+    }
+
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class LocationInit : IActorInit<CPos>
+    {
+        [FieldLoader.FieldFromYamlKey]
+        readonly CPos value = CPos.Zero;
+        public LocationInit() { }
+
+        public LocationInit(CPos init) { value = init; }
+
+        public CPos Value(World world) { return value; }
+    }
+
+    public class OwnerInit : IActorInit<Player>
+    {
+
+        [FieldLoader.FieldFromYamlKey]
+        public readonly string PlayerName = "Neutral";
+        Player player;
+
+        public OwnerInit(string playerName)
+        {
+            PlayerName = playerName;
+        }
+
+        public OwnerInit(Player player)
+        {
+            this.player = player;
+            PlayerName = player.InternalName;
+        }
+
+        public Player Value(World world)
+        {
+            if (player != null)
+                return player;
+
+            return world.Players.First(x => x.InternalName == PlayerName);
+        }
+             
     }
 }

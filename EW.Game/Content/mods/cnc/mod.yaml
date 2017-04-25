@@ -8,8 +8,8 @@ RequiresMods:
 	modchooser: {DEV_VERSION}
 
 Packages:
-	~^Content/cnc
-	~^Content/cnc/movies
+	~^/cnc
+	~^/cnc/movies
 	.
 	$cnc: cnc
 	./mods/common: common

@@ -44,6 +44,7 @@ namespace EW
         public readonly EW.Primitives.IReadOnlyDictionary<string, string> Packages;
         public readonly EW.Primitives.IReadOnlyDictionary<string, string> MapFolders;
 
+        public readonly MiniYaml LoadScreen;
         public readonly Dictionary<string, string> RequiresMods;
 
         /// <summary>
@@ -108,6 +109,9 @@ namespace EW
             TileSets = YamlList(yaml, "TileSets");
             Missions = YamlList(yaml, "Missions");
             ServerTraits = YamlList(yaml, "ServerTraits");
+
+            if (!yaml.TryGetValue("LoadScreen", out LoadScreen))
+                throw new InvalidDataException("'LoadScreen' section is not defined.");
 
             var compat = new List<string> { Id };
 

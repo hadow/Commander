@@ -83,7 +83,7 @@ namespace EW.FileSystem
 
         public bool Contains(string filename)
         {
-            return false;
+            return pkg.GetEntry(filename)!=null;
         }
 
         public void Update(string filename,byte[] contents)

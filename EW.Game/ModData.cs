@@ -28,6 +28,8 @@ namespace EW
 
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
+
+        public ILoadScreen LoadScreen { get; private set; }
         /// <summary>
         /// ƒ¨»œπÊ‘Ú 
         /// </summary>
@@ -67,6 +69,14 @@ namespace EW
 
             ObjectCreator = new ObjectCreator(Manifest, ModFiles);
             Manifest.LoadCustomData(ObjectCreator);
+
+            if (useLoadScreen)
+            {
+                LoadScreen = ObjectCreator.CreateObject<ILoadScreen>(Manifest.LoadScreen.Value);
+                LoadScreen.Init(this, Manifest.LoadScreen.ToDictionary(my => my.Value));
+                LoadScreen.Display();
+            }
+
 
             MapCache = new MapCache(this);
 
@@ -135,9 +145,23 @@ namespace EW
 
         public void Dispose()
         {
+            MapCache.Dispose();
 
         }
 
 
+    }
+
+
+
+    public interface ILoadScreen : IDisposable
+    {
+        void Init(ModData m, Dictionary<string, string> info);
+
+        void Display();
+
+        bool RequiredContentIsInstalled();
+
+        void StartGame(Arguments args);
     }
 }

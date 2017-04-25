@@ -63,6 +63,11 @@ namespace EW
                 ModData.MapCache.LoadMaps();
         }
 
+        public static T CreateObject<T>(string name)
+        {
+            return ModData.ObjectCreator.CreateObject<T>(name);
+        }
+
 
         protected override void Update(GameTime gameTime)
         {

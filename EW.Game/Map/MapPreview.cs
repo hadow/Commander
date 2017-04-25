@@ -218,6 +218,32 @@ namespace EW
 
             try
             {
+                MiniYaml actorDefinitions;
+                if(yaml.TryGetValue("Actors",out actorDefinitions))
+                {
+                    var spawns = new List<CPos>();
+                    foreach(var kv in actorDefinitions.Nodes.Where(d=>d.Value.Value == "mpspawn"))
+                    {
+                        var s = new ActorReference(kv.Value.Value, kv.Value.ToDictionary());
+                        spawns.Add(s.InitDict.Get<LocationInit>().Value(null));
+                    }
+                    newData.SpawnPoints = spawns.ToArray();
+                }
+                else
+                {
+                    newData.SpawnPoints = new CPos[0];
+                }
+            }
+            catch (Exception)
+            {
+                newData.SpawnPoints = new CPos[0];
+                newData.Status = MapStatus.Unavailable;
+            }
+
+
+            try
+            {
+                //
                 MiniYaml playerDefinitions;
                 if(yaml.TryGetValue("Players",out playerDefinitions))
                 {
