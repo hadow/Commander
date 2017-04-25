@@ -284,6 +284,19 @@ namespace EW
                 }
                 return ret;
             }
+            else if(fieldType == typeof(EW.Xna.Platforms.Rectangle))
+            {
+                if (value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new EW.Xna.Platforms.Rectangle(
+                        Exts.ParseIntegerInvariant(parts[0]),
+                        Exts.ParseIntegerInvariant(parts[1]),
+                        Exts.ParseIntegerInvariant(parts[2]),
+                        Exts.ParseIntegerInvariant(parts[3]));
+                }
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             return null;
         }
 

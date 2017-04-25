@@ -58,6 +58,9 @@ namespace EW
             }
 
             ModData = new ModData(Mods[mod], Mods, true);
+
+            using (new Support.PerfTimer("LoadMaps"))
+                ModData.MapCache.LoadMaps();
         }
 
 

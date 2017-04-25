@@ -173,10 +173,13 @@ namespace EW
         public string Tileset;
         public bool LockPreview;
         public EW.Xna.Platforms.Rectangle Bounds;
+        public MapVisibility Visibility = MapVisibility.Lobby;
+        public string[] Categories = { "Conquest" };
 
+        //
         public List<MiniYamlNode> PlayerDefinitions = new List<MiniYamlNode>();
         public List<MiniYamlNode> ActorDefinitions = new List<MiniYamlNode>();
-        
+
         public readonly MiniYaml RuleDefinitions;
         public readonly MiniYaml SequenceDefinitions;
         public readonly MiniYaml VoxelSequenceDefinitions;
