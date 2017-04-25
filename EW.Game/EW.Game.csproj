@@ -381,6 +381,51 @@
     <AndroidAsset Include="Content\mods\cnc\bits\ss\rateoffireup.aud" />
     <AndroidAsset Include="Content\mods\cnc\bits\ss\speedcrate.shp" />
     <AndroidAsset Include="Content\mods\cnc\bits\ss\speedup.aud" />
+    <AndroidAsset Include="Content\mods\cnc\maps\aggressivetendencies.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\avocado.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\break_of_day.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\chokepoint.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\chord_simple.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\dead_in_motion_2.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\deterring_democracy.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\deterring_democracy_plus.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\eastwest3.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\escalations.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\garden2.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\haos_ridges_cnc.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\hegemony_or_survival.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\hegemony_or_survival_8p.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\IN-IslandDuel.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\Instant_Karma.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\into_the_river_below.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\lessons_from_kosovo.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\llamas.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\llamas2.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\manufacturing_consent.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\minus_two.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\morbid-aimless-poseidon-2.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\mtnukebait.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\necessary_illusions.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\Nullpeter.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\pirates_and_emperors.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\pressure_cnc.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\profit_over_people.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\rogue_states.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\rubicon.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\sandstorm.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\sea_and_cake.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\thesentinel.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\the_hourglass.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\tiberium-oasis-cluster.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\treasure-island-2.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\two-ponds.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\vectorsofbattle.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\white_acres.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\_lostsouls.oramap" />
+    <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\shellmap\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\shellmap\shellmap.lua" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -416,9 +461,7 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\mods\cnc\maps\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
@@ -428,6 +471,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
