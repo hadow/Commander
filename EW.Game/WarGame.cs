@@ -113,5 +113,10 @@ namespace EW
             base.Draw(gameTime);
 
         }
+
+        public static T CreateObject<T>(string name)
+        {
+            return ModData.ObjectCreator.CreateObject<T>(name);
+        }
     }
 }

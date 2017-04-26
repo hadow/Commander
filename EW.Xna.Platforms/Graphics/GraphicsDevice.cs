@@ -55,7 +55,8 @@ namespace EW.Xna.Platforms.Graphics
         private BlendState _blendStateNonPremultiplied;
         private BlendState _blendStateOpaque;
 
-
+        private BlendState _blendState;
+        private BlendState _actualBlendState;
 
         private DepthStencilState _depthStencilState;
         private DepthStencilState _actualDepthStencilState;
@@ -318,13 +319,30 @@ namespace EW.Xna.Platforms.Graphics
 
         
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void Setup()
         {
+
+            if(DisplayMode == null)
+            {
+                throw new Exception("");
+            }
             _viewport = new Viewport(0, 0, DisplayMode.Width, DisplayMode.Height);
 
             _viewport.MaxDepth = 1.0f;
 
+            PlatformSetup();
+
             Textures = new TextureCollection(this, MaxTextureSlots, false);
+
+            _blendStateAdditive = BlendState.Additive.Clone();
+            _blendStateAlphaBlend = BlendState.AlphaBlend.Clone();
+            _blendStateNonPremultiplied = BlendState.NonPremultiplied.Clone();
+            _blendStateOpaque = BlendState.Opaque.Clone();
+            BlendState = BlendState.Opaque;
+
         }
 
        

@@ -119,6 +119,19 @@ namespace EW.Xna.Platforms.Graphics
             }
         }
 
+        internal TargetBlendState Clone(BlendState parent)
+        {
+            return new TargetBlendState(parent)
+            {
+                AlphaBlendFunction = AlphaBlendFunction,
+                AlphaDestinationBlend = AlphaDestinationBlend,
+                AlphaSourceBlend = AlphaSourceBlend,
+                ColorBlendFunction = ColorBlendFunction,
+                ColorDestinationBlend = ColorDestinationBlend,
+                ColorSourceBlend = ColorSourceBlend,
+                ColorWriteChannels = ColorWriteChannels,
+            };
+        }
 
 
 

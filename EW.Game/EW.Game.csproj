@@ -463,16 +463,15 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Content\mods\common\" />
+  </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />

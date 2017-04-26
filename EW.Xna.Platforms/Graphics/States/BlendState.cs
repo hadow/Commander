@@ -49,6 +49,8 @@ namespace EW.Xna.Platforms.Graphics
 
         private Color _blendFactor;
 
+        private int _multiSampleMask;
+        private bool _independentBlendEnable;
         public Color BlendFactor
         {
             get { return _blendFactor; }
@@ -80,6 +82,22 @@ namespace EW.Xna.Platforms.Graphics
             _defaultStateObject = true;
         }
 
+        private BlendState(BlendState cloneSource)
+        {
+            Name = cloneSource.Name;
+
+            _targetBlendState = new TargetBlendState[4];
+            _targetBlendState[0] = cloneSource[0].Clone(this);
+            _targetBlendState[1] = cloneSource[1].Clone(this);
+            _targetBlendState[2] = cloneSource[2].Clone(this);
+            _targetBlendState[3] = cloneSource[3].Clone(this);
+
+            _blendFactor = cloneSource._blendFactor;
+            _multiSampleMask = cloneSource._multiSampleMask;
+            _independentBlendEnable = cloneSource._independentBlendEnable;
+            
+        }
+
         static BlendState()
         {
             Additive = new BlendState("BlendState.Additive", Blend.SourceAlpha, Blend.One);
@@ -88,6 +106,15 @@ namespace EW.Xna.Platforms.Graphics
             Opaque = new BlendState("BlendState.Opaue", Blend.One, Blend.Zero);
         }
 
+        public TargetBlendState this[int index]
+        {
+            get { return _targetBlendState[index];  }
+        }
+
+        internal BlendState Clone()
+        {
+            return new BlendState(this);
+        }
 
         internal void BindToGraphicsDevice(GraphicsDevice device)
         {
@@ -97,13 +124,7 @@ namespace EW.Xna.Platforms.Graphics
                 throw new InvalidOperationException("This blend state is already bound to a different graphics device");
             GraphicsDevice = device;
         }
-
-
-
-        public TargetBlendState this[int index]
-        {
-            get { return _targetBlendState[index]; }
-        }
+        
 
         public BlendFunction AlphaBlendFunction
         {

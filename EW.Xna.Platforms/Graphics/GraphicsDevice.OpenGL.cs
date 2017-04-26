@@ -71,8 +71,7 @@ namespace EW.Xna.Platforms.Graphics
         private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
         private ShaderProgram _shaderProgram = null;
 
-        private BlendState _blendState;
-        private BlendState _actualBlendState;
+        
         private bool _blendStateDirty;
 
         internal bool _lastBlendEnable = false;
