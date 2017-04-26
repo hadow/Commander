@@ -44,12 +44,15 @@ namespace EW.Xna.Platforms.Graphics
 
         static DepthStencilState()
         {
-
+            Default = new DepthStencilState("DepthStencilState.Default", true, true);
+            DepthRead = new DepthStencilState("DepthStencilState.DepthRead", true, false);
+            None = new DepthStencilState("DepthStencilState.None", false, false);
         }
 
-        public DepthStencilState()
+        public DepthStencilState() { }
+        private DepthStencilState(DepthStencilState cloneSource)
         {
-
+            Name = cloneSource.Name;
         }
 
         private DepthStencilState(string name,bool depthBufferEnable,bool depthBufferWriteEnable):this()
@@ -216,6 +219,10 @@ namespace EW.Xna.Platforms.Graphics
             {
                 _twoSidedStencilMode = value;
             }
+        }
+        internal DepthStencilState Clone()
+        {
+            return new DepthStencilState(this);
         }
 
     }

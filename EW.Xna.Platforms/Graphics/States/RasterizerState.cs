@@ -15,6 +15,13 @@ namespace EW.Xna.Platforms.Graphics
         public static readonly RasterizerState CullClockwise;
         public static readonly RasterizerState CullCounterClockwise;
         public static readonly RasterizerState CullNone;
+        public RasterizerState() { }
+        private RasterizerState(RasterizerState cloneSource)
+        {
+            Name = cloneSource.Name;
+        }
+
+
         private CullMode _cullMode;
 
         public CullMode CullMode
@@ -47,6 +54,11 @@ namespace EW.Xna.Platforms.Graphics
                 throw new InvalidOperationException("This rasterizer state is already bound to a different graphics device.");
 
             GraphicsDevice = device;
+        }
+
+        internal RasterizerState Clone()
+        {
+            return new RasterizerState(this);
         }
     }
 }

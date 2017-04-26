@@ -129,6 +129,9 @@ namespace EW.Xna.Platforms.Graphics
             }
         }
 
+        /// <summary>
+        /// π‚’§ªØ
+        /// </summary>
         public RasterizerState RasterizerState
         {
             get { return _rasterizerState; }
@@ -343,6 +346,18 @@ namespace EW.Xna.Platforms.Graphics
             _blendStateOpaque = BlendState.Opaque.Clone();
             BlendState = BlendState.Opaque;
 
+
+            _depthStencilStateDefault = DepthStencilState.Default.Clone();
+            _depthStencilStateDepthRead = DepthStencilState.DepthRead.Clone();
+            _depthStencilStateNone = DepthStencilState.None.Clone();
+
+            DepthStencilState = DepthStencilState.Default;
+
+            _rasterizerStateCullClockwise = RasterizerState.CullClockwise.Clone();
+            _rasterizerStateCullCounterClockwise = RasterizerState.CullCounterClockwise.Clone();
+            _rasterizerStateCullNone = RasterizerState.CullNone.Clone();
+
+            RasterizerState = RasterizerState.CullCounterClockwise;
         }
 
        
