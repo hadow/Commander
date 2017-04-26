@@ -106,6 +106,25 @@ namespace EW.Xna.Platforms.Graphics
 
         }
 
+        /// <summary>
+        /// Changes the texture's pixels
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        public void SetData<T>(T[] data) where T : struct
+        {
+            this.SetData(0, null, data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="level"></param>
+        /// <param name="rect"></param>
+        /// <param name="data"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="elementCount"></param>
         public void SetData<T>(int level,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
         {
             this.SetData(level, 0, rect, data, startIndex, elementCount);

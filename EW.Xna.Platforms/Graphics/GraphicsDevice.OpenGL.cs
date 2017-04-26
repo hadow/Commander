@@ -354,10 +354,14 @@ namespace EW.Xna.Platforms.Graphics
             var programHash = _vertexShader.HashKey | _pixelShader.HashKey;
             vertexDeclaration.Apply(_vertexShader, vertexAddr, programHash);
 
-            GL.DrawElements(PrimitiveTypeGL(primitiveT), GetElementCountArray(primitiveT, primitiveCount), DrawElementsType.UnsignedShort, (IntPtr)(ibHandle.AddrOfPinnedObject().ToInt64() + (indexOffset * sizeof(short))));
+            GL.DrawElements(PrimitiveTypeGL(primitiveT),
+                GetElementCountArray(primitiveT, primitiveCount),
+                DrawElementsType.UnsignedShort,
+                (IntPtr)(ibHandle.AddrOfPinnedObject().ToInt64() + (indexOffset * sizeof(short))));
 
             GraphicsExtensions.CheckGLError();
 
+            //Release Handle
             ibHandle.Free();
             vbHandle.Free();
         }

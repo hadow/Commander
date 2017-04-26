@@ -33,12 +33,7 @@ namespace EW.Xna.Platforms.Graphics
 
         Effect _effect;
 
-
-
-
-
-
-
+        
 
         Vector2 _texCoordTL = new Vector2(0,0);
         Vector2 _texCoordBR = new Vector2(0,0);
@@ -90,6 +85,66 @@ namespace EW.Xna.Platforms.Graphics
         /// 
         /// </summary>
         /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="destinationRectangle"></param>
+        /// <param name="sourceRectangle"></param>
+        /// <param name="origin"></param>
+        /// <param name="rotation"></param>
+        /// <param name="scale"></param>
+        /// <param name="color"></param>
+        /// <param name="effects"></param>
+        /// <param name="layerDepth"></param>
+        public void Draw(Texture2D texture, Vector2? position = null,
+                        Rectangle? destinationRectangle = null,
+                        Rectangle? sourceRectangle = null,
+                        Vector2? origin = null,
+                         float rotation = 0f,
+                         Vector2? scale = null,
+                         Color? color = null,
+                         SpriteEffects effects = SpriteEffects.None,
+                         float layerDepth = 0f)
+        {
+            if (!color.HasValue)
+                color = Color.White;
+            if (!origin.HasValue)
+                origin = Vector2.Zero;
+            if (!scale.HasValue)
+                scale = Vector2.One;
+
+            if ((destinationRectangle.HasValue) == (position.HasValue))
+                throw new InvalidOperationException("Expected drawRectangle or position,but received nither or both");
+            else if (position != null)
+                Draw(texture, (Vector2)position, sourceRectangle, (Color)color, rotation, (Vector2)origin, (Vector2)scale, effects, layerDepth);
+        }
+
+
+        public void Draw(Texture2D texture,Vector2 position,Rectangle? sourceRectangle,
+                        Color color, float rotation,Vector2 origin,Vector2 scale,SpriteEffects effects,float layerDepth)
+        {
+            CheckValid(texture);
+
+            var w = texture.Width * scale.X;
+            var h = texture.Height * scale.Y;
+
+            if (sourceRectangle.HasValue)
+            {
+                w = sourceRectangle.Value.Width * scale.X;
+                h = sourceRectangle.Value.Height * scale.Y;
+            }
+
+            DrawInternal(texture, new Vector4(position.X, position.Y, w, h),
+                sourceRectangle, color, rotation, origin * scale, effects, layerDepth, true);
+        }
+
+
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texture"></param>
         /// <param name="postion"></param>
         /// <param name="sourceRectangle"></param>
         /// <param name="color"></param>
@@ -98,7 +153,9 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="scale"></param>
         /// <param name="effects"></param>
         /// <param name="layerDepth"></param>
-        public void Draw(Texture2D texture,Vector2 postion,Rectangle? sourceRectangle,Color color,float rotation,Vector2 origin,float scale,SpriteEffects effects,float layerDepth)
+        public void Draw(Texture2D texture,Vector2 postion,Rectangle? sourceRectangle,
+            Color color,float rotation,Vector2 origin,
+            float scale,SpriteEffects effects,float layerDepth)
         {
             CheckValid(texture);
 
@@ -128,10 +185,15 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="effect"></param>
         /// <param name="depth"></param>
         /// <param name="autoFlush"></param>
-        internal void DrawInternal(Texture2D texture,Vector4 destinationRectangle,Rectangle? sourceRectangle,Color color,float rotation,Vector2 origin,SpriteEffects effect,float depth,bool autoFlush)
+        internal void DrawInternal(Texture2D texture,
+            Vector4 destinationRectangle,
+            Rectangle? sourceRectangle,
+            Color color,float rotation,Vector2 origin,
+            SpriteEffects effect,float depth,bool autoFlush)
         {
             var item = _batcher.CreateBatchItem();
             item.Texture = texture;
+
             switch (_sortMode)
             {
                 case SpriteSortMode.Texture:
@@ -159,7 +221,11 @@ namespace EW.Xna.Platforms.Graphics
 
             if(rotation == 0)
             {
-                item.Set(destinationRectangle.X - origin.X, destinationRectangle.Y - origin.Y, destinationRectangle.Z, destinationRectangle.W, color, _texCoordTL, _texCoordBR, depth);
+                item.Set(destinationRectangle.X - origin.X,
+                    destinationRectangle.Y - origin.Y, 
+                    destinationRectangle.Z, 
+                    destinationRectangle.W,
+                    color, _texCoordTL, _texCoordBR, depth);
             }
             else
             {

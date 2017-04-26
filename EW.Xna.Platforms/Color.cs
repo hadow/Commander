@@ -86,7 +86,12 @@ namespace EW.Xna.Platforms
             get;private set;
         }
 
+        /// <summary>
+        /// Red Color (R:255,G:0,B:0,A:255)
+        /// </summary>
+        public static Color Red { get; private set; }
 
+        public static Color CornflowerBlue { get; private set; }
         public bool Equals(Color other)
         {
             return false;

@@ -180,6 +180,7 @@ namespace EW.Xna.Platforms.Graphics
             }
             else
             {
+                //simply render
                 _device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, _vertexArray, 0, vertexCount, _index, 0, (vertexCount / 4) * 2, VertexPositionColorTexture.VertexDeclaration);
             }
         }

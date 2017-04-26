@@ -199,13 +199,19 @@ namespace EW.Xna.Platforms
             Platform.EndScreenDeviceChange(string.Empty, viewport.Width, viewport.Height);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         protected virtual void Initialize()
         {
             ApplyChanges(graphicsDeviceManager);
 
             _graphicsDeviceService = (IGraphicsDeviceService)Services.GetService(typeof(IGraphicsDeviceService));
 
+            if(_graphicsDeviceService !=null && _graphicsDeviceService.GraphicsDevice != null)
+            {
+                LoadContent();
+            }
         }
 
 
@@ -360,6 +366,12 @@ namespace EW.Xna.Platforms
             GC.SuppressFinalize(this);
 
         }
+
+        protected virtual void LoadContent() { }
+
+        protected virtual void UnloadContent() { }
+
+
 
         protected virtual void Dispose(bool disposing)
         {
