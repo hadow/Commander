@@ -8,7 +8,7 @@ namespace EW.Xna.Platforms.Graphics
 
         private readonly byte[] _buffer;
 
-        private readonly byte[] _parameters;
+        private readonly int[] _parameters;
 
         private readonly int[] _offsets;
 
@@ -18,6 +18,15 @@ namespace EW.Xna.Platforms.Graphics
 
         private bool _dirty;
 
+        public ConstantBuffer(GraphicsDevice device,int sizeInBytes,int[] parameterIndexes,int[] parameterOffsets,string name)
+        {
+            GraphicsDevice = device;
+            _buffer = new byte[sizeInBytes];
+            _parameters = parameterIndexes;
+            _offsets = parameterOffsets;
+            _name = name;
+            PlatformInitialize();
+        }
 
     }
 }

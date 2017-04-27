@@ -67,6 +67,7 @@ namespace EW.Xna.Platforms.Graphics
         /// </summary>
         internal static readonly List<int> _enabledVertexAttributes = new List<int>();
 
+        internal List<string> _extensions = new List<string>();
 
         private readonly ShaderProgramCache _programCache = new ShaderProgramCache();
         private ShaderProgram _shaderProgram = null;
@@ -152,6 +153,22 @@ namespace EW.Xna.Platforms.Graphics
                 glMajorVersion = 1;
                 glMinorVersion = 1;
             }
+
+            _extensions = GetGLExtensions();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        List<string> GetGLExtensions()
+        {
+            List<string> extensions = new List<string>();
+            var extstring = GL.GetString(StringName.Extensions);
+            GraphicsExtensions.CheckGLError();
+            if (!string.IsNullOrEmpty(extstring))
+                extensions.AddRange(extstring.Split(' '));
+            return extensions;
         }
 
 

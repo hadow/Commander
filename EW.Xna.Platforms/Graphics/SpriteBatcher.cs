@@ -28,7 +28,10 @@ namespace EW.Xna.Platforms.Graphics
             for (int i = 0; i < InitialBatchSize; i++)
                 _batchItemList[i] = new SpriteBatchItem();
 
+            EnsureArrayCapacity(InitialBatchSize);
         }
+
+
 
         private unsafe void EnsureArrayCapacity(int numBatchItems)
         {
@@ -84,7 +87,7 @@ namespace EW.Xna.Platforms.Graphics
                 }
                 EnsureArrayCapacity(Math.Min(newSize, MaxBatchSize));
             }
-            var item = _batchItemList[_batchItemCount];
+            var item = _batchItemList[_batchItemCount++];
             return item;
         }
 

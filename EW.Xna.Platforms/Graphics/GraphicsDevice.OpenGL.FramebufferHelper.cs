@@ -28,7 +28,12 @@ namespace EW.Xna.Platforms.Graphics
             {
 #if IOS
 #elif ANDROID
+                var invalidFuncPtr = EGLGetProcAddress("InvalidFunctionName");
 
+                if (graphicsDevice._extensions.Contains("GL_EXT_discard_framebuffer"))
+                {
+
+                }
 
 #endif
             }

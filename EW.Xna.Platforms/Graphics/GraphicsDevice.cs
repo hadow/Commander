@@ -27,6 +27,10 @@ namespace EW.Xna.Platforms.Graphics
     /// </summary>
     public partial class GraphicsDevice:IDisposable
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        internal Dictionary<int, Effect> EffectCache;
 
         private bool _isDisposed;
         /// <summary>
@@ -48,6 +52,7 @@ namespace EW.Xna.Platforms.Graphics
         private readonly ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
 
         public TextureCollection Textures { get; private set; }
+        public SamplerStateCollection SamplerStates { get; private set; }
 
 
         private BlendState _blendStateAdditive;
@@ -141,6 +146,9 @@ namespace EW.Xna.Platforms.Graphics
                     throw new ArgumentNullException("value");
                 if (_rasterizerState == value)
                     return;
+
+                
+                _rasterizerState = value;
 
                 var newRasterizerState = _rasterizerState;
                 if (ReferenceEquals(_rasterizerState, RasterizerState.CullClockwise))
@@ -265,7 +273,7 @@ namespace EW.Xna.Platforms.Graphics
             PresentationParameters.DepthStencilFormat = DepthFormat.Depth24;
             Setup();
             GraphicsCapabilities = new GraphicsCapabilities(this);
-            GraphicsCapabilities.Initialize(this);
+            //GraphicsCapabilities.Initialize(this);
             Initialize();
         }
 
@@ -316,7 +324,7 @@ namespace EW.Xna.Platforms.Graphics
             _graphicsProfile = graphicsProfile;
             Setup();
             GraphicsCapabilities = new GraphicsCapabilities(this);
-            GraphicsCapabilities.Initialize(this);
+            //GraphicsCapabilities.Initialize(this);
             Initialize();
         }
 
@@ -339,7 +347,7 @@ namespace EW.Xna.Platforms.Graphics
             PlatformSetup();
 
             Textures = new TextureCollection(this, MaxTextureSlots, false);
-
+            SamplerStates = new SamplerStateCollection(this, MaxTextureSlots, false);
             _blendStateAdditive = BlendState.Additive.Clone();
             _blendStateAlphaBlend = BlendState.AlphaBlend.Clone();
             _blendStateNonPremultiplied = BlendState.NonPremultiplied.Clone();
@@ -358,6 +366,8 @@ namespace EW.Xna.Platforms.Graphics
             _rasterizerStateCullNone = RasterizerState.CullNone.Clone();
 
             RasterizerState = RasterizerState.CullCounterClockwise;
+
+            EffectCache = new Dictionary<int, Effect>();
         }
 
        

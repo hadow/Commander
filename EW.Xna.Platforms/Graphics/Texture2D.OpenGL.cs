@@ -33,7 +33,8 @@ namespace EW.Xna.Platforms.Graphics
                 var prevTexture = GraphicsExtensions.GetBoundTexture2D();
 
                 GenerateGLTextureIfRequired();
-                
+
+                format.GetGLFormat(GraphicsDevice, out glInternalFormat, out glFormat, out glType);
                 if(glFormat == (PixelFormat)GLPixelFormat.CompressedTextureFormats)
                 {
 

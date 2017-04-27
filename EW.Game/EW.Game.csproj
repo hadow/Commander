@@ -54,10 +54,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Eluant, Version=1.0.6323.37071, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -448,6 +444,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>

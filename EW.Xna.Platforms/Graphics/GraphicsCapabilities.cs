@@ -2,12 +2,15 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal partial class GraphicsCapabilities
     {
 
         public GraphicsCapabilities(GraphicsDevice graphicsDevice)
         {
-
+            PlatformInitialize(graphicsDevice);
         }
         internal bool SupportsNonPowerOfTwo { get; private set; }
         internal bool SupportsDxt1 { get; private set; }

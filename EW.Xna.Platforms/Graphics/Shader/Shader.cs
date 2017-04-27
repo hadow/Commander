@@ -33,6 +33,7 @@ namespace EW.Xna.Platforms.Graphics
         public string name;
         public SamplerState state;
 
+        public int parameter;
     }
 
     /// <summary>
@@ -71,6 +72,31 @@ namespace EW.Xna.Platforms.Graphics
             var shaderLength = reader.ReadInt32();
             var shaderByteCode = reader.ReadBytes(shaderLength);
 
+            var samplerCount = (int)reader.ReadByte();
+            Samplers = new SamplerInfo[samplerCount];
+
+            for(var s = 0; s < samplerCount; s++)
+            {
+                var samplerInfo = Samplers[s];
+                samplerInfo.type = (SamplerT)reader.ReadByte();
+                samplerInfo.textureSlot = reader.ReadByte();
+                samplerInfo.samplerSlot = reader.ReadByte();
+
+                if (reader.ReadBoolean())
+                {
+                    samplerInfo.state = new SamplerState();
+                    samplerInfo.state.AddressU = (TextureAddressMode)reader.ReadByte();
+                    samplerInfo.state.AddressV = (TextureAddressMode)reader.ReadByte();
+                    samplerInfo.state.AddressW = (TextureAddressMode)reader.ReadByte();
+                    samplerInfo.state.BorderColor = new Color(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    samplerInfo.state.Filter = (TextureFilter)reader.ReadByte();
+                    samplerInfo.state.MaxAnisotropy = reader.ReadInt32();
+                    samplerInfo.state.MaxMipLevel = reader.ReadInt32();
+                    samplerInfo.state.MipMapLevelOfDetailBias = reader.ReadSingle();
+                }
+                samplerInfo.name = reader.ReadString();
+                samplerInfo.parameter = reader.ReadByte();
+            }
             PlatformConstruct(isVertexShader, shaderByteCode);
         }
 

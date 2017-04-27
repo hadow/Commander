@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace EW.Xna.Platforms.Graphics
 {
     /// <summary>
-    /// 
+    /// Í¼ÐÎ×ÊÔ´
     /// </summary>
     public abstract class GraphicsResource:IDisposable
     {

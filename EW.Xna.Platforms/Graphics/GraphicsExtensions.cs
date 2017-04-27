@@ -105,6 +105,8 @@ namespace EW.Xna.Platforms.Graphics
                     return 8;
                 case SurfaceFormat.DXt3:
                     return 16;
+                case SurfaceFormat.Color:
+                    return 4;
                 default:
                     throw new ArgumentException();
 
@@ -224,6 +226,21 @@ namespace EW.Xna.Platforms.Graphics
                 case CompareFunction.NotEqual:
                     return DepthFunction.Notequal;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="glInternalFormat"></param>
+        /// <param name="glFormat"></param>
+        /// <param name="glType"></param>
+        internal static void GetGLFormat(this SurfaceFormat format,GraphicsDevice graphicsDevice,out PixelInternalFormat glInternalFormat,out PixelFormat glFormat,out PixelType glType)
+        {
+            glInternalFormat = PixelInternalFormat.Rgba;
+            glFormat = PixelFormat.Rgba;
+            glType = PixelType.UnsignedByte;
         }
 
 

@@ -32,7 +32,7 @@ namespace EW.Xna.Platforms.Graphics
         RasterizerState _rasterizerState;
 
         Effect _effect;
-
+        Matrix _matrix;
         
 
         Vector2 _texCoordTL = new Vector2(0,0);
@@ -48,26 +48,75 @@ namespace EW.Xna.Platforms.Graphics
             _beginCalled = false;
         }
 
-        public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,BlendState blendState = null,
-            SamplerState samplerState = null,DepthStencilState depthStencilState = null,RasterizerState rasterizerState = null)
+        /// <summary>
+        /// 开始绘制
+        /// </summary>
+        /// <param name="sortMode"></param>
+        /// <param name="blendState"></param>
+        /// <param name="samplerState"></param>
+        /// <param name="depthStencilState"></param>
+        /// <param name="rasterizerState"></param>
+        /// <param name="effect"></param>
+        /// <param name="transformMatrix"></param>
+        public void Begin(SpriteSortMode sortMode = SpriteSortMode.Deferred,
+                        BlendState blendState = null,
+                        SamplerState samplerState = null,
+                        DepthStencilState depthStencilState = null,
+                        RasterizerState rasterizerState = null,
+                        Effect effect = null,
+                        Matrix? transformMatrix = null)
         {
+            if (_beginCalled)
+                throw new InvalidOperationException("Begin cannot be called agagin untile End has been sucessfully called.");
 
+            _sortMode = sortMode;
+            _blendState = blendState ?? BlendState.AlphaBlend;
+            _samplerState = samplerState ?? SamplerState.LinearClamp;
+            _depthStencilState = depthStencilState ?? DepthStencilState.None;
+            _rasterizerState = rasterizerState ?? RasterizerState.CullCounterClockwise;
+            _effect = effect;
+            _matrix = transformMatrix ?? Matrix.Identity;
 
+            if(sortMode == SpriteSortMode.Immediate)
+            {
+                Setup();
+            }
+
+            _beginCalled = true;
 
         }
 
+        /// <summary>
+        /// 结束绘制
+        /// </summary>
         public void End()
         {
             _beginCalled = false;
 
             if (_sortMode != SpriteSortMode.Immediate)
                 Setup();
-            _batcher.DrawBatch(_sortMode, null);    
+            _batcher.DrawBatch(_sortMode, null);
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         void Setup()
         {
+            var gd = GraphicsDevice;
+            gd.BlendState = _blendState;
+            gd.DepthStencilState = _depthStencilState;
+            gd.RasterizerState = _rasterizerState;
+            gd.SamplerStates[0] = _samplerState;
+
+            var vp = gd.Viewport;
+
+            Matrix projection;
+
+            Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, -1, out projection);
+
+            Matrix.Multiply(ref _matrix, ref projection, out projection);
 
         }
 

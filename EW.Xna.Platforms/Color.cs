@@ -12,10 +12,26 @@ namespace EW.Xna.Platforms
         private uint _packedValue;
 
 
+        public UInt32 PackedValue
+        {
+            get { return _packedValue; }
+            set { _packedValue = value; }
+        }
+        static Color()
+        {
+            Red = new Color(0xff0000ff);
+            CornflowerBlue = new Color(0xffed9564);
+        }
+
         [CLSCompliant(false)]
         public Color(uint packedValue)
         {
             _packedValue = packedValue;
+        }
+
+        public Color(byte r,byte g,byte b,byte a)
+        {
+            _packedValue = ((uint)a << 24) | ((uint)b << 16) | ((uint)g << 8) | (r);
         }
 
 
@@ -94,7 +110,7 @@ namespace EW.Xna.Platforms
         public static Color CornflowerBlue { get; private set; }
         public bool Equals(Color other)
         {
-            return false;
+            return this.PackedValue == other.PackedValue;
         }
 
 
@@ -108,5 +124,15 @@ namespace EW.Xna.Platforms
             return a._packedValue == b._packedValue;
         }
 
+
+        public override int GetHashCode()
+        {
+            return this._packedValue.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is Color) && this.Equals((Color)obj);
+        }
     }
 }

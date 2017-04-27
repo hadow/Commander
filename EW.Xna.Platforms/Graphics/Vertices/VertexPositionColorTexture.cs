@@ -1,6 +1,10 @@
 using System.Runtime.InteropServices;
 namespace EW.Xna.Platforms.Graphics
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     [StructLayout(LayoutKind.Sequential,Pack =1)]
     public struct VertexPositionColorTexture:IVertexT
     {

@@ -21,6 +21,26 @@ namespace EW.Xna.Platforms.Graphics
             Name = cloneSource.Name;
         }
 
+        private RasterizerState(string name,CullMode cullMode):this()
+        {
+
+        }
+
+        static RasterizerState()
+        {
+            CullClockwise = new RasterizerState("RasterizerState.CullClockwise", CullMode.CullClockwiseFace);
+            CullCounterClockwise = new RasterizerState("RasterizerState.CullCounterClockwise", CullMode.CullCounterClockwiseFace);
+            CullNone = new RasterizerState("RasterizerState.CullNone", CullMode.None);
+        }
+
+        internal void ThrowIfBound()
+        {
+            if (_defaultStateObject)
+                throw new InvalidOperationException("You cannot modify a default rasterizer state object");
+            if (GraphicsDevice != null)
+                throw new InvalidOperationException("You cannot modify the rasterizer state after it has been bound to the graphics device!");
+        }
+
 
         private CullMode _cullMode;
 
@@ -42,6 +62,20 @@ namespace EW.Xna.Platforms.Graphics
             set
             {
                 _scissorTestEnable = value;
+            }
+        }
+
+        private float _slopeScaleDepthBias;
+
+        private bool _depthClipEnable;
+
+        public bool DepthClipEnable
+        {
+            get { return _depthClipEnable; }
+            set
+            {
+                ThrowIfBound();
+                _depthClipEnable = value;
             }
         }
 
