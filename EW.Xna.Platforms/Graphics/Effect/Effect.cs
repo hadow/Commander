@@ -22,10 +22,18 @@ namespace EW.Xna.Platforms.Graphics
         }
 
 
+        public EffectParameterCollection Parameters { get; private set; }
+
+        public EffectTechniqueCollection Techniques { get; private set; }
+
+        public EffectTechnique CurrentTechnique { get; private set; }
         private Shader[] _shaders;
 
         internal ConstantBuffer[] ConstantBuffers { get; private set; }
         private readonly bool _isClone;
+
+        public Effect(GraphicsDevice graphicsDevice,byte[] effectCode) : this(graphicsDevice, effectCode, 0, effectCode.Length) { }
+
         internal Effect(GraphicsDevice graphicsDevice)
         {
             if (graphicsDevice == null)
@@ -73,6 +81,14 @@ namespace EW.Xna.Platforms.Graphics
         private MGFXHeader ReadHeader(byte[] effectCode,int index)
         {
             MGFXHeader header;
+            header.Signature = BitConverter.ToInt32(effectCode, index);
+            index += 4;
+            header.Version = (int)effectCode[index++];
+            header.Profile = (int)effectCode[index++];
+            header.EffectKey = BitConverter.ToInt32(effectCode, index);
+            index += 4;
+            header.HeaderSize = index;
+            
             return header;
         }
         /// <summary>
@@ -112,6 +128,105 @@ namespace EW.Xna.Platforms.Graphics
             {
                 _shaders[s] = new Shader(GraphicsDevice, reader);
             }
+
+            //read in the parameter
+            Parameters = ReadParameters(reader);
+
+            //read the techniques
+            var techniqueCount = (int)reader.ReadByte();
+            var techniques = new EffectTechnique[techniqueCount];
+            for(var t = 0; t < techniqueCount; t++)
+            {
+                var name = reader.ReadString();
+
+                var annotations = ReadAnnotation(reader);
+
+                var passes = ReadPasses(reader, this, _shaders);
+
+                techniques[t] = new EffectTechnique(this, name, passes, annotations);
+            }
+            Techniques = new EffectTechniqueCollection(techniques);
+            //CurrentTechnique = Techniques[0];
+        }
+
+        private static EffectAnnotationCollection ReadAnnotation(BinaryReader reader)
+        {
+            var count = (int)reader.ReadByte();
+            if (count == 0)
+                return EffectAnnotationCollection.Empty;
+
+            var annotations = new EffectAnnotation[count];
+
+            return new EffectAnnotationCollection(annotations);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        private static EffectParameterCollection ReadParameters(BinaryReader reader)
+        {
+            var count = (int)reader.ReadByte();
+            if (count == 0)
+                return EffectParameterCollection.Empty;
+
+            var parameters = new EffectParameter[count];
+
+            for(var i = 0; i < count; i++)
+            {
+
+            }
+
+            return new EffectParameterCollection(parameters);
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="effect"></param>
+        /// <param name="shaders"></param>
+        /// <returns></returns>
+        private static EffectPassCollection ReadPasses(BinaryReader reader,Effect effect,Shader[] shaders)
+        {
+            var count = (int)reader.ReadByte();
+            var passes = new EffectPass[count];
+
+            for(var i = 0; i < count; i++)
+            {
+
+            }
+
+            return new EffectPassCollection(passes);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    if (!_isClone)
+                    {
+                        if(_shaders != null)
+                        {
+                            foreach (var shader in _shaders)
+                                shader.Dispose();
+                        }
+                    }
+
+                    if (ConstantBuffers != null)
+                    {
+                        foreach (var buffer in ConstantBuffers)
+                            buffer.Dispose();
+                        ConstantBuffers = null;
+                    }
+                }
+            }
+            base.Dispose(disposing);
         }
     }
 }

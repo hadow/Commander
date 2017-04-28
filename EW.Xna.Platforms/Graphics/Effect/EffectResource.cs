@@ -9,7 +9,7 @@ namespace EW.Xna.Platforms.Graphics
     /// </summary>
     internal class EffectResource
     {
-        const string SpriteEffectName = "";
+        const string SpriteEffectName = "EW.Xna.Platforms.Graphics.Effect.Resources.SpriteEffect.ogl.mgfxo";
 
         public static readonly EffectResource SpriteEffect = new EffectResource(SpriteEffectName);
 

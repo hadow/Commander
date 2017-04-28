@@ -32,6 +32,8 @@ namespace EW.Xna.Platforms.Graphics
         RasterizerState _rasterizerState;
 
         Effect _effect;
+        Effect _spriteEffect;
+        
         Matrix _matrix;
         
 
@@ -44,6 +46,7 @@ namespace EW.Xna.Platforms.Graphics
 
             this.GraphicsDevice = graphicsDevice;
 
+            _spriteEffect = new Effect(graphicsDevice, EffectResource.SpriteEffect.Bytecode);
             _batcher = new SpriteBatcher(graphicsDevice);
             _beginCalled = false;
         }

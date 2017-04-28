@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace EW.Xna.Platforms.Graphics
@@ -16,6 +17,18 @@ namespace EW.Xna.Platforms.Graphics
         {
             get { return _passes[index]; }
         }
+
+
+        IEnumerator<EffectPass>  IEnumerable<EffectPass>.GetEnumerator()
+        {
+            return ((IEnumerable<EffectPass>)_passes).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _passes.GetEnumerator();
+        }
+
 
     }
 }
