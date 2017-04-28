@@ -81,6 +81,7 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="reader"></param>
         private void ReadEffect(BinaryReader reader)
         {
+            //Constant Buffer
             var buffers = (int)reader.ReadByte();
             ConstantBuffers = new ConstantBuffer[buffers];
 
