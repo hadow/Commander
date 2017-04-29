@@ -11,8 +11,15 @@ namespace EW.Xna.Platforms.Graphics
         Color,              //颜色
         TextureCoordinate,//纹理坐标
         Normal,             //法线
+        Binormal,           //次法线
         Tangent,            //切线
+        BlendIndices,
+        BlendWeight,
         Depth,              //深度
+        Fog,
+        PointSize,
+        Sample,
+        TessellateFactor    //
 
     }
 

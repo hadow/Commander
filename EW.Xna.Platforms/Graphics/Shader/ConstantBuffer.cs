@@ -28,5 +28,10 @@ namespace EW.Xna.Platforms.Graphics
             PlatformInitialize();
         }
 
+
+        internal void Clear()
+        {
+            PlatformClear();
+        }
     }
 }

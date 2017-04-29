@@ -60,6 +60,9 @@ namespace EW.Xna.Platforms.Graphics
 
         public VertexAttribute[] Attributes { get; private set; }
 
+        public int[] CBuffers { get; private set; }
+
+
 
 
         internal Shader(GraphicsDevice device,BinaryReader reader)
@@ -88,7 +91,10 @@ namespace EW.Xna.Platforms.Graphics
                     samplerInfo.state.AddressU = (TextureAddressMode)reader.ReadByte();
                     samplerInfo.state.AddressV = (TextureAddressMode)reader.ReadByte();
                     samplerInfo.state.AddressW = (TextureAddressMode)reader.ReadByte();
-                    samplerInfo.state.BorderColor = new Color(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+                    samplerInfo.state.BorderColor = new Color(reader.ReadByte(), 
+                        reader.ReadByte(),
+                        reader.ReadByte(),
+                        reader.ReadByte());
                     samplerInfo.state.Filter = (TextureFilter)reader.ReadByte();
                     samplerInfo.state.MaxAnisotropy = reader.ReadInt32();
                     samplerInfo.state.MaxMipLevel = reader.ReadInt32();
@@ -96,6 +102,23 @@ namespace EW.Xna.Platforms.Graphics
                 }
                 samplerInfo.name = reader.ReadString();
                 samplerInfo.parameter = reader.ReadByte();
+            }
+
+            var cbufferCount = (int)reader.ReadByte();
+            CBuffers = new int[cbufferCount];
+            for(var c = 0; c < cbufferCount; c++)
+            {
+                CBuffers[c] = reader.ReadByte();
+            }
+
+            var attributeCount = (int)reader.ReadByte();
+            Attributes = new VertexAttribute[attributeCount];
+            for(var a = 0; a < attributeCount; a++)
+            {
+                Attributes[a].name = reader.ReadString();
+                Attributes[a].usage = (VertexElementUsage)reader.ReadByte();
+                Attributes[a].index = reader.ReadByte();
+                Attributes[a].location = reader.ReadInt16();
             }
             PlatformConstruct(isVertexShader, shaderByteCode);
         }

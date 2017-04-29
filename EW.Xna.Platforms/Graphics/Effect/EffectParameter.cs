@@ -24,6 +24,9 @@ namespace EW.Xna.Platforms.Graphics
         Texture2D,
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class EffectParameter
     {
 
@@ -36,6 +39,44 @@ namespace EW.Xna.Platforms.Graphics
         public EffectParameterClass ParameterClass { get; private set; }
 
         public EffectParameterType ParameterType { get; private set; }
+
+
+        public int RowCount { get; private set; }
+
+        public int ColumnCount { get; private set; }
+
+        public EffectParameterCollection Elements { get; private set; }
+
+        public EffectParameterCollection StructureMembers { get; private set; }
+
+        public EffectAnnotationCollection Annotations { get; private set; }
+
+        internal object Data { get; private set; }
+
+        internal ulong StateKey { get; private set; }
+        internal EffectParameter(EffectParameter cloneSource)
+        {
+
+            //immutable types
+            ParameterClass = cloneSource.ParameterClass;
+            ParameterType = cloneSource.ParameterType;
+            Name = cloneSource.Name;
+            Semantic = cloneSource.Semantic;
+            Annotations = cloneSource.Annotations;
+            RowCount = cloneSource.RowCount;
+            ColumnCount = cloneSource.ColumnCount;
+
+            //mutable types
+            Elements = cloneSource.Elements.Clone();
+            StructureMembers = cloneSource.StructureMembers.Clone();
+
+            var array = cloneSource.Data as Array;
+            if (array != null)
+                Data = array.Clone();
+            StateKey = unchecked(NextStateKey++);
+            
+
+        }
 
     }
 }

@@ -69,7 +69,7 @@ namespace EW.Xna.Platforms.Graphics
 
         private void Clone(Effect cloneSource)
         {
-
+            Parameters = cloneSource.Parameters.Clone();
         }
 
         /// <summary>
@@ -149,6 +149,11 @@ namespace EW.Xna.Platforms.Graphics
             //CurrentTechnique = Techniques[0];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         private static EffectAnnotationCollection ReadAnnotation(BinaryReader reader)
         {
             var count = (int)reader.ReadByte();
@@ -176,7 +181,17 @@ namespace EW.Xna.Platforms.Graphics
 
             for(var i = 0; i < count; i++)
             {
+                var class_ = (EffectParameterClass)reader.ReadByte();
+                var type = (EffectParameterType)reader.ReadByte();
+                var name = reader.ReadString();
+                var semantic = reader.ReadString();
+                var annotations = ReadAnnotation(reader);
 
+                var rowCount = (int)reader.ReadByte();
+                var columnCount = (int)reader.ReadByte();
+
+                var elements = ReadParameters(reader);
+                var structMembers = ReadParameters(reader);
             }
 
             return new EffectParameterCollection(parameters);
@@ -201,6 +216,12 @@ namespace EW.Xna.Platforms.Graphics
             }
 
             return new EffectPassCollection(passes);
+        }
+
+        protected internal override void GraphicsDeviceResetting()
+        {
+            for (var i = 0; i < ConstantBuffers.Length; i++)
+                ConstantBuffers[i].Clear();
         }
 
         protected override void Dispose(bool disposing)

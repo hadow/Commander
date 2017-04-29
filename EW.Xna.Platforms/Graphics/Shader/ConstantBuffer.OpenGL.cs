@@ -1,5 +1,6 @@
 using System;
 using OpenTK.Graphics.ES20;
+using EW.Xna.Platforms.Utilities;
 namespace EW.Xna.Platforms.Graphics
 {
     internal partial class ConstantBuffer
@@ -17,9 +18,20 @@ namespace EW.Xna.Platforms.Graphics
 
         internal int HashKey { get; private set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void PlatformInitialize()
         {
-
+            var data = new byte[_parameters.Length];
+            for(var i = 0; i < _parameters.Length; i++)
+            {
+                unchecked
+                {
+                    data[i] = (byte)(_parameters[i] | _offsets[i]);
+                }
+            }
+            HashKey = Hash.ComputeHash(data);
         }
 
 
@@ -62,6 +74,8 @@ namespace EW.Xna.Platforms.Graphics
         {
             _shaderProgram = null;
         }
+
+        
 
     }
 }

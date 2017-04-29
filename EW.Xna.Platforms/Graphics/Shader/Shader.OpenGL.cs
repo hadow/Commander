@@ -22,6 +22,8 @@ namespace EW.Xna.Platforms.Graphics
         private void PlatformConstruct(bool isVertexShader,byte[] shaderBytecode)
         {
             _glslCode = System.Text.Encoding.ASCII.GetString(shaderBytecode);
+
+            HashKey = EW.Xna.Platforms.Utilities.Hash.ComputeHash(shaderBytecode);
         }
         /// <summary>
         /// 获取着色器

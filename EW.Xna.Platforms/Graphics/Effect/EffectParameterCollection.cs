@@ -33,6 +33,20 @@ namespace EW.Xna.Platforms.Graphics
             }
         }
 
+        internal EffectParameterCollection Clone()
+        {
+            if (_parameters.Length == 0)
+                return Empty;
+
+            var parameters = new EffectParameter[_parameters.Length];
+            for(var i = 0; i < parameters.Length; i++)
+            {
+                parameters[i] = new EffectParameter(parameters[i]);
+            }
+
+            return new EffectParameterCollection(parameters);
+        }
+
         public IEnumerator<EffectParameter> GetEnumerator()
         {
             return ((IEnumerable<EffectParameter>)_parameters).GetEnumerator();
