@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorInitializer.cs" />
+    <Compile Include="AI\Squad.cs" />
+    <Compile Include="AI\StateMachine.cs" />
     <Compile Include="ColorValidator.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
