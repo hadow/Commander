@@ -41,7 +41,7 @@ namespace EW.Xna.Platforms.Graphics
             var parameters = new EffectParameter[_parameters.Length];
             for(var i = 0; i < parameters.Length; i++)
             {
-                parameters[i] = new EffectParameter(parameters[i]);
+                parameters[i] = new EffectParameter(_parameters[i]);
             }
 
             return new EffectParameterCollection(parameters);

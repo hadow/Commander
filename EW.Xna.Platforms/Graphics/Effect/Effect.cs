@@ -70,6 +70,7 @@ namespace EW.Xna.Platforms.Graphics
         private void Clone(Effect cloneSource)
         {
             Parameters = cloneSource.Parameters.Clone();
+            Techniques = cloneSource.Techniques.Clone(this);
         }
 
         /// <summary>
@@ -115,7 +116,8 @@ namespace EW.Xna.Platforms.Graphics
                     offsets[i] = (int)reader.ReadUInt16();
                 }
 
-                var buffer = new ConstantBuffer(GraphicsDevice, sizeInBytes, parameters, offsets, name);
+                var buffer = new ConstantBuffer(GraphicsDevice,
+                    sizeInBytes, parameters, offsets, name);
 
                 ConstantBuffers[c] = buffer;
             }
@@ -192,6 +194,31 @@ namespace EW.Xna.Platforms.Graphics
 
                 var elements = ReadParameters(reader);
                 var structMembers = ReadParameters(reader);
+
+                object data = null;
+                if(elements.Count == 0 && structMembers.Count == 0)
+                {
+                    switch (type)
+                    {
+                        case EffectParameterType.Bool:
+                        case EffectParameterType.Int32:
+                        case EffectParameterType.Single:
+                            {
+                                var buffer = new float[rowCount * columnCount];
+                                for (var j = 0; j < buffer.Length; j++)
+                                    buffer[j] = reader.ReadSingle();
+                                data = buffer;
+
+                            }
+                            break;
+                        case EffectParameterType.String:
+                            throw new NotSupportedException();
+                        default:
+                            break;
+                        
+                    }
+                }
+                parameters[i] = new EffectParameter(class_, type, name, rowCount, columnCount, semantic, annotations, elements, structMembers, data);
             }
 
             return new EffectParameterCollection(parameters);
@@ -212,6 +239,49 @@ namespace EW.Xna.Platforms.Graphics
 
             for(var i = 0; i < count; i++)
             {
+                var name = reader.ReadString();
+                var annotations = ReadAnnotation(reader);
+
+                //Get the vertex shader
+                Shader vertexShader = null;
+                var shaderIndex = (int)reader.ReadByte();
+                if (shaderIndex != 255)
+                    vertexShader = shaders[shaderIndex];
+
+                //Get the pixel shader
+                Shader pixelShader = null;
+                shaderIndex = (int)reader.ReadByte();
+                if (shaderIndex != 255)
+                    pixelShader = shaders[shaderIndex];
+
+                BlendState blend = null;
+                DepthStencilState depth = null;
+                RasterizerState raster = null;
+                if (reader.ReadBoolean())
+                {
+                    blend = new BlendState
+                    {
+
+                    };
+                }
+                if (reader.ReadBoolean())
+                {
+                    depth = new DepthStencilState
+                    {
+
+                    };
+                }
+
+                if (reader.ReadBoolean())
+                {
+                    raster = new RasterizerState
+                    {
+
+                    };
+                }
+
+                passes[i] = new EffectPass(effect, name, vertexShader, pixelShader, blend, depth, raster,annotations);
+                    
 
             }
 

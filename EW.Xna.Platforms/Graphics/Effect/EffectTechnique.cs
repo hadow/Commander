@@ -29,7 +29,7 @@ namespace EW.Xna.Platforms.Graphics
         {
             Name = cloneSource.Name;
             Annotations = cloneSource.Annotations;
-
+            Passes = cloneSource.Passes.Clone(effect);
 
         }
     }

@@ -78,5 +78,34 @@ namespace EW.Xna.Platforms.Graphics
 
         }
 
+        internal EffectParameter(EffectParameterClass class_,
+            EffectParameterType type,
+            string name,
+            int rowCount,
+            int columnCount,
+            string semantic,
+            EffectAnnotationCollection annotations,
+            EffectParameterCollection elements,
+            EffectParameterCollection structMembers,
+            object data)
+        {
+            ParameterClass = class_;
+            ParameterType = type;
+
+            Name = name;
+            Semantic = semantic;
+
+            Annotations = annotations;
+            RowCount = rowCount;
+            ColumnCount = columnCount;
+
+            Elements = elements;
+            StructureMembers = structMembers;
+
+            Data = data;
+
+            StateKey = unchecked(NextStateKey++);
+        }
+
     }
 }
