@@ -98,6 +98,8 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="sortMode"></param>
         public unsafe void DrawBatch(SpriteSortMode sortMode,Effect effect)
         {
+            if (effect != null && effect.IsDisposed)
+                throw new ObjectDisposedException("effect");
 
             if (_batchItemCount == 0)
                 return;
@@ -158,6 +160,8 @@ namespace EW.Xna.Platforms.Graphics
                 FlushVertexArray(startIndex, index, effect, tex);
                 batchCount -= numBatchesToProcess;
             }
+
+            //return items to the pool
             _batchItemCount = 0;
         }
 

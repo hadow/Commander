@@ -3,9 +3,16 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed partial class SamplerStateCollection
     {
         private readonly GraphicsDevice _graphicsDevice;
+
+
+
 
         private readonly SamplerState[] _samplers;
         private readonly SamplerState[] _actualSamplers;
@@ -35,6 +42,18 @@ namespace EW.Xna.Platforms.Graphics
 
                 _samplers[index] = value;
             }
+        }
+
+        internal void Clear()
+        {
+            for(var i = 0; i < _samplers.Length; i++)
+            {
+                _samplers[i] = SamplerState.LinearWrap;
+
+                
+            }
+
+            PlatformClear();
         }
     }
 }

@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Common", "EW.Mods.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Cnc", "EW.Mods.Cnc\EW.Mods.Cnc.csproj", "{7CCAA17F-A67B-4EA9-BB1E-D843AFB23BC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant.Android", "..\Eluant\Eluant\Eluant.Android.csproj", "{5913825E-0C80-4660-81B3-C2C55B35ADB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,14 +54,14 @@ Global
 		{7CCAA17F-A67B-4EA9-BB1E-D843AFB23BC9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7CCAA17F-A67B-4EA9-BB1E-D843AFB23BC9}.Release|x86.ActiveCfg = Release|Any CPU
 		{7CCAA17F-A67B-4EA9-BB1E-D843AFB23BC9}.Release|x86.Build.0 = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.Build.0 = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.ActiveCfg = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.Build.0 = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.Build.0 = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

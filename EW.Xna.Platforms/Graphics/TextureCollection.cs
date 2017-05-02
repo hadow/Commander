@@ -3,6 +3,9 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed partial class TextureCollection
     {
 
@@ -55,6 +58,15 @@ namespace EW.Xna.Platforms.Graphics
 
         internal void Dirty()
         {
+            _dirty = int.MaxValue;
+        }
+
+        internal void Clear()
+        {
+            for (var i = 0; i < _textures.Length; i++)
+                _textures[i] = null;
+
+            PlatformClear();
             _dirty = int.MaxValue;
         }
     }

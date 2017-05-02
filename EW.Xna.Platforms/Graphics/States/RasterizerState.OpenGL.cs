@@ -65,6 +65,11 @@ namespace EW.Xna.Platforms.Graphics
 
             }
 
+            if (FillMode != FillMode.Solid)
+                throw new NotImplementedException();
+            
+
+
             if(force || this.ScissorTestEnable != device._lastRasterizerState.ScissorTestEnable)
             {
                 if (ScissorTestEnable)

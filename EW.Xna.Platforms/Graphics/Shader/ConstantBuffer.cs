@@ -31,6 +31,19 @@ namespace EW.Xna.Platforms.Graphics
             PlatformInitialize();
         }
 
+        public ConstantBuffer(ConstantBuffer cloneSource)
+        {
+            GraphicsDevice = cloneSource.GraphicsDevice;
+
+            _name = cloneSource._name;
+            _parameters = cloneSource._parameters;
+            _offsets = cloneSource._offsets;
+
+            //
+            _buffer = (byte[])cloneSource._buffer.Clone();
+            PlatformInitialize();
+        }
+
 
         internal void Clear()
         {

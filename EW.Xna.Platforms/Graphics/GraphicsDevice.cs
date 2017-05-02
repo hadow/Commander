@@ -274,7 +274,7 @@ namespace EW.Xna.Platforms.Graphics
             PresentationParameters.DepthStencilFormat = DepthFormat.Depth24;
             Setup();
             GraphicsCapabilities = new GraphicsCapabilities(this);
-            //GraphicsCapabilities.Initialize(this);
+            GraphicsCapabilities.Initialize(this);
             Initialize();
         }
 
@@ -290,13 +290,25 @@ namespace EW.Xna.Platforms.Graphics
         {
             PlatformInitialize();
 
+
+            //Force set the default render states.
             _blendStateDirty = _depthStencilStateDirty = _rasterizerStateDirty = true;
             BlendState = BlendState.Opaque;
             DepthStencilState = DepthStencilState.Default;
             RasterizerState = RasterizerState.CullCounterClockwise;
 
 
+            //Clear the texture and sampler collections forcing the state to be reapplied.
+            VertexTextures.Clear();
+            VertexSamplerStates.Clear();
+            Textures.Clear();
+            SamplerStates.Clear();
 
+            //Clear constant buffers
+            _vertexConstantBuffers.Clear();
+            _pixelConstantBuffers.Clear();
+
+            //Force set the buffers and shaders on next ApplyState() call
             _vertexBuffers = new VertexBufferBindings(_maxVertexBufferSlots);
             _vertexBuffersDirty = true;
             _indexBufferDirty = true;
@@ -307,7 +319,7 @@ namespace EW.Xna.Platforms.Graphics
             _scissorRectangleDirty = true;
             ScissorRectangle = _viewport.Bounds;
 
-            //
+            //Set the default render target.
             ApplyRenderTargets(null);
         }
 
@@ -325,7 +337,7 @@ namespace EW.Xna.Platforms.Graphics
             _graphicsProfile = graphicsProfile;
             Setup();
             GraphicsCapabilities = new GraphicsCapabilities(this);
-            //GraphicsCapabilities.Initialize(this);
+            GraphicsCapabilities.Initialize(this);
             Initialize();
         }
 
@@ -347,8 +359,12 @@ namespace EW.Xna.Platforms.Graphics
 
             PlatformSetup();
 
+            VertexTextures = new TextureCollection(this, MaxVertexTextureSlots, true);
+            VertexSamplerStates = new SamplerStateCollection(this, MaxVertexTextureSlots, true);
+
             Textures = new TextureCollection(this, MaxTextureSlots, false);
             SamplerStates = new SamplerStateCollection(this, MaxTextureSlots, false);
+
             _blendStateAdditive = BlendState.Additive.Clone();
             _blendStateAlphaBlend = BlendState.AlphaBlend.Clone();
             _blendStateNonPremultiplied = BlendState.NonPremultiplied.Clone();

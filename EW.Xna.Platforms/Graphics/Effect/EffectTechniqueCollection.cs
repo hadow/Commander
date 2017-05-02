@@ -15,6 +15,7 @@ namespace EW.Xna.Platforms.Graphics
             _techniques = techniques;
         }
 
+        public int Count { get { return _techniques.Length; } }
 
         public EffectTechnique this[int index]
         {

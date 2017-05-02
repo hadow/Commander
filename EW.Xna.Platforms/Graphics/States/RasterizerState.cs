@@ -3,6 +3,13 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+
+    public enum FillMode
+    {
+        Solid,
+        WireFrame,
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -76,6 +83,18 @@ namespace EW.Xna.Platforms.Graphics
             {
                 ThrowIfBound();
                 _depthClipEnable = value;
+            }
+        }
+
+
+        private FillMode _fillMode;
+        public FillMode FillMode
+        {
+            get { return _fillMode; }
+            set
+            {
+                ThrowIfBound();
+                _fillMode = value;
             }
         }
 

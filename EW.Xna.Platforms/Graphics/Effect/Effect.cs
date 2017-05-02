@@ -67,10 +67,33 @@ namespace EW.Xna.Platforms.Graphics
             Clone(cloneSource);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cloneSource"></param>
         private void Clone(Effect cloneSource)
         {
             Parameters = cloneSource.Parameters.Clone();
             Techniques = cloneSource.Techniques.Clone(this);
+
+            ConstantBuffers = new ConstantBuffer[cloneSource.ConstantBuffers.Length];
+            for(var i = 0; i < cloneSource.ConstantBuffers.Length; i++)
+            {
+                ConstantBuffers[i] = new ConstantBuffer(cloneSource.ConstantBuffers[i]);
+            }
+
+            for(var i = 0; i < cloneSource.Techniques.Count; i++)
+            {
+                if(cloneSource.Techniques[i] == cloneSource.CurrentTechnique)
+                {
+                    CurrentTechnique = Techniques[i];
+                    break;
+                }
+            }
+
+            _shaders = cloneSource._shaders;
+
         }
 
         /// <summary>

@@ -48,6 +48,8 @@ namespace EW.Xna.Platforms.Graphics
             GraphicsExtensions.CheckGLError();
             if(compiled != (int)Bool.True)
             {
+                var log = GL.GetShaderInfoLog(_shaderHandler);
+                Console.WriteLine(log);
                 if (GL.IsShader(_shaderHandler))
                 {
                     GL.DeleteShader(_shaderHandler);
@@ -121,6 +123,23 @@ namespace EW.Xna.Platforms.Graphics
                 }
                 _shaderHandler = -1;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+
+            if(!IsDisposed && _shaderHandler != -1)
+            {
+                Threading.BlockOnUIThread(() =>
+                {
+
+                    GL.DeleteShader(_shaderHandler);
+                    GraphicsExtensions.CheckGLError();
+                    _shaderHandler = -1;
+                });
+            }
+
+            base.Dispose(disposing);
         }
 
 

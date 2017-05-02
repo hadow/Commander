@@ -122,7 +122,7 @@ namespace EW.Xna.Platforms.Graphics
         private void PlatformSetup()
         {
             MaxTextureSlots = 16;
-            
+
             //GL.GetInteger(GetPName.MaxTextureImageUnits, out MaxTextureSlots);
             //GraphicsExtensions.CheckGLError();
 
@@ -226,7 +226,9 @@ namespace EW.Xna.Platforms.Graphics
 
             this.PlatformApplyBlend(true);
             this.DepthStencilState.PlatformApplyState(this, true);
-            
+            this.RasterizerState.PlatformApplyState(this, true);
+
+            _maxVertexBufferSlots = 1;
         }
 
         /// <summary>
@@ -403,7 +405,10 @@ namespace EW.Xna.Platforms.Graphics
         {
             if(force || BlendFactor != _lastBlendState.BlendFactor)
             {
-                GL.BlendColor(this.BlendFactor.R / 255.0f, this.BlendFactor.G / 255.0f, this.BlendFactor.B / 255.0f, this.BlendFactor.A / 255.0f);
+                GL.BlendColor(this.BlendFactor.R / 255.0f, 
+                    this.BlendFactor.G / 255.0f,
+                    this.BlendFactor.B / 255.0f,
+                    this.BlendFactor.A / 255.0f);
                 GraphicsExtensions.CheckGLError();
                 _lastBlendState.BlendFactor = this.BlendFactor;
             }
@@ -440,6 +445,11 @@ namespace EW.Xna.Platforms.Graphics
 
             if (_vertexBuffersDirty)
             {
+                if (_vertexBuffers.Count > 0)
+                {
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBuffers.Get(0).VertexBuffer.vbo);
+                    GraphicsExtensions.CheckGLError();
+                }
                 _vertexBuffersDirty = false;
             }
             if (_vertexShader == null)
