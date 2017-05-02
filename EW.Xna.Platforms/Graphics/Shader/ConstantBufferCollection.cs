@@ -19,6 +19,15 @@ namespace EW.Xna.Platforms.Graphics
             _valid = 0;
         }
 
+        public ConstantBuffer this[int index]
+        {
+            get { return _buffers[index]; }
+            set
+            {
+
+            }
+        }
+
 
         /// <summary>
         /// 

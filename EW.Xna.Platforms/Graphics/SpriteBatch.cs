@@ -33,7 +33,9 @@ namespace EW.Xna.Platforms.Graphics
 
         Effect _effect;
         Effect _spriteEffect;
-        
+
+        readonly EffectParameter _matrixTransform;
+        readonly EffectPass _spritePass;
         Matrix _matrix;
         
 
@@ -47,6 +49,8 @@ namespace EW.Xna.Platforms.Graphics
             this.GraphicsDevice = graphicsDevice;
 
             _spriteEffect = new Effect(graphicsDevice, EffectResource.SpriteEffect.Bytecode);
+            _matrixTransform = _spriteEffect.Parameters["MatrixTransform"];
+            _spritePass = _spriteEffect.CurrentTechnique.Passes[0];
             _batcher = new SpriteBatcher(graphicsDevice);
             _beginCalled = false;
         }
@@ -121,6 +125,8 @@ namespace EW.Xna.Platforms.Graphics
 
             Matrix.Multiply(ref _matrix, ref projection, out projection);
 
+            _matrixTransform.SetValue(projection);
+            _spritePass.Apply();
         }
 
 

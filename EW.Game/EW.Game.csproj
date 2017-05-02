@@ -444,7 +444,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant2\Eluant\Eluant.Android.csproj">
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
       <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
       <Name>Eluant.Android</Name>
     </ProjectReference>

@@ -15,6 +15,25 @@ namespace EW.Xna.Platforms.Graphics
             _techniques = techniques;
         }
 
+
+        public EffectTechnique this[int index]
+        {
+            get { return _techniques[index]; }
+        }
+
+        public EffectTechnique this[string name]
+        {
+            get
+            {
+                foreach(var technique in _techniques)
+                {
+                    if (technique.Name == name)
+                        return technique;
+                }
+                return null;
+            }
+        }
+
         internal EffectTechniqueCollection Clone(Effect effect)
         {
             var techniques = new EffectTechnique[_techniques.Length];

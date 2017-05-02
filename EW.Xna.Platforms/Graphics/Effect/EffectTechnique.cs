@@ -32,5 +32,7 @@ namespace EW.Xna.Platforms.Graphics
             Passes = cloneSource.Passes.Clone(effect);
 
         }
+
+        
     }
 }

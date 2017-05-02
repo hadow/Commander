@@ -90,13 +90,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant2\Eluant\Eluant.Android.csproj">
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
       <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
       <Name>Eluant.Android</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Backup\FuzzyLogicLibrary.csproj">
-      <Project>{5fce77c6-c989-49c7-b82b-6f4b7779558c}</Project>
-      <Name>FuzzyLogicLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>

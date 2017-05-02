@@ -52,6 +52,54 @@ namespace EW.Xna.Platforms.Graphics
         /// </summary>
         public void Apply()
         {
+            var current = _effect.CurrentTechnique;
+            _effect.OnApply();
+            if(_effect.CurrentTechnique != current)
+            {
+                _effect.CurrentTechnique.Passes[0].Apply();
+                return;
+            }
+
+            var device = _effect.GraphicsDevice;
+            if(_vertexShader != null)
+            {
+                device.VertexShader = _vertexShader;
+
+                //Update the texture parameters
+                SetShaderSamplers(_vertexShader, device.VertexTextures, device.VertexSamplerStates);
+
+                //Update the constant buffers
+                for(var c = 0; c < _vertexShader.CBuffers.Length; c++)
+                {
+                    var cb = _effect.ConstantBuffers[_vertexShader.CBuffers[c]];
+                    cb.Update(_effect.Parameters);
+                    device.SetConstantBuffer(ShaderStage.Vertex, c, cb);
+                }
+            }
+
+            if(_pixelShader != null)
+            {
+                device.PixelShader = _pixelShader;
+                SetShaderSamplers(_pixelShader, device.Textures, device.SamplerStates);
+
+                for(var c = 0; c < _pixelShader.CBuffers.Length; c++)
+                {
+                    var cb = _effect.ConstantBuffers[_pixelShader.CBuffers[c]];
+                    cb.Update(_effect.Parameters);
+                    device.SetConstantBuffer(ShaderStage.Pixel, c, cb);
+                }
+            }
+
+            //Set the render states if we have some.
+
+            if (_rasterizerState != null)
+                device.RasterizerState = _rasterizerState;
+
+            if (_blendState != null)
+                device.BlendState = _blendState;
+
+            if (_depthStencilState != null)
+                device.DepthStencilState = _depthStencilState;
 
         }
 
@@ -63,7 +111,16 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="samplerStates"></param>
         private void SetShaderSamplers(Shader shader,TextureCollection textures,SamplerStateCollection samplerStates)
         {
+            foreach(var sampler in shader.Samplers)
+            {
+                var param = _effect.Parameters[sampler.parameter];
+                var texture = param.Data as Texture;
 
+                textures[sampler.textureSlot] = texture;
+
+                if (sampler.state != null)
+                    samplerStates[sampler.samplerSlot] = sampler.state;
+            }
         }
     }
 }

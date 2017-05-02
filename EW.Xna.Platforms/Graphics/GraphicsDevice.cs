@@ -51,9 +51,10 @@ namespace EW.Xna.Platforms.Graphics
         private readonly ConstantBufferCollection _vertexConstantBuffers = new ConstantBufferCollection(ShaderStage.Vertex, 16);
         private readonly ConstantBufferCollection _pixelConstantBuffers = new ConstantBufferCollection(ShaderStage.Pixel, 16);
 
+        public TextureCollection VertexTextures { get; private set; }
         public TextureCollection Textures { get; private set; }
         public SamplerStateCollection SamplerStates { get; private set; }
-
+        public SamplerStateCollection VertexSamplerStates { get; private set; }
 
         private BlendState _blendStateAdditive;
         private BlendState _blendStateAlphaBlend;
@@ -370,7 +371,13 @@ namespace EW.Xna.Platforms.Graphics
             EffectCache = new Dictionary<int, Effect>();
         }
 
-       
+        internal void SetConstantBuffer(ShaderStage stage,int slot,ConstantBuffer buffer)
+        {
+            if (stage == ShaderStage.Vertex)
+                _vertexConstantBuffers[slot] = buffer;
+            else
+                _pixelConstantBuffers[slot] = buffer;
+        }
 
         
         /// <summary>

@@ -107,5 +107,10 @@ namespace EW.Xna.Platforms.Graphics
             StateKey = unchecked(NextStateKey++);
         }
 
+        public void SetValue(Matrix value)
+        {
+
+        }
+
     }
 }

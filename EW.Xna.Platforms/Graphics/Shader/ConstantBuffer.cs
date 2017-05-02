@@ -3,6 +3,9 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     internal partial class ConstantBuffer:GraphicsResource
     {
 
@@ -32,6 +35,38 @@ namespace EW.Xna.Platforms.Graphics
         internal void Clear()
         {
             PlatformClear();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parameters"></param>
+        public void Update(EffectParameterCollection parameters)
+        {
+            if (_stateKey > EffectParameter.NextStateKey)
+                _stateKey = 0;
+
+            for(var p = 0; p < _parameters.Length; p++)
+            {
+                var index = _parameters[p];
+                var param = parameters[index];
+                if (param.StateKey < _stateKey)
+                    continue;
+
+                var offset = _offsets[p];
+                _dirty = true;
+
+                SetParameter(offset, param);
+                
+            }
+
+            _stateKey = EffectParameter.NextStateKey;
+        }
+
+        private int SetParameter(int offset,EffectParameter param)
+        {
+            var rowsUsed = 0;
+            return rowsUsed;
         }
     }
 }

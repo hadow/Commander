@@ -148,7 +148,7 @@ namespace EW.Xna.Platforms.Graphics
                 techniques[t] = new EffectTechnique(this, name, passes, annotations);
             }
             Techniques = new EffectTechniqueCollection(techniques);
-            //CurrentTechnique = Techniques[0];
+            CurrentTechnique = Techniques[0];
         }
 
         /// <summary>
@@ -287,6 +287,8 @@ namespace EW.Xna.Platforms.Graphics
 
             return new EffectPassCollection(passes);
         }
+
+        protected internal virtual void OnApply() { }
 
         protected internal override void GraphicsDeviceResetting()
         {
