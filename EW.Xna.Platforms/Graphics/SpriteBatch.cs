@@ -246,8 +246,12 @@ namespace EW.Xna.Platforms.Graphics
         internal void DrawInternal(Texture2D texture,
             Vector4 destinationRectangle,
             Rectangle? sourceRectangle,
-            Color color,float rotation,Vector2 origin,
-            SpriteEffects effect,float depth,bool autoFlush)
+            Color color,
+            float rotation,
+            Vector2 origin,
+            SpriteEffects effect,
+            float depth,
+            bool autoFlush)
         {
             var item = _batcher.CreateBatchItem();
             item.Texture = texture;

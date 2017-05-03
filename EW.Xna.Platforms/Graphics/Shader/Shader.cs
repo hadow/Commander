@@ -80,28 +80,27 @@ namespace EW.Xna.Platforms.Graphics
 
             for(var s = 0; s < samplerCount; s++)
             {
-                var samplerInfo = Samplers[s];
-                samplerInfo.type = (SamplerT)reader.ReadByte();
-                samplerInfo.textureSlot = reader.ReadByte();
-                samplerInfo.samplerSlot = reader.ReadByte();
+                Samplers[s].type = (SamplerT)reader.ReadByte();
+                Samplers[s].textureSlot = reader.ReadByte();
+                Samplers[s].samplerSlot = reader.ReadByte();
 
                 if (reader.ReadBoolean())
                 {
-                    samplerInfo.state = new SamplerState();
-                    samplerInfo.state.AddressU = (TextureAddressMode)reader.ReadByte();
-                    samplerInfo.state.AddressV = (TextureAddressMode)reader.ReadByte();
-                    samplerInfo.state.AddressW = (TextureAddressMode)reader.ReadByte();
-                    samplerInfo.state.BorderColor = new Color(reader.ReadByte(), 
+                    Samplers[s].state = new SamplerState();
+                    Samplers[s].state.AddressU = (TextureAddressMode)reader.ReadByte();
+                    Samplers[s].state.AddressV = (TextureAddressMode)reader.ReadByte();
+                    Samplers[s].state.AddressW = (TextureAddressMode)reader.ReadByte();
+                    Samplers[s].state.BorderColor = new Color(reader.ReadByte(), 
                         reader.ReadByte(),
                         reader.ReadByte(),
                         reader.ReadByte());
-                    samplerInfo.state.Filter = (TextureFilter)reader.ReadByte();
-                    samplerInfo.state.MaxAnisotropy = reader.ReadInt32();
-                    samplerInfo.state.MaxMipLevel = reader.ReadInt32();
-                    samplerInfo.state.MipMapLevelOfDetailBias = reader.ReadSingle();
+                    Samplers[s].state.Filter = (TextureFilter)reader.ReadByte();
+                    Samplers[s].state.MaxAnisotropy = reader.ReadInt32();
+                    Samplers[s].state.MaxMipLevel = reader.ReadInt32();
+                    Samplers[s].state.MipMapLevelOfDetailBias = reader.ReadSingle();
                 }
-                samplerInfo.name = reader.ReadString();
-                samplerInfo.parameter = reader.ReadByte();
+                Samplers[s].name = reader.ReadString();
+                Samplers[s].parameter = reader.ReadByte();
             }
 
             var cbufferCount = (int)reader.ReadByte();

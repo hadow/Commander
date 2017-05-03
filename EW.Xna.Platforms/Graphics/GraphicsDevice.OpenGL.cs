@@ -123,14 +123,14 @@ namespace EW.Xna.Platforms.Graphics
         {
             MaxTextureSlots = 16;
 
-            //GL.GetInteger(GetPName.MaxTextureImageUnits, out MaxTextureSlots);
-            //GraphicsExtensions.CheckGLError();
+            GL.GetInteger(GetPName.MaxTextureImageUnits, out MaxTextureSlots);
+            GraphicsExtensions.CheckGLError();
 
-            //GL.GetInteger(GetPName.MaxVertexAttribs, out MaxVertexAttributes);
-            //GraphicsExtensions.CheckGLError();
+            GL.GetInteger(GetPName.MaxVertexAttribs, out MaxVertexAttributes);
+            GraphicsExtensions.CheckGLError();
 
-            //GL.GetInteger(GetPName.MaxTextureSize, out MaxTextureSize);
-            //GraphicsExtensions.CheckGLError();
+            GL.GetInteger(GetPName.MaxTextureSize, out MaxTextureSize);
+            GraphicsExtensions.CheckGLError();
 
 
             try

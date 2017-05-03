@@ -10,7 +10,7 @@ namespace EW.Xna.Platforms
     /// </summary>
 	public class AndroidGameWindow : GameWindow, IDisposable
 	{
-        internal RAndroidGameView GameView { get; private set; }
+        internal XnAndroidGameView GameView { get; private set; }
         internal IResumeManager Resumer;
 
         private readonly Game _game;
@@ -28,6 +28,11 @@ namespace EW.Xna.Platforms
 		}
 
 
+        public void SetResumer(IResumeManager resumer)
+        {
+            Resumer = resumer;
+        }
+
         /// <summary>
         /// 初始化上下文
         /// </summary>
@@ -37,7 +42,7 @@ namespace EW.Xna.Platforms
 
             _clientBounds = new Rectangle(0, 0, context.Resources.DisplayMetrics.WidthPixels, context.Resources.DisplayMetrics.HeightPixels);
 
-            GameView = new RAndroidGameView(context, this,_game);
+            GameView = new XnAndroidGameView(context, this,_game);
             GameView.RenderOnUIThread = Game.Activity.RenderOnUIThread;
             GameView.RenderFrame += OnRenderFrame;
             GameView.UpdateFrame += OnUpdateFrame;
@@ -225,7 +230,11 @@ namespace EW.Xna.Platforms
         }
 		public void Dispose()
 		{
-
+            if (GameView != null)
+            {
+                GameView.Dispose();
+                GameView = null;
+            }
 
 
 		}

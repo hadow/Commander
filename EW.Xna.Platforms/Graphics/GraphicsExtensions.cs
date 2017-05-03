@@ -19,6 +19,8 @@ namespace EW.Xna.Platforms.Graphics
                     return 3;
                 case VertexElementFormat.Vector4:
                     return 4;
+                case VertexElementFormat.Color:
+                    return 4;
                 case VertexElementFormat.Byte4:
                     return 4;
             }
@@ -35,6 +37,8 @@ namespace EW.Xna.Platforms.Graphics
                 case VertexElementFormat.Vector3:
                 case VertexElementFormat.Vector4:
                     return VertexAttribPointerType.Float;
+                case VertexElementFormat.Color:
+                    return VertexAttribPointerType.UnsignedByte;
 
             }
 

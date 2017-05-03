@@ -132,7 +132,9 @@ namespace EW.Xna.Platforms.Graphics
                     numBatchesToProcess = MaxBatchSize;
                 }
 
-                fixed(VertexPositionColorTexture* vertexArrayFixedPtr = _vertexArray)
+                //
+                //通过使用指针索引避免数组检查开销！
+                fixed (VertexPositionColorTexture* vertexArrayFixedPtr = _vertexArray)
                 {
                     var vertexArrayPtr = vertexArrayFixedPtr;
                     for(int i = 0; i < numBatchesToProcess; i++, batchIndex++, index += 4, vertexArrayPtr += 4)

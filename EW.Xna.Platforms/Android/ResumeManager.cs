@@ -60,7 +60,7 @@ namespace EW.Xna.Platforms
             int th = resumeTexture.Height;
 
             spriteBatch.Begin();
-            spriteBatch.Draw(resumeTexture, new Vector2(sw / 2, sh / 2), null, Color.White, rotation, new Vector2(tw / 2, th / 2), scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(resumeTexture, new Vector2(sw / 2, sh / 2), null, Color.Red, rotation, new Vector2(tw / 2, th / 2), scale, SpriteEffects.None, 0);
             spriteBatch.End();
         }
     }

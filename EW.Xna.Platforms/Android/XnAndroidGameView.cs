@@ -14,7 +14,7 @@ namespace EW.Xna.Platforms
     /// <summary>
     /// 游戏视图
     /// </summary>
-	public class RAndroidGameView:AndroidGameView,View.IOnTouchListener,ISurfaceHolderCallback
+	public class XnAndroidGameView:AndroidGameView,View.IOnTouchListener,ISurfaceHolderCallback
 	{
 
         private readonly Game _game;
@@ -38,7 +38,7 @@ namespace EW.Xna.Platforms
                 SetOnTouchListener(value ? this : null);
             }
         }
-		public RAndroidGameView(Context context,AndroidGameWindow window,Game game):base(context)
+		public XnAndroidGameView(Context context,AndroidGameWindow window,Game game):base(context)
 		{
 			_touchManager = new AndroidTouchEventManager(window);
 			_gameWindow = window;
@@ -149,6 +149,11 @@ namespace EW.Xna.Platforms
         }
 
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnContextSet(EventArgs e)
         {
             base.OnContextSet(e);
@@ -182,7 +187,10 @@ namespace EW.Xna.Platforms
         }
 
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnContextLost(EventArgs e)
         {
             base.OnContextLost(e);
@@ -198,6 +206,7 @@ namespace EW.Xna.Platforms
         /// </summary>
         protected override void CreateFrameBuffer()
         {
+            ContextRenderingApi = GLVersion.ES2;
             int depth = 0;
             int stencil = 0;
 

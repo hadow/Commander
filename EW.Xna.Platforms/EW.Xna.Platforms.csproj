@@ -163,7 +163,7 @@
     <Compile Include="Android\ScreenReciever.cs" />
     <Compile Include="GamePlatform.cs" />
     <Compile Include="Android\AndroidGamePlatform.cs" />
-    <Compile Include="RAndroidGameView.cs" />
+    <Compile Include="Android\XnAndroidGameView.cs" />
     <Compile Include="Input\Touch\AndroidTouchEventManager.cs" />
     <Compile Include="Threading.cs" />
     <Compile Include="TitleContainer.Android.cs" />
