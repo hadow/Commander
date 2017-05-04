@@ -86,10 +86,15 @@ namespace EW.Xna.Platforms.Graphics
                 shaderAttributeInfo.Add(programHash, attrInfo);
             }
 
-            ///
+            //Apply the vertex attribute info
             foreach(var element in attrInfo.Elements)
             {
-                GL.VertexAttribPointer(element.AttributeLocation, element.NumberOfElements, element.VertexAttribPointerT, element.Normalized, this.VertexStride, (IntPtr)(offset.ToInt64() + element.Offset));
+                GL.VertexAttribPointer(element.AttributeLocation,
+                    element.NumberOfElements,
+                    element.VertexAttribPointerT,
+                    element.Normalized,
+                    this.VertexStride,
+                    (IntPtr)(offset.ToInt64() + element.Offset));
                 GraphicsExtensions.CheckGLError();
             }
             GraphicsDevice.SetVertexAttributeArray(attrInfo.EnabledAttributes);
