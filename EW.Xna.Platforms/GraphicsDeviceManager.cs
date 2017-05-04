@@ -217,6 +217,51 @@ namespace EW.Xna.Platforms
         internal void ResetClientBounds()
         {
 #if ANDROID
+            float preferredAspectRatio = (float)PreferredBackBufferWidth / (float)PreferredBackBufferHeight;
+            float displayAspectRatio = (float)GraphicsDevice.DisplayMode.Width / (float)GraphicsDevice.DisplayMode.Height;
+
+            float adjustedAspectRatio = preferredAspectRatio;
+
+            if((preferredAspectRatio > 1.0f && displayAspectRatio<1.0f) || (preferredAspectRatio<1.0f && displayAspectRatio > 1.0f))
+            {
+                adjustedAspectRatio = 1.0f / preferredAspectRatio;
+            }
+            const float EPSILON = 0.00001f;
+
+            var newClientBounds = new Rectangle();
+            if(displayAspectRatio > (adjustedAspectRatio + EPSILON))
+            {
+                newClientBounds.Height = _graphicsDevice.DisplayMode.Height;
+                newClientBounds.Width = (int)(newClientBounds.Height * adjustedAspectRatio);
+                newClientBounds.X = (_graphicsDevice.DisplayMode.Width - newClientBounds.Width) / 2;
+            }
+            else if (displayAspectRatio < (adjustedAspectRatio - EPSILON))
+            {
+                newClientBounds.Width = _graphicsDevice.DisplayMode.Width;
+                newClientBounds.Height = (int)(newClientBounds.Width / adjustedAspectRatio);
+                newClientBounds.Y = (_graphicsDevice.DisplayMode.Height - newClientBounds.Height) / 2;
+              
+            }
+            else
+            {
+                newClientBounds.Width = GraphicsDevice.DisplayMode.Width;
+                newClientBounds.Height = GraphicsDevice.DisplayMode.Height;
+            }
+
+            //Ensure buffer size is reported correctly
+            _graphicsDevice.PresentationParameters.BackBufferWidth = newClientBounds.Width;
+            _graphicsDevice.PresentationParameters.BackBufferHeight = newClientBounds.Height;
+
+            _graphicsDevice.Viewport = new Viewport(newClientBounds.X, newClientBounds.Y, newClientBounds.Width, newClientBounds.Height);
+
+            ((AndroidGameWindow)_game.Window).ChangeClientBounds(newClientBounds);
+
+            //Touch Panel needs latest buffer size for scaling
+
+            TouchPanel.DisplayWidth = newClientBounds.Width;
+            TouchPanel.DisplayHeight = newClientBounds.Height;
+
+
 
 
 

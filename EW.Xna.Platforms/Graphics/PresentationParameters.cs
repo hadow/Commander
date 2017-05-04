@@ -10,6 +10,33 @@ namespace EW.Xna.Platforms.Graphics
     {
         public const int DefaultPresentRate = 60;//Ä¬ÈÏÖ¡ÂÊ
 
+        public PresentationParameters()
+        {
+            Clear();
+        }
+
+        public void Clear()
+        {
+            backBufferFormat = SurfaceFormat.Color;
+            _backBufferWidth = GraphicsDeviceManager.DefaultBackBufferWidth;
+            _backBufferHeight = GraphicsDeviceManager.DefaultBackBufferHeight;
+
+            deviceWindowHandle = IntPtr.Zero;
+
+            _depthStencilFormat = DepthFormat.None;
+            DisplayOrientation = DisplayOrientation.Default;
+        }
+
+        private SurfaceFormat backBufferFormat;
+        public SurfaceFormat BackBufferFormat
+        {
+            get { return backBufferFormat; }
+            set
+            {
+                backBufferFormat = value;
+            }
+        }
+
         private DepthFormat _depthStencilFormat;
 
         public DepthFormat DepthStencilFormat

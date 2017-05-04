@@ -26,7 +26,7 @@ namespace EW
             gdm = new GraphicsDeviceManager(this);
             gdm.IsFullScreen = true;
             gdm.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-            position = Vector2.Zero;
+            position = new Vector2(50, 50);
             return;
             Initialize(new Arguments());
         }
@@ -74,19 +74,23 @@ namespace EW
 
         protected override void Initialize()
         {
-            texture = new Texture2D(this.GraphicsDevice, 100, 100);
-            Color[] colorData = new Color[100 * 100];
-            for(int i = 0; i < 10000; i++)
-            {
-                colorData[i] = Color.Red;
-            }
+            //texture = new Texture2D(this.GraphicsDevice, 100, 100);
+            //Color[] colorData = new Color[100 * 100];
+            //for(int i = 0; i < 10000; i++)
+            //{
+            //    colorData[i] = Color.Red;
+            //}
 
-            texture.SetData<Color>(colorData);
+            //texture.SetData<Color>(colorData);
             base.Initialize();
         }
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
+            {
+                texture = Texture2D.FromStream(this.GraphicsDevice, stream);
+            }
         }
 
         protected override void UnloadContent()
@@ -108,7 +112,7 @@ namespace EW
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            spriteBatch.Draw(texture, position);
+            spriteBatch.Draw(texture, position,Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
 

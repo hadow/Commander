@@ -102,7 +102,7 @@ namespace EW.Xna.Platforms.Graphics
 
             if (_sortMode != SpriteSortMode.Immediate)
                 Setup();
-            _batcher.DrawBatch(_sortMode, null);
+            _batcher.DrawBatch(_sortMode, _effect);
 
         }
 
@@ -300,6 +300,26 @@ namespace EW.Xna.Platforms.Graphics
             }
 
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="texture"></param>
+        /// <param name="position"></param>
+        /// <param name="color"></param>
+        public void Draw(Texture2D texture,Vector2 position,Color color)
+        {
+            CheckValid(texture);
+
+            var item = _batcher.CreateBatchItem();
+            item.Texture = texture;
+
+            item.SortKey = _sortMode == SpriteSortMode.Texture ? texture.SortingKey : 0;
+
+            item.Set(position.X, position.Y, texture.Width, texture.Height, color, Vector2.Zero, Vector2.One, 0);
+
+            FlushIfNeeded();
         }
 
 

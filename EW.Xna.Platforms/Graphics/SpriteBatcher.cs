@@ -114,6 +114,7 @@ namespace EW.Xna.Platforms.Graphics
 
             }
 
+            //Determine how many iterations through the drawing code we need to make
             int batchIndex = 0;
             int batchCount = _batchItemCount;
 
@@ -123,9 +124,11 @@ namespace EW.Xna.Platforms.Graphics
             }
             while (batchCount > 0)
             {
+                // setup the vertexArray array;
                 var startIndex = 0;
                 var index = 0;
                 Texture2D tex = null;
+
                 int numBatchesToProcess = batchCount;
                 if (numBatchesToProcess > MaxBatchSize)
                 {
@@ -137,9 +140,11 @@ namespace EW.Xna.Platforms.Graphics
                 fixed (VertexPositionColorTexture* vertexArrayFixedPtr = _vertexArray)
                 {
                     var vertexArrayPtr = vertexArrayFixedPtr;
+                    //Draw the batches
                     for(int i = 0; i < numBatchesToProcess; i++, batchIndex++, index += 4, vertexArrayPtr += 4)
                     {
                         SpriteBatchItem batchItem = _batchItemList[batchIndex];
+                        //if the texture changed,we need to flush and bind the new texture
                         var shouldFlush = !ReferenceEquals(batchItem.Texture, tex);
                         if (shouldFlush)
                         {
@@ -150,16 +155,20 @@ namespace EW.Xna.Platforms.Graphics
                             _device.Textures[0] = tex;
                         }
 
+                        //store the SpriteBatchItem data in out vertexArray
                         *(vertexArrayPtr + 0) = batchItem.vertexTL;
                         *(vertexArrayPtr + 1) = batchItem.vertexTR;
                         *(vertexArrayPtr + 2) = batchItem.vertexBL;
                         *(vertexArrayPtr + 3) = batchItem.vertexBR;
 
+                        //Release the texture
                         batchItem.Texture = null;
                     }
                 }
-
+                //flush the remaining vertexArray data
                 FlushVertexArray(startIndex, index, effect, tex);
+
+                //Update our batch count to continue the process of culling down large batches
                 batchCount -= numBatchesToProcess;
             }
 
@@ -190,7 +199,14 @@ namespace EW.Xna.Platforms.Graphics
             else
             {
                 //simply render
-                _device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, _vertexArray, 0, vertexCount, _index, 0, (vertexCount / 4) * 2, VertexPositionColorTexture.VertexDeclaration);
+                _device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList,
+                    _vertexArray, 
+                    0,
+                    vertexCount,
+                    _index,
+                    0,
+                    (vertexCount / 4) * 2,
+                    VertexPositionColorTexture.VertexDeclaration);
             }
         }
 

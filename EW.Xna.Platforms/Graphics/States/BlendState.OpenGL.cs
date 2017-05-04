@@ -13,7 +13,10 @@ namespace EW.Xna.Platforms.Graphics
         internal void PlatformApplyState(GraphicsDevice device, bool force = false)
         {
 
-            var blendEnabled = !(this.ColorSourceBlend == Blend.One && this.ColorDestinationBlend == Blend.Zero && this.AlphaSourceBlend == Blend.One && this.AlphaDestinationBlend == Blend.Zero);
+            var blendEnabled = !(this.ColorSourceBlend == Blend.One && 
+                this.ColorDestinationBlend == Blend.Zero &&
+                this.AlphaSourceBlend == Blend.One &&
+                this.AlphaDestinationBlend == Blend.Zero);
 
             if (force || blendEnabled != device._lastBlendEnable)
             {
@@ -40,7 +43,10 @@ namespace EW.Xna.Platforms.Graphics
                 this.AlphaSourceBlend != device._lastBlendState.AlphaSourceBlend || 
                 this.AlphaDestinationBlend != device._lastBlendState.AlphaDestinationBlend)
             {
-                GL.BlendFuncSeparate(this.ColorSourceBlend.GetBlendFactorSrc(), this.ColorDestinationBlend.GetBlendFactorDest(), this.AlphaSourceBlend.GetBlendFactorSrc(), this.AlphaDestinationBlend.GetBlendFactorDest());
+                GL.BlendFuncSeparate(this.ColorSourceBlend.GetBlendFactorSrc(), 
+                    this.ColorDestinationBlend.GetBlendFactorDest(),
+                    this.AlphaSourceBlend.GetBlendFactorSrc(),
+                    this.AlphaDestinationBlend.GetBlendFactorDest());
                 GraphicsExtensions.CheckGLError();
                 device._lastBlendState.ColorSourceBlend = this.ColorSourceBlend;
                 device._lastBlendState.ColorDestinationBlend = this.ColorDestinationBlend;
@@ -50,7 +56,10 @@ namespace EW.Xna.Platforms.Graphics
 
             if(force || this.ColorWriteChannels != device._lastBlendState.ColorWriteChannels)
             {
-                GL.ColorMask((this.ColorWriteChannels & ColorWriteChannels.Red) != 0, (this.ColorWriteChannels & ColorWriteChannels.Green) != 0, (this.ColorWriteChannels & ColorWriteChannels.Blue) != 0, (this.ColorWriteChannels & ColorWriteChannels.Alpha) != 0);
+                GL.ColorMask((this.ColorWriteChannels & ColorWriteChannels.Red) != 0, 
+                    (this.ColorWriteChannels & ColorWriteChannels.Green) != 0, 
+                    (this.ColorWriteChannels & ColorWriteChannels.Blue) != 0, 
+                    (this.ColorWriteChannels & ColorWriteChannels.Alpha) != 0);
                 GraphicsExtensions.CheckGLError();
                 device._lastBlendState.ColorWriteChannels = this.ColorWriteChannels;
             }

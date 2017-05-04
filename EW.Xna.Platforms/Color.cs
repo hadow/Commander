@@ -21,6 +21,7 @@ namespace EW.Xna.Platforms
         {
             Red = new Color(0xff0000ff);
             CornflowerBlue = new Color(0xffed9564);
+            White = new Color(uint.MaxValue);
         }
 
         [CLSCompliant(false)]

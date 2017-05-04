@@ -151,7 +151,7 @@ namespace EW.Xna.Platforms.Graphics
                 throw new ArgumentException("Texture array only has " + arraySize + " textures", "arraySlice");
             if (rect.HasValue && !resizedBounds.Contains(rect.Value))
                 throw new ArgumentException("Rectangle must be inside the Texture Bounds", "rect");
-            PlatformSetData<T>(level, arraySlice, rect, data, startIndex, elementCount);
+            PlatformSetData<T>(level, arraySlice, resizedBounds, data, startIndex, elementCount);
 
         }
     }

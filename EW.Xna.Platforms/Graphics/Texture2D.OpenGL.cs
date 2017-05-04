@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.IO;
 #if ANDROID
 using Android.Graphics;
 #endif
@@ -70,7 +71,7 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="data">Í¼ÏñÊý¾Ý</param>
         /// <param name="startIndex"></param>
         /// <param name="elementCount"></param>
-        private void PlatformSetData<T>(int level,int arraySize,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
+        private void PlatformSetData<T>(int level,int arraySize,Rectangle rect,T[] data,int startIndex,int elementCount) where T : struct
         {
             Threading.BlockOnUIThread(() => {
 
@@ -81,21 +82,21 @@ namespace EW.Xna.Platforms.Graphics
                     var startBytes = startIndex * elementSizeInByte;
                     var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startBytes);
 
-                    int x, y, w, h;
-                    if (rect.HasValue)
-                    {
-                        x = rect.Value.X;
-                        y = rect.Value.Y;
-                        w = rect.Value.Width;
-                        h = rect.Value.Height;
-                    }
-                    else
-                    {
-                        x = 0;
-                        y = 0;
-                        w = Math.Max(width >> level, 1);
-                        h = Math.Max(height >> level, 1);
-                    }
+                    //int x, y, w, h;
+                    //if (rect.HasValue)
+                    //{
+                    //    x = rect.Value.X;
+                    //    y = rect.Value.Y;
+                    //    w = rect.Value.Width;
+                    //    h = rect.Value.Height;
+                    //}
+                    //else
+                    //{
+                    //    x = 0;
+                    //    y = 0;
+                    //    w = Math.Max(width >> level, 1);
+                    //    h = Math.Max(height >> level, 1);
+                    //}
 
                     var prevTexture = GraphicsExtensions.GetBoundTexture2D();
                     GenerateGLTextureIfRequired();
@@ -107,19 +108,19 @@ namespace EW.Xna.Platforms.Graphics
                     }
                     else
                     {
-                        GL.PixelStore(PixelStoreParameter.UnpackAlignment, GraphicsExtensions.GetSize(this.Format));
-                        if (rect.HasValue)
+                        //GL.PixelStore(PixelStoreParameter.UnpackAlignment, GraphicsExtensions.GetSize(this.Format));
+                        //if (rect.HasValue)
                         {
-                            GL.TexSubImage2D(TextureTarget.Texture2D, level, x, y, w, h, glFormat, glType, dataPtr);
+                            GL.TexSubImage2D(TextureTarget.Texture2D, level, rect.X, rect.Y, rect.Width, rect.Height, glFormat, glType, dataPtr);
                             GraphicsExtensions.CheckGLError();
                         }
-                        else
-                        {
-                            GL.TexImage2D(TextureTarget.Texture2D, level, glInternalFormat, w, h, 0, glFormat, glType, dataPtr);
-                            GraphicsExtensions.CheckGLError();
-                        }
+                        //else
+                        //{
+                        //    GL.TexImage2D(TextureTarget.Texture2D, level, glInternalFormat, w, h, 0, glFormat, glType, dataPtr);
+                        //    GraphicsExtensions.CheckGLError();
+                        //}
                         //
-                        GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
+                        //GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
                     }
 
                     GL.BindTexture(TextureTarget.Texture2D, prevTexture);
@@ -207,6 +208,99 @@ namespace EW.Xna.Platforms.Graphics
                 GraphicsExtensions.CheckGLError();
             }
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="stream"></param>
+        /// <returns></returns>
+        public static Texture2D FromStream(GraphicsDevice graphicsDevice,Stream stream)
+        {
+            if (graphicsDevice == null)
+                throw new ArgumentException("graphicsDevice");
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
+            try
+            {
+                return PlatformFromStream(graphicsDevice, stream);
+            }
+            catch(Exception e)
+            {
+                throw new InvalidOperationException("This image format is not supported", e);
+            }
+
+        }
+
+        private static Texture2D PlatformFromStream(GraphicsDevice graphicsDevice,Stream stream)
+        {
+#if ANDROID
+            using (Bitmap image = BitmapFactory.DecodeStream(stream,null,new BitmapFactory.Options {
+
+                InScaled = false,
+                InDither = false,
+                InJustDecodeBounds = false,
+                InPurgeable = true,
+                InInputShareable = true,
+
+            }))
+            {
+                return PlatformFromStream(graphicsDevice, image);
+            }
+#endif
+#if DESKTOPGL
+
+#endif
+        }
+
+        private static Texture2D PlatformFromStream(GraphicsDevice graphicsDevice,Bitmap image)
+        {
+            var width = image.Width;
+            var height = image.Height;
+
+            int[] pixels = new int[width * height];
+
+            if((width!=image.Width) || (height != image.Height))
+            {
+
+            }
+            else
+            {
+                image.GetPixels(pixels, 0, width, 0, 0, width, height);
+            }
+            image.Recycle();
+
+            ConvertToABGR(height, width, pixels);
+
+            Texture2D texture = null;
+            Threading.BlockOnUIThread(()=> {
+
+                texture = new Texture2D(graphicsDevice, width, height, false, SurfaceFormat.Color);
+                texture.SetData<int>(pixels);
+            });
+
+            return texture;
+        }
+
+        /// <summary>
+        /// ARGB => ABGR
+        /// </summary>
+        /// <param name="pixelHeight"></param>
+        /// <param name="pixelWidth"></param>
+        /// <param name="pixels"></param>
+        private static void ConvertToABGR(int pixelHeight,int pixelWidth,int[] pixels)
+        {
+            int pixelCount = pixelWidth * pixelHeight;
+            for(int i = 0; i < pixelCount; i++)
+            {
+                uint pixel = (uint)pixels[i];
+                pixels[i] = (int)((pixel & 0xFF00FF00) | ((pixel & 0x00FF0000) >> 16) | ((pixel & 0x000000FF) << 16));
+            }
+        }
+
+        
 
     }
 }

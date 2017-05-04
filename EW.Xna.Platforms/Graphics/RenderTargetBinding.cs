@@ -17,5 +17,12 @@ namespace EW.Xna.Platforms.Graphics
 
         internal DepthFormat DepthFormat { get { return _depthFormat; } }
 
+
+        public RenderTargetBinding(RenderTarget2D renderTarget)
+        {
+            _renderTarget = renderTarget;
+            _arraySlice = 0;
+            _depthFormat = renderTarget.DepthStencilFormat;
+        }
     }
 }
