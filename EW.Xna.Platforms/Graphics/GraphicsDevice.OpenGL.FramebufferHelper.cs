@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Android.Util;
 #if GLES
 using OpenTK.Graphics.ES20;
 using System.Security;
@@ -46,7 +47,20 @@ namespace EW.Xna.Platforms.Graphics
 
                 if (graphicsDevice._extensions.Contains("GL_EXT_discard_framebuffer"))
                 {
+                    Log.Debug("extensions","GL_EXT_discard_framebuffer");
+                }
 
+                if (graphicsDevice._extensions.Contains("GL_EXT_multisampled_render_to_texture"))
+                {
+                    Log.Debug("extensions", "GL_EXT_multisampled_render_to_texture");
+                }
+                else if (graphicsDevice._extensions.Contains("GL_IMG_multisampled_render_to_texture"))
+                {
+                    Log.Debug("extensions", "GL_IMG_multisampled_render_to_texture");
+                }
+                else if (graphicsDevice._extensions.Contains("GL_NV_framebuffer_multisample"))
+                {
+                    Log.Debug("extensions", "GL_NV_framebuffer_multisample");
                 }
 
 #endif
