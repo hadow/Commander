@@ -8,10 +8,13 @@ namespace EW.Xna.Platforms.Graphics
     /// </summary>
     public partial class VertexDeclaration:GraphicsResource,IEquatable<VertexDeclaration>
     {
+        /// <summary>
+        /// 在结构上相同的顶点声明之间共享数据
+        /// </summary>
         private sealed class Data : IEquatable<Data>
         {
             private readonly int _hashCode;
-            public readonly int VertexStride;//顶点步进
+            public readonly int VertexStride;//顶点跨距
             public VertexElement[] Elements;
 
             public Data(int vertexStride,VertexElement[] elements)
@@ -31,6 +34,11 @@ namespace EW.Xna.Platforms.Graphics
                 }
             }
 
+            public override bool Equals(object obj)
+            {
+                return Equals(obj as Data);
+            }
+
             public override int GetHashCode()
             {
                 return _hashCode;
@@ -38,7 +46,20 @@ namespace EW.Xna.Platforms.Graphics
 
             public bool Equals(Data data)
             {
-                return false;
+                if (ReferenceEquals(null, data))
+                    return false;
+
+                if (ReferenceEquals(this, data))
+                    return true;
+
+                if (_hashCode != data._hashCode || VertexStride != data.VertexStride || Elements.Length != data.Elements.Length)
+                    return false;
+
+                for (int i = 0; i < Elements.Length; i++)
+                    if (!Elements[i].Equals(data.Elements[i]))
+                        return false;
+
+                return true;
             }
         }
 
@@ -73,10 +94,12 @@ namespace EW.Xna.Platforms.Graphics
                 VertexDeclaration vertexDeclaration;
                 if(_vertexDeclarationCache.TryGetValue(data,out vertexDeclaration))
                 {
+                    //Resuse existing data.
                     _data = vertexDeclaration._data;
                 }
                 else
                 {
+                    // Cache new vertex declaration
                     data.Elements = (VertexElement[])elements.Clone();
                     _data = data;
                     _vertexDeclarationCache[data] = this;

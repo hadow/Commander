@@ -87,6 +87,9 @@ namespace EW.Xna.Platforms.Graphics
 
         private int _currentRenderTargetCount;  //当前正待渲染目标数量
         private readonly RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
+
+        private static readonly Color DiscardColor = new Color(68, 34, 136, 255);
+
         internal bool IsRenderTargetBound
         {
             get { return _currentRenderTargetCount > 0; }
@@ -524,15 +527,15 @@ namespace EW.Xna.Platforms.Graphics
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="primitiveT"></param>
-        /// <param name="vertexData"></param>
-        /// <param name="vertexOffset"></param>
-        /// <param name="numVertices"></param>
-        /// <param name="indexData"></param>
-        /// <param name="indexOffset"></param>
-        /// <param name="primitiveCount"></param>
-        /// <param name="vertexDeclaration"></param>
+        /// <typeparam name="T">The type of the vertices</typeparam>
+        /// <param name="primitiveT">The type of primitives to draw with the vertices</param>
+        /// <param name="vertexData">An array of vertices to draw</param>
+        /// <param name="vertexOffset">The index in the array of the first vertex to draw</param>
+        /// <param name="numVertices">The number of vertices to draw</param>
+        /// <param name="indexData">The index data</param>
+        /// <param name="indexOffset">The index in the array of indices of the first index to use</param>
+        /// <param name="primitiveCount">The number of primitives to draw</param>
+        /// <param name="vertexDeclaration">The layout of the vertices</param>
         public void DrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,
             int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration) where T:struct
         {
@@ -614,6 +617,10 @@ namespace EW.Xna.Platforms.Graphics
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="renderTargets"></param>
         internal void ApplyRenderTargets(RenderTargetBinding[] renderTargets)
         {
             var clearTarget = false;
@@ -649,9 +656,14 @@ namespace EW.Xna.Platforms.Graphics
                 renderTargetHeight = renderTarget.Height;
             }
 
+            //Set the viewport to the size of the first render target.
             Viewport = new Viewport(0, 0, renderTargetWidth, renderTargetHeight);
 
+            // Set the scissor rectangle to the size of the first render target
             ScissorRectangle = new Rectangle(0, 0, renderTargetWidth, renderTargetHeight);
+
+            if (clearTarget)
+                Clear(DiscardColor);
         }
 
         public void Dispose()

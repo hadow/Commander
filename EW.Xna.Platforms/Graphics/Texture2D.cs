@@ -1,4 +1,5 @@
 using System;
+using EW.Xna.Platforms.Utilities;
 namespace EW.Xna.Platforms.Graphics
 {
     public partial class Texture2D:Texture
@@ -109,10 +110,12 @@ namespace EW.Xna.Platforms.Graphics
         /// <summary>
         /// Changes the texture's pixels
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">New Data for the texture</typeparam>
         /// <param name="data"></param>
         public void SetData<T>(T[] data) where T : struct
         {
+            if (data == null)
+                throw new ArgumentNullException("data");
             this.SetData(0, null, data, 0, data.Length);
         }
 
@@ -120,10 +123,10 @@ namespace EW.Xna.Platforms.Graphics
         /// 
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="level"></param>
-        /// <param name="rect"></param>
+        /// <param name="level">Layer of the texture to modify</param>
+        /// <param name="rect">Area to modify</param>
         /// <param name="data"></param>
-        /// <param name="startIndex"></param>
+        /// <param name="startIndex">Start position of data</param>
         /// <param name="elementCount"></param>
         public void SetData<T>(int level,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
         {
@@ -132,26 +135,66 @@ namespace EW.Xna.Platforms.Graphics
 
         public void SetData<T>(int level,int arraySlice,Rectangle? rect,T[] data,int startIndex,int elementCount) where T : struct
         {
-            Rectangle resizedBounds = new Rectangle(0, 0, Math.Max(Bounds.Width >> level, 1), Math.Max(Bounds.Height >> level, 1));
+            Rectangle checkedRect;
+            ValidateParams(level, arraySlice, rect, data, startIndex, elementCount, out checkedRect);
+            PlatformSetData<T>(level, arraySlice, checkedRect, data, startIndex, elementCount);
 
-            if (level >= LevelCount)
-                throw new ArgumentException("Texture only has " + _levelCount + "levels", "level");
-            if (data == null || data.Length == 0)
-                throw new ArgumentException("data cannot be null");
-            if((!rect.HasValue &&(data.Length-startIndex<resizedBounds.Width * resizedBounds.Height)) || (rect.HasValue && (rect.Value.Height * rect.Value.Width > data.Length)))
-            {
-                throw new ArgumentException("data array is to small");
-            }
+        }
 
-            if (elementCount + startIndex > data.Length)
-                throw new ArgumentException("ElementCount must be a valid index in the data array", "elementCount");
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="level"></param>
+        /// <param name="arraySlice"></param>
+        /// <param name="rect"></param>
+        /// <param name="data"></param>
+        /// <param name="startIndex"></param>
+        /// <param name="elementCount"></param>
+        /// <param name="checkedRect"></param>
+        private void ValidateParams<T>(int level,int arraySlice,Rectangle? rect,T[] data,int startIndex,int elementCount,out Rectangle checkedRect) where T : struct
+        {
+            var textureBounds = new Rectangle(0, 0, Math.Max(width >> level, 1), Math.Max(height >> level, 1));
+            checkedRect = rect ?? textureBounds;
+
+
+            if (level < 0 || level >= LevelCount)
+                throw new ArgumentException("level must be samller than the number of levels in this texture");
+
             if (arraySlice > 0 && !GraphicsDevice.GraphicsCapabilities.SupportsTextrueArrays)
                 throw new ArgumentException("Texture arrays are not supported on this graphics device", "arraySlice");
-            if (arraySlice >= this.arraySize)
-                throw new ArgumentException("Texture array only has " + arraySize + " textures", "arraySlice");
-            if (rect.HasValue && !resizedBounds.Contains(rect.Value))
-                throw new ArgumentException("Rectangle must be inside the Texture Bounds", "rect");
-            PlatformSetData<T>(level, arraySlice, resizedBounds, data, startIndex, elementCount);
+
+            if (arraySlice < 0 || arraySlice >= arraySize)
+                throw new ArgumentException("arraySlice must be smaller than the arraySize of this texture and larger than 0.");
+
+            if (!textureBounds.Contains(checkedRect) || checkedRect.Width <= 0 || checkedRect.Height <= 0)
+                throw new ArgumentException("Rectangle must be inside the texture bounds", "rect");
+
+            if (data == null)
+                throw new ArgumentNullException("data");
+
+            var tSize = ReflectionHelpers.SizeOf<T>.Get();
+            var fSize = Format.GetSize();
+            if (tSize > fSize || fSize % tSize != 0)
+                throw new ArgumentException("Type T is of an invalid size for the format of this texture.", "T");
+
+            if (startIndex < 0 || startIndex >= data.Length)
+                throw new ArgumentException("startIndex must be at least zero and smaller than data.lenth.", "startIndex");
+
+            if (data.Length < startIndex + elementCount)
+                throw new ArgumentException("The data array is to small.");
+
+            int dataByteSize = 0;
+            if (Format.IsCompressedFormat())
+            {
+
+            }
+            else
+            {
+                dataByteSize = checkedRect.Width * checkedRect.Height * fSize;
+            }
+            if (elementCount * tSize != dataByteSize)
+                throw new ArgumentException(string.Format("elementCount is not the right size, elementCount * sizeof(T) is {0},but data size is {1}.", elementCount * tSize, dataByteSize), "elementCount");
 
         }
     }

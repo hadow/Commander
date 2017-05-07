@@ -6,6 +6,7 @@ using OpenTK.Graphics;
 using Android.Views;
 using Android.Content;
 using Android.Graphics;
+using Android.Util;
 using Android.OS;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms.Content;
@@ -253,11 +254,11 @@ namespace EW.Xna.Platforms
             {
                 if (mode != null)
                 {
-
+                    Log.Debug("XNA", "Creating Color:{0}, Depth:{1}， Stencil:{2}, Accum:{3}", mode.ColorFormat, mode.Depth, mode.Stencil, mode.AccumulatorFormat);
                 }
                 else
                 {
-
+                    Log.Debug("XNA", "Creating default mode");
                 }
                 GraphicsMode = mode;
                 try
@@ -269,7 +270,10 @@ namespace EW.Xna.Platforms
                     innerException = e;
                     continue;
                 }
+                Log.Debug("XNA", "Created format {0}", GraphicsContext.GraphicsMode);
                 var status = OpenTK.Graphics.ES20.GL.CheckFramebufferStatus(OpenTK.Graphics.ES20.FramebufferTarget.Framebuffer);
+                Log.Debug("XNA", "Framebuffer Status:" + status);
+
                 MakeCurrent();
                 return;
             }

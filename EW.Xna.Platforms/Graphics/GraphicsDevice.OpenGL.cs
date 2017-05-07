@@ -219,11 +219,13 @@ namespace EW.Xna.Platforms.Graphics
             _enabledVertexAttributes.Clear();
             _programCache.Clear();
             _shaderProgram = null;
-            if (GraphicsCapabilities.SupportsFramebufferObjectARB)
-            {
-                framebufferHelper = new FramebufferHelper(this);
-            }
+            //if (GraphicsCapabilities.SupportsFramebufferObjectARB)
+            //{
+            //    framebufferHelper = new FramebufferHelper(this);
+            //}
+            framebufferHelper = FramebufferHelper.Create(this);
 
+            //Force resetting states
             this.PlatformApplyBlend(true);
             this.DepthStencilState.PlatformApplyState(this, true);
             this.RasterizerState.PlatformApplyState(this, true);
@@ -341,34 +343,26 @@ namespace EW.Xna.Platforms.Graphics
             BlendState = prevBlendState;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="primitiveT"></param>
-        /// <param name="vertexData"></param>
-        /// <param name="vertexOffset"></param>
-        /// <param name="numVertices"></param>
-        /// <param name="indexData"></param>
-        /// <param name="indexOffset"></param>
-        /// <param name="primitiveCount"></param>
-        /// <param name="vertexDeclaration"></param>
+        
         private void PlatformDrawUserIndexedPrimitives<T>(PrimitiveType primitiveT,T[] vertexData,int vertexOffset,int numVertices,short[] indexData,int indexOffset,int primitiveCount,VertexDeclaration vertexDeclaration)
         {
             ApplyState(true);
 
+            //Unbind current VBOs
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GraphicsExtensions.CheckGLError();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GraphicsExtensions.CheckGLError();
             _vertexBuffersDirty = _indexBufferDirty = true;
 
+            //固定对象的地址，这样可以防止垃圾回收器移动对象，从而破坏垃圾收集器的效率，使用Free方法尽快释放分配的句柄
             var vbHandle = GCHandle.Alloc(vertexData, GCHandleType.Pinned);
             var ibHandle = GCHandle.Alloc(indexData, GCHandleType.Pinned);
 
             var vertexAddr = (IntPtr)(vbHandle.AddrOfPinnedObject().ToInt64() + vertexDeclaration.VertexStride * vertexOffset);
             vertexDeclaration.GraphicsDevice = this;
 
+            //设置顶点声明指向VertexBuffer Data
             var programHash = _vertexShader.HashKey | _pixelShader.HashKey;
             vertexDeclaration.Apply(_vertexShader, vertexAddr, programHash);
 
@@ -511,6 +505,7 @@ namespace EW.Xna.Platforms.Graphics
 
             _rasterizerStateDirty = true;
 
+            //Textures will need to be reound to render correctly in the new render target
             Textures.Dirty();
         }
 

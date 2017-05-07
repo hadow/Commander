@@ -101,6 +101,17 @@ namespace EW.Xna.Platforms.Graphics
         }
 #endif
 
+
+        public static bool IsCompressedFormat(this SurfaceFormat format)
+        {
+            switch (format)
+            {
+                case SurfaceFormat.Dxt1:
+                    return true;
+            }
+            return false;
+        }
+
         public static int GetSize(this SurfaceFormat surfaceFormat)
         {
             switch (surfaceFormat)

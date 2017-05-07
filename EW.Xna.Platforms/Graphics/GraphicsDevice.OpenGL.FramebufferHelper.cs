@@ -16,6 +16,20 @@ namespace EW.Xna.Platforms.Graphics
 
             public bool SupportsBlitFramebuffer { get; private set; }
 
+            private static FramebufferHelper _instance;
+
+            public static FramebufferHelper Create(GraphicsDevice gd)
+            {
+                if (gd.GraphicsCapabilities.SupportsFramebufferObjectARB)
+                {
+                    _instance = new FramebufferHelper(gd);
+                }
+                else
+                {
+
+                }
+                return _instance;
+            }
 #if IOS
 #elif ANDROID
             internal const string OpenGLLibrary = "libGLESv2.dll";
@@ -37,6 +51,8 @@ namespace EW.Xna.Platforms.Graphics
 
 #endif
             }
+
+
 
             internal virtual void GenFramebuffer(out int framebuffer)
             {

@@ -52,7 +52,9 @@ namespace EW.Xna.Platforms.Graphics
     /// </summary>
     internal partial class Shader:GraphicsResource
     {
-
+        /// <summary>
+        /// a Hash value which can be used to compare shaders
+        /// </summary>
         internal int HashKey { get; private set; }
 
         public SamplerInfo[] Samplers { get; private set; }

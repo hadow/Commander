@@ -31,6 +31,7 @@ namespace EW.Xna.Platforms.Graphics
 
             Threading.BlockOnUIThread(() => {
 
+                //Store the current bound texture
                 var prevTexture = GraphicsExtensions.GetBoundTexture2D();
 
                 GenerateGLTextureIfRequired();
@@ -82,47 +83,25 @@ namespace EW.Xna.Platforms.Graphics
                     var startBytes = startIndex * elementSizeInByte;
                     var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startBytes);
 
-                    //int x, y, w, h;
-                    //if (rect.HasValue)
-                    //{
-                    //    x = rect.Value.X;
-                    //    y = rect.Value.Y;
-                    //    w = rect.Value.Width;
-                    //    h = rect.Value.Height;
-                    //}
-                    //else
-                    //{
-                    //    x = 0;
-                    //    y = 0;
-                    //    w = Math.Max(width >> level, 1);
-                    //    h = Math.Max(height >> level, 1);
-                    //}
-
+                    //Store the current bound texture
                     var prevTexture = GraphicsExtensions.GetBoundTexture2D();
+
                     GenerateGLTextureIfRequired();
+
                     GL.BindTexture(TextureTarget.Texture2D, this.glTexture);
                     GraphicsExtensions.CheckGLError();
+
                     if(glFormat == (PixelFormat)GLPixelFormat.CompressedTextureFormats)
                     {
                         
                     }
                     else
                     {
-                        //GL.PixelStore(PixelStoreParameter.UnpackAlignment, GraphicsExtensions.GetSize(this.Format));
-                        //if (rect.HasValue)
-                        {
-                            GL.TexSubImage2D(TextureTarget.Texture2D, level, rect.X, rect.Y, rect.Width, rect.Height, glFormat, glType, dataPtr);
-                            GraphicsExtensions.CheckGLError();
-                        }
-                        //else
-                        //{
-                        //    GL.TexImage2D(TextureTarget.Texture2D, level, glInternalFormat, w, h, 0, glFormat, glType, dataPtr);
-                        //    GraphicsExtensions.CheckGLError();
-                        //}
-                        //
-                        //GL.PixelStore(PixelStoreParameter.UnpackAlignment, 4);
+                        GL.TexSubImage2D(TextureTarget.Texture2D, level, rect.X, rect.Y, rect.Width, rect.Height, glFormat, glType, dataPtr);
+                        GraphicsExtensions.CheckGLError();
                     }
 
+                    //Restore the bound texture.
                     GL.BindTexture(TextureTarget.Texture2D, prevTexture);
                     GraphicsExtensions.CheckGLError();
                     
@@ -255,6 +234,12 @@ namespace EW.Xna.Platforms.Graphics
 #endif
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="graphicsDevice"></param>
+        /// <param name="image"></param>
+        /// <returns></returns>
         private static Texture2D PlatformFromStream(GraphicsDevice graphicsDevice,Bitmap image)
         {
             var width = image.Width;
@@ -264,6 +249,8 @@ namespace EW.Xna.Platforms.Graphics
 
             if((width!=image.Width) || (height != image.Height))
             {
+                //TODO
+
 
             }
             else
@@ -272,6 +259,7 @@ namespace EW.Xna.Platforms.Graphics
             }
             image.Recycle();
 
+            //Convert from ARGB to ABGR
             ConvertToABGR(height, width, pixels);
 
             Texture2D texture = null;

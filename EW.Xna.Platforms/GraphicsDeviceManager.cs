@@ -81,6 +81,8 @@ namespace EW.Xna.Platforms
         }
         private int _preferredBackBufferHeight;
 
+
+
         private DepthFormat _preferredDepthStencilFormat;
 
         public DepthFormat PreferredDepthStencilFormat
@@ -89,7 +91,17 @@ namespace EW.Xna.Platforms
             set { _preferredDepthStencilFormat = value; }
         }
 
+        private SurfaceFormat _preferredBackBufferFormat;
 
+        public SurfaceFormat PreferredBackBufferFormat
+        {
+            get { return _preferredBackBufferFormat; }
+            set
+            {
+                _preferredBackBufferFormat = value;
+            }
+
+        }
         public static readonly int DefaultBackBufferWidth = 800;
         public static readonly int DefaultBackBufferHeight = 480;
 
@@ -112,8 +124,19 @@ namespace EW.Xna.Platforms
             _game = game;
             _supportedOrientation = DisplayOrientation.Default;
 
+            _preferredBackBufferWidth = Math.Max(_game.Window.ClientBounds.Height, _game.Window.ClientBounds.Width);
+            _preferredBackBufferHeight = Math.Min(_game.Window.ClientBounds.Height, _game.Window.ClientBounds.Width);
+
+            _preferredBackBufferFormat = SurfaceFormat.Color;
+            _preferredDepthStencilFormat = DepthFormat.Depth24;
+
+            GraphicsProfile = GraphicsProfile.Reach;
+
+
             if (_game.Services.GetService(typeof(IGraphicsDeviceManager)) != null)
                 throw new ArgumentException("Graphics Device Manager Already Present");
+
+
 
             _game.Services.AddService(typeof(IGraphicsDeviceManager),this);
             _game.Services.AddService(typeof(IGraphicsDeviceService), this);
@@ -180,9 +203,10 @@ namespace EW.Xna.Platforms
 
                 PreparingDeviceSettingsEventArgs evtArgs = new PreparingDeviceSettingsEventArgs(deviceInfo);
                 PreparingDeviceSettings(this, evtArgs);
-                //presentationParameters = evtArgs.GraphicsDeviceInformation.PresentationParameters;
-                //GraphicsProfile = evtArgs.GraphicsDeviceInformation.GraphicsProfile;
+                presentationParameters = evtArgs.GraphicsDeviceInformation.PresentationParameters;
+                GraphicsProfile = evtArgs.GraphicsDeviceInformation.GraphicsProfile;
             }
+            //Needs to be before ApplyChanges()
             _graphicsDevice = new GraphicsDevice(GraphicsAdapter.DefaultAdapter, GraphicsProfile, presentationParameters);
 
             ApplyChanges();
@@ -292,7 +316,7 @@ namespace EW.Xna.Platforms
             int h = PreferredBackBufferHeight;
 
             _graphicsDevice.PresentationParameters.BackBufferWidth = isLandScape ? Math.Max(w, h) : Math.Min(w,h);
-            _graphicsDevice.PresentationParameters.BackBufferHeight = isLandScape ? Math.Max(w, h) : Math.Min(w, h);
+            _graphicsDevice.PresentationParameters.BackBufferHeight = isLandScape ? Math.Min(w, h) : Math.Max(w, h);
 
             ResetClientBounds();
 

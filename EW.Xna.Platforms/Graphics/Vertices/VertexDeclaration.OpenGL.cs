@@ -62,6 +62,7 @@ namespace EW.Xna.Platforms.Graphics
             VertexDeclarationAttributeInfo attrInfo;
             if(!shaderAttributeInfo.TryGetValue(programHash,out attrInfo))
             {
+                // Get the vertex attribute info and cache it
                 attrInfo = new VertexDeclarationAttributeInfo(GraphicsDevice.MaxVertexAttributes);
 
                 foreach(var ve in InternalVertexElements)
