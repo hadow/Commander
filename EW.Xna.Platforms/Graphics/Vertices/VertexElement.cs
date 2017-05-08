@@ -88,9 +88,24 @@ namespace EW.Xna.Platforms.Graphics
 
         public bool Equals(VertexElement element)
         {
-            return false;
+            return _offset == element._offset &&
+                    _format == element._format &&
+                    _usage == element._usage &&
+                    _usageIndex == element._usageIndex;
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is VertexElement && Equals((VertexElement)obj);
+        }
 
+        public override int GetHashCode()
+        {
+            int hashCode = _offset;
+            hashCode ^= (int)_format << 9;
+            hashCode ^= (int)_usage << (9 + 4);
+            hashCode ^= _usageIndex << (9 + 4 + 4);
+            return hashCode;
+        }
     }
 }

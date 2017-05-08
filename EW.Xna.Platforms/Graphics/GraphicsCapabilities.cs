@@ -30,6 +30,14 @@ namespace EW.Xna.Platforms.Graphics
         internal bool SupportsVertexTextures { get; private set; }
 
         internal bool SupportsDepthClamp { get; private set; }
+
+        internal bool SupportsTextureMaxLevel { get; private set; }
+
+        /// <summary>
+        /// Whether the device supports anisotropic texture filtering
+        /// </summary>
+		internal bool SupportsTextureFilterAnisotropic { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>

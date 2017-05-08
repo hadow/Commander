@@ -118,6 +118,7 @@ namespace EW.Xna.Platforms.Graphics
 
                 textures[sampler.textureSlot] = texture;
 
+                //If there is a sampler state set it.
                 if (sampler.state != null)
                     samplerStates[sampler.samplerSlot] = sampler.state;
             }

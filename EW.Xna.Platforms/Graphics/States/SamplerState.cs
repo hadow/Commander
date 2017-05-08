@@ -3,7 +3,11 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
-
+    public enum TextureFilterMode
+    {
+        Default,
+        Comparison
+    }
     public enum TextureFilter
     {
         Linear,
@@ -55,7 +59,12 @@ namespace EW.Xna.Platforms.Graphics
             AddressV = TextureAddressMode.Wrap;
             AddressW = TextureAddressMode.Wrap;
 
-            
+            BorderColor = Color.White;
+            MaxAnisotropy = 4;
+            MaxMipLevel = 0;
+            MipMapLevelOfDetailBias = 0.0f;
+            ComparisonFunction = CompareFunction.Never;
+            FilterMode = TextureFilterMode.Default;
                  
         }
 
@@ -69,12 +78,39 @@ namespace EW.Xna.Platforms.Graphics
             _defaultStateObject = true;
         }
 
+        private SamplerState(SamplerState cloneSource)
+        {
+            Name = cloneSource.Name;
+
+            _filter = cloneSource._filter;
+            _addressU = cloneSource._addressU;
+            _addressV = cloneSource._addressV;
+            _addressW = cloneSource._addressW;
+            _borderColor = cloneSource._borderColor;
+            _maxAnisotropy = cloneSource._maxAnisotropy;
+            _maxMipLevel = cloneSource._maxMipLevel;
+            _mipMapLevelOfDetailBias = cloneSource._mipMapLevelOfDetailBias;
+            _comparisonFunction = cloneSource._comparisonFunction;
+            _filterMode = cloneSource._filterMode;
+        }
+
         private TextureFilter _filter;
 
         public TextureFilter Filter { get { return _filter; }
         set
             {
                 _filter = value;
+            }
+        }
+
+        private TextureFilterMode _filterMode;
+        public TextureFilterMode FilterMode
+        {
+            get { return _filterMode; }
+            set
+            {
+                ThrowIfBound();
+                _filterMode = value;
             }
         }
 
@@ -114,6 +150,17 @@ namespace EW.Xna.Platforms.Graphics
             {
                 ThrowIfBound();
                 _borderColor = value;
+            }
+        }
+
+        private CompareFunction _comparisonFunction;
+        public CompareFunction ComparisonFunction
+        {
+            get { return _comparisonFunction; }
+            set
+            {
+                ThrowIfBound();
+                _comparisonFunction = value;
             }
         }
 
@@ -160,6 +207,21 @@ namespace EW.Xna.Platforms.Graphics
             {
                 throw new InvalidOperationException("You cannot modify the sampler state after it has been bound to the graphics device!");
             }
+        }
+
+        internal void BindToGraphicsDevice(GraphicsDevice device)
+        {
+            if (_defaultStateObject)
+                throw new InvalidOperationException("You cannot bind a default state object. ");
+            if (GraphicsDevice != null && GraphicsDevice != device)
+                throw new InvalidOperationException("This sampler state is already bound to a different graphics device.");
+
+            GraphicsDevice = device;
+        }
+
+        internal SamplerState Clone()
+        {
+            return new SamplerState(this);
         }
     }
 }

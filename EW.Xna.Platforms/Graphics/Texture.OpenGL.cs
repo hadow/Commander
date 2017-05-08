@@ -19,11 +19,13 @@ namespace EW.Xna.Platforms.Graphics
         /// </summary>
         internal PixelFormat glFormat;
         internal PixelType glType;
-        
+
+        internal SamplerState glLastSamplerState;
 
         private void PlatformGraphicsDeviceResetting()
         {
-
+            DeleteGLTexture();
+            glLastSamplerState = null;
         }
 
 
@@ -32,7 +34,7 @@ namespace EW.Xna.Platforms.Graphics
             if (!IsDisposed)
             {
                 DeleteGLTexture();
-
+                glLastSamplerState = null;
             }
 
             base.Dispose(disposing);

@@ -56,7 +56,7 @@ namespace EW.Xna.Platforms
 
         public override int GetHashCode()
         {
-            return X.GetHashCode() + Y.GetHashCode();
+            return (X.GetHashCode()*397) ^ Y.GetHashCode();
         }
 
 

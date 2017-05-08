@@ -17,7 +17,8 @@ namespace EW.Xna.Platforms.Graphics
         private readonly int _sortingKey = Interlocked.Increment(ref _lastSortingKey);
 
         /// <summary>
-        /// 
+        /// Gets a unique identifier of this texture for sorting purpose
+        /// 获取此纹理的唯一标识符以进行排序。
         /// </summary>
         internal int SortingKey
         {
@@ -58,7 +59,7 @@ namespace EW.Xna.Platforms.Graphics
 
         protected internal override void GraphicsDeviceResetting()
         {
-
+            PlatformGraphicsDeviceResetting();
         }
 
 

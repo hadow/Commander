@@ -93,6 +93,8 @@ namespace EW.Xna.Platforms.Graphics
 
         private Dictionary<RenderTargetBinding[], int> glFramebuffers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
         private Dictionary<RenderTargetBinding[], int> glResolveFramebuffeers = new Dictionary<RenderTargetBinding[], int>(new RenderTargetBindingArrayComparer());
+
+        static readonly float[] _posFilxup = new float[4];
         /// <summary>
         /// ¡¥Ω”∂•µ„ Ù–‘£®Enable Or Disable£©
         /// </summary>
@@ -478,7 +480,7 @@ namespace EW.Xna.Platforms.Graphics
             _pixelConstantBuffers.SetConstantBuffers(this, _shaderProgram);
 
             Textures.SetTextures(this);
-            
+            SamplerStates.PlatformSetSamplers(this);
         }
 
 
@@ -501,6 +503,20 @@ namespace EW.Xna.Platforms.Graphics
             if (posFixupLoc == -1)
                 return;
 
+            _posFilxup[0] = 1.0f;
+            _posFilxup[1] = 1.0f;
+            _posFilxup[2] = (63.0f / 64.0f) / Viewport.Width;
+            _posFilxup[3] = -(63.0f / 64.0f) / Viewport.Height;
+
+            if (IsRenderTargetBound)
+            {
+
+            }
+            fixed(float* floatPtr = _posFilxup)
+            {
+                GL.Uniform4(posFixupLoc, 1, floatPtr);
+            }
+            GraphicsExtensions.CheckGLError();
         }
 
         /// <summary>

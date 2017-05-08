@@ -35,6 +35,14 @@ namespace EW.Xna.Platforms.Graphics
 
             SupportsEtc1 = device._extensions.Contains("GL_OES_compressed_ETC1_RGB8_texture");
 
+#if GLES
+            SupportsTextureMaxLevel = device._extensions.Contains("GL_APPLE_texture_max_level");
+#endif
+            SupportsTextrueArrays = false;
+            SupportsDepthClamp = device._extensions.Contains("GL_ARB_depth_clamp");
+
+            SupportsTextureFilterAnisotropic = device._extensions.Contains("GL_EXT_texture_filter_anisotropic");
+
             //Framebuffer objects
             SupportsFramebufferObjectARB = true;
             SupportsFramebufferObjectEXT = false;

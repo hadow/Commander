@@ -41,7 +41,13 @@ namespace EW.Xna.Platforms.Graphics
 
         public override int GetHashCode()
         {
-            return 0;
+            unchecked
+            {
+                var hashCode = Position.GetHashCode();
+                hashCode = (hashCode * 397) ^ Color.GetHashCode();
+                hashCode = (hashCode * 397) ^ TextureCoordinate.GetHashCode();
+                return hashCode;
+            }
         }
 
         static VertexPositionColorTexture()

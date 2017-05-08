@@ -10,7 +10,7 @@ namespace EW
     /// 
     /// </summary>
     /// 
-    [Activity(Label ="Red Alert For Mobile",MainLauncher =true,
+    [Activity(MainLauncher =true,
         Icon ="@drawable/icon",
         AlwaysRetainTaskState =true,LaunchMode =LaunchMode.SingleInstance,
         ScreenOrientation =ScreenOrientation.SensorLandscape,

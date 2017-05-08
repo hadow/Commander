@@ -8,8 +8,8 @@ namespace EW.Xna.Platforms.Graphics
         private readonly float[] _openGLBorderColor = new float[4];
 
 #if GLES
-
-
+        private const TextureParameterName TextureParameterNameTextureMaxAnisotropy = (TextureParameterName)All.TextureMaxAnisotropyExt;
+        private const TextureParameterName TextureParameterNameTextureMaxLevel = (TextureParameterName)0x813D;
 #else
 
 #endif
@@ -27,12 +27,22 @@ namespace EW.Xna.Platforms.Graphics
             switch (Filter)
             {
                 case TextureFilter.Point:
+                    if (GraphicsDevice.GraphicsCapabilities.SupportsTextureFilterAnisotropic)
+                    {
+                        GL.TexParameter(target, TextureParameterNameTextureMaxAnisotropy, 1.0f);
+                        GraphicsExtensions.CheckGLError();
+                    }
                     GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)(useMipmaps ? TextureMinFilter.NearestMipmapNearest : TextureMinFilter.Nearest));
                     GraphicsExtensions.CheckGLError();
                     GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
                     GraphicsExtensions.CheckGLError();
                     break;
                 case TextureFilter.Linear:
+                    if (GraphicsDevice.GraphicsCapabilities.SupportsTextureFilterAnisotropic)
+                    {
+                        GL.TexParameter(target, TextureParameterNameTextureMaxAnisotropy, 1.0f);
+                        GraphicsExtensions.CheckGLError();
+                    }
                     GL.TexParameter(target, TextureParameterName.TextureMinFilter, (int)(useMipmaps ? TextureMinFilter.LinearMipmapLinear : TextureMinFilter.Linear));
                     GraphicsExtensions.CheckGLError();
                     GL.TexParameter(target, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
@@ -43,10 +53,25 @@ namespace EW.Xna.Platforms.Graphics
                     
             }
 
+            //Set up texture addressing.
+            //ÉèÖÃÎÆÀíÑ°Ö·
             GL.TexParameter(target, TextureParameterName.TextureWrapS, (int)GetWrapMode(AddressU));
             GraphicsExtensions.CheckGLError();
             GL.TexParameter(target, TextureParameterName.TextureWrapT, (int)GetWrapMode(AddressV));
             GraphicsExtensions.CheckGLError();
+
+
+            if (GraphicsDevice.GraphicsCapabilities.SupportsTextureMaxLevel)
+            {
+                if(this.MaxMipLevel > 0)
+                {
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterNameTextureMaxLevel, this.MaxMipLevel);
+                }
+                else
+                {
+                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterNameTextureMaxLevel, 1000);
+                }
+            }
         }
 
         private int GetWrapMode(TextureAddressMode textureAddressMode)
