@@ -28,6 +28,7 @@ namespace EW.Xna.Platforms.Graphics
             this.VertexCount = vertexCount;
             this.BufferUsage = bufferUsage;
 
+            // Make sure the graphics device is assigned int the vertex declaration
             if (vertexDeclaration.GraphicsDevice != graphicsDevice)
                 vertexDeclaration.GraphicsDevice = graphicsDevice;
 
@@ -40,6 +41,10 @@ namespace EW.Xna.Platforms.Graphics
 
         }
 
+
+        /// <summary>
+        /// The GraphicsDevice is resetting,so GPU resources must be recreated
+        /// </summary>
         protected internal override void GraphicsDeviceResetting()
         {
             PlatformGraphicsDeviceResetting();

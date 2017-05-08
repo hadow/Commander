@@ -71,12 +71,10 @@ namespace EW.Xna.Platforms.Graphics
             {
                 case GraphicsProfile.Reach:
                     return true;
-                    break;
                 case GraphicsProfile.HiDef:
                     bool result = true;
                     //TODO:check adapter capabilities....
                     return result;
-                    break;
                 default:
                     throw new InvalidOperationException();
             }

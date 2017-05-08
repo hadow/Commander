@@ -49,10 +49,45 @@ namespace EW.Xna.Platforms.Graphics
             None = new DepthStencilState("DepthStencilState.None", false, false);
         }
 
-        public DepthStencilState() { }
+        public DepthStencilState()
+        {
+            DepthBufferEnable = true;
+            DepthBufferWriteEnable = true;
+            DepthBufferFunction = CompareFunction.LessEqual;
+            StencilEnable = false;
+            StencilFunction = CompareFunction.Always;
+            StencilPass = StencilOperation.Keep;
+            StencilFail = StencilOperation.Keep;
+            StencilDetphBufferFail = StencilOperation.Keep;
+            TwoSidedStencilMode = false;
+            CounterClockwiseStencilDepthBufferFail = StencilOperation.Keep;
+            CounterClockwiseStencilPass = StencilOperation.Keep;
+            CounterClockwiseStencilFail = StencilOperation.Keep;
+            CounterClockwiseStencilFunction = CompareFunction.Always;
+            StencilMask = Int32.MaxValue;
+            StencilWriteMask = Int32.MaxValue;
+            ReferenceStencil = 0;
+
+        }
         private DepthStencilState(DepthStencilState cloneSource)
         {
             Name = cloneSource.Name;
+            _depthBufferEnable = cloneSource._depthBufferEnable;
+            _depthBufferWriteEnable = cloneSource._depthBufferWriteEnable;
+            _counterClockwiseStencilDepthBufferFail = cloneSource._counterClockwiseStencilDepthBufferFail;
+            _counterClockwiseStencilFail = cloneSource._counterClockwiseStencilFail;
+            _counterClockwiseStencilFunction = cloneSource._counterClockwiseStencilFunction;
+            _counterClockwiseStencilPass = cloneSource._counterClockwiseStencilPass;
+            _depthBufferFunction = cloneSource._depthBufferFunction;
+            _referenceStencil = cloneSource._referenceStencil;
+            _stencilDepthBufferFail = cloneSource._stencilDepthBufferFail;
+            _stencilEnable = cloneSource._stencilEnable;
+            _stencilFail = cloneSource._stencilFail;
+            _stencilFunction = cloneSource._stencilFunction;
+            _stencilMask = cloneSource._stencilMask;
+            _stencilPass = cloneSource._stencilPass;
+            _stencilWriteMask = cloneSource._stencilWriteMask;
+            _twoSidedStencilMode = cloneSource._twoSidedStencilMode;
         }
 
         private DepthStencilState(string name,bool depthBufferEnable,bool depthBufferWriteEnable):this()
@@ -65,6 +100,8 @@ namespace EW.Xna.Platforms.Graphics
 
         internal void BindToGraphicsDevice(GraphicsDevice device)
         {
+            if (_defaultStateObject)
+                throw new InvalidOperationException("You cannot bind a default state object");
             if (GraphicsDevice != null && GraphicsDevice != device)
                 throw new InvalidOperationException("This Depth stencil state is already bound to a different graphics device!");
             GraphicsDevice = device;
@@ -220,6 +257,52 @@ namespace EW.Xna.Platforms.Graphics
                 _twoSidedStencilMode = value;
             }
         }
+
+        private StencilOperation _counterClockwiseStencilDepthBufferFail;
+
+        public StencilOperation CounterClockwiseStencilDepthBufferFail
+        {
+            get { return _counterClockwiseStencilDepthBufferFail; }
+            set
+            {
+                _counterClockwiseStencilDepthBufferFail = value;
+            }
+        }
+
+
+
+        private StencilOperation _counterClockwiseStencilFail;
+
+        public StencilOperation CounterClockwiseStencilFail
+        {
+            get { return _counterClockwiseStencilFail; }
+            set
+            {
+                _counterClockwiseStencilFail = value;
+            }
+        }
+
+        private CompareFunction _counterClockwiseStencilFunction;
+
+        public CompareFunction CounterClockwiseStencilFunction
+        {
+            get { return _counterClockwiseStencilFunction; }
+            set
+            {
+                _counterClockwiseStencilFunction = value;
+            }
+        }
+        private StencilOperation _counterClockwiseStencilPass;
+
+        public StencilOperation CounterClockwiseStencilPass
+        {
+            get { return _counterClockwiseStencilPass; }
+            set
+            {
+                _counterClockwiseStencilPass = value;
+            }
+        }
+
         internal DepthStencilState Clone()
         {
             return new DepthStencilState(this);

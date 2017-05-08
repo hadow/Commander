@@ -22,10 +22,29 @@ namespace EW.Xna.Platforms.Graphics
         public static readonly RasterizerState CullClockwise;
         public static readonly RasterizerState CullCounterClockwise;
         public static readonly RasterizerState CullNone;
-        public RasterizerState() { }
+
+        public RasterizerState()
+        {
+            CullMode = CullMode.CullCounterClockwiseFace;
+            FillMode = FillMode.Solid;
+            DepthBias = 0;
+            MultiSampleAntiAlias = true;
+            ScissorTestEnable = true;
+            SlopeScaleDepthBias = 0;
+            DepthClipEnable = true;
+
+
+        }
         private RasterizerState(RasterizerState cloneSource)
         {
             Name = cloneSource.Name;
+            _cullMode = cloneSource._cullMode;
+            _fillMode = cloneSource._fillMode;
+            _depthBias = cloneSource._depthBias;
+            _multiSampleAntiAlias = cloneSource._multiSampleAntiAlias;
+            _scissorTestEnable = cloneSource._scissorTestEnable;
+            _slopeScaleDepthBias = cloneSource._slopeScaleDepthBias;
+            _depthClipEnable = cloneSource._depthClipEnable;
         }
 
         private RasterizerState(string name,CullMode cullMode):this()
@@ -74,6 +93,18 @@ namespace EW.Xna.Platforms.Graphics
 
         private float _slopeScaleDepthBias;
 
+        public float SlopeScaleDepthBias
+        {
+            get { return _slopeScaleDepthBias; }
+            set
+            {
+                ThrowIfBound();
+                _slopeScaleDepthBias = value;
+            }
+        }
+
+
+
         private bool _depthClipEnable;
 
         public bool DepthClipEnable
@@ -95,6 +126,29 @@ namespace EW.Xna.Platforms.Graphics
             {
                 ThrowIfBound();
                 _fillMode = value;
+            }
+        }
+
+        private float _depthBias;
+
+        public float DepthBias
+        {
+            get { return _depthBias; }
+            set
+            {
+                ThrowIfBound();
+                _depthBias = value;
+            }
+        }
+
+        private bool _multiSampleAntiAlias;
+        public bool MultiSampleAntiAlias
+        {
+            get { return _multiSampleAntiAlias; }
+            set
+            {
+                ThrowIfBound();
+                _multiSampleAntiAlias = value;
             }
         }
 

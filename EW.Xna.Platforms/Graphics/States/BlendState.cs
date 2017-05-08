@@ -6,9 +6,16 @@ namespace EW.Xna.Platforms.Graphics
 
     public enum Blend
     {
+        /// <summary>
+        /// Each component of the color is multiplied by {1,1,1,1}.
+        /// </summary>
         One,
         Zero,
         SourceColor,
+        /// <summary>
+        /// Each component of the color is multiplied by the inverse of the alpha value of the source.
+        /// {1-AS,1-AS,1-AS,1-AS},where As is  the source alpha value.
+        /// </summary>
         InverseSourceColor,
         SourceAlpha,
         InverseSourceAlpha,
@@ -69,16 +76,22 @@ namespace EW.Xna.Platforms.Graphics
             _targetBlendState[2] = new TargetBlendState(this);
             _targetBlendState[3] = new TargetBlendState(this);
 
+            _blendFactor = Color.White;
+            _multiSampleMask = Int32.MaxValue;
+            _independentBlendEnable = false;
             
         }
 
         public BlendState(string name,Blend sourceBlend,Blend destinationBlend):this()
         {
             Name = name;
+
             ColorSourceBlend = sourceBlend;
             AlphaSourceBlend = sourceBlend;
+
             ColorDestinationBlend = destinationBlend;
             AlphaDestinationBlend = destinationBlend;
+
             _defaultStateObject = true;
         }
 

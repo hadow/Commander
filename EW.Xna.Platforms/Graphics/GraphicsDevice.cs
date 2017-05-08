@@ -314,6 +314,7 @@ namespace EW.Xna.Platforms.Graphics
             //Force set the buffers and shaders on next ApplyState() call
             _vertexBuffers = new VertexBufferBindings(_maxVertexBufferSlots);
             _vertexBuffersDirty = true;
+
             _indexBufferDirty = true;
             _vertexShaderDirty = true;
             _pixelShaderDirty = true;
@@ -443,6 +444,8 @@ namespace EW.Xna.Platforms.Graphics
                     if (target != null)
                         target.GraphicsDeviceResetting();
                 }
+
+                //Remove references to resources that have been garbage collected.
                 _resources.RemoveAll(wr => !wr.IsAlive);
             }
 

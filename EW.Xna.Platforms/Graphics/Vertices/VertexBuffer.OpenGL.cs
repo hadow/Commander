@@ -12,7 +12,7 @@ namespace EW.Xna.Platforms.Graphics
 {
     public partial class VertexBuffer
     {
-
+        //internal uint vbo
         internal uint vbo;
 
         private void PlatformConstruct()

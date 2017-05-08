@@ -303,11 +303,11 @@ namespace EW.Xna.Platforms.Graphics
         }
 
         /// <summary>
-        /// 
+        /// Submit a sprite for drawing in the current batch
         /// </summary>
-        /// <param name="texture"></param>
-        /// <param name="position"></param>
-        /// <param name="color"></param>
+        /// <param name="texture">a texture</param>
+        /// <param name="position">The drawing location on screen</param>
+        /// <param name="color">A color mask</param>
         public void Draw(Texture2D texture,Vector2 position,Color color)
         {
             CheckValid(texture);
@@ -334,6 +334,26 @@ namespace EW.Xna.Platforms.Graphics
             }
         }
 
+        /// <summary>
+        /// Immediately releases the unmanaged resource used by this object;
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected override void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    if (_spriteEffect != null)
+                    {
+                        _spriteEffect.Dispose();
+                        _spriteEffect = null;
+                    }
+                }
+            }
+
+            base.Dispose(disposing);
+        }
 
 
 

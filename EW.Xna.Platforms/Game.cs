@@ -226,8 +226,6 @@ namespace EW.Xna.Platforms
             if (GraphicsDevice == null && graphicsDeviceManager != null)
                 _graphicsDeviceManager.CreateDevice();
 
-
-
             Platform.BeforeInitialize();
             Initialize();
         }

@@ -3,7 +3,7 @@ using System.Diagnostics;
 namespace EW.Xna.Platforms.Graphics
 {
     /// <summary>
-    /// 
+    /// Stores the vertex buffers to be bound to the input assembler stage
     /// </summary>
     internal sealed partial class VertexBufferBindings:VertexInputLayout
     {
@@ -19,7 +19,7 @@ namespace EW.Xna.Platforms.Graphics
 
 
         /// <summary>
-        /// 
+        /// Gets vertex buffer bound to the specified input slots.
         /// </summary>
         /// <param name="slot"></param>
         /// <returns></returns>

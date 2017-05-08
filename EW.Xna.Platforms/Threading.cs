@@ -26,7 +26,7 @@ namespace EW.Xna.Platforms
         }
 
         /// <summary>
-        /// 
+        /// Throws an exception if the code is not currently running on the UI thread
         /// </summary>
         public static void EnsureUIThread()
         {
