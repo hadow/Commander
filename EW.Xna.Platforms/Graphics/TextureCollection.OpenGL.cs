@@ -21,6 +21,7 @@ namespace EW.Xna.Platforms.Graphics
 
         void PlatformSetTextures(GraphicsDevice device)
         {
+            //Skip out if nothing has changed
             if (_dirty == 0)
                 return;
             for(var i = 0; i < _textures.Length; i++)
@@ -33,7 +34,7 @@ namespace EW.Xna.Platforms.Graphics
 
                 GL.ActiveTexture(TextureUnit.Texture0 + i);
                 GraphicsExtensions.CheckGLError();
-
+                //Clear the previous binding if the target is different from the new one
                 if(_targets[i] != 0 && (tex == null || _targets[i] != tex.glTarget))
                 {
                     GL.BindTexture(_targets[i], 0);

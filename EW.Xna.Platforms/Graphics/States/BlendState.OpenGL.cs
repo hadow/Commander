@@ -14,9 +14,9 @@ namespace EW.Xna.Platforms.Graphics
         {
 
             var blendEnabled = !(this.ColorSourceBlend == Blend.One && 
-                this.ColorDestinationBlend == Blend.Zero &&
-                this.AlphaSourceBlend == Blend.One &&
-                this.AlphaDestinationBlend == Blend.Zero);
+                                this.ColorDestinationBlend == Blend.Zero &&
+                                this.AlphaSourceBlend == Blend.One &&
+                                this.AlphaDestinationBlend == Blend.Zero);
 
             if (force || blendEnabled != device._lastBlendEnable)
             {

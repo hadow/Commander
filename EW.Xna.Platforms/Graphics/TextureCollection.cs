@@ -56,6 +56,10 @@ namespace EW.Xna.Platforms.Graphics
             PlatformSetTextures(device);
         }
 
+
+        /// <summary>
+        /// Marks all texture slots as dirty.
+        /// </summary>
         internal void Dirty()
         {
             _dirty = int.MaxValue;

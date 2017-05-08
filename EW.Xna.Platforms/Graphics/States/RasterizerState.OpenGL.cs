@@ -81,6 +81,35 @@ namespace EW.Xna.Platforms.Graphics
                 device._lastRasterizerState.ScissorTestEnable = this.ScissorTestEnable;
             }
 
+            if(force || this.DepthBias != device._lastRasterizerState.DepthBias || this.SlopeScaleDepthBias != device._lastRasterizerState.SlopeScaleDepthBias)
+            {
+                if(this.DepthBias != 0 || this.SlopeScaleDepthBias != 0)
+                {
+
+                }
+                else
+                {
+                    GL.Disable(EnableCap.PolygonOffsetFill);
+
+                }
+
+                GraphicsExtensions.CheckGLError();
+                device._lastRasterizerState.DepthBias = this.DepthBias;
+                device._lastRasterizerState.SlopeScaleDepthBias = this.SlopeScaleDepthBias;
+            }
+
+            if(device.GraphicsCapabilities.SupportsDepthClamp && (force || this.DepthClipEnable != device._lastRasterizerState.DepthClipEnable))
+            {
+                if (!DepthClipEnable)
+                    GL.Enable((EnableCap)0x864F);
+                else
+                    GL.Disable((EnableCap)0x864F);
+                GraphicsExtensions.CheckGLError();
+                device._lastRasterizerState.DepthClipEnable = this.DepthClipEnable;
+           
+            }
+
+
            
         }
 

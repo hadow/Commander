@@ -75,6 +75,9 @@ namespace EW.Xna.Platforms.Graphics
         
         private bool _blendStateDirty;
 
+        /// <summary>
+        /// Keep track of last applies state to avoid redundant OpenGL calls
+        /// </summary>
         internal bool _lastBlendEnable = false;
         internal BlendState _lastBlendState = new BlendState();
 
@@ -400,9 +403,9 @@ namespace EW.Xna.Platforms.Graphics
             if(force || BlendFactor != _lastBlendState.BlendFactor)
             {
                 GL.BlendColor(this.BlendFactor.R / 255.0f, 
-                    this.BlendFactor.G / 255.0f,
-                    this.BlendFactor.B / 255.0f,
-                    this.BlendFactor.A / 255.0f);
+                            this.BlendFactor.G / 255.0f,
+                            this.BlendFactor.B / 255.0f,
+                            this.BlendFactor.A / 255.0f);
                 GraphicsExtensions.CheckGLError();
                 _lastBlendState.BlendFactor = this.BlendFactor;
             }
@@ -494,6 +497,10 @@ namespace EW.Xna.Platforms.Graphics
                 _shaderProgram = shaderProgram;
             }
 
+            var posFixupLoc = shaderProgram.GetUnitformLocation("posFixup");
+            if (posFixupLoc == -1)
+                return;
+
         }
 
         /// <summary>
@@ -512,7 +519,7 @@ namespace EW.Xna.Platforms.Graphics
         /// <summary>
         /// 创建一个渲染目标
         /// </summary>
-        /// <param name="renderTarget"></param>
+        /// <param name="renderTarget"></param>ActivateShaderProgram
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <param name="mipMap"></param>

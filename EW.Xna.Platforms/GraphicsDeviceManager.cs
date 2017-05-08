@@ -193,7 +193,7 @@ namespace EW.Xna.Platforms
         {
             var presentationParameters = new PresentationParameters();
             presentationParameters.DepthStencilFormat = DepthFormat.Depth24;
-
+            presentationParameters.IsFullScreen = true;
             if(PreparingDeviceSettings != null)
             {
                 GraphicsDeviceInformation deviceInfo = new GraphicsDeviceInformation();

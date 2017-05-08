@@ -28,6 +28,8 @@ namespace EW.Xna.Platforms.Graphics
         internal bool SupportsTextrueArrays { get; private set; }
 
         internal bool SupportsVertexTextures { get; private set; }
+
+        internal bool SupportsDepthClamp { get; private set; }
         /// <summary>
         /// 
         /// </summary>
