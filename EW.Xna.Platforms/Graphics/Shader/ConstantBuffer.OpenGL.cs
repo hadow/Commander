@@ -13,7 +13,7 @@ namespace EW.Xna.Platforms.Graphics
         static ConstantBuffer _lastConstantBufferApplied = null;
 
         /// <summary>
-        /// 
+        /// A hash value which can be used to compare constant buffers.
         /// </summary>
 
         internal int HashKey { get; private set; }
@@ -43,6 +43,7 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="program"></param>
         public unsafe void PlatformApply(GraphicsDevice device,ShaderProgram program)
         {
+            //If the program changed then lookup the uniform again and apply the state
             if(_shaderProgram != program)
             {
                 var location = program.GetUnitformLocation(_name);
@@ -52,10 +53,11 @@ namespace EW.Xna.Platforms.Graphics
                 _location = location;
                 _dirty = true;
             }
-
+            // If the shader program is the same,the effect may still be different and have different values in the buffer
             if (!Object.ReferenceEquals(this, _lastConstantBufferApplied))
                 _dirty = true;
 
+            //If the buffer content hasn't changed then we're done...use the previously set uniform state.
             if (!_dirty)
                 return;
 

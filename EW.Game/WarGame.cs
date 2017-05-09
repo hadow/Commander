@@ -113,6 +113,7 @@ namespace EW
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
             spriteBatch.Draw(texture, position,Color.White);
+            spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
 

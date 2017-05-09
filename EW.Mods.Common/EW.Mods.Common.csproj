@@ -28,6 +28,7 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,6 +55,12 @@
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateMachine.cs" />
     <Compile Include="ColorValidator.cs" />
+    <Compile Include="FileFormats\InstallShieldCABCompression.cs" />
+    <Compile Include="FileFormats\LCWCompression.cs" />
+    <Compile Include="FileFormats\LZOCompression.cs" />
+    <Compile Include="FileFormats\MSCabCompression.cs" />
+    <Compile Include="FileFormats\RLEZerosCompression.cs" />
+    <Compile Include="FileFormats\XORDeltaCompression.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
@@ -90,9 +97,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>

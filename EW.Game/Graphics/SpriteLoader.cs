@@ -7,6 +7,9 @@ namespace EW.Graphics
 {
     public interface ISpriteFrame
     {
+        /// <summary>
+        /// Size of the frame's 'Data'.
+        /// </summary>
         Size Size { get; }
 
         Size FrameSize { get; }
@@ -23,7 +26,7 @@ namespace EW.Graphics
 
 
     /// <summary>
-    /// 
+    /// Sprite »º´æ
     /// </summary>
     public class SpriteCache
     {
@@ -32,6 +35,13 @@ namespace EW.Graphics
         readonly IReadOnlyFileSystem fileSystem;
 
         readonly Dictionary<string, List<Sprite[]>> sprites = new Dictionary<string, List<Sprite[]>>();
+
+        public SpriteCache(IReadOnlyFileSystem fileSystem,ISpriteLoader[] loaders)
+        {
+            this.loaders = loaders;
+            this.fileSystem = fileSystem;
+
+        }
     }
 
     public static class SpriteLoader

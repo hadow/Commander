@@ -34,6 +34,9 @@ namespace EW.Graphics
         Sprite GetShadow(int frame, int facing);
     }
 
+    /// <summary>
+    /// 精灵序列加载
+    /// </summary>
     public interface ISpriteSequenceLoader
     {
         Action<string> OnMissingSpriteError { get; set; }//Sprite 缺失报错
@@ -67,6 +70,8 @@ namespace EW.Graphics
                 using (new Support.PerfTimer("LoadSequences"))
                     return Load(fileSystem, additionalSequences);
             });
+
+            spriteCache = Exts.Lazy(() =>new SpriteCache());
 
         }
 

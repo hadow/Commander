@@ -40,7 +40,8 @@ namespace EW.Xna.Platforms.Graphics
 
 
     /// <summary>
-    /// shader 程序缓存
+    /// 该类用于缓存顶点/像素着色器和常量缓冲区之间的链接。
+    /// 如果OpenGL下的程序没有链接，它将负责连接程序。如果现有的链接存在，它将被重新使用。
     /// </summary>
     internal class ShaderProgramCache:IDisposable
     {

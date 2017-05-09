@@ -36,11 +36,14 @@ namespace EW.Xna.Platforms.Graphics
 
         readonly EffectParameter _matrixTransform;
         readonly EffectPass _spritePass;
-        Matrix _matrix;
-        
+        Matrix? _matrix;
 
+        private Viewport _lastViewport;
+        private Matrix _projection;
         Vector2 _texCoordTL = new Vector2(0,0);
         Vector2 _texCoordBR = new Vector2(0,0);
+
+        internal static bool NeedsHalfPixelOffset;
         public SpriteBatch(GraphicsDevice graphicsDevice)
         {
             if (graphicsDevice == null)
@@ -119,13 +122,28 @@ namespace EW.Xna.Platforms.Graphics
 
             var vp = gd.Viewport;
 
-            Matrix projection;
+            if((vp.Width != _lastViewport.Width) ||(vp.Height != _lastViewport.Height))
+            {
+                Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, -1, out _projection);
+                if (NeedsHalfPixelOffset)
+                {
+                    _projection.M41 += -0.5f * _projection.M11;
+                    _projection.M42 += -0.5f * _projection.M22;
+                }
+                _lastViewport = vp;
+            }
+            //Matrix projection;
 
-            Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, -1, out projection);
+            //Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, -1, out projection);
 
-            Matrix.Multiply(ref _matrix, ref projection, out projection);
+            //Matrix.Multiply(ref _matrix, ref projection, out projection);
 
-            _matrixTransform.SetValue(projection);
+            //_matrixTransform.SetValue(projection);
+
+            if (_matrix.HasValue)
+                _matrixTransform.SetValue(_matrix.GetValueOrDefault() * _projection);
+            else
+                _matrixTransform.SetValue(_projection);
             _spritePass.Apply();
         }
 
@@ -354,12 +372,7 @@ namespace EW.Xna.Platforms.Graphics
 
             base.Dispose(disposing);
         }
-
-
-
-
-
-
+        
 
     }
 }

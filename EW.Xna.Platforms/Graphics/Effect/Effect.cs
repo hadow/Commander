@@ -30,6 +30,7 @@ namespace EW.Xna.Platforms.Graphics
         private Shader[] _shaders;
 
         internal ConstantBuffer[] ConstantBuffers { get; private set; }
+
         private readonly bool _isClone;
 
         public Effect(GraphicsDevice graphicsDevice,byte[] effectCode) : this(graphicsDevice, effectCode, 0, effectCode.Length) { }

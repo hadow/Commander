@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 namespace EW
 {
     public static class StreamExts
@@ -59,6 +60,19 @@ namespace EW
                 return s.ReadBytes((int)(s.Length - s.Position));
         }
 
+        public static string ReadASCIIZ(this Stream s)
+        {
+            var bytes = new List<byte>();
+            byte b;
+            while ((b = s.ReadUInt8()) != 0)
+                bytes.Add(b);
+            return new string(Encoding.ASCII.GetChars(bytes.ToArray()));
+        }
+
+        public static string ReadASCII(this Stream s, int length)
+        {
+            return new string(Encoding.ASCII.GetChars(s.ReadBytes(length)));
+        }
 
     }
 }

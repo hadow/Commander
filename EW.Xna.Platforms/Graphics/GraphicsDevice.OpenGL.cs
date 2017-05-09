@@ -137,6 +137,7 @@ namespace EW.Xna.Platforms.Graphics
             GL.GetInteger(GetPName.MaxTextureSize, out MaxTextureSize);
             GraphicsExtensions.CheckGLError();
 
+            SpriteBatch.NeedsHalfPixelOffset = true;
 
             try
             {
