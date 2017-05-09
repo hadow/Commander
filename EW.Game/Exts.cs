@@ -57,6 +57,11 @@ namespace EW
             return ret;
         }
 
+        public static V GetOrAdd<K,V>(this Dictionary<K,V> d,K k) where V:new()
+        {
+            return d.GetOrAdd(k, _ => new V());
+        }
+
 
         public static IEnumerable<string> GetNamespaces(this Assembly a)
         {

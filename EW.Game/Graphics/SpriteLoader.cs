@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Drawing;
+using System.Linq;
 using EW.FileSystem;
 namespace EW.Graphics
 {
@@ -42,12 +43,54 @@ namespace EW.Graphics
             this.fileSystem = fileSystem;
 
         }
+
+        public Sprite[] this[string filename]
+        {
+            get
+            {
+                var allSprites = sprites.GetOrAdd(filename);
+                var sprite = allSprites.FirstOrDefault();
+                return sprite ?? Loadsp
+            }
+        }
+
+        Sprite[] LoadSprite(string filename,List<Sprite[]> cache)
+        {
+
+        }
     }
 
     public static class SpriteLoader
     {
 
+        public static Sprite[] GetSprites(IReadOnlyFileSystem fileSystem,string filename,ISpriteLoader[] loaders)
+        {
+            return GetFrames(fileSystem, filename, loaders);
+        }
 
+        public static ISpriteFrame[] GetFrames(IReadOnlyFileSystem fileSystem,string filename,ISpriteLoader[] loaders)
+        {
+            using(var stream = fileSystem.Open(filename))
+            {
+                var spriteFrames = GetFrames(stream, loaders);
+                if (spriteFrames == null)
+                    throw new InvalidOperationException(filename + " is not a valid sprite file!");
+
+                return spriteFrames;
+            }
+        }
+
+        public static ISpriteFrame[] GetFrames(Stream stream,ISpriteLoader[] loaders)
+        {
+            ISpriteFrame[] frames;
+            foreach(var loader in loaders)
+            {
+                if (loader.TryParseSprite(stream, out frames))
+                    return frames;
+            }
+
+            return null;
+        }
 
 
     }
