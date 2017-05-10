@@ -434,6 +434,26 @@
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.yaml" />
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\rules.yaml" />
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\shellmap.lua" />
+    <AndroidAsset Include="Content\mods\cnc\rules\ai.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\aircraft.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\campaign-maprules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\campaign-palettes.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\campaign-tooltips.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\civilian-desert.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\civilian.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\defaults.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\disable-player-experience.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\husks.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\infantry.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\misc.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\palettes.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\player.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\ships.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\structures.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\tech.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\trees.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\rules\world.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
