@@ -306,6 +306,14 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
+            else if(fieldType == typeof(EW.Xna.Platforms.Point))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new EW.Xna.Platforms.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                }
+            }
             return null;
         }
 
@@ -375,7 +383,21 @@ namespace EW
                 var sa = field.GetCustomAttributes<SerializeAttribute>(false).DefaultIfEmpty(SerializeAttribute.Default).First();
                 if (!sa.FromYamlKey)
                     field.SetValue(target, GetValue(field.Name, field.FieldType, value, field));
+                return;
             }
+
+            var prop = target.GetType().GetProperty(key, Flags);
+            if (prop != null)
+            {
+                var sa = prop.GetCustomAttributes<SerializeAttribute>(false).DefaultIfEmpty(SerializeAttribute.Default).First();
+                if (!sa.FromYamlKey)
+                {
+                    prop.SetValue(target, GetValue(prop.Name, prop.PropertyType, value, prop), null);
+                }
+                return;
+            }
+
+            UnknownFieldAction(key, target.GetType());
         }
 
         /// <summary>

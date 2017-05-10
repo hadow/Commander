@@ -19,7 +19,7 @@ namespace EW
         public readonly uint ResourcesOffset;
 
 
-        public BinaryDataHeader(Stream s,Vector2 expectedSize)
+        public BinaryDataHeader(Stream s,EW.Xna.Platforms.Point expectedSize)
         {
             Format = s.ReadUInt8();
             var width = s.ReadUInt16();
@@ -195,6 +195,9 @@ namespace EW
         CellLayer<List<MPos>> inverseCellProjection;
         CellLayer<short> cachedTerrainIndexes;
 
+
+
+        public string Uid { get; private set; }
         /// <summary>
         /// 地图网格数据 
         /// </summary>
@@ -202,7 +205,7 @@ namespace EW
 
         public IReadOnlyPackage Package { get; private set; }
 
-        public Vector2 MapSize { get; private set; }
+        public EW.Xna.Platforms.Point MapSize { get; private set; }
 
         public Ruleset Rules { get; private set; }
         
@@ -240,6 +243,8 @@ namespace EW
             Grid = modData.Manifest.Get<MapGrid>();
 
             var size = new Size((int)MapSize.X, (int)MapSize.Y);
+
+            //Layer
             Tiles = new CellLayer<TerrainTile>(Grid.Type, size);
             Resources = new CellLayer<ResourceTile>(Grid.Type, size);
             Height = new CellLayer<byte>(Grid.Type, size);
@@ -301,6 +306,8 @@ namespace EW
 
             PostInit();
 
+            Uid = ComputeUID(Package);
+            
             
         }
 
@@ -327,7 +334,10 @@ namespace EW
             catch (Exception e)
             {
 
+                Rules = Ruleset.LoadDefaultsForTileSet(modData, Tileset);
             }
+
+            Rules.Sequence.PreLoad();
            
         }
 

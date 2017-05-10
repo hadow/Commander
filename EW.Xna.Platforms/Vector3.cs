@@ -35,6 +35,12 @@ namespace EW.Xna.Platforms
             Z = value;
         }
 
+        #region Private Fields
+        private static readonly Vector3 zero = new Vector3(0f, 0f, 0f);
+
+
+        #endregion
+
         public bool Equals(Vector3 other)
         {
             return X == other.X && Y == other.Y && Z == other.Z;
@@ -47,6 +53,10 @@ namespace EW.Xna.Platforms
         {
             return value1.X == value2.X && value1.Y == value2.Y && value1.Z == value2.Z;
         }
+
+        public static implicit operator Vector3(Vector2 src) { return new Vector3(src.X, src.Y, 0); }
+
+        public static Vector3 Zero { get { return zero; } }
 
         public override int GetHashCode()
         {

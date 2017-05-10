@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
+using EW.Support;
 namespace EW
 {
     public static class Enum<T>
@@ -151,6 +152,27 @@ namespace EW
         public static int ParseIntegerInvariant(string s)
         {
             return int.Parse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);
+        }
+
+
+        public static T Random<T>(this IEnumerable<T> ts,MersenneTwister r)
+        {
+            return Random(ts, r, false);
+        }
+
+        static T Random<T>(IEnumerable<T> ts,MersenneTwister r,bool throws)
+        {
+            var xs = ts as ICollection<T>;
+            xs = xs ?? ts.ToList();
+            if (xs.Count == 0)
+            {
+                if (throws)
+                    throw new ArgumentException("Collection must not be empty!");
+                else
+                    return default(T);
+            }
+            else
+                return xs.ElementAt(r.Next(xs.Count));
         }
     }
 }

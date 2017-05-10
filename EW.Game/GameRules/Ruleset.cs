@@ -5,6 +5,7 @@ using EW.Primitives;
 using EW.GameRules;
 using EW.Graphics;
 using System.Linq;
+using System.Threading.Tasks;
 namespace EW
 {
     /// <summary>
@@ -13,6 +14,7 @@ namespace EW
     public class Ruleset
     {
         public readonly TileSet TileSet;
+
         public readonly SequenceProvider Sequence;
         
         public readonly EW.Primitives.IReadOnlyDictionary<string, ActorInfo> Actors;
@@ -69,12 +71,20 @@ namespace EW
 
                 var music = MergeOrDefault("Manifest,Music", fs, m.Music, null, null, k => new MusicInfo(k.Key, k.Value));
 
+                
                 ruleset = new Ruleset(actors, weapons, voices, notifications, music, null, null);
             };
 
             if (modData.IsOnMainThread)
             {
+                modData.HandleLoadingProgress();
 
+                var loader = new Task(f);
+                loader.Start();
+
+                //Animate the loadscreen while we wait
+                while (!loader.Wait(40))
+                    modData.HandleLoadingProgress();
             }
             else
             {
@@ -122,12 +132,20 @@ namespace EW
 
                 var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider(fileSystem,modData,ts,mapSequences);
 
+                //TODO:Add support for custom voxel sequences
                 ruleset = new Ruleset(actors, weapons,voices,notifications,music,ts,sequences);
             };
 
             if (modData.IsOnMainThread)
             {
+                modData.HandleLoadingProgress();
 
+                var loader = new Task(f);
+                loader.Start();
+
+                //Animate the loadscreen while we wait
+                while (!loader.Wait(40))
+                    modData.HandleLoadingProgress();
             }
             else
             {
@@ -165,6 +183,7 @@ namespace EW
                 return defaults;
 
             var result = MiniYaml.Load(fileSystem, files, additional).ToDictionaryWithConflictLog(k => k.Key.ToLowerInvariant(), makeObject, "LoadFromManifest<" + name + ">");
+
             return new ReadOnlyDictionary<string, T>(result);
         }
     }

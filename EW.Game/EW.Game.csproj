@@ -90,8 +90,10 @@
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="GameSpeeds.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
+    <Compile Include="Graphics\SheetBuilder.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
+    <Compile Include="Graphics\Util.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="InstalledMods.cs" />
     <Compile Include="Manifest.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="StreamExts.cs" />
+    <Compile Include="Support\MersenneTwister.cs" />
     <Compile Include="Support\PerfTimer.cs" />
     <Compile Include="Sync.cs" />
     <Compile Include="TraitDictionary.cs" />
@@ -466,9 +469,7 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\mods\common\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
@@ -481,6 +482,9 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\charactersheet.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

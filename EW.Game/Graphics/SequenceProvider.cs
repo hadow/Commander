@@ -46,7 +46,7 @@ namespace EW.Graphics
 
 
     /// <summary>
-    /// 
+    /// 序列对象提供
     /// </summary>
     public class SequenceProvider:IDisposable
     {
@@ -71,7 +71,7 @@ namespace EW.Graphics
                     return Load(fileSystem, additionalSequences);
             });
 
-            spriteCache = Exts.Lazy(() =>new SpriteCache());
+            spriteCache = Exts.Lazy(() =>new SpriteCache(fileSystem,modData.SpriteLoaders,new SheetBuilder(SheetT.Indexed)));
 
         }
 
@@ -105,6 +105,20 @@ namespace EW.Graphics
             return new ReadOnlyDictionary<string, UnitSequences>(items);
         }
 
-        public void Dispose() { }
+        /// <summary>
+        /// 预加载
+        /// </summary>
+        public void PreLoad()
+        {
+            foreach(var unitSeq in sequences.Value.Values)
+                foreach(var seq in unitSeq.Value.Values) { }
+        }
+
+        public void Dispose()
+        {
+            if (spriteCache.IsValueCreated)
+                spriteCache.Value.SheetBuilder.Dispose();
+
+        }
     }
 }

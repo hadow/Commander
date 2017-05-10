@@ -24,6 +24,7 @@ namespace EW
             
             base.OnCreate(savedInstanceState);
             var g = new WarGame();
+            
             SetContentView(g.Services.GetService<View>());
             g.Run();
         }

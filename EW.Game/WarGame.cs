@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
+using EW.Support;
 namespace EW
 {
     /// <summary>
@@ -13,13 +15,13 @@ namespace EW
     /// </summary>
     public class WarGame:EW.Xna.Platforms.Game
     {
-
+        public static MersenneTwister CosmeticRandom = new MersenneTwister();
         public static ModData ModData;
         public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
 
         Vector2 position;
-        Texture2D texture;
+        //Texture2D texture;
         SpriteBatch spriteBatch;
         GraphicsDeviceManager gdm;
         public WarGame() {
@@ -27,7 +29,7 @@ namespace EW
             gdm.IsFullScreen = true;
             gdm.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
             position = new Vector2(50, 50);
-            return;
+            //return;
             Initialize(new Arguments());
         }
 
@@ -69,6 +71,45 @@ namespace EW
 
             using (new Support.PerfTimer("LoadMaps"))
                 ModData.MapCache.LoadMaps();
+
+            ModData.InitializeLoaders(ModData.DefaultFileSystem);
+
+            ModData.LoadScreen.StartGame(args);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static void LoadShellMap()
+        {
+            var shellmap = ChooseShellMap();
+
+            using (new PerfTimer("StartGame"))
+                StartGame(shellmap, WorldT.Shellmap);
+        }
+
+        static string ChooseShellMap()
+        {
+            var shellMaps = ModData.MapCache.Where(m => m.Status == MapStatus.Available && m.Visibility.HasFlag(MapVisibility.Shellmap)).Select(m => m.Uid);
+
+            if (!shellMaps.Any())
+                throw new InvalidDataException("No valid shellmaps available");
+
+            return shellMaps.Random(CosmeticRandom);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mapUID"></param>
+        /// <param name="type"></param>
+        internal static void StartGame(string mapUID,WorldT type)
+        {
+            Map map;
+            using (new PerfTimer("PrepareMap"))
+                map = ModData.PrepareMap(mapUID);
+
+            GC.Collect();
         }
 
 
@@ -87,10 +128,10 @@ namespace EW
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
-            {
-                texture = Texture2D.FromStream(this.GraphicsDevice, stream);
-            }
+            //using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
+            //{
+            //    texture = Texture2D.FromStream(this.GraphicsDevice, stream);
+            //}
         }
 
         protected override void UnloadContent()
@@ -111,10 +152,10 @@ namespace EW
         {
 
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-            spriteBatch.Draw(texture, position,Color.White);
-            spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(texture, position,Color.White);
+            //spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
+            //spriteBatch.End();
             base.Draw(gameTime);
 
         }

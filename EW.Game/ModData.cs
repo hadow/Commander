@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using EW.Graphics;
 using EW.FileSystem;
 using EW.Primitives;
 using System.Linq;
+using EW.Xna.Platforms;
 namespace EW
 {
 
@@ -93,6 +95,7 @@ namespace EW
 
             defaultRules = Exts.Lazy(() => Ruleset.LoadDefaults(this));
 
+            //地形贴片集
             defaultTileSets = Exts.Lazy(() =>
             {
                 var items = new Dictionary<string, TileSet>();
@@ -104,6 +107,7 @@ namespace EW
                 return (EW.Primitives.IReadOnlyDictionary<string,TileSet>)(new ReadOnlyDictionary<string, TileSet>(items));
             });
 
+            //序列集
             defaultSequences = Exts.Lazy(() => {
 
                 var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Value, null));
@@ -112,6 +116,15 @@ namespace EW
             });
 
             initialThreadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileSystem"></param>
+        public void InitializeLoaders(IReadOnlyFileSystem fileSystem)
+        {
+
         }
 
         /// <summary>
@@ -136,8 +149,36 @@ namespace EW
             return loaders.ToArray();
         }
 
+        /// <summary>
+        /// 地图准备
+        /// </summary>
+        /// <param name="uid"></param>
+        /// <returns></returns>
+        public Map PrepareMap(string uid)
+        {
+            if (MapCache[uid].Status != MapStatus.Available)
+                throw new InvalidDataException("Invalid map uid:{0}".F(uid));
+
+            Map map;
+            using (new Support.PerfTimer("Map"))
+                map = new Map(this, MapCache[uid].Package);
+
+            using (new Support.PerfTimer("Map.Music"))
+                foreach (var entry in map.Rules.Music)
+                    entry.Value.Load(map);
 
 
+            return map;
+        }
+
+
+        internal void HandleLoadingProgress()
+        {
+            if(LoadScreen != null && IsOnMainThread)
+            {
+                LoadScreen.Display();
+            }
+        }
 
 
 

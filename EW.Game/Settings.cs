@@ -4,6 +4,14 @@ using System.IO;
 using Java.IO;
 namespace EW
 {
+
+    public class GraphicsSettings
+    {
+        public int SheetSize = 2048;
+
+        public string Language = "english";
+        public string DefaultLanguage = "china";
+    }
     /// <summary>
     /// 
     /// </summary>
@@ -22,18 +30,12 @@ namespace EW
         public float MusicVolume = 0.5f;
         public float VideoVolume = 0.5f;
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class GraphicsSettings
-    {
-
-    }
+    
     public class Settings
     {
         string settingFile;
 
+        public GraphicsSettings Graphics = new GraphicsSettings();
         public GameSettings Game = new GameSettings();
         public SoundSettings Sound = new SoundSettings();
         public Dictionary<string, object> Sections;

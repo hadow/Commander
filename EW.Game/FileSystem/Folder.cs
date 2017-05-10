@@ -13,6 +13,7 @@ namespace EW.FileSystem
         readonly string path;
 
         public string Name { get { return path; } }
+        private string[] files;
         public Folder(string path)
         {
             this.path = path;
@@ -28,6 +29,9 @@ namespace EW.FileSystem
                 string[] lists = Application.Context.Assets.List(path);
                 string[] files = lists.Where(x => x.IndexOf('.') != -1).ToArray();
                 string[] directories = lists.Where(x => x.IndexOf('.') == -1).ToArray();
+                if (this.files == null)
+                    this.files = new string[files.Length];
+                this.files = files;
                 foreach (var filename in files)
                 {
                     //yield return Path.GetFileName(filename);
@@ -72,8 +76,12 @@ namespace EW.FileSystem
 
         public bool Contains(string filename)
         {
+#if ANDROID
+            return files != null && files.Contains(filename);
+#elif WINDOWS
             var combined = Path.Combine(path, filename);
             return combined.StartsWith(path) && File.Exists(combined);
+#endif
         }
 
         public void Dispose()

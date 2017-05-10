@@ -6,6 +6,7 @@ namespace EW.Mods.Common.LoadScreens
 {
     public class BlankLoadScreen:ILoadScreen
     {
+        ModData modData;
         public virtual void Init(ModData modData,Dictionary<string,string> info)
         {
 
@@ -19,7 +20,7 @@ namespace EW.Mods.Common.LoadScreens
 
         public void StartGame(Arguments args)
         {
-
+            WarGame.LoadShellMap();
         }
 
         public bool RequiredContentIsInstalled()

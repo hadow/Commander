@@ -4,6 +4,7 @@ using System.IO;
 using System.Drawing;
 using System.Linq;
 using EW.FileSystem;
+using EW.Xna.Platforms;
 namespace EW.Graphics
 {
     public interface ISpriteFrame
@@ -15,8 +16,10 @@ namespace EW.Graphics
 
         Size FrameSize { get; }
 
+        
         byte[] Data { get; }
 
+        Vector2 Offset { get; }
         bool DisableExportPadding { get; }
     }
 
@@ -31,41 +34,58 @@ namespace EW.Graphics
     /// </summary>
     public class SpriteCache
     {
+        public readonly SheetBuilder SheetBuilder;
+
         readonly ISpriteLoader[] loaders;
 
         readonly IReadOnlyFileSystem fileSystem;
 
         readonly Dictionary<string, List<Sprite[]>> sprites = new Dictionary<string, List<Sprite[]>>();
 
-        public SpriteCache(IReadOnlyFileSystem fileSystem,ISpriteLoader[] loaders)
+        public SpriteCache(IReadOnlyFileSystem fileSystem,ISpriteLoader[] loaders,SheetBuilder sheetBuilder)
         {
+            this.SheetBuilder = sheetBuilder;
             this.loaders = loaders;
             this.fileSystem = fileSystem;
 
         }
-
+        /// <summary>
+        /// Returns the first set of sprites with the given filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
         public Sprite[] this[string filename]
         {
             get
             {
                 var allSprites = sprites.GetOrAdd(filename);
                 var sprite = allSprites.FirstOrDefault();
-                return sprite ?? Loadsp
+                return sprite ?? LoadSprite(filename, allSprites);
             }
         }
 
         Sprite[] LoadSprite(string filename,List<Sprite[]> cache)
         {
-
+            var sprite = SpriteLoader.GetSprites(fileSystem, filename, loaders, SheetBuilder);
+            cache.Add(sprite);
+            return sprite;
         }
     }
 
     public static class SpriteLoader
     {
 
-        public static Sprite[] GetSprites(IReadOnlyFileSystem fileSystem,string filename,ISpriteLoader[] loaders)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileSystem"></param>
+        /// <param name="filename"></param>
+        /// <param name="loaders"></param>
+        /// <param name="sheetBuilder"></param>
+        /// <returns></returns>
+        public static Sprite[] GetSprites(IReadOnlyFileSystem fileSystem,string filename,ISpriteLoader[] loaders,SheetBuilder sheetBuilder)
         {
-            return GetFrames(fileSystem, filename, loaders);
+            return GetFrames(fileSystem, filename, loaders).Select(a=>sheetBuilder.Add(a)).ToArray();
         }
 
         public static ISpriteFrame[] GetFrames(IReadOnlyFileSystem fileSystem,string filename,ISpriteLoader[] loaders)
