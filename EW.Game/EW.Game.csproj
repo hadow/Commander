@@ -454,6 +454,15 @@
     <AndroidAsset Include="Content\mods\cnc\rules\trees.yaml" />
     <AndroidAsset Include="Content\mods\cnc\rules\vehicles.yaml" />
     <AndroidAsset Include="Content\mods\cnc\rules\world.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\aircraft.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\campaign.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\civilian.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\decorations.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\funpark.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\infantry.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\misc.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\structures.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\sequences\vehicles.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
