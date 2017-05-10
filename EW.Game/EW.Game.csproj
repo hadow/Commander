@@ -463,6 +463,11 @@
     <AndroidAsset Include="Content\mods\cnc\sequences\misc.yaml" />
     <AndroidAsset Include="Content\mods\cnc\sequences\structures.yaml" />
     <AndroidAsset Include="Content\mods\cnc\sequences\vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\tilesets\desert.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\tilesets\jungle.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\tilesets\snow.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\tilesets\temperat.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\tilesets\winter.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
