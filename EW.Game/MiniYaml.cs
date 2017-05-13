@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using EW.FileSystem;
+
 namespace EW
 {
     using MiniYamlNodes = List<MiniYamlNode>;
@@ -60,6 +61,12 @@ namespace EW
         
         public MiniYamlNode(string k, string v, List<MiniYamlNode> n, SourceLocation location):this(k,new MiniYaml(v, n), location) { }
 
+        public MiniYamlNode Clone()
+        {
+            return new MiniYamlNode(Key, Value);
+        }
+
+
     }
 
 
@@ -80,6 +87,11 @@ namespace EW
         {
             Value = value;
             Nodes = nodes ?? new List<MiniYamlNode>();
+        }
+
+        public MiniYaml Clone()
+        {
+            return new MiniYaml(Value, Nodes.Select(n => n.Clone()).ToList());
         }
 
         /// <summary>
@@ -229,6 +241,13 @@ namespace EW
             return ret;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileSystem"></param>
+        /// <param name="files"></param>
+        /// <param name="mapRules"></param>
+        /// <returns></returns>
         public static List<MiniYamlNode> Load(IReadOnlyFileSystem fileSystem,IEnumerable<string> files,MiniYaml mapRules)
         {
             if(mapRules != null && mapRules.Value != null)
@@ -273,10 +292,159 @@ namespace EW
             return nd.ContainsKey(s) ? nd[s].Nodes : new List<MiniYamlNode>();
         }
 
+        /// <summary>
+        /// ºÏ²¢
+        /// </summary>
+        /// <param name="sources"></param>
+        /// <returns></returns>
         public static List<MiniYamlNode> Merge(IEnumerable<List<MiniYamlNode>> sources)
         {
-            return null;
+            if (!sources.Any())
+                return new List<MiniYamlNode>();
+
+            var tree = sources.Where(s => s != null).Aggregate(MergePartial).ToDictionary(n=>n.Key,n=>n.Value);
+
+            var resolved = new Dictionary<string, MiniYaml>();
+            foreach(var kv in tree)
+            {
+                var inherited = new Dictionary<string, MiniYamlNode.SourceLocation>();
+                inherited.Add(kv.Key, new MiniYamlNode.SourceLocation());
+
+                var children = ResolveInherits(kv.Key, kv.Value, tree, inherited);
+                resolved.Add(kv.Key, new MiniYaml(kv.Value.Value, children));
+            }
+
+            var nodes = new MiniYaml("", resolved.Select(kv => new MiniYamlNode(kv.Key, kv.Value)).ToList());
+            
+            return ResolveInherits("",nodes,tree,new Dictionary<string, MiniYamlNode.SourceLocation>());
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="existingNodes"></param>
+        /// <param name="overrideNodes"></param>
+        /// <returns></returns>
+        static List<MiniYamlNode> MergePartial(List<MiniYamlNode> existingNodes,List<MiniYamlNode> overrideNodes)
+        {
+            if (existingNodes.Count == 0)
+                return overrideNodes;
+
+            if (overrideNodes.Count == 0)
+                return existingNodes;
+
+            var ret = new List<MiniYamlNode>();
+
+            var existingDict = existingNodes.ToDictionaryWithConflictLog(x => x.Key, "MiniYaml.Merge", null, x => "{0} (at {1})".F(x.Key, x.Location));
+            var overrideDict = overrideNodes.ToDictionaryWithConflictLog(x => x.Key, "MiniYaml.Merge", null, x => "{0} (at {1})".F(x.Key, x.Location));
+
+            var allKeys = existingDict.Keys.Union(overrideDict.Keys);
+
+            foreach(var key in allKeys)
+            {
+                MiniYamlNode existingNode, overrideNode;
+                existingDict.TryGetValue(key, out existingNode);
+                overrideDict.TryGetValue(key, out overrideNode);
+
+                var loc = overrideNode == null ? default(MiniYamlNode.SourceLocation) : overrideNode.Location;
+
+                var merged = (existingNode == null || overrideNode == null) ? overrideNode ?? existingNode : new MiniYamlNode(key, MergePartial(existingNode.Value, overrideNode.Value),loc);
+                ret.Add(merged);
+            }
+
+            return ret;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="existingNodes"></param>
+        /// <param name="overrideNodes"></param>
+        /// <returns></returns>
+        static MiniYaml MergePartial(MiniYaml existingNodes,MiniYaml overrideNodes)
+        {
+            if (existingNodes == null)
+                return overrideNodes;
+            if (overrideNodes == null)
+                return existingNodes;
+
+            return new MiniYaml(overrideNodes.Value ?? existingNodes.Value, MergePartial(existingNodes.Nodes, overrideNodes.Nodes));
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="node"></param>
+        /// <param name="tree"></param>
+        /// <param name="inherited"></param>
+        /// <returns></returns>
+        static List<MiniYamlNode> ResolveInherits(string key,MiniYaml node,
+            Dictionary<string,MiniYaml> tree,Dictionary<string,MiniYamlNode.SourceLocation> inherited)
+        {
+            var resolved = new List<MiniYamlNode>();
+
+            inherited = new Dictionary<string, MiniYamlNode.SourceLocation>(inherited);
+
+            foreach(var n in node.Nodes)
+            {
+                if(n.Key == "Inherits" || n.Key.StartsWith("Inherits@"))
+                {
+                    MiniYaml parent;
+                    if(!tree.TryGetValue(n.Value.Value,out parent))
+                    {
+                        throw new YamlException("{0}:Parent type '{1}' not found".F(n.Location, n.Value.Value));
+                    }
+
+                    if (inherited.ContainsKey(n.Value.Value))
+                        throw new YamlException("{0}:Parent type '{1}' was already inherited by this yaml tree at {2} (note:may be from a derived tree)".F(n.Location,n.Value.Value,inherited[n.Value.Value]));
+
+                    inherited.Add(n.Value.Value, n.Location);
+                    foreach (var r in ResolveInherits(n.Key, parent, tree, inherited))
+                        MergeIntoResolved(r, resolved, tree, inherited);
+                    
+                }
+                else if (n.Key.StartsWith("-"))
+                {
+                    var removed = n.Key.Substring(1);
+                    if(resolved.RemoveAll(r=>r.Key == removed) == 0)
+                    {
+                        throw new YamlException("{0}: There are no elements with key '{1}' to remove".F(n.Location, removed));
+                    }
+
+                }
+                else
+                {
+                    MergeIntoResolved(n, resolved, tree, inherited);
+                }
+            }
+
+            return resolved;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="overrideNode"></param>
+        /// <param name="existingNodes"></param>
+        /// <param name="tree"></param>
+        /// <param name="inherited"></param>
+        static void MergeIntoResolved(MiniYamlNode overrideNode,List<MiniYamlNode> existingNodes,Dictionary<string,MiniYaml> tree,Dictionary<string,MiniYamlNode.SourceLocation> inherited)
+        {
+            var existingNode = existingNodes.FirstOrDefault(n => n.Key == overrideNode.Key);
+            if (existingNode != null)
+            {
+                existingNode.Value = MergePartial(existingNode.Value, overrideNode.Value);
+            }
+            else
+            {
+                existingNodes.Add(overrideNode.Clone());
+            }
+        }
+
     }
 
     [Serializable]

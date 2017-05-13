@@ -106,6 +106,13 @@ namespace EW
             return string.Join(j, ts);
         }
 
+
+        public static Dictionary<TKey,TSource> ToDictionaryWithConflictLog<TSource,TKey>(this IEnumerable<TSource> source,Func<TSource,TKey> keySelector,
+            string debugName,Func<TKey,string> logKey,Func<TSource,string> logValue)
+        {
+            return ToDictionaryWithConflictLog(source, keySelector, x => x, debugName, logKey, logValue);
+        }
+
         public static Dictionary<TKey,TElement> ToDictionaryWithConflictLog<TSource,TKey,TElement>(this IEnumerable<TSource> source,Func<TSource,TKey> keySelector,
             Func<TSource,TElement> elementSelector,string debugName,Func<TKey,string> logKey = null,Func<TElement,string> logValue = null)
         {
