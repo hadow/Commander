@@ -12,6 +12,9 @@ namespace EW
         T Value(World world);
     }
 
+    /// <summary>
+    /// Actor initializer.
+    /// </summary>
     public interface IActorInitializer
     {
         World World { get; }

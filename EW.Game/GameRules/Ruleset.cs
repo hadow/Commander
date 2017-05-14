@@ -4,7 +4,6 @@ using EW.FileSystem;
 using EW.Primitives;
 using EW.GameRules;
 using EW.Graphics;
-using System.Linq;
 using System.Threading.Tasks;
 namespace EW
 {
@@ -49,7 +48,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        ///  加载默认规则集
         /// </summary>
         /// <param name="modData"></param>
         /// <returns></returns>

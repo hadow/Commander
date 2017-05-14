@@ -5,7 +5,6 @@ using EW.Graphics;
 using EW.FileSystem;
 using EW.Primitives;
 using System.Linq;
-using EW.Xna.Platforms;
 namespace EW
 {
 

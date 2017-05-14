@@ -7,7 +7,7 @@ using EW.Primitives;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// A unit/building insiide the game. Every rules starts with one and adds trait to it.
     /// </summary>
     public class ActorInfo
     {

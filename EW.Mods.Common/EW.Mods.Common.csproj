@@ -26,7 +26,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
-    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -41,14 +40,16 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\OpenRA\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Eluant">
+      <HintPath>..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActorInitializer.cs" />
@@ -90,6 +91,14 @@
     <Compile Include="Traits\Render\RenderSprites.cs" />
     <Compile Include="Traits\Upgrades\UpgradableTrait.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
+    <Compile Include="Traits\BodyOrientation.cs" />
+    <Compile Include="TraitsInterfaces.cs" />
+    <Compile Include="Graphics\ActorPreview.cs" />
+    <Compile Include="Traits\QuantizeFacingsFromSequence.cs" />
+    <Compile Include="Traits\Conditions\ConditionalTrait.cs" />
+    <Compile Include="Traits\Render\AutoSelectionSize.cs" />
+    <Compile Include="Traits\Modifiers\HiddenUnderFog.cs" />
+    <Compile Include="Traits\Modifiers\HiddenUnderShroud.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -98,10 +107,6 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game</Name>
@@ -112,5 +117,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Traits\Conditions\" />
+    <Folder Include="Traits\Modifiers\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
