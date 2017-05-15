@@ -79,18 +79,55 @@
     <Compile Include="SpriteLoaders\ShpTSLoader.cs" />
     <Compile Include="SpriteLoaders\TmpRALoader.cs" />
     <Compile Include="SpriteLoaders\TmpTDLoader.cs" />
+    <Compile Include="Traits\Air\Aircraft.cs" />
     <Compile Include="Traits\AmmoPool.cs" />
     <Compile Include="Traits\Armament.cs" />
     <Compile Include="Traits\Attack\AttackBase.cs" />
+    <Compile Include="Traits\Attack\AttackMove.cs" />
     <Compile Include="Traits\Buildings\Building.cs" />
+    <Compile Include="Traits\Cloak.cs" />
+    <Compile Include="Traits\CombatDebugOverlay.cs" />
     <Compile Include="Traits\Crates\Crate.cs" />
     <Compile Include="Traits\CustomSelectionSize.cs" />
+    <Compile Include="Traits\Explodes.cs" />
+    <Compile Include="Traits\GainsExperience.cs" />
+    <Compile Include="Traits\GivesExperience.cs" />
+    <Compile Include="Traits\Guard.cs" />
+    <Compile Include="Traits\Guardable.cs" />
+    <Compile Include="Traits\Huntable.cs" />
     <Compile Include="Traits\ICommonTraits.cs" />
     <Compile Include="Traits\Mobile.cs" />
+    <Compile Include="Traits\Multipliers\DamageMultiplier.cs" />
+    <Compile Include="Traits\Multipliers\FirepowerMultiplier.cs" />
+    <Compile Include="Traits\Multipliers\InaccuracyMultiplier.cs" />
+    <Compile Include="Traits\Multipliers\ReloadDelayMultiplier.cs" />
+    <Compile Include="Traits\Multipliers\SpeedMultiplier.cs" />
+    <Compile Include="Traits\Multipliers\UpgradableMultiplier.cs" />
+    <Compile Include="Traits\MustBeDestroyed.cs" />
+    <Compile Include="Traits\Passenger.cs" />
+    <Compile Include="Traits\Player\PlayerStatistics.cs" />
+    <Compile Include="Traits\Radar\AppearsOnRadar.cs" />
+    <Compile Include="Traits\Render\DrawLineToTarget.cs" />
+    <Compile Include="Traits\Render\RenderDebugState.cs" />
     <Compile Include="Traits\Render\RenderSprites.cs" />
+    <Compile Include="Traits\Render\SelectionDecorations.cs" />
     <Compile Include="Traits\Render\WithCrateBody.cs" />
+    <Compile Include="Traits\Render\WithDamageOverlay.cs" />
+    <Compile Include="Traits\Render\WithDecoration.cs" />
+    <Compile Include="Traits\Render\WithFacingSpriteBody.cs" />
+    <Compile Include="Traits\Render\WithRankDecoration.cs" />
+    <Compile Include="Traits\Render\WithShadow.cs" />
+    <Compile Include="Traits\Render\WithSpriteBody.cs" />
+    <Compile Include="Traits\Render\WithSpriteControlGroupDecoration.cs" />
+    <Compile Include="Traits\Repairable.cs" />
+    <Compile Include="Traits\Scripting\ScriptTriggers.cs" />
+    <Compile Include="Traits\SelfHealing.cs" />
+    <Compile Include="Traits\Sound\ActorLostNotification.cs" />
+    <Compile Include="Traits\Targetable.cs" />
     <Compile Include="Traits\ToolTip.cs" />
     <Compile Include="Traits\Upgrades\UpgradableTrait.cs" />
+    <Compile Include="Traits\Upgrades\UpgradeManager.cs" />
+    <Compile Include="Traits\Voiced.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
     <Compile Include="Traits\BodyOrientation.cs" />
     <Compile Include="TraitsInterfaces.cs" />
@@ -108,9 +145,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
+      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
+      <Name>Eluant.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>

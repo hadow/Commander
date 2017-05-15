@@ -5,7 +5,7 @@ namespace EW.Mods.Common.Traits
 {
 
     /// <summary>
-    /// 
+    /// Unit is able to move
     /// </summary>
     public class MobileInfo:UpgradableTraitInfo,IMoveInfo,IPositionableInfo,IOccupySapceInfo,IFacingInfo,
         UsesInit<FacingInit>, UsesInit<LocationInit>, UsesInit<SubCellInit>
