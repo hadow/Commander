@@ -36,7 +36,7 @@ namespace EW
             Notifications = notifications;
             TileSet = tileSet;
             Sequence = sequence;
-
+            this.Music = music;
             foreach(var a in Actors.Values)
             {
                 foreach(var t in a.TraitInfos<IRulesetLoaded>())

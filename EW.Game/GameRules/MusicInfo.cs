@@ -15,7 +15,14 @@ namespace EW.GameRules
         public bool Exists { get; private set; }
         public MusicInfo(string key,MiniYaml value)
         {
+            Title = value.Value;
 
+            var node = value.ToDictionary();
+            if (node.ContainsKey("Hidden"))
+                bool.TryParse(node["Hidden"].Value, out Hidden);
+
+            var ext = node.ContainsKey("Extension") ? node["Extension"].Value : "aud";
+            Filename = node.ContainsKey("Filename") ? node["Filename"].Value : key + "." + ext;
         }
 
         public void Load(IReadOnlyFileSystem fileSystem)
@@ -25,6 +32,8 @@ namespace EW.GameRules
             {
                 return;
             }
+
+            stream.Dispose();
         }
     }
 }
