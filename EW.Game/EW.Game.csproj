@@ -71,6 +71,7 @@
     <Compile Include="CryptoUtil.cs" />
     <Compile Include="CVect.cs" />
     <Compile Include="Download.cs" />
+    <Compile Include="Effects\IEffect.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FileFormats\CRC32.cs" />
@@ -474,6 +475,9 @@
     <AndroidAsset Include="Content\mods\cnc\weapons\other.yaml" />
     <AndroidAsset Include="Content\mods\cnc\weapons\smallcaliber.yaml" />
     <AndroidAsset Include="Content\mods\cnc\weapons\superweapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\audio\music.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\audio\notifications.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\audio\voices.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>

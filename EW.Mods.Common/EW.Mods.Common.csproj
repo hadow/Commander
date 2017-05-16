@@ -20,7 +20,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>..\EW.Game\Content\mods\common\</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -28,6 +28,7 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +65,11 @@
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
+    <Compile Include="Projectiles\AreaBeam.cs" />
+    <Compile Include="Projectiles\Bullet.cs" />
+    <Compile Include="Projectiles\GravityBomb.cs" />
+    <Compile Include="Projectiles\LaserZap.cs" />
+    <Compile Include="Projectiles\Missile.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activies\Attack.cs" />
@@ -177,6 +183,13 @@
     <Compile Include="Traits\Valued.cs" />
     <Compile Include="Traits\Voiced.cs" />
     <Compile Include="Traits\Wanders.cs" />
+    <Compile Include="Warheads\CreateEffectWarhead.cs" />
+    <Compile Include="Warheads\CreateResourceWarhead.cs" />
+    <Compile Include="Warheads\DamageWarhead.cs" />
+    <Compile Include="Warheads\DestroyResourceWarhead.cs" />
+    <Compile Include="Warheads\LeaveSmudgeWarhead.cs" />
+    <Compile Include="Warheads\SpreadDamageWarhead.cs" />
+    <Compile Include="Warheads\Warhead.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
     <Compile Include="Traits\BodyOrientation.cs" />
     <Compile Include="TraitsInterfaces.cs" />

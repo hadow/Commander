@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
+using EW.Effects;
 namespace EW
 {
 
@@ -34,8 +36,8 @@ namespace EW
         public Target GuidedTarget;
     }
 
-    public interface Iprojectile { }
-    public interface IProjectileInfo { Iprojectile Create(ProjectileArgs args); }
+    public interface IProjectile:IEffect { }
+    public interface IProjectileInfo { IProjectile Create(ProjectileArgs args); }
     public sealed class WeaponInfo
     {
         /// <summary>
@@ -80,11 +82,39 @@ namespace EW
             FieldLoader.Load(this, content);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaml"></param>
+        /// <returns></returns>
         static object LoadProjectile(MiniYaml yaml)
         {
             MiniYaml proj;
             if (!yaml.ToDictionary().TryGetValue("Projectile", out proj))
                 return null;
+
+            var ret = WarGame.CreateObject<IProjectileInfo>(proj.Value + "Info");
+            FieldLoader.Load(ret, proj);
+            return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="yaml"></param>
+        /// <returns></returns>
+        static object LoadWarheads(MiniYaml yaml)
+        {
+            var retList = new List<IWarHead>();
+
+            foreach(var node in yaml.Nodes.Where(n => n.Key.StartsWith("Warhead")))
+            {
+                var ret = WarGame.CreateObject<IWarHead>(node.Value.Value + "Warhead");
+                FieldLoader.Load(ret, node.Value);
+                retList.Add(ret);
+            }
+
+            return retList;
         }
 
         public void Impact(Target target,Actor firedBy,IEnumerable<int> damageModifiers)
