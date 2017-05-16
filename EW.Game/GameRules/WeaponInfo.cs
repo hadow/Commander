@@ -45,6 +45,9 @@ namespace EW
 
         public readonly WDist MinRange = WDist.Zero;
 
+        /// <summary>
+        /// The sound played when the weapon is fired.
+        /// </summary>
         public readonly string[] Report = null;
 
         /// <summary>
@@ -52,8 +55,14 @@ namespace EW
         /// </summary>
         public readonly int ReloadDelay = 1;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public readonly HashSet<string> ValidTargets = new HashSet<string> { "Gound", "Water" };
 
+        /// <summary>
+        /// 
+        /// </summary>
         public readonly HashSet<string> InvalidTargets = new HashSet<string>();
 
         public readonly int Burst = 1;
@@ -71,8 +80,14 @@ namespace EW
             FieldLoader.Load(this, content);
         }
 
+        static object LoadProjectile(MiniYaml yaml)
+        {
+            MiniYaml proj;
+            if (!yaml.ToDictionary().TryGetValue("Projectile", out proj))
+                return null;
+        }
 
-        public void Impace(Target target,Actor firedBy,IEnumerable<int> damageModifiers)
+        public void Impact(Target target,Actor firedBy,IEnumerable<int> damageModifiers)
         {
 
         }

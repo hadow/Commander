@@ -4,5 +4,5 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.DIAGNOSTIC" />
-	<application android:label="RedAlert" android:icon="@drawable/Icon"></application>
+	<application android:icon="@drawable/Icon" android:label="CC"></application>
 </manifest>

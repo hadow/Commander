@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EW.Mods.Common.Traits
 {
-    public class RevealShroudInfo : AffectsShroudInfo
+    public class RevealsShroudInfo : AffectsShroudInfo
     {
         public override object Create(ActorInitializer init)
         {
