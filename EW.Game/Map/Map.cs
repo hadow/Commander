@@ -334,6 +334,7 @@ namespace EW
             catch (Exception e)
             {
 
+                //throw e;
                 Rules = Ruleset.LoadDefaultsForTileSet(modData, Tileset);
             }
 

@@ -17,16 +17,15 @@ namespace EW
         ConfigurationChanges =ConfigChanges.Orientation|ConfigChanges.Keyboard|ConfigChanges.KeyboardHidden)]
     public class OurActivity: EW.Xna.Platforms.AndroidGameActivity
     {
-
-
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
             
             base.OnCreate(savedInstanceState);
-            var g = new WarGame();
+            var wg = new WarGame();
             
-            SetContentView(g.Services.GetService<View>());
-            g.Run();
+            SetContentView(wg.Services.GetService<View>());
+            wg.Run();
         }
     }
 }

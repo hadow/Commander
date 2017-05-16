@@ -20,7 +20,7 @@ namespace EW.Mods.Common.LoadScreens
 
         public void StartGame(Arguments args)
         {
-            WarGame.LoadShellMap();
+            //WarGame.LoadShellMap();
         }
 
         public bool RequiredContentIsInstalled()

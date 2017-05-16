@@ -145,6 +145,8 @@
     <Compile Include="Traits\ActivityUtils.cs" />
     <Compile Include="Traits\LintAttributes.cs" />
     <Compile Include="Traits\Player\FrozenActorLayer.cs" />
+    <Compile Include="Traits\Player\IndexedPlayerPalette.cs" />
+    <Compile Include="Traits\Player\PlayerColorPalette.cs" />
     <Compile Include="Traits\Selectable.cs" />
     <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
@@ -513,9 +515,7 @@
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Content\mods\cnc\New Folder\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
@@ -529,6 +529,9 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

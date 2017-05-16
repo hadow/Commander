@@ -4,6 +4,7 @@ using System.IO;
 using EW.Graphics;
 using EW.FileSystem;
 using EW.Primitives;
+using EW.Xna.Platforms.Graphics;
 using System.Linq;
 namespace EW
 {
@@ -29,7 +30,7 @@ namespace EW
 
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
-
+        public readonly GraphicsDevice Device;
         public ILoadScreen LoadScreen { get; private set; }
         /// <summary>
         /// ƒ¨»œπÊ‘Ú 
@@ -56,7 +57,10 @@ namespace EW
         {
             get { return defaultSequences.Value; }
         }
-
+        public ModData(GraphicsDevice device,Manifest mod,InstalledMods mods,bool useLoadScreen = false) : this(mod, mods, useLoadScreen)
+        {
+            this.Device = device;
+        }
 
         public ModData(Manifest mod,InstalledMods mods,bool useLoadScreen = false)
         {

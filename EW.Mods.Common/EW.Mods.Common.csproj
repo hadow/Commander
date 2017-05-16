@@ -112,6 +112,7 @@
     <Compile Include="Traits\Demolishable.cs" />
     <Compile Include="Traits\DetectCloaked.cs" />
     <Compile Include="Traits\EditorTilesetFilter.cs" />
+    <Compile Include="Traits\Effects\Contrail.cs" />
     <Compile Include="Traits\EmitInfantryOnSell.cs" />
     <Compile Include="Traits\EngineerRepairable.cs" />
     <Compile Include="Traits\Explodes.cs" />

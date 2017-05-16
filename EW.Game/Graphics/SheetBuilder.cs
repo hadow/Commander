@@ -24,14 +24,14 @@ namespace EW.Graphics
         Texture2D current;
         TextureChannel channel;
         
-        public static Texture2D AllocateSheet(SheetT type,int sheetSize)
+        public static Texture2D AllocateSheet(SheetT type,int sheetSize,GraphicsDevice device)
         {
-            return new Texture2D(null, sheetSize, sheetSize);
+            return new Texture2D(device, sheetSize, sheetSize);
         }
+        
+        public SheetBuilder(SheetT t,GraphicsDevice device):this(t,WarGame.Settings.Graphics.SheetSize,device){}
 
-        public SheetBuilder(SheetT t):this(t,WarGame.Settings.Graphics.SheetSize){}
-
-        public SheetBuilder(SheetT t,int sheetSize):this(t,()=>AllocateSheet(t,sheetSize)){}
+        public SheetBuilder(SheetT t,int sheetSize,GraphicsDevice device):this(t,()=>AllocateSheet(t,sheetSize,device)){}
         
         public SheetBuilder(SheetT t,Func<Texture2D> allocateSheet)
         {

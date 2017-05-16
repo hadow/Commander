@@ -7,6 +7,9 @@ namespace EW.Graphics
     using Sequences = EW.Primitives.IReadOnlyDictionary<string, Lazy<EW.Primitives.IReadOnlyDictionary<string, ISpriteSequence>>>;
     using UnitSequences = Lazy<EW.Primitives.IReadOnlyDictionary<string, ISpriteSequence>>;
 
+    /// <summary>
+    /// 
+    /// </summary>
     public interface ISpriteSequence
     {
         string Name { get; }
@@ -71,7 +74,7 @@ namespace EW.Graphics
                     return Load(fileSystem, additionalSequences);
             });
 
-            spriteCache = Exts.Lazy(() =>new SpriteCache(fileSystem,modData.SpriteLoaders,new SheetBuilder(SheetT.Indexed)));
+            spriteCache = Exts.Lazy(() =>new SpriteCache(fileSystem,modData.SpriteLoaders,new SheetBuilder(SheetT.Indexed,modData.Device)));
 
         }
 

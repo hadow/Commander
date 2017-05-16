@@ -19,22 +19,27 @@ namespace EW
         public static ModData ModData;
         public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
-
+   
         Vector2 position;
         //Texture2D texture;
         SpriteBatch spriteBatch;
-        GraphicsDeviceManager gdm;
+        public GraphicsDeviceManager DeviceManager;
+
+        
         public WarGame() {
-            gdm = new GraphicsDeviceManager(this);
-            gdm.IsFullScreen = true;
-            gdm.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-            position = new Vector2(50, 50);
-            //return;
-            Initialize(new Arguments());
+            DeviceManager = new GraphicsDeviceManager(this);
+            DeviceManager.IsFullScreen = true;
+            DeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
+            //Initialize(new Arguments());
         }
 
 
-        internal static void Initialize(Arguments args)
+        protected override void BeginRun()
+        {
+            base.BeginRun();
+        }
+
+        internal void Initialize(Arguments args)
         {
             string customModPath = null;
 
@@ -59,7 +64,7 @@ namespace EW
         /// </summary>
         /// <param name="mode"></param>
         /// <param name="args"></param>
-        public static void InitializeMod(string mod,Arguments args)
+        public void InitializeMod(string mod,Arguments args)
         {
             if (ModData != null)
             {
@@ -67,20 +72,21 @@ namespace EW
                 ModData = null;
             }
 
-            ModData = new ModData(Mods[mod], Mods, true);
+            ModData = new ModData(GraphicsDevice,Mods[mod], Mods, true);
 
             using (new Support.PerfTimer("LoadMaps"))
                 ModData.MapCache.LoadMaps();
 
             ModData.InitializeLoaders(ModData.DefaultFileSystem);
 
-            ModData.LoadScreen.StartGame(args);
+            //ModData.LoadScreen.StartGame(args);
+            LoadShellMap();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public static void LoadShellMap()
+        public void LoadShellMap()
         {
             var shellmap = ChooseShellMap();
 
@@ -88,7 +94,7 @@ namespace EW
                 StartGame(shellmap, WorldT.Shellmap);
         }
 
-        static string ChooseShellMap()
+        string ChooseShellMap()
         {
             var shellMaps = ModData.MapCache.Where(m => m.Status == MapStatus.Available && m.Visibility.HasFlag(MapVisibility.Shellmap)).Select(m => m.Uid);
 
@@ -103,7 +109,7 @@ namespace EW
         /// </summary>
         /// <param name="mapUID"></param>
         /// <param name="type"></param>
-        internal static void StartGame(string mapUID,WorldT type)
+        internal void StartGame(string mapUID,WorldT type)
         {
             Map map;
             using (new PerfTimer("PrepareMap"))
@@ -124,6 +130,7 @@ namespace EW
 
             //texture.SetData<Color>(colorData);
             base.Initialize();
+            Initialize(new Arguments());
         }
         protected override void LoadContent()
         {
