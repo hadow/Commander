@@ -79,5 +79,18 @@ namespace EW.Xna.Platforms
         {
             get { return emptyRectangle; }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="lef"></param>
+        /// <param name="top"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        /// <returns></returns>
+        public static Rectangle FromLTRB(int left,int top,int right,int bottom)
+        {
+            return new Rectangle(left, top, right - left, bottom - top);
+        }
     }
 }

@@ -38,13 +38,21 @@ namespace EW
             foreach(var path in manifest.Assemblies)
             {
                 var data = modeFiles.Open(path).ReadAllBytes();
-
+                
                 var hash = CryptoUtil.SHA1Hash(data);
 
                 Assembly assembly;
                 if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
                 {
+#if DEBUG
+                    var pdbPath = path.Replace(".dll", ".pdb");
+                    var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
+
+                    assembly = Assembly.Load(data, pdbData);
+                    
+#else
                     assembly = Assembly.Load(data);
+#endif
                     ResolvedAssemblies.Add(hash, assembly);
                 }
 

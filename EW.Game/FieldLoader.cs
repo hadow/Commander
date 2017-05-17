@@ -200,42 +200,42 @@ namespace EW
             var value = yaml.Value;
             if (value != null)
                 value = value.Trim();
-            
-            if(fieldType == typeof(int))
+
+            if (fieldType == typeof(int))
             {
                 int res;
                 if (Exts.TryParseIntegerInvariant(value, out res))
                     return res;
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(ushort))
+            else if (fieldType == typeof(ushort))
             {
                 ushort res;
                 if (ushort.TryParse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out res))
                     return res;
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(long))
+            else if (fieldType == typeof(long))
             {
                 long res;
                 if (long.TryParse(value, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out res))
                     return res;
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(string))
+            else if (fieldType == typeof(string))
             {
-                if(field!=null && MemberHasTranslateAttribute[field] && value != null)
+                if (field != null && MemberHasTranslateAttribute[field] && value != null)
                 {
 
                 }
                 return value;
             }
-            else if(fieldType == typeof(WPos))
+            else if (fieldType == typeof(WPos))
             {
                 if (value != null)
                 {
                     var parts = value.Split(',');
-                    if(parts.Length == 3)
+                    if (parts.Length == 3)
                     {
                         WDist rx, ry, rz;
                         if (WDist.TryParse(parts[0], out rx) && WDist.TryParse(parts[1], out ry) && WDist.TryParse(parts[2], out rz))
@@ -244,18 +244,18 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(CPos))
+            else if (fieldType == typeof(CPos))
             {
-                if(value != null)
+                if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     return new CPos(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(CVec))
+            else if (fieldType == typeof(CVec))
             {
-                if(value != null)
+                if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     return new CVec(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
@@ -272,7 +272,7 @@ namespace EW
                     return InvalidValueAction(value, fieldType, fieldName);
                 }
             }
-            else if(fieldType == typeof(Size))
+            else if (fieldType == typeof(Size))
             {
                 if (value != null)
                 {
@@ -280,20 +280,20 @@ namespace EW
                     return new Size(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
             }
-            else if(fieldType.IsArray && fieldType.GetArrayRank() == 1) //获取Rank属性,例如，一维数组返回1，二维数组返回2
+            else if (fieldType.IsArray && fieldType.GetArrayRank() == 1) //获取Rank属性,例如，一维数组返回1，二维数组返回2
             {
                 if (value == null)
                     return Array.CreateInstance(fieldType.GetElementType(), 0);
                 var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
                 var ret = Array.CreateInstance(fieldType.GetElementType(), parts.Length);
-                for(var i = 0; i < parts.Length; i++)
+                for (var i = 0; i < parts.Length; i++)
                 {
                     ret.SetValue(GetValue(fieldName, fieldType.GetElementType(), parts[i].Trim(), field), i);
                 }
                 return ret;
             }
-            else if(fieldType == typeof(EW.Xna.Platforms.Rectangle))
+            else if (fieldType == typeof(EW.Xna.Platforms.Rectangle))
             {
                 if (value != null)
                 {
@@ -306,14 +306,17 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if(fieldType == typeof(EW.Xna.Platforms.Point))
+            else if (fieldType == typeof(EW.Xna.Platforms.Point))
             {
-                if(value != null)
+                if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     return new EW.Xna.Platforms.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
             }
+            else if (fieldType == typeof(bool))
+                return ParseYesNo(value, fieldType, fieldName);
+
             return null;
         }
 
@@ -425,6 +428,19 @@ namespace EW
             var t = new T();
             Load(t, y);
             return t;
+        }
+
+        static object ParseYesNo(string p,Type fieldType,string field)
+        {
+            if (string.IsNullOrEmpty(p))
+                return InvalidValueAction(p, fieldType, field);
+
+            p = p.ToLowerInvariant();
+            if (p == "yes" || p == "true") return true;
+
+            if (p == "no" || p == "false") return false;
+
+            return InvalidValueAction(p, fieldType, field);
         }
     }
 }

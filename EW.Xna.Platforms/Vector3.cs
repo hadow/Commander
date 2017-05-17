@@ -54,6 +54,22 @@ namespace EW.Xna.Platforms
             return value1.X == value2.X && value1.Y == value2.Y && value1.Z == value2.Z;
         }
 
+        public static Vector3 operator +(Vector3 value1,Vector3 value2)
+        {
+            value1.X += value2.X;
+            value1.Y += value2.Y;
+            value1.Z += value2.Z;
+            return value1;
+        }
+
+        public static Vector3 operator -(Vector3 value1,Vector3 value2)
+        {
+            value1.X -= value2.X;
+            value1.Y -= value2.Y;
+            value1.Z -= value2.Z;
+            return value1;
+        }
+
         public static implicit operator Vector3(Vector2 src) { return new Vector3(src.X, src.Y, 0); }
 
         public static Vector3 Zero { get { return zero; } }
