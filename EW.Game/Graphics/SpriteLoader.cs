@@ -64,11 +64,31 @@ namespace EW.Graphics
             }
         }
 
+        /// <summary>
+        /// Loads and caches a new instance of sprites with the given filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public Sprite[] Reload(string filename)
+        {
+            return LoadSprite(filename, sprites.GetOrAdd(filename));
+        }
+
         Sprite[] LoadSprite(string filename,List<Sprite[]> cache)
         {
             var sprite = SpriteLoader.GetSprites(fileSystem, filename, loaders, SheetBuilder);
             cache.Add(sprite);
             return sprite;
+        }
+
+        /// <summary>
+        /// Returns all instance of sets of sprites with the given filename
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public IEnumerable<Sprite[]> AllCached(string filename)
+        {
+            return sprites.GetOrAdd(filename);
         }
     }
 

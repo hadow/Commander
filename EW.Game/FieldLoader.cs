@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
 using EW.Primitives;
+using EW.Xna.Platforms;
 namespace EW
 {
     /// <summary>
@@ -230,6 +231,13 @@ namespace EW
                 }
                 return value;
             }
+            else if(fieldType == typeof(WDist))
+            {
+                WDist res;
+                if (WDist.TryParse(value, out res))
+                    return res;
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             else if (fieldType == typeof(WPos))
             {
                 if (value != null)
@@ -316,7 +324,36 @@ namespace EW
             }
             else if (fieldType == typeof(bool))
                 return ParseYesNo(value, fieldType, fieldName);
+            else if(fieldType == typeof(Vector2))
+            {
+                if (value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    float xx = 0;
+                    float yy = 0;
+                    float res;
+                    if (float.TryParse(parts[0].Replace("%", ""), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out res))
+                        xx = res * (parts[0].Contains('%') ? 0.01f : 1f);
+                    if (float.TryParse(parts[1].Replace("%", ""), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out res))
+                        yy = res * (parts[1].Contains('%') ? 0.01f : 1f);
+                    return new Vector2(xx, yy);
+                }
+            }
+            else if(fieldType == typeof(Vector3))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    float x, y,z = 0;
+                    float.TryParse(parts[0], NumberStyles.Float, NumberFormatInfo.InvariantInfo, out x);
+                    float.TryParse(parts[1], NumberStyles.Float, NumberFormatInfo.InvariantInfo, out y);
 
+                    if (parts.Length > 2)
+                        float.TryParse(parts[2], NumberStyles.Float, NumberFormatInfo.InvariantInfo, out z);
+
+                    return new Vector3(x, y, z);
+                }
+            }
             return null;
         }
 

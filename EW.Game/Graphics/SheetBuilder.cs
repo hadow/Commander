@@ -5,6 +5,13 @@ using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
 namespace EW.Graphics
 {
+    public class SheetOverflowException : Exception
+    {
+        public SheetOverflowException(string message):base(message)
+        {
+
+        }
+    }
     public enum SheetT
     {
         Indexed = 1,

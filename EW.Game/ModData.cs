@@ -94,8 +94,7 @@ namespace EW
                 throw new InvalidOperationException("Unable to find a sequence loader for type '{0}'.".F(sequenceFormat.Type));
             SpriteSequenceLoader = (ISpriteSequenceLoader)ctor.Invoke(new[] { this });
             SpriteSequenceLoader.OnMissingSpriteError =s=> { };
-
-
+            
             defaultRules = Exts.Lazy(() => Ruleset.LoadDefaults(this));
 
             //µØĞÎÌùÆ¬¼¯

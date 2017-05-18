@@ -150,7 +150,87 @@ namespace EW.Mods.Common.Graphics
                         var subSrc = GetSpriteSrc(modData, tileSet, sequence, animation, sub.Key, sd);
                         var subSprites = cache[subSrc].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, subFlipX, subFlipY), 
                             ZRamp, new Vector3(subFlipX?-s.Offset.X:s.Offset.X,subFlipY?-s.Offset.Y:s.Offset.Y,s.Offset.Z)+subOffset+offset, s.Channel, blendmode));
+
+                        var subLength = 0;
+                        MiniYaml subLengthYaml;
+                        if (sd.TryGetValue("Length", out subLengthYaml) && subLengthYaml.Value == "*")
+                            subLength = subSprites.Count() - subStart;
+                        else
+                            subLength = LoadField(sd, "Length", 1);
+
+                        combined = combined.Concat(subSprites.Skip(subStart).Take(subLength));
                     }
+                }
+                else
+                {
+                    var src = GetSpriteSrc(modData, tileSet, sequence, animation, info.Value, d);
+                    sprites = cache[src].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, flipX, flipY), ZRamp,
+                        new Vector3(flipX ? -s.Offset.X : s.Offset.X, flipY ? -s.Offset.Y : s.Offset.Y, s.Offset.Z) + offset, s.Channel, blendmode)).ToArray();
+                }
+
+                var depthSprite = LoadField<string>(d, "DepthSprite", null);
+                if (!string.IsNullOrEmpty(depthSprite))
+                {
+                    var depthSpriteFrame = LoadField(d, "DepthSpriteFrame", 0);
+                    var depthOffset = LoadField(d, "DepthSpriteOffset", Vector2.Zero);
+                    var depthSprites = cache.AllCached(depthSprite).Select(s => s[depthSpriteFrame]);
+
+                    sprites = sprites.
+                        Select(s =>
+                    {
+                        var ds = depthSprites.FirstOrDefault(dss => dss.Sheet == s.Sheet);
+                        if(ds == null)
+                        {
+                            ds = cache.Reload(depthSprite)[depthSpriteFrame];
+                            depthSprites = cache.AllCached(depthSprite).Select(ss => ss[depthSpriteFrame]);
+
+                            if (ds.Sheet != s.Sheet)
+                                throw new SheetOverflowException("Cross-sheet depth sprite reference:{0}.{1}: {2}");
+                        }
+
+                        var cw = (ds.Bounds.Left + ds.Bounds.Right) / 2 + (int)(s.Offset.X + depthOffset.X);
+                        var ch = (ds.Bounds.Top + ds.Bounds.Bottom) / 2 + (int)(s.Offset.Y + depthOffset.Y);
+
+                        var w = s.Bounds.Width / 2;
+                        var h = s.Bounds.Height / 2;
+
+                        var r = Rectangle.FromLTRB(cw - w, ch - h, cw + w, ch + h);
+                        return new SpriteWithSecondaryData(s, r, ds.Channel);
+                    }).ToArray();
+                }
+
+                MiniYaml length;
+                if(d.TryGetValue("Length",out length) && length.Value == "*")
+                {
+                    Length = sprites.Length - Start;
+                }
+                else
+                {
+                    Length = LoadField(d, "Length", 1);
+                }
+
+                if (LoadField(d, "Reverses", false))
+                {
+                    var frames = Frames ?? Exts.MakeArray(Length, i => Start + i);
+                    Frames = frames.Concat(frames.Skip(1).Take(frames.Length - 2).Reverse()).ToArray();
+                    Length = 2 * Length - 2;
+                }
+
+                Stride = LoadField(d, "Stride", Length);
+
+                if (Length > Stride)
+                    throw new InvalidOperationException("{0}:Sequence {1}.{2}: Length must be <= Stride".F(info.Nodes[0].Location, sequence, animation));
+
+                if(Frames!=null && Length > Frames.Length)
+                {
+                    throw new InvalidOperationException("{0}:Sequence {1}.{2}: Length must be <=Frames.Length".F(info.Nodes[0].Location, sequence, animation));
+                }
+                if (Start < 0 || Start + Facings * Stride > sprites.Length)
+                    throw new InvalidOperationException("{5}: Sequence {0}.{1} uses frames [{2}...{3}],but only 0..{4} actually exist".F(sequence, animation, Start, Start + Facings * Stride - 1, sprites.Length - 1, info.Nodes[0].Location));
+
+                if(ShadowStart + Facings * Stride > sprites.Length)
+                {
+                    throw new InvalidOperationException("{5}:Sequence {0}.{1}'s shadow frames use frames [{2}...{3}],but only [0..{4}] actually exist".F(sequence, animation, ShadowStart, ShadowStart + Facings * Stride - 1, sprites.Length - 1, info.Nodes[0].Location));
                 }
             }
             catch(FormatException f)

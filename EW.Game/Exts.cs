@@ -181,5 +181,15 @@ namespace EW
             else
                 return xs.ElementAt(r.Next(xs.Count));
         }
+
+        public static T[] MakeArray<T>(int count,Func<int,T> f)
+        {
+            var result = new T[count];
+            for(var i = 0; i < count; i++)
+            {
+                result[i] = f(i);
+            }
+            return result;
+        }
     }
 }

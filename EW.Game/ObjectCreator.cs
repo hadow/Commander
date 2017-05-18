@@ -48,8 +48,28 @@ namespace EW
                     var pdbPath = path.Replace(".dll", ".pdb");
                     var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
 
-                    assembly = Assembly.Load(data, pdbData);
-                    
+                    //assembly = Assembly.Load(data, pdbData);
+
+                    //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
+                    //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                    //var fileName = System.IO.Path.Combine(path2, "Content/mods/common/"+path.Split('|')[1]);
+                    //var assembly2 = Assembly.LoadFrom(fileName);
+
+                    //assembly = Assembly.Load(data);
+
+                    //string path2 = Android.OS.Environment.ExternalStorageDirectory.Path;    
+                    //string path2 = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                    string path2 = Android.App.Application.Context.GetExternalFilesDir("").Path;
+                    string filePath = System.IO.Path.Combine(path2, path.Split('|')[1]);
+                    string filePath2 = System.IO.Path.Combine(path2, path.Split('|')[1].Replace(".dll", ".pdb"));
+                    System.IO.File.WriteAllBytes(filePath, data);
+                    System.IO.File.WriteAllBytes(filePath2, pdbData);
+                    if (System.IO.File.Exists(filePath))
+                    {
+                        Android.Util.Log.Debug("", "");
+                        assembly = Assembly.LoadFile(filePath);
+                    }
+
 #else
                     assembly = Assembly.Load(data);
 #endif
