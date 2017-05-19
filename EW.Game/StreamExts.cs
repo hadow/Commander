@@ -74,5 +74,14 @@ namespace EW
             return new string(Encoding.ASCII.GetChars(s.ReadBytes(length)));
         }
 
+        public static int Peek(this Stream s)
+        {
+            var b = s.ReadByte();
+            if (b == -1)
+                return -1;
+            s.Seek(-1, SeekOrigin.Current);
+            return (byte)b;
+        }
+
     }
 }

@@ -317,6 +317,15 @@ namespace EW.FileSystem
 
         public bool Exists(string filename)
         {
+            var explicitSplit = filename.IndexOf('|');
+            if (explicitSplit > 0)
+            {
+                IReadOnlyPackage explicitPackage;
+                if (explicitMounts.TryGetValue(filename.Substring(0, explicitSplit), out explicitPackage))
+                    if (explicitPackage.Contains(filename.Substring(explicitSplit + 1)))
+                        return true;
+            }
+
             return fileIndex.ContainsKey(filename);
         }
     }

@@ -70,6 +70,14 @@ namespace EW.Xna.Platforms
             return value1;
         }
 
+        public static Vector3 operator /(Vector3 value,Vector3 val2)
+        {
+            value.X /= val2.X;
+            value.Y /= val2.Y;
+            value.Z /= val2.Z;
+            return value;
+        }
+
         public static implicit operator Vector3(Vector2 src) { return new Vector3(src.X, src.Y, 0); }
 
         public static Vector3 Zero { get { return zero; } }

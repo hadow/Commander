@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Primitives;
 using EW.FileFormats;
@@ -57,7 +58,7 @@ namespace EW.FileSystem
         }
 
         /// <summary>
-        /// 
+        /// 解析包文件索引
         /// </summary>
         /// <param name="entries"></param>
         /// <returns></returns>
@@ -237,6 +238,16 @@ namespace EW.FileSystem
         {
             return index.ContainsKey(filename);
         }
+
+        public EW.Primitives.IReadOnlyDictionary<string,PackageEntry> Index
+        {
+            get
+            {
+                var absoluteIndex = index.ToDictionary(e => e.Key, e => new PackageEntry(e.Value.Hash, (uint)(e.Value.Offset + dataStart), e.Value.Length));
+                return new ReadOnlyDictionary<string, PackageEntry>(absoluteIndex);
+            }
+        }
+
 
         public void Dispose()
         {

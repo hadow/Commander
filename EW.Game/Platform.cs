@@ -63,6 +63,10 @@ namespace EW
                 path = SupportDir + path.Substring(1);
             }
 
+            if(path == ".")
+            {
+                return SupportDir;
+            }
             //if (Path.IsPathRooted(path))
             //    throw new ArgumentException("Invalid filename");
 
