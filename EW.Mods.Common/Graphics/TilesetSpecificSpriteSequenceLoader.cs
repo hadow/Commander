@@ -20,18 +20,18 @@ namespace EW.Mods.Common.Graphics
             var metadata = modData.Manifest.Get<SpriteSequenceFormat>().Metadata;
             MiniYaml yaml;
 
-            if(metadata.TryGetValue("DefaultSpriteExtension",out yaml))
+            if (metadata.TryGetValue("DefaultSpriteExtension", out yaml))
             {
                 DefaultSpriteExtension = yaml.Value;
             }
 
-            if(metadata.TryGetValue("TilesetExtensions",out yaml))
+            if (metadata.TryGetValue("TilesetExtensions", out yaml))
             {
                 TilesetExtensions = yaml.ToDictionary(kv => kv.Value);
             }
             if (metadata.TryGetValue("TilesetCodes", out yaml))
                 TilesetCodes = yaml.ToDictionary(kv => kv.Value);
-                
+
         }
 
         /// <summary>

@@ -100,6 +100,7 @@ namespace EW.Graphics
                 else
                 {
                     t = Exts.Lazy(() => modData.SpriteSequenceLoader.ParseSequences(modData, tileSet, SpriteCache, node));
+                    
                     sequenceCache.Add(key, t);
                     items.Add(node.Key, t);
                 }

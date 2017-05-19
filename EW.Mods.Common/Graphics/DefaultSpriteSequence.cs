@@ -27,26 +27,26 @@ namespace EW.Mods.Common.Graphics
         {
             var sequences = new Dictionary<string, ISpriteSequence>();
             var nodes = node.Value.ToDictionary();
-
+            Console.WriteLine("ParseSequences:" + nodes.Count);
             MiniYaml defaults;
             try
             {
-                if(nodes.TryGetValue("Defaults",out defaults))
+                if (nodes.TryGetValue("Defaults", out defaults))
                 {
                     nodes.Remove("Defaults");
-                    foreach(var n in nodes)
+                    foreach (var n in nodes)
                     {
-                        n.Value.Nodes = MiniYaml.Merge(new[] { defaults.Nodes,n.Value.Nodes });
+                        n.Value.Nodes = MiniYaml.Merge(new[] { defaults.Nodes, n.Value.Nodes });
                         n.Value.Value = n.Value.Value ?? defaults.Value;
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new InvalidDataException("Error occurred while parsing {0} ".F(node.Key), e);
             }
 
-            foreach(var kvp in nodes)
+            foreach (var kvp in nodes)
             {
                 using (new Support.PerfTimer("new Sequence(\"{0}\")".F(node.Key), 20))
                 {
@@ -54,11 +54,11 @@ namespace EW.Mods.Common.Graphics
                     {
                         sequences.Add(kvp.Key, CreateSequence(modData, tileSet, cache, node.Key, kvp.Key, kvp.Value));
                     }
-                    catch(FileNotFoundException ex)
+                    catch (FileNotFoundException ex)
                     {
                         OnMissingSpriteError(ex.Message);
                     }
-                   
+
                 }
             }
             return new EW.Primitives.ReadOnlyDictionary<string, ISpriteSequence>(sequences);

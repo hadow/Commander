@@ -253,8 +253,8 @@ namespace EW.FileSystem
             }
             catch
             {
-                //if (!optional)
-                //    throw;
+                if (!optional)
+                    throw;
             }
         }
 
@@ -308,7 +308,7 @@ namespace EW.FileSystem
             Stream s = null;
             if (!TryOpen(filename, out s))
             {
-                //throw new FileNotFoundException("File not found:{0}".F(filename), filename);
+                throw new FileNotFoundException("File not found:{0}".F(filename), filename);
             }
 
             return s;
