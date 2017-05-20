@@ -15,7 +15,7 @@ namespace EW.Graphics
     {
 
         public readonly Rectangle Bounds;
-        public readonly Texture2D Sheet;
+        public readonly Sheet Sheet;
         public readonly BlendMode BlendMode;
         public readonly TextureChannel Channel;
         public readonly float ZRamp;
@@ -24,7 +24,7 @@ namespace EW.Graphics
         public readonly Vector3 FractionalOffset;
         public readonly float Top, Left, Bottom, Right;
 
-        public Sprite(Texture2D sheet,Rectangle bounds,float zRamp,Vector3 offset,TextureChannel channel,BlendMode blendMode = BlendMode.Alpha)
+        public Sprite(Sheet sheet,Rectangle bounds,float zRamp,Vector3 offset,TextureChannel channel,BlendMode blendMode = BlendMode.Alpha)
         {
             Sheet = sheet;
             Bounds = bounds;
@@ -35,10 +35,10 @@ namespace EW.Graphics
             BlendMode = blendMode;
             FractionalOffset = Size.Z != 0 ? offset / Size : new Vector3(offset.X / Size.X, offset.Y / Size.Y, 0);
 
-            Left = (float)Math.Min(bounds.Left, bounds.Right) / sheet.Width;
-            Top = (float)Math.Min(bounds.Top, bounds.Bottom) / sheet.Height;
-            Right = (float)Math.Max(bounds.Left, bounds.Right) / sheet.Width;
-            Bottom = (float)Math.Max(bounds.Top, bounds.Bottom) / sheet.Height;
+            Left = (float)Math.Min(bounds.Left, bounds.Right) / sheet.Size.Width;
+            Top = (float)Math.Min(bounds.Top, bounds.Bottom) / sheet.Size.Height;
+            Right = (float)Math.Max(bounds.Left, bounds.Right) / sheet.Size.Width;
+            Bottom = (float)Math.Max(bounds.Top, bounds.Bottom) / sheet.Size.Height;
         }
     }
 
@@ -53,10 +53,10 @@ namespace EW.Graphics
             SecondaryBounds = secondaryBounds;
             SecondaryChannel = secondaryChannel;
 
-            SecondaryLeft = (float)Math.Min(secondaryBounds.Left, secondaryBounds.Right) / s.Sheet.Width;
-            SecondaryTop = (float)Math.Min(secondaryBounds.Top, secondaryBounds.Bottom) / s.Sheet.Height;
-            SecondaryRight = (float)Math.Max(secondaryBounds.Left, secondaryBounds.Right) / s.Sheet.Width;
-            SecondaryBottom = (float)Math.Max(secondaryBounds.Top, secondaryBounds.Bottom) / s.Sheet.Height;
+            SecondaryLeft = (float)Math.Min(secondaryBounds.Left, secondaryBounds.Right) / s.Sheet.Size.Width;
+            SecondaryTop = (float)Math.Min(secondaryBounds.Top, secondaryBounds.Bottom) / s.Sheet.Size.Height;
+            SecondaryRight = (float)Math.Max(secondaryBounds.Left, secondaryBounds.Right) / s.Sheet.Size.Width;
+            SecondaryBottom = (float)Math.Max(secondaryBounds.Top, secondaryBounds.Bottom) / s.Sheet.Size.Height;
         }
 
     }

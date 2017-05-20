@@ -5,6 +5,7 @@ using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
 namespace EW.Graphics
 {
+    [Serializable]
     public class SheetOverflowException : Exception
     {
         public SheetOverflowException(string message):base(message)
@@ -22,25 +23,25 @@ namespace EW.Graphics
 
         public readonly SheetT Type;
 
-        readonly Func<Texture2D> allocateSheet;
+        readonly Func<Sheet> allocateSheet;
 
-        readonly List<Texture2D> sheets = new List<Texture2D>();
+        readonly List<Sheet> sheets = new List<Sheet>();
         int rowHeight = 0;
         System.Drawing.Point p;
 
-        Texture2D current;
+        Sheet current;
         TextureChannel channel;
         
-        public static Texture2D AllocateSheet(SheetT type,int sheetSize,GraphicsDevice device)
+        public static Sheet AllocateSheet(SheetT type,int sheetSize,GraphicsDevice device)
         {
-            return new Texture2D(device, sheetSize, sheetSize);
+            return new Sheet(type, new Size(sheetSize,sheetSize));
         }
         
         public SheetBuilder(SheetT t,GraphicsDevice device):this(t,WarGame.Settings.Graphics.SheetSize,device){}
 
         public SheetBuilder(SheetT t,int sheetSize,GraphicsDevice device):this(t,()=>AllocateSheet(t,sheetSize,device)){}
         
-        public SheetBuilder(SheetT t,Func<Texture2D> allocateSheet)
+        public SheetBuilder(SheetT t,Func<Sheet> allocateSheet)
         {
             channel = TextureChannel.Red;
             Type = t;
@@ -62,10 +63,11 @@ namespace EW.Graphics
         public Sprite Add(byte[] src,Size size,float zRamp,Vector3 spriteOffset)
         {
             if (size.Width == 0 || size.Height == 0)
-                return null;
+                return new Sprite(current,EW.Xna.Platforms.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
 
             var rect = Allocate(size, zRamp, spriteOffset);
             Util.FastCopyIntoChannel(rect, src);
+            current.CommitBufferData();
             return rect;
 
         }
@@ -79,7 +81,7 @@ namespace EW.Graphics
         /// <returns></returns>
         public Sprite Allocate(Size imageSize,float zRamp,Vector3 spriteOffset)
         {
-            if(imageSize.Width + p.X > current.Width)
+            if(imageSize.Width + p.X > current.Size.Width)
             {
                 p = new System.Drawing.Point(0, p.Y + rowHeight);
                 rowHeight = imageSize.Height;
@@ -87,11 +89,12 @@ namespace EW.Graphics
             if (imageSize.Height > rowHeight)
                 rowHeight = imageSize.Height;
 
-            if(p.Y + imageSize.Height > current.Height)
+            if(p.Y + imageSize.Height > current.Size.Height)
             {
                 var next = NextChannel(channel);
                 if (next == null)
                 {
+                    current.ReleaseBuffer();
                     current = allocateSheet();
                     sheets.Add(current);
                     channel = TextureChannel.Red;
@@ -123,8 +126,12 @@ namespace EW.Graphics
         }
 
 
-        public Texture2D Current { get { return current; } }
+        public Sheet Current { get { return current; } }
 
+
+        /// <summary>
+        /// ÊÍ·Å×ÊÔ´
+        /// </summary>
         public void Dispose()
         {
             foreach (var sheet in sheets)
