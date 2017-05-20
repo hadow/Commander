@@ -16,7 +16,7 @@ namespace EW.Mods.Common.Graphics
 
 
         /// <summary>
-        /// 
+        /// 解析序列
         /// </summary>
         /// <param name="modData"></param>
         /// <param name="tileSet"></param>
@@ -64,6 +64,16 @@ namespace EW.Mods.Common.Graphics
             return new EW.Primitives.ReadOnlyDictionary<string, ISpriteSequence>(sequences);
         }
 
+        /// <summary>
+        /// 创建序列
+        /// </summary>
+        /// <param name="modData"></param>
+        /// <param name="tileSet"></param>
+        /// <param name="cache"></param>
+        /// <param name="sequence"></param>
+        /// <param name="animation"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
         public virtual ISpriteSequence CreateSequence(ModData modData,TileSet tileSet,SpriteCache cache,string sequence,string animation,MiniYaml info)
         {
             return new DefaultSpriteSequence(modData, tileSet, cache, this, sequence, animation, info);
@@ -102,7 +112,7 @@ namespace EW.Mods.Common.Graphics
         {
             Name = animation;
             Loader = loader;
-
+            Console.WriteLine("Sequence:" + sequence + "  animation:" + animation);
             var d = info.ToDictionary();
 
             try
@@ -149,7 +159,7 @@ namespace EW.Mods.Common.Graphics
 
                         var subSrc = GetSpriteSrc(modData, tileSet, sequence, animation, sub.Key, sd);
                         var subSprites = cache[subSrc].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, subFlipX, subFlipY), 
-                            ZRamp, new Vector3(subFlipX?-s.Offset.X:s.Offset.X,subFlipY?-s.Offset.Y:s.Offset.Y,s.Offset.Z)+subOffset+offset, s.Channel, blendmode));
+                            ZRamp, new Vector3(subFlipX?-s.Offset.X:s.Offset.X,subFlipY?-s.Offset.Y:s.Offset.Y,s.Offset.Z) + subOffset + offset, s.Channel, blendmode));
 
                         var subLength = 0;
                         MiniYaml subLengthYaml;
@@ -160,9 +170,12 @@ namespace EW.Mods.Common.Graphics
 
                         combined = combined.Concat(subSprites.Skip(subStart).Take(subLength));
                     }
+
+                    sprites = combined.ToArray();
                 }
                 else
                 {
+                    //对序列中的每个子画面应用偏移，不同的序列可以对同一帧应用不同的偏移
                     var src = GetSpriteSrc(modData, tileSet, sequence, animation, info.Value, d);
                     sprites = cache[src].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, flipX, flipY), ZRamp,
                         new Vector3(flipX ? -s.Offset.X : s.Offset.X, flipY ? -s.Offset.Y : s.Offset.Y, s.Offset.Z) + offset, s.Channel, blendmode)).ToArray();
@@ -171,16 +184,18 @@ namespace EW.Mods.Common.Graphics
                 var depthSprite = LoadField<string>(d, "DepthSprite", null);
                 if (!string.IsNullOrEmpty(depthSprite))
                 {
+                    Console.WriteLine("DepthSprite:" + depthSprite);
                     var depthSpriteFrame = LoadField(d, "DepthSpriteFrame", 0);
                     var depthOffset = LoadField(d, "DepthSpriteOffset", Vector2.Zero);
                     var depthSprites = cache.AllCached(depthSprite).Select(s => s[depthSpriteFrame]);
 
-                    sprites = sprites.
-                        Select(s =>
+                    sprites = sprites.Select(s =>
                     {
+                        //The depth sprite must be live on the same sheet as the main sprite
                         var ds = depthSprites.FirstOrDefault(dss => dss.Sheet == s.Sheet);
                         if(ds == null)
                         {
+                            //该序列可能已经溢出到新的Sheet上，Allocating a new depth sprite on this sheet will almost certainly work
                             ds = cache.Reload(depthSprite)[depthSpriteFrame];
                             depthSprites = cache.AllCached(depthSprite).Select(ss => ss[depthSpriteFrame]);
 

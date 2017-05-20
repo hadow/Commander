@@ -94,7 +94,11 @@ namespace EW.Mods.Common.Graphics
 
             if (LoadField(d, "UseTilesetCode", false))
             {
-
+                string code;
+                if(loader.TilesetCodes.TryGetValue(ResolveTilesetId(tileSet,d),out code))
+                {
+                    spriteName = spriteName.Substring(0, 1) + code + spriteName.Substring(2, spriteName.Length - 2);
+                }
             }
 
             if (LoadField(d, "AddExtension", true))

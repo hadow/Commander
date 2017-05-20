@@ -4,6 +4,9 @@ using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class Sheet:IDisposable
     {
         bool releaseBufferOnCommit;

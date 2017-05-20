@@ -211,6 +211,9 @@ namespace EW
         
         public ProjectedCellRegion ProjectedCellBounds { get; private set;}
         
+        public WPos ProjectedBottomRight { get; private set; }
+
+        public WPos ProjectedTopLeft { get; private set; }
 
         public CellLayer<TerrainTile> Tiles { get; private set; }
 
@@ -219,6 +222,10 @@ namespace EW
         public CellLayer<byte> Height { get; private set; }
 
         public CellLayer<byte> CustomTerrain { get; private set; }
+
+        public CellRegion AllCells { get; private set; }
+
+
         public Map(ModData modData,IReadOnlyPackage package)
         {
             this.modData = modData;
@@ -339,9 +346,35 @@ namespace EW
             }
 
             Rules.Sequence.PreLoad();
-           
+
+            var tl = new MPos(0, 0).ToCPos(this);
+            var br = new MPos(MapSize.X - 1, MapSize.Y - 1).ToCPos(this);
+
+            AllCells = new CellRegion(Grid.Type, tl, br);
+
+            var btl = new PPos(Bounds.Left, Bounds.Top);
+            var bbr = new PPos(Bounds.Right - 1, Bounds.Bottom - 1);
+
+            SetBounds(btl, bbr);
+
+            CustomTerrain = new CellLayer<byte>(this);
+            foreach(var uv in AllCells.MapCoords)
+            {
+                CustomTerrain[uv] = byte.MaxValue;
+            }
+
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tl"></param>
+        /// <param name="br"></param>
+        public void SetBounds(PPos tl,PPos br)
+        {
+
+        }
 
 
 

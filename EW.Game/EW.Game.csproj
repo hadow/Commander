@@ -92,6 +92,7 @@
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="GameSpeeds.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
+    <Compile Include="Graphics\Sheet.cs" />
     <Compile Include="Graphics\SheetBuilder.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
@@ -100,7 +101,9 @@
     <Compile Include="InstalledMods.cs" />
     <Compile Include="Manifest.cs" />
     <Compile Include="Map\ActorReference.cs" />
+    <Compile Include="Map\CellRegion.cs" />
     <Compile Include="Map\MapCache.cs" />
+    <Compile Include="Map\MapCoordsRegion.cs" />
     <Compile Include="Map\MapPlayers.cs" />
     <Compile Include="Map\MapPreview.cs" />
     <Compile Include="Map\PlayerReference.cs" />
@@ -664,9 +667,6 @@
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.pdb" />
-  </ItemGroup>
-  <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
@@ -676,14 +676,14 @@
   <ItemGroup>
     <AndroidAsset Include="Content\charactersheet.png" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
-  </ItemGroup>
-  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
