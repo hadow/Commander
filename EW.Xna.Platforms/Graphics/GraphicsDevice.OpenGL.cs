@@ -197,6 +197,11 @@ namespace EW.Xna.Platforms.Graphics
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="primitiveType"></param>
+        /// <returns></returns>
         private static GLPrimitiveType PrimitiveTypeGL(PrimitiveType primitiveType)
         {
             switch(primitiveType)

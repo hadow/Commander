@@ -524,6 +524,36 @@ namespace EW.Xna.Platforms.Graphics
         }
 
 
+        /// <summary>
+        /// Draw primitives of the specified type from the currently bound vertexbuffers without indexing
+        /// </summary>
+        /// <param name="primitiveT"></param>
+        /// <param name="vertexStart"></param>
+        /// <param name="primitiveCount"></param>
+        public void DrawPrimitives(PrimitiveType primitiveT,int vertexStart,int primitiveCount)
+        {
+            if (_vertexShader == null)
+                throw new InvalidOperationException("Vertex shader must be set before calling DrawPrimitives.");
+
+            if (_vertexBuffers.Count == 0)
+                throw new InvalidOperationException("Vertex buffer must be set before calling DrawPrimitives.");
+
+            if (primitiveCount <= 0)
+                throw new ArgumentOutOfRangeException("primitiveCount");
+
+            var vertexCount = GetElementCountArray(primitiveT, primitiveCount);
+
+            PlatformDrawPrimitives(primitiveT, vertexStart, vertexCount);
+
+            unchecked
+            {
+                _graphicsMetrics._drawCount++;
+                _graphicsMetrics._primitiveCount += primitiveCount;
+            }
+
+        }
+
+
 
 
 
