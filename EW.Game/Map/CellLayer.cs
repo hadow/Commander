@@ -52,14 +52,33 @@ namespace EW
             return bounds.Contains(uv.U, uv.V);
         }
 
-        
 
+        /// <summary>
+        /// Resolve an array index from map coordinates
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <returns></returns>
         int Index(MPos uv)
         {
             return uv.V * Size.Width + uv.U;
         }
+
+        /// <summary>
+        /// Resolve an array index from cell coordinates
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        int Index(CPos cell)
+        {
+            return Index(cell.ToMPos(GridT));
+        }
             
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <returns></returns>
         public T this[MPos uv]
         {
             get { return entries[Index(uv)]; }
@@ -72,9 +91,31 @@ namespace EW
             }
         }
 
+        public T this[CPos cell]
+        {
+            get
+            {
+                return entries[Index(cell)];
+            }
+            set
+            {
+                entries[Index(cell)] = value;
+
+                if (CellEntryChanged != null)
+                    CellEntryChanged(cell);
+            }
+        }
+
         public MPos Clamp(MPos uv)
         {
             return uv.Clamp(new Xna.Platforms.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
         }
+
+        public void Clear(T clearValue)
+        {
+            for (var i = 0; i < entries.Length; i++)
+                entries[i] = clearValue;
+        }
+            
     }
 }

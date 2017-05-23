@@ -54,6 +54,11 @@ namespace EW.Xna.Platforms
             return new Point(value1.X / value2.X, value1.Y / value2.Y);
         }
 
+        public static Point operator /(Point val,int divider)
+        {
+            return new Point(val.X / divider, val.Y / divider);
+        }
+
         public static bool operator ==(Point a,Point b)
         {
             return a.Equals(b);

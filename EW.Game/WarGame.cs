@@ -5,6 +5,8 @@ using System.Linq;
 using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
 using EW.Support;
+using EW.Graphics;
+using EW.NetWork;
 namespace EW
 {
     /// <summary>
@@ -25,7 +27,9 @@ namespace EW
         SpriteBatch spriteBatch;
         public GraphicsDeviceManager DeviceManager;
 
-        
+        public Renderer Renderer;
+        WorldRenderer worldRenderer;
+        OrderManager orderManager;
         public WarGame() {
             DeviceManager = new GraphicsDeviceManager(this);
             DeviceManager.IsFullScreen = true;
@@ -42,7 +46,7 @@ namespace EW
         internal void Initialize(Arguments args)
         {
             string customModPath = null;
-
+            orderManager = new OrderManager();
             InitializeSettings(args);
 
             customModPath = Android.App.Application.Context.FilesDir.Path;
@@ -72,6 +76,8 @@ namespace EW
                 ModData = null;
             }
 
+
+            Renderer = new Renderer();
             ModData = new ModData(GraphicsDevice,Mods[mod], Mods, true);
 
             using (new Support.PerfTimer("LoadMaps"))
@@ -111,11 +117,19 @@ namespace EW
         /// <param name="type"></param>
         internal void StartGame(string mapUID,WorldT type)
         {
+
+            if (worldRenderer != null)
+                worldRenderer.Dispose();
             Map map;
             using (new PerfTimer("PrepareMap"))
                 map = ModData.PrepareMap(mapUID);
+            using (new PerfTimer("NewWorld"))
+                orderManager.World = new World(map, orderManager, type);
 
-            GC.Collect();
+            worldRenderer = new WorldRenderer(ModData, orderManager.World);
+
+
+                GC.Collect();
         }
 
 
@@ -158,12 +172,35 @@ namespace EW
         protected override void Draw(GameTime gameTime)
         {
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            
             //spriteBatch.Begin();
             //spriteBatch.Draw(texture, position,Color.White);
             //spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
             //spriteBatch.End();
             base.Draw(gameTime);
+            RenderTick();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void RenderTick()
+        {
+            using(new PerfSample("render"))
+            {
+                if (worldRenderer != null)
+                {
+                    Renderer.BeginFrame(worldRenderer.ViewPort.TopLeft, worldRenderer.ViewPort.Zoom);
+                    worldRenderer.Draw();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void LogicTick()
+        {
 
         }
 

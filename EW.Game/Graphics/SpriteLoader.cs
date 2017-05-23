@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using EW.FileSystem;
 using EW.Xna.Platforms;
+using EW.Primitives;
 namespace EW.Graphics
 {
     public interface ISpriteFrame
@@ -90,6 +91,18 @@ namespace EW.Graphics
         {
             return sprites.GetOrAdd(filename);
         }
+    }
+
+    public class FrameCache
+    {
+        readonly Cache<string, ISpriteFrame[]> frames;
+
+        public FrameCache(IReadOnlyFileSystem fileSystem,ISpriteLoader[] loaders)
+        {
+            frames = new Cache<string, ISpriteFrame[]>(filename => SpriteLoader.GetFrames(fileSystem, filename, loaders));
+        }
+
+        public ISpriteFrame[] this[string filename] { get { return frames[filename]; } }
     }
 
     public static class SpriteLoader

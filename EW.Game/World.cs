@@ -20,6 +20,7 @@ namespace EW
         public readonly Map Map;
         public readonly WorldT Type;
         public readonly ActorMap ActorMap;
+        public readonly ScreenMap ScreenMap;
 
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
@@ -38,6 +39,14 @@ namespace EW
         public bool ShouldTick { get { return Type != WorldT.Shellmap; } }
         internal World(Map map,OrderManager orderManager,WorldT type)
         {
+            Type = type;
+            OrderManager = orderManager;
+            Map = map;
+
+            var worldActorT = type == WorldT.Editor ? "EditorWorld" : "World";
+            WorldActor = CreateActor(worldActorT, new TypeDictionary());
+            ActorMap = WorldActor.Trait<ActorMap>();
+            ScreenMap = WorldActor.Trait<ScreenMap>();
 
         }
 
@@ -71,6 +80,11 @@ namespace EW
             return a;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
         public void Add(Actor a)
         {
             a.IsInWorld = true;
@@ -81,6 +95,20 @@ namespace EW
             {
                 t.AddedToWorld(a);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        public void Remove(Actor a)
+        {
+            a.IsInWorld = false;
+            actors.Remove(a.ActorID);
+            ActorRemoved(a);
+
+            foreach (var t in a.TraitsImplementing<INotifyRemovedFromWorld>())
+                t.RemovedFromWorld(a);
         }
 
 

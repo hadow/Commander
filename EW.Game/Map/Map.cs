@@ -365,6 +365,27 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public CPos CellContaining(WPos pos)
+        {
+            if (Grid.Type == MapGridT.Rectangular)
+                return new CPos(pos.X / 1024, pos.Y / 1024);
+
+            var u = (pos.Y + pos.X - 512) / 1024;
+            var v = (pos.Y -pos.X +(pos.Y>pos.X ? 512:-512))/ 1024;
+            return new CPos(u, v);
+        }
+
+        public PPos Clamp(PPos puv)
+        {
+            var bounds = new EW.Xna.Platforms.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
+            return puv.Clamp(bounds);
+        }
+
 
         /// <summary>
         /// 
@@ -376,6 +397,38 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        public TerrainTypeInfo GetTerrainInfo(CPos cell)
+        {
+            return Rules.TileSet[GetTerrainIndex(cell)];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        public byte GetTerrainIndex(CPos cell)
+        {
+            const short InvalidCachedTerrainIndex = -1;
+            //Lazily initialize a cache for terrain indexes;
+            if(cachedTerrainIndexes == null)
+            {
+                cachedTerrainIndexes = new CellLayer<short>(this);
+                cachedTerrainIndexes.Clear(InvalidCachedTerrainIndex);
+
+            }
+
+            var uv = cell.ToMPos(this);
+
+            var terrainIndex = cachedTerrainIndexes[uv];
+
+            return (byte)terrainIndex;
+        }
 
 
         /// <summary>

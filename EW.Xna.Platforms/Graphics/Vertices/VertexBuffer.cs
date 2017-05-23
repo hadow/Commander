@@ -18,6 +18,7 @@ namespace EW.Xna.Platforms.Graphics
         public BufferUsage BufferUsage { get; private set; }
 
 
+
         protected VertexBuffer(GraphicsDevice graphicsDevice,VertexDeclaration vertexDeclaration,int vertexCount,BufferUsage bufferUsage,bool dynamic)
         {
             if (graphicsDevice == null)
@@ -36,10 +37,10 @@ namespace EW.Xna.Platforms.Graphics
             PlatformConstruct();
         }
 
-        public VertexBuffer(GraphicsDevice graphicsDevice,VertexDeclaration vertexDeclaration,int vertexCount,BufferUsage bufferUsage) : this(graphicsDevice, vertexDeclaration, vertexCount, bufferUsage, false)
-        {
+        public VertexBuffer(GraphicsDevice graphicsDevice,VertexDeclaration vertexDeclaration,int vertexCount,BufferUsage bufferUsage) : this(graphicsDevice, vertexDeclaration, vertexCount, bufferUsage, false) { }
 
-        }
+        public VertexBuffer(GraphicsDevice graphicsDevice,Type type,int vertexCount,BufferUsage bufferUsage) : this(graphicsDevice, VertexDeclaration.FromT(type), vertexCount,bufferUsage,false) { }
+        
 
 
         /// <summary>

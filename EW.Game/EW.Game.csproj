@@ -69,7 +69,7 @@
     <Compile Include="Arguments.cs" />
     <Compile Include="CPos.cs" />
     <Compile Include="CryptoUtil.cs" />
-    <Compile Include="CVect.cs" />
+    <Compile Include="CVec.cs" />
     <Compile Include="Download.cs" />
     <Compile Include="Effects\IEffect.cs" />
     <Compile Include="Exts.cs" />
@@ -91,11 +91,18 @@
     <Compile Include="GameRules\SoundInfo.cs" />
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="GameSpeeds.cs" />
+    <Compile Include="Graphics\GameViewPort.cs" />
+    <Compile Include="Graphics\PaletteReference.cs" />
+    <Compile Include="Graphics\RgbaColorRenderer.cs" />
     <Compile Include="Graphics\SequenceProvider.cs" />
     <Compile Include="Graphics\Sheet.cs" />
     <Compile Include="Graphics\SheetBuilder.cs" />
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
+    <Compile Include="Graphics\SpriteRenderer.cs" />
+    <Compile Include="Graphics\TerrainRenderer.cs" />
+    <Compile Include="Graphics\TerrainSpriteLayer.cs" />
+    <Compile Include="Graphics\Theater.cs" />
     <Compile Include="Graphics\Util.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="InstalledMods.cs" />
@@ -129,6 +136,7 @@
     <Compile Include="Primitives\ReadOnlyList.cs" />
     <Compile Include="Primitives\SegmentStream.cs" />
     <Compile Include="Primitives\TypeDictionary.cs" />
+    <Compile Include="Renderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\IInputHandler.cs" />
@@ -144,6 +152,7 @@
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="StreamExts.cs" />
     <Compile Include="Support\MersenneTwister.cs" />
+    <Compile Include="Support\PerfSample.cs" />
     <Compile Include="Support\PerfTimer.cs" />
     <Compile Include="Sync.cs" />
     <Compile Include="TraitDictionary.cs" />
@@ -156,6 +165,7 @@
     <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
     <Compile Include="Traits\World\ActorMap.cs" />
+    <Compile Include="Traits\World\ScreenMap.cs" />
     <Compile Include="WAngle.cs" />
     <Compile Include="WarGame.cs" />
     <Compile Include="World.cs" />

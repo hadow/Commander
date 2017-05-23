@@ -28,8 +28,9 @@ namespace EW.Xna.Platforms.Graphics
         {
             if(vbo == 0)
             {
-                GL.GenBuffers(1, out this.vbo);
+                GL.GenBuffers(1, out this.vbo);//
                 GraphicsExtensions.CheckGLError();
+                //bind to the buffer,Future commands will affect this buffer specifically
                 GL.BindBuffer(BufferTarget.ArrayBuffer, this.vbo);
                 GraphicsExtensions.CheckGLError();
                 //定义的顶点数据复制到缓冲的内存中              
@@ -130,6 +131,7 @@ namespace EW.Xna.Platforms.Graphics
             {
                 Threading.BlockOnUIThread(() =>
                 {
+                    ///When we no longer want to keep our buffers around,we can free the memory;
                     GL.DeleteBuffers(1, ref vbo);
                     GraphicsExtensions.CheckGLError();
                 });

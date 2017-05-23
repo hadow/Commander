@@ -20,13 +20,66 @@ namespace EW.Graphics
         {
 
             map = world.Map;
-            theater = wr.th
+            theater = wr.Theater;
+
+            foreach(var template in map.Rules.TileSet.Templates)
+            {
+                var palette = template.Value.Palette ?? TileSet.TerrainPaletteInternalName;
+                spriteLayers.GetOrAdd(palette, pal => new TerrainSpriteLayer(world, wr, theater.Sheet, BlendMode.Alpha, wr.Palette(palette), world.Type != WorldT.Editor));
+            }
+
+            foreach(var cell in map.AllCells)
+            {
+                UpdateCell(cell);
+            }
+
+            map.Tiles.CellEntryChanged += UpdateCell;
+            map.Height.CellEntryChanged += UpdateCell;
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        public void UpdateCell(CPos cell)
+        {
+            var tile = map.Tiles[cell];
+            var palette = TileSet.TerrainPaletteInternalName;
+            if (map.Rules.TileSet.Templates.ContainsKey(tile.Type))
+                palette = map.Rules.TileSet.Templates[tile.Type].Palette ?? palette;
+
+            var sprite = theater.TileSprite(tile);
+
+            foreach(var kv in spriteLayers)
+            {
+                kv.Value.Update(cell, palette == kv.Key ? sprite : null);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wr"></param>
+        /// <param name="viewPort"></param>
+        public void Draw(WorldRenderer wr,GameViewPort viewPort)
+        {
+            foreach (var kv in spriteLayers.Values)
+                kv.Draw(wr.ViewPort);
+
+            foreach (var r in wr.World.WorldActor.TraitsImplementing<IRenderOverlay>())
+                r.Render(wr);
+        }
+
+
         public void Dispose()
         {
+            map.Height.CellEntryChanged -= UpdateCell;
+            map.Tiles.CellEntryChanged -= UpdateCell;
 
+            foreach (var kv in spriteLayers.Values)
+                kv.Dispose();
         }
 
     }

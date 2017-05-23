@@ -1,18 +1,21 @@
 using System;
 using System.Linq;
+using System.IO;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.FileSystem;
+using EW.Primitives;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// 地形切片信息
     /// </summary>
     public class TerrainTileInfo
     {
         public readonly byte TerrainT = byte.MaxValue;
         public readonly byte Height;
         public readonly byte RampT;//斜坡
+
         public readonly Color LeftColor;
         public readonly Color RightColor;
 
@@ -43,17 +46,90 @@ namespace EW
         }
     }
 
+    /// <summary>
+    /// 地形模板信息
+    /// </summary>
     public class TerrainTemplateInfo
     {
         public readonly ushort Id;
+
         public readonly string[] Images;
+
         public readonly int[] Frames;
-        public readonly Vector2 Size;
+
+        public readonly Point Size;
+
         public readonly bool PickAny;
+
         public readonly string Category;
+
         public readonly string Palette;
 
         readonly TerrainTileInfo[] tileInfo;
+
+
+        public TerrainTemplateInfo(TileSet tileSet,MiniYaml my)
+        {
+            FieldLoader.Load(this, my);
+
+            var nodes = my.ToDictionary()["Tiles"].Nodes;
+
+            if (!PickAny)
+            {
+                tileInfo = new TerrainTileInfo[Size.X * Size.Y];
+                foreach(var node in nodes)
+                {
+                    int key;
+                    if (!int.TryParse(node.Key, out key) || key < 0 || key >= tileInfo.Length)
+                        throw new InvalidDataException("Invalid tile key '{0}' on template '{1}' of tileset '{2}'.".F(node.Key,Id,tileSet.Id));
+
+                    tileInfo[key] = LoadTileInfo(tileSet, node.Value);
+                }
+            }
+            else
+            {
+                tileInfo = new TerrainTileInfo[nodes.Count];
+
+                var i = 0;
+                foreach(var node in nodes)
+                {
+                    int key;
+                    if(int.TryParse(node.Key,out key) || key != i++)
+                        throw new InvalidDataException("Invalid tile key '{0}' on template '{1}' of tileset '{2}'.".F(node.Key, Id, tileSet.Id));
+
+                    tileInfo[key] = LoadTileInfo(tileSet, node.Value);
+                }
+            }
+        }
+
+        public bool Contains(int index)
+        {
+            return index >= 0 && index < tileInfo.Length;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tileSet"></param>
+        /// <param name="my"></param>
+        /// <returns></returns>
+        static TerrainTileInfo LoadTileInfo(TileSet tileSet,MiniYaml my)
+        {
+            var tile = new TerrainTileInfo();
+            FieldLoader.Load(tile, my);
+
+            tile.GetType().GetField("TerrainT").SetValue(tile, tileSet.GetTerrainIndex(my.Value));
+
+            var overrideColor = tileSet.TerrainInfo[tile.TerrainT].Color;
+            if (tile.LeftColor == default(Color))
+                tile.GetType().GetField("LeftColor").SetValue(tile, overrideColor);
+
+            if (tile.RightColor == default(Color))
+                tile.GetType().GetField("RightColor").SetValue(tile, overrideColor);
+
+            return tile;
+        }
 
         public TerrainTileInfo this[int index]
         {
@@ -67,7 +143,7 @@ namespace EW
     }
 
     /// <summary>
-    /// 
+    /// 地形切片集
     /// </summary>
     public class TileSet
     {
@@ -83,17 +159,25 @@ namespace EW
 
         public readonly string PlayerPalette;
 
+        public readonly bool EnableDepth = false;
+
+        public readonly bool IgnoreTileSpriteOffsets;
+
         [FieldLoader.Ignore]
         public readonly TerrainTypeInfo[] TerrainInfo;
 
         readonly Dictionary<string, byte> terrainIndexByType = new Dictionary<string, byte>();
 
+        public readonly EW.Primitives.IReadOnlyDictionary<ushort, TerrainTemplateInfo> Templates;
+
+        readonly byte defaultWalkableTerrainIndex;
         public TileSet(IReadOnlyFileSystem fileSystem,string filePath)
         {
             var yaml = MiniYaml.DictFromStream(fileSystem.Open(filePath), filePath);
 
             FieldLoader.Load(this, yaml["General"]);
 
+            //Terrain Types
             TerrainInfo = yaml["Terrain"].ToDictionary().Values.Select(y => new TerrainTypeInfo(y)).OrderBy(tt => tt.Type).ToArray();
 
             if (TerrainInfo.Length >= byte.MaxValue)
@@ -108,6 +192,31 @@ namespace EW
                 terrainIndexByType.Add(tt, i);
             }
 
+            defaultWalkableTerrainIndex = GetTerrainIndex("Clear");
+
+            //Templates
+            Templates = yaml["Templates"].ToDictionary().Values.Select(y => new TerrainTemplateInfo(this,y)).ToDictionary(t => t.Id).AsReadOnly();
+
+        }
+
+        public TerrainTypeInfo this[byte index]
+        {
+            get { return TerrainInfo[index]; }
+        }
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public byte GetTerrainIndex(string type)
+        {
+            byte index;
+            if (terrainIndexByType.TryGetValue(type, out index))
+                return index;
+
+            throw new InvalidDataException("Tileset '{0}' lacks terrain type '{1}'".F(Id, type));
         }
     }
 }

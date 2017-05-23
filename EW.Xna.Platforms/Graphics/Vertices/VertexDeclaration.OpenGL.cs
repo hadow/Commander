@@ -4,7 +4,7 @@ using System.Collections.Generic;
 #if GLES
 using OpenTK.Graphics.ES20;
 #endif
-
+using EW.Xna.Platforms.Utilities;
 namespace EW.Xna.Platforms.Graphics
 {
     public partial class VertexDeclaration
@@ -99,6 +99,29 @@ namespace EW.Xna.Platforms.Graphics
                 GraphicsExtensions.CheckGLError();
             }
             GraphicsDevice.SetVertexAttributeArray(attrInfo.EnabledAttributes);
+        }
+
+        internal static VertexDeclaration FromT(Type vertexT)
+        {
+            if (vertexT == null)
+                throw new ArgumentNullException("vertexT", "Cannot be Null");
+
+            if (!ReflectionHelpers.IsValueType(vertexT))
+                throw new ArgumentException("Must be value type", "vertexType");
+
+            var type = Activator.CreateInstance(vertexT) as IVertexT;
+            if(type == null)
+            {
+                throw new ArgumentException("vertexData does not inherit IVertexType");
+            }
+
+            var vertexDeclaration = type.VertexDeclaration;
+
+            if (vertexDeclaration == null)
+                throw new ArgumentNullException("VertexDeclartion cannot be null");
+
+            return vertexDeclaration;
+
         }
 
 

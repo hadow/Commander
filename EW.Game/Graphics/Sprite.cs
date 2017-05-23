@@ -24,6 +24,8 @@ namespace EW.Graphics
         public readonly Vector3 FractionalOffset;
         public readonly float Top, Left, Bottom, Right;
 
+
+        public Sprite(Sheet sheet,Rectangle bounds,TextureChannel channel) : this(sheet, bounds, 0, Vector2.Zero, channel) { }
         public Sprite(Sheet sheet,Rectangle bounds,float zRamp,Vector3 offset,TextureChannel channel,BlendMode blendMode = BlendMode.Alpha)
         {
             Sheet = sheet;

@@ -54,6 +54,15 @@ namespace EW
 
     #endregion
 
+    #region Render Interface
+
+
+    public interface IRenderOverlay
+    {
+        void Render(WorldRenderer wr);
+    }
+    #endregion
+
     public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }
 
     /// <summary>

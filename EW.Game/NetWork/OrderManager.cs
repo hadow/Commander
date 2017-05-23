@@ -7,7 +7,7 @@ namespace EW.NetWork
     /// </summary>
     public sealed class OrderManager:IDisposable
     {
-
+        public World World;
 
         public void Dispose()
         {

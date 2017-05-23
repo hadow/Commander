@@ -12,6 +12,7 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="force"></param>
         internal void PlatformApplyState(GraphicsDevice device,bool force = false)
         {
+            //Enable/Disable …Ó∂»ª∫≥Â
             if(force || this.DepthBufferEnable != device._lastDepthStencilState.DepthBufferEnable)
             {
                 if (!DepthBufferEnable)
