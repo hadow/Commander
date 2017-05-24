@@ -24,6 +24,7 @@ namespace EW.Graphics
 
         readonly Func<string, PaletteReference> createPaletteReference;
 
+        readonly HardwarePalette palette = new HardwarePalette();
 
         public event Action PaletteInvalidated = null;
         /// <summary>
@@ -59,6 +60,27 @@ namespace EW.Graphics
         public PaletteReference Palette(string name)
         {
             return palettes.GetOrAdd(name, createPaletteReference);
+        }
+
+        /// <summary>
+        /// Ìí¼Óµ÷É«°å
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pal"></param>
+        /// <param name="allowModifiers"></param>
+        /// <param name="allowOverwrite"></param>
+        public void AddPalette(string name,ImmutablePalette pal,bool allowModifiers = false,bool allowOverwrite = false)
+        {
+            if(allowOverwrite && palette.Contains(name))
+            {
+                
+            }
+            else
+            {
+                var oldHeight = palette.Height;
+                palette.AddPalette(name, pal, allowModifiers);
+
+            }
         }
 
         /// <summary>

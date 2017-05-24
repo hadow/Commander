@@ -14,5 +14,14 @@ namespace EW
             Y = y.Length;
             Z = z.Length;
         }
+
+        #region Operator
+
+        public static WVect operator +(WVect a,WVect b) { return new WVect(a.X + b.X, a.Y + b.Y, a.Z + b.Z); }
+        public static WVect operator -(WVect a,WVect b) { return new WVect(a.X - b.X, a.Y - b.Y, a.Z - b.Z); }
+
+        public static WVect operator -(WVect a) { return new WVect(-a.X, -a.Y, -a.Z); }
+
+        #endregion
     }
 }

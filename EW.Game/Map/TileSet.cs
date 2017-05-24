@@ -94,7 +94,7 @@ namespace EW
                 foreach(var node in nodes)
                 {
                     int key;
-                    if(int.TryParse(node.Key,out key) || key != i++)
+                    if(!int.TryParse(node.Key,out key) || key != i++)
                         throw new InvalidDataException("Invalid tile key '{0}' on template '{1}' of tileset '{2}'.".F(node.Key, Id, tileSet.Id));
 
                     tileInfo[key] = LoadTileInfo(tileSet, node.Value);

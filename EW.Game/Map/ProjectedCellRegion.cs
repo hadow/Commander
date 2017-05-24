@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// 投射范围单元格
     /// </summary>
     public class ProjectedCellRegion:IEnumerable<PPos>
     {
@@ -46,6 +46,12 @@ namespace EW
         {
             return GetEnumerator();
         }
+
+        /// <summary>
+        /// 地图坐标系中包含可能投影在该区域内的所有单元格信息
+        /// 为了提高性能，不会验证各个地图单元格是否真正应在当前区域内投影
+        /// </summary>
+        public MapCoordsRegion CandidateMapCoords { get { return new MapCoordsRegion(mapTopLef, mapBottomRight); } }
 
 
         /// <summary>

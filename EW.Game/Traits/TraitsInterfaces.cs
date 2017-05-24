@@ -182,4 +182,14 @@ namespace EW
     public interface IWorldLoaded { void WorldLoaded(World w,WorldRenderer render); }
 
     public interface UsesInit<T>:ITraitInfo where T : IActorInit { }
+
+    public interface ILoadsPalettes
+    {
+        void LoadPalettes(WorldRenderer wr);
+    }
+
+    public interface IProvidesAssetBrowserPalettes
+    {
+        IEnumerable<string> PaletteNames { get; }
+    }
 }

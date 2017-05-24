@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 
+
 namespace EW.Graphics
 {
 
@@ -25,6 +26,8 @@ namespace EW.Graphics
         /// Map Bounds(world-px)
         /// </summary>
         readonly Rectangle mapBounds;
+
+        readonly System.Drawing.Size tileSize;
 
         public Point CenterLocation { get; private set; }
 
@@ -90,8 +93,10 @@ namespace EW.Graphics
                 var tl = wr.ScreenPxPosition(map.ProjectedTopLeft);
                 var br = wr.ScreenPxPosition(map.ProjectedBottomRight);
                 mapBounds = Rectangle.FromLTRB(tl.X, tl.Y, br.X, br.Y);
-
+                CenterLocation = (tl + br) / 2;
             }
+
+            tileSize = grid.TileSize;
         }
 
         public ProjectedCellRegion VisibleCellsInsideBounds
@@ -122,7 +127,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 计算可视单元格
         /// </summary>
         /// <param name="insideBounds"></param>
         /// <returns></returns>

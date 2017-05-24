@@ -128,8 +128,7 @@ namespace EW
 
             worldRenderer = new WorldRenderer(ModData, orderManager.World);
 
-
-                GC.Collect();
+            GC.Collect();
         }
 
 

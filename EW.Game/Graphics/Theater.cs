@@ -105,7 +105,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 切片精灵
         /// </summary>
         /// <param name="r"></param>
         /// <param name="variant"></param>
@@ -122,9 +122,10 @@ namespace EW.Graphics
             var start = template.Variants > 1 ? variant.HasValue ? variant.Value : random.Next(template.Variants) : 0;
             return template.Sprites[start * template.Stride + r.Index];
         }
+
         public void Dispose()
         {
-
+            sheetBuilder.Dispose();
         }
     }
 }

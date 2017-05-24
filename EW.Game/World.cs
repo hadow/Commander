@@ -66,6 +66,13 @@ namespace EW
             return CreateActor(true, name, initDict);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="addToWorld"></param>
+        /// <param name="name"></param>
+        /// <param name="initDict"></param>
+        /// <returns></returns>
         public Actor CreateActor(bool addToWorld,string name,TypeDictionary initDict)
         {
             var a = new Actor(this, name, initDict);

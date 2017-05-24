@@ -3,9 +3,6 @@ using System;
 
 namespace EW.Traits
 {
-    class LintAttributes
-    {
-    }
 
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class UpgradeUsedReferenceAttribute : Attribute { }
@@ -15,4 +12,14 @@ namespace EW.Traits
 
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class WeaponReferenceAttribute : Attribute { }
+
+    public sealed class PaletteDefinitionAttribute : Attribute
+    {
+        public readonly bool IsPlayerPalette;
+
+        public PaletteDefinitionAttribute(bool isPlayerPalette = false)
+        {
+            IsPlayerPalette = isPlayerPalette;
+        }
+    }
 }

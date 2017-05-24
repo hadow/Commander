@@ -76,9 +76,17 @@ namespace EW.Graphics
 
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="viewport"></param>
         public void Draw(GameViewPort viewport)
         {
+            var cells = restrictToBounds ? viewport.VisibleCellsInsideBounds : viewport.AllVisibleCells;
 
+            //only draw the rows that are visible
+            var firstRow = cells.CandidateMapCoords.TopLeft.V.Clamp(0, map.MapSize.Y);
+            var lastRow = (cells.CandidateMapCoords.BottomRight.V + 1).Clamp(firstRow, map.MapSize.Y);
         }
 
         public void Dispose()
