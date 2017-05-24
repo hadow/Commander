@@ -40,8 +40,8 @@ Rules:
 #	cnc|rules/misc.yaml
 #	cnc|rules/ai.yaml
 #	cnc|rules/player.yaml
-#	cnc|rules/world.yaml
-#	cnc|rules/palettes.yaml
+	cnc|rules/world.yaml
+	cnc|rules/palettes.yaml
 	cnc|rules/defaults.yaml
 #	cnc|rules/structures.yaml
 #	cnc|rules/infantry.yaml
