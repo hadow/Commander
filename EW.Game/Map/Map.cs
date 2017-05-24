@@ -345,7 +345,7 @@ namespace EW
                 Rules = Ruleset.LoadDefaultsForTileSet(modData, Tileset);
             }
 
-            Rules.Sequence.PreLoad();
+            Rules.Sequences.PreLoad();
 
             var tl = new MPos(0, 0).ToCPos(this);
             var br = new MPos(MapSize.X - 1, MapSize.Y - 1).ToCPos(this);

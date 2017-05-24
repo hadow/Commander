@@ -5,6 +5,17 @@ using EW.Primitives;
 using EW.Xna.Platforms;
 namespace EW
 {
+    public enum PipType
+    {
+        Transparent,
+        Green,
+        Yellow,
+        Red,
+        Gray,
+        Blue,Ammo,
+        AmmoEmpty,
+    }
+
     public enum Stance
     {
         None = 0,

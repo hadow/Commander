@@ -14,7 +14,7 @@ namespace EW
     {
         public readonly TileSet TileSet;
 
-        public readonly SequenceProvider Sequence;
+        public readonly SequenceProvider Sequences;
         
         public readonly EW.Primitives.IReadOnlyDictionary<string, ActorInfo> Actors;
         public readonly EW.Primitives.IReadOnlyDictionary<string, WeaponInfo> Weapons;
@@ -35,7 +35,7 @@ namespace EW
             Voices = voices;
             Notifications = notifications;
             TileSet = tileSet;
-            Sequence = sequence;
+            Sequences = sequence;
             this.Music = music;
             foreach(var a in Actors.Values)
             {

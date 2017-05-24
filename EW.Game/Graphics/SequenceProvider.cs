@@ -81,6 +81,25 @@ namespace EW.Graphics
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="unitName"></param>
+        /// <param name="sequenceName"></param>
+        /// <returns></returns>
+        public ISpriteSequence GetSequence(string unitName,string sequenceName)
+        {
+            UnitSequences unitSeq;
+            if (!sequences.Value.TryGetValue(unitName, out unitSeq))
+                throw new InvalidOperationException("Unit '{0}' does not have any sequences defined.".F(unitName));
+
+            ISpriteSequence seq;
+            if (!unitSeq.Value.TryGetValue(sequenceName, out seq))
+                throw new InvalidOperationException("Unit '{0}' doest not have sequence named '{1}'".F(unitName, sequenceName));
+
+            return seq;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="fileSystem"></param>
         /// <param name="additionalSequences"></param>
         /// <returns></returns>

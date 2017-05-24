@@ -92,7 +92,7 @@ namespace EW
                 Trait = i,
                 Type = i.GetType(),
                 Dependencies = PrerequisitesOf(i).ToList(),
-            });
+            }).ToList();
 
             //Dependencies.Any ->true:序列中不包含任何元素 
             var resolved = source.Where(s => !s.Dependencies.Any()).ToList();
@@ -114,7 +114,10 @@ namespace EW
 
         public static IEnumerable<Type> PrerequisitesOf(ITraitInfo info)
         {
-            return info.GetType().GetInterfaces().Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Requires<>)).Select(t => t.GetGenericArguments()[0]);
+            var interfaces = info.GetType().GetInterfaces();
+            return interfaces
+                .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Requires<>))
+                .Select(t => t.GetGenericArguments()[0]);
         }
 
 

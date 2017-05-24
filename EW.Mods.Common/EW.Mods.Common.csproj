@@ -54,6 +54,10 @@
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateMachine.cs" />
     <Compile Include="ColorValidator.cs" />
+    <Compile Include="Commands\ChatCommands.cs" />
+    <Compile Include="Commands\DevCommands.cs" />
+    <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Commands\PlayerCommands.cs" />
     <Compile Include="FileFormats\InstallShieldCABCompression.cs" />
     <Compile Include="FileFormats\LCWCompression.cs" />
     <Compile Include="FileFormats\LZOCompression.cs" />
@@ -64,6 +68,11 @@
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
+    <Compile Include="PaletteEffects\CloakPaletteEffect.cs" />
+    <Compile Include="PaletteEffects\FlashPaletteEffect.cs" />
+    <Compile Include="PaletteEffects\MenuPaletteEffect.cs" />
+    <Compile Include="PaletteEffects\RotationPaletteEffect.cs" />
+    <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />
     <Compile Include="Projectiles\Bullet.cs" />
@@ -98,6 +107,7 @@
     <Compile Include="Traits\AutoTarget.cs" />
     <Compile Include="Traits\Buildable.cs" />
     <Compile Include="Traits\Buildings\Building.cs" />
+    <Compile Include="Traits\Buildings\BuildingInfluence.cs" />
     <Compile Include="Traits\Buildings\LineBuild.cs" />
     <Compile Include="Traits\Buildings\LineBuildNode.cs" />
     <Compile Include="Traits\Buildings\RepairableBuilding.cs" />
@@ -139,10 +149,13 @@
     <Compile Include="Traits\Multipliers\UpgradableMultiplier.cs" />
     <Compile Include="Traits\MustBeDestroyed.cs" />
     <Compile Include="Traits\Passenger.cs" />
+    <Compile Include="Traits\Player\MissionObjectives.cs" />
     <Compile Include="Traits\Player\PlayerStatistics.cs" />
+    <Compile Include="Traits\ProductionQueueFromSelection.cs" />
     <Compile Include="Traits\Radar\AppearsOnRadar.cs" />
     <Compile Include="Traits\Radar\RadarColorFromTerrain.cs" />
     <Compile Include="Traits\RejectsOrders.cs" />
+    <Compile Include="Traits\Render\CustomTerrainDebugOverlay.cs" />
     <Compile Include="Traits\Render\DrawLineToTarget.cs" />
     <Compile Include="Traits\Render\Hovers.cs" />
     <Compile Include="Traits\Render\RenderDebugState.cs" />
@@ -184,6 +197,32 @@
     <Compile Include="Traits\Valued.cs" />
     <Compile Include="Traits\Voiced.cs" />
     <Compile Include="Traits\Wanders.cs" />
+    <Compile Include="Traits\World\BridgeLayer.cs" />
+    <Compile Include="Traits\World\CreateMPPlayers.cs" />
+    <Compile Include="Traits\World\CrateSpawner.cs" />
+    <Compile Include="Traits\World\DomainIndex.cs" />
+    <Compile Include="Traits\World\MapBuildRadius.cs" />
+    <Compile Include="Traits\World\MapCreeps.cs" />
+    <Compile Include="Traits\World\MapOptions.cs" />
+    <Compile Include="Traits\World\MPStartLocations.cs" />
+    <Compile Include="Traits\World\MPStartUnits.cs" />
+    <Compile Include="Traits\World\MusicPlaylist.cs" />
+    <Compile Include="Traits\World\PaletteFromCurrentTileset.cs" />
+    <Compile Include="Traits\World\PaletteFromFile.cs" />
+    <Compile Include="Traits\World\PaletteFromRGBA.cs" />
+    <Compile Include="Traits\World\PathFinder.cs" />
+    <Compile Include="Traits\World\RadarPings.cs" />
+    <Compile Include="Traits\World\ResourceClaimLayer.cs" />
+    <Compile Include="Traits\World\ResourceLayer.cs" />
+    <Compile Include="Traits\World\ScreenShaker.cs" />
+    <Compile Include="Traits\World\ShroudPalette.cs" />
+    <Compile Include="Traits\World\ShroudRenderer.cs" />
+    <Compile Include="Traits\World\SmudgeLayer.cs" />
+    <Compile Include="Traits\World\SpawnMapActors.cs" />
+    <Compile Include="Traits\World\SpawnMPUnits.cs" />
+    <Compile Include="Traits\World\TerrainGeometryOverlay.cs" />
+    <Compile Include="Traits\World\ValidateOrder.cs" />
+    <Compile Include="Traits\World\WarheadDebugOverlay.cs" />
     <Compile Include="Warheads\CreateEffectWarhead.cs" />
     <Compile Include="Warheads\CreateResourceWarhead.cs" />
     <Compile Include="Warheads\DamageWarhead.cs" />
@@ -208,9 +247,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Game\EW.Game.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
