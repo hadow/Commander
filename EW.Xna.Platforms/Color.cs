@@ -108,6 +108,17 @@ namespace EW.Xna.Platforms
         /// </summary>
         public static Color Red { get; private set; }
 
+        /// <summary>
+        /// Green Color(R:0,G:128,B:0,A:255)
+        /// </summary>
+        public static Color Green { get; private set; }
+
+
+        public static Color Blue { get; private set; }
+
+
+        public static Color Yellow { get; private set; }
+        
         public static Color CornflowerBlue { get; private set; }
         public bool Equals(Color other)
         {
@@ -134,6 +145,39 @@ namespace EW.Xna.Platforms
         public override bool Equals(object obj)
         {
             return (obj is Color) && this.Equals((Color)obj);
+        }
+
+        private static void CheckARGBValues(int alpha,int red,int green,int blue)
+        {
+            if (alpha > 255 || (alpha < 0))
+                throw new ArgumentException("alpha", alpha.ToString());
+            CheckRGBValues(red, green, blue);
+        }
+
+        private static void CheckRGBValues(int red,int green,int blue)
+        {
+            if (red > 255 || red < 0)
+                throw new ArgumentException("red", red.ToString());
+
+            if (green > 255 || green < 0)
+                throw new ArgumentException("green", green.ToString());
+
+            if (blue > 255 || blue < 0)
+                throw new ArgumentException("blue", blue.ToString());
+
+
+        }
+
+
+        public static Color FromArgb(int alpha,int red,int green,int blue)
+        {
+            CheckARGBValues(alpha, red, green, blue);
+            return new Color((uint)(alpha << 24 + red << 16 + green << 8 + blue));
+        }
+
+        public int ToArgb()
+        {
+            return (int)_packedValue;
         }
     }
 }

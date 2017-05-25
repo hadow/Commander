@@ -171,9 +171,71 @@ namespace EW
 
 
             }
+            /// <summary>
+            /// 
+            /// </summary>
+            class AllEnumerable : IEnumerable<TraitPair<T>>
+            {
+                readonly TraitContainer<T> container;
+
+                public AllEnumerable(TraitContainer<T> container)
+                {
+                    this.container = container;
+                }
+
+                public IEnumerator<TraitPair<T>> GetEnumerator()
+                {
+                    return new AllEnumerator(container);
+                }
+
+                IEnumerator IEnumerable.GetEnumerator()
+                {
+                    return GetEnumerator();
+                }
+            }
+
+            class AllEnumerator : IEnumerator<TraitPair<T>>
+            {
+                readonly List<Actor> actors;
+                readonly List<T> traits;
+
+                int index;
+                public AllEnumerator(TraitContainer<T> container)
+                {
+                    actors = container.actors;
+                    traits = container.traits;
+                    Reset();
+                }
+
+                public bool MoveNext()
+                {
+                    return ++index < actors.Count;
+                }
+
+                public TraitPair<T> Current
+                {
+                    get
+                    {
+                        return new TraitPair<T>(actors[index], traits[index]);
+                    }
+                }
+
+                object IEnumerator.Current { get { return Current; } }
+
+                public void Reset() { index = -1; }
+
+                public void Dispose() { }
+
+            }
 
             
             public int Queries { get; private set; }
+
+            public IEnumerable<TraitPair<T>> All()
+            {
+                ++Queries;
+                return new AllEnumerable(this);
+            }
         }
 
         /// <summary>
@@ -226,6 +288,11 @@ namespace EW
         {
             CheckDestroyed(actor);
             return InnerGet<T>().GetMultiple(actor.ActorID);
+        }
+
+        public IEnumerable<TraitPair<T>> ActorsWithTrait<T>()
+        {
+            return InnerGet<T>().All();
         }
 
         static void CheckDestroyed(Actor actor)

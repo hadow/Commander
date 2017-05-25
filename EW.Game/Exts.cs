@@ -16,6 +16,16 @@ namespace EW
     {
         public enum ISqrtRoundMode { Floor, Nearest, Ceiling }
 
+        public static int NextPowerOf2(int v)
+        {
+            --v;
+            v |= v >> 1;
+            v |= v >> 2;
+            v |= v >> 4;
+            v |= v >> 8;
+            ++v;
+            return v;
+        }
 
         public static int ISqrt(int number, ISqrtRoundMode rount = ISqrtRoundMode.Floor)
         {

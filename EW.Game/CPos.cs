@@ -69,7 +69,13 @@ namespace EW
         public MPos ToMPos(MapGridT gridT)
         {
             //TODO:
-            return default(MPos);
+
+            if (gridT == MapGridT.Rectangular)
+                return new MPos(X, Y);
+
+            var u = (X - Y) / 2;
+            var v = X + Y;
+            return new MPos(u,v);
         }
         #region Scripting Interface
         public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)

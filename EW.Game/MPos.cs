@@ -25,7 +25,14 @@ namespace EW
         public CPos ToCPos(MapGridT gridT)
         {
             //TODO
-            return default(CPos);
+            if (gridT == MapGridT.Rectangular)
+                return new CPos(U, V);
+
+            var offset = (V & 1) == 1 ? 1 : 0;
+            var y = (V - offset) / 2 - U;
+            var x = V - y;
+            return new CPos(x, y);
+            
         }
 
         public MPos Clamp(Rectangle r)

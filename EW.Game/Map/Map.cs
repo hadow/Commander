@@ -394,7 +394,19 @@ namespace EW
         /// <param name="br"></param>
         public void SetBounds(PPos tl,PPos br)
         {
+            Bounds = EW.Xna.Platforms.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
 
+            var wtop = tl.V * 1024;
+            var wbottom = (br.V + 1) * 1024;
+            if(Grid.Type == MapGridT.RectangularIsometric)
+            {
+                wtop /= 2;
+                wbottom /= 2;
+            }
+            ProjectedTopLeft = new WPos(tl.U * 1024, wtop, 0);
+            ProjectedBottomRight = new WPos(br.U * 1024 - 1, wbottom - 1, 0);
+
+            ProjectedCellBounds = new ProjectedCellRegion(this, tl, br);
         }
 
         /// <summary>

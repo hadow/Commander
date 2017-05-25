@@ -37,6 +37,15 @@ namespace EW.Graphics
             World = world;
             TileSize = World.Map.Grid.TileSize;
             ViewPort = new GameViewPort(this, world.Map);
+
+            createPaletteReference = CreatePaletteReference;
+
+            foreach (var pal in world.TraitDict.ActorsWithTrait<ILoadsPalettes>())
+            {
+                pal.Trait.LoadPalettes(this);
+            }
+
+            
             var mapGrid = mod.Manifest.Get<MapGrid>();
             enableDepthBuffer = mapGrid.EnableDepthBuffer;
 
@@ -63,6 +72,17 @@ namespace EW.Graphics
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        PaletteReference CreatePaletteReference(string name)
+        {
+            var pal = palette.GetPalette(name);
+            return new PaletteReference(name, palette.GetPaletteIndex(name), pal, palette);
+        }
+
+        /// <summary>
         /// Ìí¼Óµ÷É«°å
         /// </summary>
         /// <param name="name"></param>
@@ -73,14 +93,29 @@ namespace EW.Graphics
         {
             if(allowOverwrite && palette.Contains(name))
             {
-                
+                ReplacePalette(name, pal);
             }
             else
             {
                 var oldHeight = palette.Height;
                 palette.AddPalette(name, pal, allowModifiers);
 
+                if (oldHeight != palette.Height && PaletteInvalidated != null)
+                    PaletteInvalidated();
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="pal"></param>
+        public void ReplacePalette(string name,IPalette pal)
+        {
+            palette.ReplacePalette(name, pal);
+
+            if (palettes.ContainsKey(name))
+                palettes[name].Palette = pal;
         }
 
         /// <summary>

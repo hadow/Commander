@@ -128,4 +128,37 @@ namespace EW
         {
         }
     }
+
+    public struct TraitPair<T> : IEquatable<TraitPair<T>>
+    {
+        public readonly Actor Actor;
+
+        public readonly T Trait;
+
+        public TraitPair(Actor actor,T trait)
+        {
+            Actor = actor;
+            Trait = trait;
+        }
+
+        public static bool operator ==(TraitPair<T> me,TraitPair<T> other) { return me.Actor == other.Actor && Equals(me.Trait, other.Trait); }
+
+        public static bool operator !=(TraitPair<T> me,TraitPair<T> other) { return !(me == other); }
+
+        public bool Equals(TraitPair<T> other) { return this == other; }
+
+        public override bool Equals(object obj)
+        {
+            return obj is TraitPair<T> && Equals((TraitPair<T>)obj);
+        }
+        public override int GetHashCode()
+        {
+            return Actor.GetHashCode() ^ Trait.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return "{0}->{1}".F(Actor.Info.Name, Trait.GetType().Name);
+        }
+    }
 }

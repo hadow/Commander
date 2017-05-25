@@ -48,6 +48,11 @@ namespace EW
             return BitConverter.ToUInt32(s.ReadBytes(4), 0);
         }
 
+        public static int ReadInt32(this Stream s)
+        {
+            return BitConverter.ToInt32(s.ReadBytes(4), 0);
+        }
+
 
         /// <summary>
         /// 

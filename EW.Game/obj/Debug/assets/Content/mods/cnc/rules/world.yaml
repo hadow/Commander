@@ -153,12 +153,12 @@ World:
 	ObjectivesPanel:
 		PanelName: SKIRMISH_STATS
 	RadarPings:
-	LoadWidgetAtGameStart:
-		ShellmapRoot: MENU_BACKGROUND
+	#LoadWidgetAtGameStart:
+	#	ShellmapRoot: MENU_BACKGROUND
 
-EditorWorld:
-	Inherits: ^BaseWorld
-	EditorActorLayer:
-	EditorResourceLayer:
-	EditorSelectionLayer:
-	LoadWidgetAtGameStart:
+#EditorWorld:
+#	Inherits: ^BaseWorld
+#	EditorActorLayer:
+#	EditorResourceLayer:
+#	EditorSelectionLayer:
+#	LoadWidgetAtGameStart:
