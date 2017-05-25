@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using EW.Xna.Platforms;
+using EW.Primitives;
+using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
 
@@ -8,8 +10,23 @@ namespace EW.Mods.Common.Traits
     {
 
     }
-    public class CloakPaletteEffect
+
+
+    public class CloakPaletteEffect:IPaletteModifier,ITick
     {
+
+        float t = 0;
+        string paletteName = "cloak";
+
+        public void AdjustPalette(EW.Primitives.IReadOnlyDictionary<string,MutablePalette> b)
+        {
+
+        }
+
+        public void Tick(Actor self)
+        {
+
+        }
 
     }
 }

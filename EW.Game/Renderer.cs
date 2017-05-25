@@ -24,6 +24,7 @@ namespace EW
         EW.Xna.Platforms.Point? lastScroll;
         float? lastZoom;
 
+        Texture2D currentPaletteTexture;
 
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
         {
@@ -38,6 +39,18 @@ namespace EW
         {
 
         }
+
+        public void SetPalette(HardwarePalette palette)
+        {
+            if (palette.Texture == currentPaletteTexture)
+                return;
+
+            currentPaletteTexture = palette.Texture;
+
+
+        }
+
+
         public void Dispose()
         {
 

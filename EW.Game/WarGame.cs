@@ -27,7 +27,7 @@ namespace EW
         SpriteBatch spriteBatch;
         public GraphicsDeviceManager DeviceManager;
 
-        public Renderer Renderer;
+        public static Renderer Renderer;
         WorldRenderer worldRenderer;
         OrderManager orderManager;
         public WarGame() {

@@ -87,9 +87,14 @@ namespace EW.Graphics
             get { return colors[index]; }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <param name="destinationOffset"></param>
         public void CopyToArray(Array destination,int destinationOffset)
         {
-
+            Buffer.BlockCopy(colors, 0, destination, destinationOffset * 4, Palette.Size * 4);
         }
     }
 
@@ -103,16 +108,17 @@ namespace EW.Graphics
 
         public MutablePalette(IPalette p)
         {
-
+            SetFromPalette(p);
         }
 
         public void SetFromPalette(IPalette p)
         {
             p.CopyToArray(colors, 0);
         }
+
         public void CopyToArray(Array destination,int destinationOffset)
         {
-
+            Buffer.BlockCopy(colors, 0, destination, destinationOffset * 4, Palette.Size * 4);
         }
 
         public uint this[int index]

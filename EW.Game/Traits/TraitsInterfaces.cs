@@ -199,6 +199,11 @@ namespace EW
         void LoadPalettes(WorldRenderer wr);
     }
 
+    public interface IPaletteModifier
+    {
+        void AdjustPalette(EW.Primitives.IReadOnlyDictionary<string, MutablePalette> b);
+    }
+
     public interface IProvidesAssetBrowserPalettes
     {
         IEnumerable<string> PaletteNames { get; }

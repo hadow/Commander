@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Drawing;
 using EW.FileSystem;
 using EW.Xna.Platforms;
+using EW.Traits;
 namespace EW
 {
     /// <summary>
@@ -327,6 +328,33 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        public WPos CenterOfCell(CPos cell)
+        {
+            if (Grid.Type == MapGridT.Rectangular)
+                return new WPos(1024 * cell.X + 512, 1024 * cell.Y + 512, 0);
+
+            var z = Height.Contains(cell) ? 512 * Height[cell] : 0;
+            return new WPos(512 * (cell.X - cell.Y + 1), 512 * (cell.X + cell.Y + 1), z);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="subCell"></param>
+        /// <returns></returns>
+        public WPos CenterOfSubCell(CPos cell,SubCell subCell)
+        {
+            var index = (int)subCell;
+            if (index >= 0 && index <= Grid.SubCellOffsets.Length)
+                return CenterOfCell(cell) + Grid.SubCellOffsets[index];
+            return CenterOfCell(cell);
+        }
 
         /// <summary>
         /// 

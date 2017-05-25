@@ -1,22 +1,77 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using EW.Xna.Platforms.Graphics;
+using EW.Xna.Platforms;
+using EW.Primitives;
 namespace EW.Graphics
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class HardwarePalette:IDisposable
     {
+        public Texture2D Texture { get; private set; }
         public int Height { get; private set; }
         readonly Dictionary<string, ImmutablePalette> palettes = new Dictionary<string, ImmutablePalette>();
         readonly Dictionary<string, MutablePalette> modifiablePalettes = new Dictionary<string, MutablePalette>();
 
         readonly Dictionary<string, int> indices = new Dictionary<string, int>();
 
+        readonly EW.Primitives.IReadOnlyDictionary<string, MutablePalette> readOnlyModifiablePalettes;
+
         byte[] buffer = new byte[0];
+
+        public HardwarePalette()
+        {
+            //Texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Palette.Size, Height);
+
+            readOnlyModifiablePalettes = modifiablePalettes.AsReadOnly();
+        }
 
         public bool Contains(string name)
         {
             return modifiablePalettes.ContainsKey(name) || palettes.ContainsKey(name);
         }
+
+
+        public void Initialize()
+        {
+            if (Texture != null)
+                Texture.Dispose();
+            Texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Palette.Size, Height);
+            CopyModifiablePalettesToBuffer();
+            CopyBufferToTexture();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void CopyBufferToTexture()
+        {
+            Texture.SetData(buffer);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        void CopyModifiablePalettesToBuffer()
+        {
+            foreach(var kvp in modifiablePalettes)
+            {
+                CopyPaletteToBuffer(indices[kvp.Key], kvp.Value);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="p"></param>
+        void CopyPaletteToBuffer(int index,IPalette p)
+        {
+            p.CopyToArray(buffer, index * Palette.Size);
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -43,14 +98,27 @@ namespace EW.Graphics
             else
                 CopyPaletteToBuffer(index, p);
         }
-
-        void CopyPaletteToBuffer(int index,IPalette p)
-        {
-            p.CopyToArray(buffer, index * Palette.Size);
-        }
+        
 
         public void ReplacePalette(string name,IPalette p)
         {
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="paletteMods"></param>
+        public void ApplyModifiers(IEnumerable<IPaletteModifier> paletteMods)
+        {
+            foreach (var mod in paletteMods)
+                mod.AdjustPalette(readOnlyModifiablePalettes);
+
+            //Update our texture with the change
+            CopyModifiablePalettesToBuffer();
+            CopyBufferToTexture();
+
 
         }
 
@@ -83,7 +151,7 @@ namespace EW.Graphics
         }
         public void Dispose()
         {
-
+            Texture.Dispose();
         }
     }
 }

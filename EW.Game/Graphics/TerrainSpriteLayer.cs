@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
@@ -67,11 +68,31 @@ namespace EW.Graphics
         public void Update(MPos uv,Sprite sprite,Vector3 pos)
         {
 
+            if (sprite != null)
+            {
+                if (sprite.Sheet != Sheet)
+                    throw new InvalidDataException("Attempted to add sprite from a different sheet");
+                if (sprite.BlendMode != BlendMode)
+                    throw new InvalidDataException("Attempted to add sprite with a different blend mode");
+
+
+            }
+            else
+                sprite = emptySprite;
+
+            var offset = rowStride * uv.V + 6 * uv.U;
+            //todo
+
+            dirtyRows.Add(uv.V);
+
+
         }
 
         public void Update(CPos cell,Sprite sprite)
         {
+            var xyz = sprite == null ? Vector3.Zero : worldRender.Screen3DPosition(map.CenterOfCell(cell)) + sprite.Offset -  sprite.Size*0.5f;
 
+            Update(cell.ToMPos(map.Grid.Type), sprite, xyz);
         }
 
 
@@ -91,7 +112,8 @@ namespace EW.Graphics
 
         public void Dispose()
         {
-
+            worldRender.PaletteInvalidated -= UpdatePaletteIndices;
+            vertexBuffer.Dispose();
         }
 
 

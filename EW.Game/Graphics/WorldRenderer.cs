@@ -45,6 +45,8 @@ namespace EW.Graphics
                 pal.Trait.LoadPalettes(this);
             }
 
+            palette.Initialize();
+
             
             var mapGrid = mod.Manifest.Get<MapGrid>();
             enableDepthBuffer = mapGrid.EnableDepthBuffer;
@@ -52,6 +54,16 @@ namespace EW.Graphics
             Theater = new Theater(world.Map.Rules.TileSet);
 
             terrainRenderer = new TerrainRenderer(world, this);
+        }
+
+        /// <summary>
+        /// Ë¢ÐÂµ÷É«°å
+        /// </summary>
+        public void RefreshPalette()
+        {
+            palette.ApplyModifiers(World.WorldActor.TraitsImplementing<IPaletteModifier>());
+
+            WarGame.Renderer.SetPalette(palette);
         }
 
 
@@ -62,7 +74,7 @@ namespace EW.Graphics
         {
             if (World.WorldActor.Disposed)
                 return;
-
+            RefreshPalette();
             terrainRenderer.Draw(this, ViewPort);
         }
 
@@ -136,6 +148,12 @@ namespace EW.Graphics
         public Vector2 ScreenPosition(WPos pos)
         {
             return new Vector2(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f);
+        }
+
+        public Vector3 Screen3DPosition(WPos pos)
+        {
+            var z = ZPosition(pos, 0) * TileSize.Height / 1024f;
+            return new Vector3(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f, 0);
         }
 
         public EW.Xna.Platforms.Point ScreenPxPosition(WPos pos)
