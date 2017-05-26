@@ -46,6 +46,11 @@ namespace EW
         {
             return new WPos(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
+
+        public static  WVect operator -(WPos a,WPos b)
+        {
+            return new WVect(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
         #endregion
     }
 }

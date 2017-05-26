@@ -93,6 +93,9 @@ namespace EW.Graphics
         }
     }
 
+    /// <summary>
+    /// Frame Cache
+    /// </summary>
     public class FrameCache
     {
         readonly Cache<string, ISpriteFrame[]> frames;
@@ -105,6 +108,9 @@ namespace EW.Graphics
         public ISpriteFrame[] this[string filename] { get { return frames[filename]; } }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class SpriteLoader
     {
 

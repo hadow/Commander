@@ -168,9 +168,10 @@ namespace EW
 
         readonly Dictionary<string, byte> terrainIndexByType = new Dictionary<string, byte>();
 
-        public readonly EW.Primitives.IReadOnlyDictionary<ushort, TerrainTemplateInfo> Templates;
+        public readonly IReadOnlyDictionary<ushort, TerrainTemplateInfo> Templates;
 
         readonly byte defaultWalkableTerrainIndex;
+
         public TileSet(IReadOnlyFileSystem fileSystem,string filePath)
         {
             var yaml = MiniYaml.DictFromStream(fileSystem.Open(filePath), filePath);
@@ -204,6 +205,22 @@ namespace EW
             get { return TerrainInfo[index]; }
         }
 
+        public byte GetTerrainIndex(TerrainTile r)
+        {
+            TerrainTemplateInfo tpl;
+            if (!Templates.TryGetValue(r.Type, out tpl))
+                return defaultWalkableTerrainIndex;
+
+            if (tpl.Contains(r.Index))
+            {
+                var tile = tpl[r.Index];
+                if(tile != null && tile.TerrainT != byte.MaxValue)
+                {
+                    return tile.TerrainT;
+                }
+            }
+            return defaultWalkableTerrainIndex;
+        }
         
         /// <summary>
         /// 
@@ -218,5 +235,17 @@ namespace EW
 
             throw new InvalidDataException("Tileset '{0}' lacks terrain type '{1}'".F(Id, type));
         }
+
+        public TerrainTileInfo GetTileInfo(TerrainTile r)
+        {
+            TerrainTemplateInfo tpl;
+            if(!Templates.TryGetValue(r.Type,out tpl))
+            {
+                return null;
+            }
+            return tpl.Contains(r.Index) ? tpl[r.Index] : null;
+        }
+
+
     }
 }

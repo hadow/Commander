@@ -36,6 +36,9 @@ namespace EW
             
         }
 
+        /// <summary>
+        /// 为了提供性能，新增枚举map-coords
+        /// </summary>
         public MapCoordsRegion MapCoords
         {
             get { return new MapCoordsRegion(mapTopLeft, mapBottomRight); }

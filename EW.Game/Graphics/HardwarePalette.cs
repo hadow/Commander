@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
-using EW.Primitives;
 namespace EW.Graphics
 {
     /// <summary>
@@ -17,7 +16,7 @@ namespace EW.Graphics
 
         readonly Dictionary<string, int> indices = new Dictionary<string, int>();
 
-        readonly EW.Primitives.IReadOnlyDictionary<string, MutablePalette> readOnlyModifiablePalettes;
+        readonly IReadOnlyDictionary<string, MutablePalette> readOnlyModifiablePalettes;
 
         byte[] buffer = new byte[0];
 
@@ -73,7 +72,7 @@ namespace EW.Graphics
 
 
         /// <summary>
-        /// 
+        /// Implement dynamic hardware palette sizing
         /// </summary>
         /// <param name="name"></param>
         /// <param name="p"></param>
@@ -89,6 +88,7 @@ namespace EW.Graphics
 
             if (palettes.Count > Height)
             {
+                //以2的增量增加调色板缓冲区和纹理，
                 Height = Exts.NextPowerOf2(palettes.Count);
                 Array.Resize(ref buffer, Height * Palette.Size * 4);
             }

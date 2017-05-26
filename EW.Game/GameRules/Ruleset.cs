@@ -12,21 +12,22 @@ namespace EW
     /// </summary>
     public class Ruleset
     {
+        
         public readonly TileSet TileSet;
 
         public readonly SequenceProvider Sequences;
         
-        public readonly EW.Primitives.IReadOnlyDictionary<string, ActorInfo> Actors;
-        public readonly EW.Primitives.IReadOnlyDictionary<string, WeaponInfo> Weapons;
-        public readonly EW.Primitives.IReadOnlyDictionary<string, SoundInfo> Voices;
-        public readonly EW.Primitives.IReadOnlyDictionary<string, SoundInfo> Notifications;
-        public readonly EW.Primitives.IReadOnlyDictionary<string, MusicInfo> Music;
+        public readonly IReadOnlyDictionary<string, ActorInfo> Actors;
+        public readonly IReadOnlyDictionary<string, WeaponInfo> Weapons;
+        public readonly IReadOnlyDictionary<string, SoundInfo> Voices;
+        public readonly IReadOnlyDictionary<string, SoundInfo> Notifications;
+        public readonly IReadOnlyDictionary<string, MusicInfo> Music;
 
-        public Ruleset(EW.Primitives.IReadOnlyDictionary<string,ActorInfo> actors,
-                        EW.Primitives.IReadOnlyDictionary<string,WeaponInfo> weapons,
-                        EW.Primitives.IReadOnlyDictionary<string,SoundInfo> voices,
-                        EW.Primitives.IReadOnlyDictionary<string,SoundInfo> notifications,
-                        EW.Primitives.IReadOnlyDictionary<string,MusicInfo> music,
+        public Ruleset(IReadOnlyDictionary<string,ActorInfo> actors,
+                        IReadOnlyDictionary<string,WeaponInfo> weapons,
+                        IReadOnlyDictionary<string,SoundInfo> voices,
+                        IReadOnlyDictionary<string,SoundInfo> notifications,
+                        IReadOnlyDictionary<string,MusicInfo> music,
                         TileSet tileSet,
                         SequenceProvider sequence)
         {
@@ -175,8 +176,8 @@ namespace EW
         /// <param name="defaults"></param>
         /// <param name="makeObject"></param>
         /// <returns></returns>
-        static EW.Primitives.IReadOnlyDictionary<string,T> MergeOrDefault<T>(string name,IReadOnlyFileSystem fileSystem,IEnumerable<string> files,MiniYaml additional,
-            EW.Primitives.IReadOnlyDictionary<string,T> defaults,Func<MiniYamlNode,T> makeObject)
+        static IReadOnlyDictionary<string,T> MergeOrDefault<T>(string name,IReadOnlyFileSystem fileSystem,IEnumerable<string> files,MiniYaml additional,
+            IReadOnlyDictionary<string,T> defaults,Func<MiniYamlNode,T> makeObject)
         {
             if (additional == null && defaults != null)
                 return defaults;

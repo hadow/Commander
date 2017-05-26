@@ -10,7 +10,7 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public class InstalledMods:EW.Primitives.IReadOnlyDictionary<string,Manifest>
+    public class InstalledMods:IReadOnlyDictionary<string,Manifest>
     {
 
         readonly Dictionary<string, Manifest> mods;

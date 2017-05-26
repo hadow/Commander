@@ -78,13 +78,18 @@ namespace EW.Graphics
             terrainRenderer.Draw(this, ViewPort);
         }
 
+        /// <summary>
+        /// 缓存或内联一些代理，以避免重复分配
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public PaletteReference Palette(string name)
         {
             return palettes.GetOrAdd(name, createPaletteReference);
         }
 
         /// <summary>
-        /// 
+        /// 将一个PaletteReference 缓存添加到World Renderer
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>

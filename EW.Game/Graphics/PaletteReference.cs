@@ -5,6 +5,7 @@ namespace EW.Graphics
 {
     /// <summary>
     /// 调色板引用
+    /// split paletteReference into its own file
     /// </summary>
     public sealed class PaletteReference
     {

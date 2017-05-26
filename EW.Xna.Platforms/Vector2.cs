@@ -110,6 +110,13 @@ namespace EW.Xna.Platforms
             return val;
         }
 
+        public static Vector2 operator *(float scaleFactor,Vector2 val)
+        {
+            val.X *= scaleFactor;
+            val.Y *= scaleFactor;
+            return val;
+        }
+
 
         public static bool operator ==(Vector2 val1,Vector2 val2)
         {
@@ -121,7 +128,15 @@ namespace EW.Xna.Platforms
             return val1.X != val2.X || val1.Y != val2.Y;
         }
 
+        public override string ToString()
+        {
+            return "{X:" + X + " Y:" + Y + "}";
+        }
 
+        public Point ToPoint()
+        {
+            return new Point((int)X, (int)Y);
+        }
 
 
     }

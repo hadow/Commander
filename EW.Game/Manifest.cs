@@ -15,7 +15,7 @@ namespace EW
     {
         public readonly string Type;
 
-        public readonly EW.Primitives.IReadOnlyDictionary<string, MiniYaml> Metadata;
+        public readonly IReadOnlyDictionary<string, MiniYaml> Metadata;
 
         public SpriteSequenceFormat(MiniYaml yaml)
         {
@@ -41,8 +41,8 @@ namespace EW
         public readonly IReadOnlyPackage Package;
         public readonly ModMetadata Metadata;
 
-        public readonly EW.Primitives.IReadOnlyDictionary<string, string> Packages;
-        public readonly EW.Primitives.IReadOnlyDictionary<string, string> MapFolders;
+        public readonly IReadOnlyDictionary<string, string> Packages;
+        public readonly IReadOnlyDictionary<string, string> MapFolders;
 
         public readonly MiniYaml LoadScreen;
         public readonly Dictionary<string, string> RequiresMods;
@@ -145,13 +145,13 @@ namespace EW
         /// <param name="yaml"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        static EW.Primitives.IReadOnlyDictionary<string,string> YamlDictionary(Dictionary<string,MiniYaml> yaml,string key)
+        static IReadOnlyDictionary<string,string> YamlDictionary(Dictionary<string,MiniYaml> yaml,string key)
         {
             if (!yaml.ContainsKey(key))
-                return new EW.Primitives.ReadOnlyDictionary<string, string>();
+                return new ReadOnlyDictionary<string, string>();
 
             var inner = yaml[key].ToDictionary(my => my.Value);
-            return new EW.Primitives.ReadOnlyDictionary<string, string>(inner);
+            return new ReadOnlyDictionary<string, string>(inner);
 
         }
 

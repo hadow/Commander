@@ -5,7 +5,10 @@ using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
-    /// 
+    /// Sheet 包含一个可托管的纹理数据缓冲区，允许进行更新，而无需不断地获取并将数据设置到纹理内存中
+    /// 这对于诸如SheetBuilder 之类的功能非常有用。这样可以对Sheet进行小的渐进式更改。
+    /// 然后这些缓冲区通常很大，并且保持着live,因为sheets 被使用它们的sprite 引用，如果此缓冲区在不需要时显式为空，则GC可以回收它。
+    /// 有时甚至不需要创建一个缓冲区，因为使用该Sheet 的对象只能直接在纹理上工作。
     /// </summary>
     public sealed class Sheet:IDisposable
     {

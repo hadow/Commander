@@ -4,8 +4,8 @@ using EW.Primitives;
 using EW.FileSystem;
 namespace EW.Graphics
 {
-    using Sequences = EW.Primitives.IReadOnlyDictionary<string, Lazy<EW.Primitives.IReadOnlyDictionary<string, ISpriteSequence>>>;
-    using UnitSequences = Lazy<EW.Primitives.IReadOnlyDictionary<string, ISpriteSequence>>;
+    using Sequences = IReadOnlyDictionary<string, Lazy<IReadOnlyDictionary<string, ISpriteSequence>>>;
+    using UnitSequences = Lazy<IReadOnlyDictionary<string, ISpriteSequence>>;
 
     /// <summary>
     /// 
@@ -44,7 +44,7 @@ namespace EW.Graphics
     {
         Action<string> OnMissingSpriteError { get; set; }//Sprite È±Ê§±¨´í
 
-        EW.Primitives.IReadOnlyDictionary<string, ISpriteSequence> ParseSequences(ModData modData, TileSet tileSet, SpriteCache cache, MiniYamlNode node);
+        IReadOnlyDictionary<string, ISpriteSequence> ParseSequences(ModData modData, TileSet tileSet, SpriteCache cache, MiniYamlNode node);
     }
 
 

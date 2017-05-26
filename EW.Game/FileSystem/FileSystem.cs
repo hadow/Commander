@@ -71,9 +71,9 @@ namespace EW.FileSystem
         /// <summary>
         /// ÒÑ°²×°Mod
         /// </summary>
-        readonly EW.Primitives.IReadOnlyDictionary<string, Manifest> installedMods;
+        readonly IReadOnlyDictionary<string, Manifest> installedMods;
 
-        public FileSystem(EW.Primitives.IReadOnlyDictionary<string,Manifest> installedMods)
+        public FileSystem(IReadOnlyDictionary<string,Manifest> installedMods)
         {
             this.installedMods = installedMods;
         }

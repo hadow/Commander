@@ -239,7 +239,7 @@ namespace EW.FileSystem
             return index.ContainsKey(filename);
         }
 
-        public EW.Primitives.IReadOnlyDictionary<string,PackageEntry> Index
+        public IReadOnlyDictionary<string,PackageEntry> Index
         {
             get
             {

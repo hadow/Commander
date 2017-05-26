@@ -41,9 +41,9 @@ namespace EW
         public EW.FileSystem.FileSystem ModFiles;
         public IReadOnlyFileSystem DefaultFileSystem { get { return ModFiles; } }
 
-        readonly Lazy<EW.Primitives.IReadOnlyDictionary<string, TileSet>> defaultTileSets;
+        readonly Lazy<IReadOnlyDictionary<string, TileSet>> defaultTileSets;
 
-        public EW.Primitives.IReadOnlyDictionary<string,TileSet> DefaultTileSets
+        public IReadOnlyDictionary<string,TileSet> DefaultTileSets
         {
             get
             {
@@ -51,9 +51,9 @@ namespace EW
             }
         }
 
-        readonly Lazy<EW.Primitives.IReadOnlyDictionary<string, SequenceProvider>> defaultSequences;
+        readonly Lazy<IReadOnlyDictionary<string, SequenceProvider>> defaultSequences;
 
-        public EW.Primitives.IReadOnlyDictionary<string,SequenceProvider> DefaultSequences
+        public IReadOnlyDictionary<string,SequenceProvider> DefaultSequences
         {
             get { return defaultSequences.Value; }
         }
@@ -106,14 +106,14 @@ namespace EW
                     var t = new TileSet(DefaultFileSystem, file);
                     items.Add(t.Id, t);
                 }
-                return (EW.Primitives.IReadOnlyDictionary<string,TileSet>)(new ReadOnlyDictionary<string, TileSet>(items));
+                return (IReadOnlyDictionary<string,TileSet>)(new ReadOnlyDictionary<string, TileSet>(items));
             });
 
             //ÐòÁÐ¼¯
             defaultSequences = Exts.Lazy(() => {
 
                 var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Value, null));
-                return (EW.Primitives.IReadOnlyDictionary<string,SequenceProvider>)(new ReadOnlyDictionary<string, SequenceProvider>(items));
+                return (IReadOnlyDictionary<string,SequenceProvider>)(new ReadOnlyDictionary<string, SequenceProvider>(items));
 
             });
 

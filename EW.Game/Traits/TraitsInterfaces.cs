@@ -166,7 +166,7 @@ namespace EW
     
     public interface IOccupySapceInfo : ITraitInfoInterface
     {
-        EW.Primitives.IReadOnlyDictionary<CPos, SubCell> OccupiedCells(ActorInfo info, CPos location, SubCell subCell = SubCell.Any);
+        IReadOnlyDictionary<CPos, SubCell> OccupiedCells(ActorInfo info, CPos location, SubCell subCell = SubCell.Any);
 
         bool SharesCell { get; }
     }
@@ -201,7 +201,7 @@ namespace EW
 
     public interface IPaletteModifier
     {
-        void AdjustPalette(EW.Primitives.IReadOnlyDictionary<string, MutablePalette> b);
+        void AdjustPalette(IReadOnlyDictionary<string, MutablePalette> b);
     }
 
     public interface IProvidesAssetBrowserPalettes

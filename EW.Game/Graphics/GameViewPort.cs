@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Collections.Generic;
 using EW.Xna.Platforms;
 
 
@@ -151,6 +150,42 @@ namespace EW.Graphics
             }
 
             return new ProjectedCellRegion(map, tl, br);
+        }
+
+
+        //Rectangle(in viewport coords) that contains things to be drawn
+        static readonly Rectangle ScreenClip;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="insideBounds"></param>
+        /// <returns></returns>
+        public Rectangle GetScissorBounds(bool insideBounds)
+        {
+            //Visible rectangle in world coordinates (expanded to the corner of the cells)
+            var bounds = insideBounds ? VisibleCellsInsideBounds : AllVisibleCells;
+            var map = worldRenderer.World.Map;
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        public Point WorldToViewPx(Point world)
+        {
+            return (Zoom * (world - TopLeft).ToVector2()).ToPoint();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="view"></param>
+        /// <returns></returns>
+        public Point ViewToWorldPx(Point view)
+        {
+            return (1f / Zoom * view.ToVector2()).ToPoint() + TopLeft;
         }
     }
 }

@@ -369,7 +369,6 @@ namespace EW
             catch (Exception e)
             {
 
-                //throw e;
                 Rules = Ruleset.LoadDefaultsForTileSet(modData, Tileset);
             }
 
@@ -438,7 +437,8 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 在地图中缓存tileset　查找，所以GetTerrainIndex 和 GetTerrainInfo 不需要每次重复loop,
+        /// 查找占了所花费时间的50~60%，占用CPU总量的1.3%,这是一个很小但可衡量的结果
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
@@ -448,7 +448,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 获取地形索引
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
@@ -461,11 +461,22 @@ namespace EW
                 cachedTerrainIndexes = new CellLayer<short>(this);
                 cachedTerrainIndexes.Clear(InvalidCachedTerrainIndex);
 
+
+                //Invalidate the entry for a cell if anything could cause the terrain index to change;
+                Action<CPos> invalidateTerrainIndex = c => cachedTerrainIndexes[c] = InvalidCachedTerrainIndex;
+                CustomTerrain.CellEntryChanged += invalidateTerrainIndex;
+                Tiles.CellEntryChanged += invalidateTerrainIndex;
             }
 
             var uv = cell.ToMPos(this);
 
             var terrainIndex = cachedTerrainIndexes[uv];
+
+            if(terrainIndex == InvalidCachedTerrainIndex)
+            {
+                var custom = CustomTerrain[uv];
+                terrainIndex = cachedTerrainIndexes[uv] = custom != byte.MaxValue ? custom : Rules.TileSet.GetTerrainIndex(Tiles[uv]);
+            }
 
             return (byte)terrainIndex;
         }

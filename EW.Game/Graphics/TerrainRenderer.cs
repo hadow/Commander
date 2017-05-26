@@ -21,7 +21,7 @@ namespace EW.Graphics
 
             map = world.Map;
             theater = wr.Theater;
-
+            //Enable use of "custom" palettes per tile Templates
             foreach(var template in map.Rules.TileSet.Templates)
             {
                 var palette = template.Value.Palette ?? TileSet.TerrainPaletteInternalName;
@@ -39,7 +39,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 当地形数据更改时更新地图层
         /// </summary>
         /// <param name="cell"></param>
         public void UpdateCell(CPos cell)

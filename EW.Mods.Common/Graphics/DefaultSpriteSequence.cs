@@ -23,7 +23,7 @@ namespace EW.Mods.Common.Graphics
         /// <param name="cache"></param>
         /// <param name=""></param>
         /// <returns></returns>
-        public EW.Primitives.IReadOnlyDictionary<string,ISpriteSequence> ParseSequences(ModData modData,TileSet tileSet,SpriteCache cache, MiniYamlNode node)
+        public IReadOnlyDictionary<string,ISpriteSequence> ParseSequences(ModData modData,TileSet tileSet,SpriteCache cache, MiniYamlNode node)
         {
             var sequences = new Dictionary<string, ISpriteSequence>();
             var nodes = node.Value.ToDictionary();
@@ -61,7 +61,7 @@ namespace EW.Mods.Common.Graphics
 
                 }
             }
-            return new EW.Primitives.ReadOnlyDictionary<string, ISpriteSequence>(sequences);
+            return new ReadOnlyDictionary<string, ISpriteSequence>(sequences);
         }
 
         /// <summary>
