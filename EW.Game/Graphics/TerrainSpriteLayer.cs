@@ -25,11 +25,13 @@ namespace EW.Graphics
 
         readonly PaletteReference palette;
 
-        readonly VertexBuffer vertexBuffer;
+        readonly DynamicVertexBuffer vertexBuffer;
 
         readonly HashSet<int> dirtyRows = new HashSet<int>();
 
         readonly int rowStride;
+
+        readonly VertexPositionColorTexture[] vertices;
 
         public TerrainSpriteLayer(World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds)
         {
@@ -42,9 +44,11 @@ namespace EW.Graphics
             map = world.Map;
             rowStride = 6 * map.MapSize.X;
 
+            vertices = new VertexPositionColorTexture[rowStride * map.MapSize.Y];
+
             var vertexCount = rowStride * map.MapSize.Y;
 
-            vertexBuffer = new VertexBuffer(GraphicsDeviceManager.M.GraphicsDevice, typeof(VertexPositionColorTexture), vertexCount, BufferUsage.None);
+            vertexBuffer = new DynamicVertexBuffer(GraphicsDeviceManager.M.GraphicsDevice, typeof(VertexPositionColorTexture), vertexCount, BufferUsage.None);
 
 
             emptySprite = new Sprite(sheet, Rectangle.Empty, TextureChannel.Alpha);
@@ -108,6 +112,16 @@ namespace EW.Graphics
             //only draw the rows that are visible
             var firstRow = cells.CandidateMapCoords.TopLeft.V.Clamp(0, map.MapSize.Y);
             var lastRow = (cells.CandidateMapCoords.BottomRight.V + 1).Clamp(firstRow, map.MapSize.Y);
+
+            //Flush any visible changes to the GPU
+            for(var row = firstRow; row <= lastRow; row++)
+            {
+                if (!dirtyRows.Remove(row))
+                    continue;
+
+                var rowOffset = rowStride * row;
+                vertexBuffer.SetData(System.Runtime.InteropServices.Marshal.SizeOf<VertexPositionColorTexture>()*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
+            }
         }
 
         public void Dispose()

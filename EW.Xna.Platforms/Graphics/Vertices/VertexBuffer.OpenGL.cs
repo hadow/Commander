@@ -59,17 +59,11 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="elementSizeInBytes"></param>
         private void PlatformSetDataInternal<T>(int offsetInBytes,T[] data,int startIndex,int elementCount,int vertexStride,SetDataOptions options,int bufferSize,int elementSizeInBytes) where T : struct
         {
-            if (Threading.IsOnUIThread())
+            Threading.BlockOnUIThread(() =>
             {
                 SetBufferData(bufferSize, elementSizeInBytes, offsetInBytes, data, startIndex, elementCount, vertexStride, options);
-            }
-            else
-            {
-                Threading.BlockOnUIThread(() =>
-                {
-                    SetBufferData(bufferSize, elementSizeInBytes, offsetInBytes, data, startIndex, elementCount, vertexStride, options);
-                });
-            }
+            });
+
         }
 
         /// <summary>
@@ -94,30 +88,51 @@ namespace EW.Xna.Platforms.Graphics
 
             if(options == SetDataOptions.Discard)
             {
+                //By assigning Null data to the buffer this gives a hint to the device to discard the previous content.
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)bufferSize, IntPtr.Zero, _isDynamic ? BufferUsageHint.StreamDraw : BufferUsageHint.StaticDraw);
                 GraphicsExtensions.CheckGLError();
             }
 
-            var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
-            var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startIndex * elementSizeInBytes);
+            
 
             int dataSize = Marshal.SizeOf(typeof(T));
-            if(dataSize == vertexStride)
+            if(dataSize == vertexStride || dataSize % vertexStride == 0)
             {
-                GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
-                GraphicsExtensions.CheckGLError();
+                var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+                var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startIndex * elementSizeInBytes);
+                try
+                {
+                    GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
+                    GraphicsExtensions.CheckGLError();
+                }
+                finally
+                {
+                    dataHandle.Free();
+                }
             }
             else
             {
-                for(int i = 0; i < elementCount; i++)
+                var dataHandle = GCHandle.Alloc(data, GCHandleType.Pinned);
+                try
                 {
-                    GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes + i * vertexStride, (IntPtr)dataSize, dataPtr);
-                    GraphicsExtensions.CheckGLError();
-                    dataPtr = (IntPtr)(dataPtr.ToInt64() + dataSize);
+                    var dstOffset = offsetInBytes;
+                    var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startIndex * dataSize);
+                    for(int i = 0; i < elementCount; i++)
+                    {
+                        GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes + i * vertexStride, (IntPtr)dataSize, dataPtr);
+                        GraphicsExtensions.CheckGLError();
+
+                        dstOffset += vertexStride;
+                        dataPtr = (IntPtr)(dataPtr.ToInt64() + dataSize);
+                    }
+                }
+                finally
+                {
+
+                    dataHandle.Free();
                 }
             }
 
-            dataHandle.Free();
         }
 
         private void PlatformGraphicsDeviceResetting()

@@ -28,12 +28,15 @@ namespace EW.Graphics
 
         readonly System.Drawing.Size tileSize;
 
+
+        //Viewport geometry (world-px)
         public Point CenterLocation { get; private set; }
 
         public WPos CenterPosition { get { return worldRenderer.ProjectedPosition(CenterLocation); } }
-
+        //视窗左上角
         public Point TopLeft { get { return CenterLocation - viewportSize / 2; } }
 
+        //视窗右下角
         public Point BottomRight { get { return CenterLocation + viewportSize / 2; } }
 
         float zoom = 1f;
@@ -58,6 +61,7 @@ namespace EW.Graphics
             {
                 var newValue = ClosestTo(AvailableZoomSteps, value);
                 zoom = newValue;
+                viewportSize = ((1f / zoom) * new Vector2(GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width, GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height)).ToPoint();
                 allCellsDirty = true;
                 cellsDirty = true;
             }
@@ -73,8 +77,16 @@ namespace EW.Graphics
         {
             var closestValue = collection.First();
 
-            //Todo
+            var subtractResult = Math.Abs(closestValue - target);
 
+            foreach(var element in collection)
+            {
+                if (Math.Abs(element - target) < subtractResult)
+                {
+                    subtractResult = Math.Abs(element - target);
+                    closestValue = element;
+                }
+            }
             return closestValue;
         }
         public GameViewPort(WorldRenderer wr,Map map)
@@ -94,7 +106,7 @@ namespace EW.Graphics
                 mapBounds = Rectangle.FromLTRB(tl.X, tl.Y, br.X, br.Y);
                 CenterLocation = (tl + br) / 2;
             }
-
+            Zoom = WarGame.Settings.Graphics.PixelDouble ? 2 : 1;
             tileSize = grid.TileSize;
         }
 
@@ -104,7 +116,7 @@ namespace EW.Graphics
             {
                 if (cellsDirty)
                 {
-                    cells = CalculateVisibleCells(false);
+                    cells = CalculateVisibleCells(true);
                     cellsDirty = false;
                 }
                 return cells;
@@ -154,7 +166,8 @@ namespace EW.Graphics
 
 
         //Rectangle(in viewport coords) that contains things to be drawn
-        static readonly Rectangle ScreenClip;
+        //static readonly Rectangle ScreenClip = Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height);
+        static readonly Rectangle ScreenClip =  Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.Viewport.Width,GraphicsDeviceManager.M.GraphicsDevice.Viewport.Height);
         /// <summary>
         /// 
         /// </summary>
@@ -165,11 +178,33 @@ namespace EW.Graphics
             //Visible rectangle in world coordinates (expanded to the corner of the cells)
             var bounds = insideBounds ? VisibleCellsInsideBounds : AllVisibleCells;
             var map = worldRenderer.World.Map;
+            
+            //mpos -> cpos -> wpos
+            var ctl = map.CenterOfCell(((MPos)bounds.TopLeft).ToCPos(map)) - new WVect(512, 512, 0);
+            var cbr = map.CenterOfCell(((MPos)bounds.BottomRight).ToCPos(map)) + new WVect(512, 512, 0);
 
+            //Convert to screen coordinates
+            var tl = WorldToViewPx(worldRenderer.ScreenPxPosition(ctl - new WVect(0, 0, ctl.Z))).Clamp(ScreenClip);
+            var br = WorldToViewPx(worldRenderer.ScreenPxPosition(cbr - new WVect(0, 0, cbr.Z))).Clamp(ScreenClip);
+
+            return Rectangle.FromLTRB(tl.X - tileSize.Width, tl.Y - tileSize.Height, br.X + tileSize.Width, br.Y + tileSize.Height);
         }
 
         /// <summary>
         /// 
+        /// </summary>
+        /// <param name="delta"></param>
+        /// <param name="ignoreBorders"></param>
+        public void Scroll(Vector2 delta,bool ignoreBorders)
+        {
+            CenterLocation += (1f / Zoom * delta).ToPoint();
+            cellsDirty = true;
+            allCellsDirty = true;
+
+        }
+
+        /// <summary>
+        /// 世界屏幕坐标-> 视窗口坐标
         /// </summary>
         /// <param name="world"></param>
         /// <returns></returns>
@@ -179,7 +214,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 视窗口坐标->世界屏幕坐标
         /// </summary>
         /// <param name="view"></param>
         /// <returns></returns>

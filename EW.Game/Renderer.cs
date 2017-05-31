@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Collections.Generic;
 using EW.Graphics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;

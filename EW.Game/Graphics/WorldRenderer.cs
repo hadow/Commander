@@ -75,6 +75,8 @@ namespace EW.Graphics
             if (World.WorldActor.Disposed)
                 return;
             RefreshPalette();
+
+            var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             terrainRenderer.Draw(this, ViewPort);
         }
 
@@ -136,7 +138,8 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// Returns a position int the world that is projected to the given screen position.
+        /// There are many possible world positions,and the returned value chooses the value with no elevation.
         /// </summary>
         /// <param name="screenPx"></param>
         /// <returns></returns>
@@ -161,8 +164,14 @@ namespace EW.Graphics
             return new Vector3(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f, 0);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         public EW.Xna.Platforms.Point ScreenPxPosition(WPos pos)
         {
+            //Round to nearest pixel(四舍五入到最近的象素点)
             var px = ScreenPosition(pos);
             return new Xna.Platforms.Point((int)Math.Round(px.X), (int)Math.Round(px.Y));
         }

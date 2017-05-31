@@ -422,7 +422,7 @@ namespace EW.Mods.Common.FileFormats
 				throw new InvalidDataException("File expanded to wrong length. Expected = {0}, Got = {1}".F(file.ExpandedSize, output.Length));
 		}
 
-		public EW.Primitives.IReadOnlyDictionary<int, IEnumerable<string>> Contents
+		public IReadOnlyDictionary<int, IEnumerable<string>> Contents
 		{
 			get
 			{
@@ -430,7 +430,7 @@ namespace EW.Mods.Common.FileFormats
 				foreach (var kv in index)
 					contents.GetOrAdd(kv.Value.Volume).Add(kv.Key);
 
-				return new EW.Primitives.ReadOnlyDictionary<int, IEnumerable<string>>(contents
+				return new ReadOnlyDictionary<int, IEnumerable<string>>(contents
 					.ToDictionary(x => x.Key, x => x.Value.AsEnumerable()));
 			}
 		}

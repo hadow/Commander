@@ -287,15 +287,7 @@ namespace EW.Xna.Platforms
 
             TouchPanel.DisplayWidth = newClientBounds.Width;
             TouchPanel.DisplayHeight = newClientBounds.Height;
-
-
-
-
-
-
-
-
-
+            
 #endif
         }
 

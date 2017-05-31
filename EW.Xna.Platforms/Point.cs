@@ -95,6 +95,10 @@ namespace EW.Xna.Platforms
             return new Vector2(X, Y);
         }
 
+        public Point Clamp(Rectangle r)
+        {
+            return new Point(Math.Min(r.Right, Math.Max(X, r.Left)), Math.Min(r.Bottom, Math.Max(Y, r.Top)));
+        }
 
     }
 }

@@ -13,7 +13,7 @@ namespace EW
     {
         public static readonly MapPreview UnknownMap = new MapPreview(null, null, MapGridT.Rectangular, null);
 
-        public readonly EW.Primitives.IReadOnlyDictionary<IReadOnlyPackage, MapClassification> MapLocations;
+        public readonly IReadOnlyDictionary<IReadOnlyPackage, MapClassification> MapLocations;
         readonly Cache<string, MapPreview> previews;
 
         readonly ModData modData;

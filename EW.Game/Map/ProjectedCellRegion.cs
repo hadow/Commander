@@ -14,7 +14,7 @@ namespace EW
         public readonly PPos BottomRight;
 
         /// <summary>
-        /// 该投影地图区域内包含的所有单元格
+        /// 该投影地图区域内包含的所有单元格,理论上应该被投射在此区域
         /// </summary>
         readonly MPos mapTopLef;
         readonly MPos mapBottomRight;
@@ -24,6 +24,7 @@ namespace EW
             TopLeft = topLeft;
             BottomRight = bottomRight;
 
+            //MPos -> PPos 的投影不能产生较大的V 坐标，因此MPos区域内的顶边与 PPos 相同(事实上，如果height == 0,单元格是一样的)
             mapTopLef = (MPos)topLeft;
 
             var maxHeight = map.Grid.MaximumTerrainHeight;

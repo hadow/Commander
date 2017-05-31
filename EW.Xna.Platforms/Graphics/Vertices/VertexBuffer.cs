@@ -55,7 +55,7 @@ namespace EW.Xna.Platforms.Graphics
         public void SetData<T>(T[] data,int startIndex,int elementCount) where T : struct
         {
             var elementSizeInBytes = Utilities.ReflectionHelpers.SizeOf<T>.Get();
-
+            SetDataInternal<T>(0, data, startIndex, elementCount, elementSizeInBytes, SetDataOptions.None);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace EW.Xna.Platforms.Graphics
             if (vertexStride < elementSizeInBytes)
                 throw new ArgumentOutOfRangeException(string.Format("The vertex stride must be greater than or equal to the size of the specified data ({0}).", elementSizeInBytes));
 
-
+            PlatformSetDataInternal<T>(offsetInBytes, data, startIndex, elementCount, vertexStride, options, bufferSize, elementSizeInBytes);
         }
 
     }

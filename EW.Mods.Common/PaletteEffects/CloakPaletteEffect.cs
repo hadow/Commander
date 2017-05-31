@@ -18,7 +18,7 @@ namespace EW.Mods.Common.Traits
         float t = 0;
         string paletteName = "cloak";
 
-        public void AdjustPalette(EW.Primitives.IReadOnlyDictionary<string,MutablePalette> b)
+        public void AdjustPalette(IReadOnlyDictionary<string,MutablePalette> b)
         {
 
         }

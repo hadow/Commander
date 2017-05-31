@@ -11,6 +11,8 @@ namespace EW
 
         public string Language = "english";
         public string DefaultLanguage = "china";
+
+        public bool PixelDouble;
     }
     /// <summary>
     /// 
@@ -21,6 +23,8 @@ namespace EW
         public string PreviousMod = "ra";
 
         public bool AllowZoom = true;
+
+        
 
     }
 

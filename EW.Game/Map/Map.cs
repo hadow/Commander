@@ -331,6 +331,22 @@ namespace EW
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public CPos CellContaining(WPos pos)
+        {
+            if (Grid.Type == MapGridT.Rectangular)
+                return new CPos(pos.X / 1024, pos.Y / 1024);
+
+            //Convert from world position to isometric cell postion;
+            var u = (pos.Y + pos.X - 512) / 1024;
+            var v = (pos.Y - pos.X + (pos.Y > pos.X ? 512 : -512)) / 1024;
+            return new CPos(u, v);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
         public WPos CenterOfCell(CPos cell)
@@ -338,6 +354,7 @@ namespace EW
             if (Grid.Type == MapGridT.Rectangular)
                 return new WPos(1024 * cell.X + 512, 1024 * cell.Y + 512, 0);
 
+            //Convert from isometric cell position to world position;
             var z = Height.Contains(cell) ? 512 * Height[cell] : 0;
             return new WPos(512 * (cell.X - cell.Y + 1), 512 * (cell.X + cell.Y + 1), z);
         }
@@ -392,20 +409,7 @@ namespace EW
 
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="pos"></param>
-        /// <returns></returns>
-        public CPos CellContaining(WPos pos)
-        {
-            if (Grid.Type == MapGridT.Rectangular)
-                return new CPos(pos.X / 1024, pos.Y / 1024);
-
-            var u = (pos.Y + pos.X - 512) / 1024;
-            var v = (pos.Y -pos.X +(pos.Y>pos.X ? 512:-512))/ 1024;
-            return new CPos(u, v);
-        }
+        
 
         public PPos Clamp(PPos puv)
         {
@@ -415,14 +419,14 @@ namespace EW
 
 
         /// <summary>
-        /// 
+        /// 设定地图边界
         /// </summary>
         /// <param name="tl"></param>
         /// <param name="br"></param>
         public void SetBounds(PPos tl,PPos br)
         {
             Bounds = EW.Xna.Platforms.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
-
+            //避免不必要的转换，直接计算地图屏幕投射坐标的世界单位
             var wtop = tl.V * 1024;
             var wbottom = (br.V + 1) * 1024;
             if(Grid.Type == MapGridT.RectangularIsometric)
