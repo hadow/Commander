@@ -28,5 +28,23 @@ namespace EW.Xna.Platforms.Graphics
             return new VertexBufferBinding(_vertexBuffers[slot], _vertexOffsets[slot], InstanceFrequencies[slot]);
         }
 
+
+        /// <summary>
+        /// Clears the vertex buffer slots.
+        /// </summary>
+        /// <returns></returns>
+        public bool Clear()
+        {
+            if (Count == 0)
+                return false;
+
+            Array.Clear(VertexDeclarations, 0, Count);
+            Array.Clear(InstanceFrequencies, 0, Count);
+            Array.Clear(_vertexBuffers, 0, Count);
+            Array.Clear(_vertexOffsets, 0, Count);
+            Count = 0;
+            return true;
+        }
+
     }
 }

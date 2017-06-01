@@ -391,6 +391,19 @@ namespace EW.Xna.Platforms.Graphics
             EffectCache = new Dictionary<int, Effect>();
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexBuffers"></param>
+        public void SetVertexBuffers(params VertexBufferBinding[] vertexBuffers)
+        {
+            if(vertexBuffers == null || vertexBuffers.Length == 0)
+            {
+                _vertexBuffersDirty |= _vertexBuffers.Clear();
+            }
+        }
+
         internal void SetConstantBuffer(ShaderStage stage,int slot,ConstantBuffer buffer)
         {
             if (stage == ShaderStage.Vertex)
@@ -527,9 +540,9 @@ namespace EW.Xna.Platforms.Graphics
         /// <summary>
         /// Draw primitives of the specified type from the currently bound vertexbuffers without indexing
         /// </summary>
-        /// <param name="primitiveT"></param>
-        /// <param name="vertexStart"></param>
-        /// <param name="primitiveCount"></param>
+        /// <param name="primitiveT">The type of primitives to draw</param>
+        /// <param name="vertexStart">Index of the vertex to start at</param>
+        /// <param name="primitiveCount">The number of primitives to draw</param>
         public void DrawPrimitives(PrimitiveType primitiveT,int vertexStart,int primitiveCount)
         {
             if (_vertexShader == null)

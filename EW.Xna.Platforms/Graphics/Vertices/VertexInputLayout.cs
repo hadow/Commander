@@ -12,7 +12,7 @@ namespace EW.Xna.Platforms.Graphics
 
         protected int[] InstanceFrequencies { get; private set; }
 
-        public int Count { get; private set; }
+        public int Count { get; protected set; }
 
 
         protected VertexInputLayout(int maxVertexBufferSlots):this(new VertexDeclaration[maxVertexBufferSlots],new int[maxVertexBufferSlots], 0) { }

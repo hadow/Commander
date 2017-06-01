@@ -107,6 +107,21 @@ namespace EW.Xna.Platforms.Graphics
             StateKey = unchecked(NextStateKey++);
         }
 
+
+        public void SetValue(bool value)
+        {
+            if (ParameterClass != EffectParameterClass.Scalar || ParameterType != EffectParameterType.Bool)
+                throw new InvalidCastException();
+
+#if OPENGL
+
+            ((float[])Data)[0] = value ? 1 : 0;
+#else
+#endif
+
+            StateKey = unchecked(NextStateKey++);
+        }
+
         public void SetValue(Matrix value)
         {
             if (ParameterClass != EffectParameterClass.Matrix || ParameterType != EffectParameterType.Single)
@@ -204,6 +219,43 @@ namespace EW.Xna.Platforms.Graphics
                 fData[5] = value.M32;
             }
 
+            StateKey = unchecked(NextStateKey++);
+        }
+
+        public void SetValue(Texture value)
+        {
+            if(this.ParameterType != EffectParameterType.Texture &&
+                this.ParameterType != EffectParameterType.Texture1D&&
+                this.ParameterType != EffectParameterType.Texture2D)
+            {
+                throw new InvalidCastException();
+            }
+
+            Data = value;
+            StateKey = unchecked(NextStateKey++);
+        }
+
+        public void SetValue(Vector2 value)
+        {
+            if (ParameterClass != EffectParameterClass.Vector || ParameterType != EffectParameterType.Single)
+                throw new InvalidCastException();
+
+            var fData = (float[])Data;
+            fData[0] = value.X;
+            fData[1] = value.Y;
+            StateKey = unchecked(NextStateKey++);
+        }
+
+
+        public void SetValue(Vector3 value)
+        {
+            if (ParameterClass != EffectParameterClass.Vector || ParameterType != EffectParameterType.Single)
+                throw new InvalidCastException();
+
+            var fData = (float[])Data;
+            fData[0] = value.X;
+            fData[1] = value.Y;
+            fData[2] = value.Z;
             StateKey = unchecked(NextStateKey++);
         }
 
