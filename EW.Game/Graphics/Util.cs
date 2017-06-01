@@ -1,13 +1,75 @@
 using System;
 using System.Collections.Generic;
-
-
+using EW.Xna.Platforms.Graphics;
+using EW.Xna.Platforms;
 namespace EW.Graphics
 {
     public static class Util
     {
 
         static readonly int[] ChannelMasks = { 2, 1, 0, 3 };
+        static readonly float[] ChannelSelect = { 0.2f, 0.4f, 0.6f, 0.8f };
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="o"></param>
+        /// <param name="r"></param>
+        /// <param name="paletteTextureIndex"></param>
+        /// <param name="nv"></param>
+        /// <param name="size"></param>
+        public static void FastCreateQuad(VertexPositionColorTexture[] vertices,Vector3 o,Sprite r,float paletteTextureIndex,int nv,Vector3 size)
+        {
+            var b = new Vector3(o.X + size.X, o.Y, o.Z);
+            var c = new Vector3(o.X + size.X, o.Y + size.Y, o.Z + size.Z);
+            var d = new Vector3(o.X, o.Y + size.Y, o.Z + size.Z);
+            FastCreateQuad(vertices, o, b, c, d, r, paletteTextureIndex, nv);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="d"></param>
+        /// <param name="r"></param>
+        /// <param name="paletteTextureIndex"></param>
+        /// <param name="nv"></param>
+        public static void FastCreateQuad(VertexPositionColorTexture[] vertices,Vector3 a,Vector3 b,Vector3 c,Vector3 d,Sprite r,float paletteTextureIndex,int nv)
+        {
+            float sl = 0;
+            float st = 0;
+            float sr = 0;
+            float sb = 0;
+
+            var attribC = ChannelSelect[(int)r.Channel];
+
+            var ss = r as SpriteWithSecondaryData;
+            if (ss != null)
+            {
+                sl = ss.SecondaryLeft;
+                st = ss.SecondaryTop;
+                sr = ss.SecondaryRight;
+                sb = ss.SecondaryBottom;
+
+                attribC = -(attribC + ChannelSelect[(int)ss.SecondaryChannel] / 10);
+            }
+
+            vertices[nv] = new VertexPositionColorTexture { Position = a, TextureCoordinate = new Vector2(r.Left,r.Top),UV = new Vector2(sl,st),Palette = paletteTextureIndex,C = attribC };
+            vertices[nv + 1] = new VertexPositionColorTexture { Position = b, TextureCoordinate = new Vector2(r.Right, r.Top), UV = new Vector2(sr, st), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 2] = new VertexPositionColorTexture { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 3] = new VertexPositionColorTexture { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 4] = new VertexPositionColorTexture { Position = d, TextureCoordinate = new Vector2(r.Left, r.Bottom), UV = new Vector2(sl, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 5] = new VertexPositionColorTexture { Position = a, TextureCoordinate = new Vector2(r.Left, r.Top), UV = new Vector2(sl, st), Palette = paletteTextureIndex, C = attribC };
+
+        }
+
+
+
+
         /// <summary>
         /// 
         /// </summary>

@@ -85,13 +85,20 @@ namespace EW.Graphics
                 sprite = emptySprite;
 
             var offset = rowStride * uv.V + 6 * uv.U;
-            //todo
+
+            Util.FastCreateQuad(vertices, pos, sprite, palette.TextureIndex, offset, sprite.Size);
 
             dirtyRows.Add(uv.V);
 
 
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="sprite"></param>
         public void Update(CPos cell,Sprite sprite)
         {
             var xyz = sprite == null ? Vector3.Zero : worldRender.Screen3DPosition(map.CenterOfCell(cell)) + sprite.Offset -  sprite.Size*0.5f;

@@ -9,8 +9,11 @@ namespace EW.Xna.Platforms.Graphics
     public struct VertexPositionColorTexture:IVertexT
     {
         public Vector3 Position;
-        public Color Color;
         public Vector2 TextureCoordinate;
+        public Vector2 UV;
+        public float Palette;
+        public float C;
+        public Color Color;
         public static readonly VertexDeclaration VertexDeclaration;
 
         VertexDeclaration IVertexT.VertexDeclaration

@@ -161,7 +161,7 @@ namespace EW.Graphics
         public Vector3 Screen3DPosition(WPos pos)
         {
             var z = ZPosition(pos, 0) * TileSize.Height / 1024f;
-            return new Vector3(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f, 0);
+            return new Vector3(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f, z);
         }
 
         /// <summary>
