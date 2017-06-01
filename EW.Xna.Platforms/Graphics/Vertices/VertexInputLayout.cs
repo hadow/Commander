@@ -12,6 +12,9 @@ namespace EW.Xna.Platforms.Graphics
 
         protected int[] InstanceFrequencies { get; private set; }
 
+        /// <summary>
+        /// Gets or Sets the number of used input slots.
+        /// </summary>
         public int Count { get; protected set; }
 
 

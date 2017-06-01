@@ -28,6 +28,47 @@ namespace EW.Xna.Platforms.Graphics
             return new VertexBufferBinding(_vertexBuffers[slot], _vertexOffsets[slot], InstanceFrequencies[slot]);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertexBufferBindings"></param>
+        /// <returns></returns>
+        public bool Set(params VertexBufferBinding[] vertexBufferBindings)
+        {
+            bool isDirty = false;
+
+            for(int i = 0; i < vertexBufferBindings.Length; i++)
+            {
+                if(InstanceFrequencies[i] == vertexBufferBindings[i].InstanceFrequency 
+                    && _vertexBuffers[i] == vertexBufferBindings[i].VertexBuffer 
+                    && _vertexOffsets[i] == vertexBufferBindings[i].VertexOffset)
+                {
+                    continue;
+                }
+
+                VertexDeclarations[i] = vertexBufferBindings[i].VertexBuffer.VertexDeclaration;
+                InstanceFrequencies[i] = vertexBufferBindings[i].InstanceFrequency;
+                _vertexBuffers[i] = vertexBufferBindings[i].VertexBuffer;
+                _vertexOffsets[i] = vertexBufferBindings[i].VertexOffset;
+                isDirty = true;
+            }
+
+            if (Count > vertexBufferBindings.Length)
+            {
+                int startIndex = vertexBufferBindings.Length;
+                int length = Count - startIndex;
+
+                Array.Clear(VertexDeclarations, startIndex, length);
+                Array.Clear(InstanceFrequencies, startIndex, length);
+                Array.Clear(_vertexBuffers, startIndex, length);
+                Array.Clear(_vertexOffsets, startIndex, length);
+                isDirty = true;
+            }
+
+            Count = vertexBufferBindings.Length;
+            return isDirty;
+        }
+
 
         /// <summary>
         /// Clears the vertex buffer slots.

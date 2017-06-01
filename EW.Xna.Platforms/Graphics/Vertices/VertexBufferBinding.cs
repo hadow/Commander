@@ -26,6 +26,11 @@ namespace EW.Xna.Platforms.Graphics
 
         private readonly int _instanceFrequency;
 
+
+        /// <summary>
+        /// The Number of instances to draw using the same per-instance data before advancing in the buffer by one element.
+        /// 
+        /// </summary>
         public int InstanceFrequency
         {
             get { return _instanceFrequency; }

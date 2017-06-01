@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
+using System.Globalization;
 using OpenTK.Graphics.ES20;
 namespace EW.Xna.Platforms.Graphics
 {
@@ -401,6 +401,16 @@ namespace EW.Xna.Platforms.Graphics
             if(vertexBuffers == null || vertexBuffers.Length == 0)
             {
                 _vertexBuffersDirty |= _vertexBuffers.Clear();
+            }
+            else
+            {
+                if (vertexBuffers.Length > _maxVertexBufferSlots)
+                {
+                    var message = string.Format(CultureInfo.InvariantCulture, "Max number of vertex buffers is {0}", _maxVertexBufferSlots);
+                    throw new ArgumentOutOfRangeException("vertexBuffers", message);
+                }
+
+                _vertexBuffersDirty |= _vertexBuffers.Set(vertexBuffers);
             }
         }
 
