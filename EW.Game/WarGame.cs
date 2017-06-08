@@ -23,7 +23,7 @@ namespace EW
         public static InstalledMods Mods { get; private set; }
    
         Vector2 position;
-        //Texture2D texture;
+        Texture2D texture;
         SpriteBatch spriteBatch;
         public GraphicsDeviceManager DeviceManager;
 
@@ -148,10 +148,10 @@ namespace EW
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            //using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
-            //{
-            //    texture = Texture2D.FromStream(this.GraphicsDevice, stream);
-            //}
+            using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
+            {
+                texture = Texture2D.FromStream(this.GraphicsDevice, stream);
+            }
         }
 
         protected override void UnloadContent()
@@ -171,11 +171,10 @@ namespace EW
         protected override void Draw(GameTime gameTime)
         {
 
-            
-            //spriteBatch.Begin();
-            //spriteBatch.Draw(texture, position,Color.White);
-            //spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
-            //spriteBatch.End();
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
+            spriteBatch.End();
             base.Draw(gameTime);
             RenderTick();
         }

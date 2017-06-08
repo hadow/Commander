@@ -102,7 +102,8 @@ namespace EW.Xna.Platforms.Graphics
                 var dataPtr = (IntPtr)(dataHandle.AddrOfPinnedObject().ToInt64() + startIndex * elementSizeInBytes);
                 try
                 {
-                    GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
+                    //GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)offsetInBytes, (IntPtr)sizeInBytes, dataPtr);
+                    GL.BufferSubData(BufferTarget.ArrayBuffer, (IntPtr)(dataSize * startIndex), (IntPtr)sizeInBytes, dataPtr);
                     GraphicsExtensions.CheckGLError();
                 }
                 finally

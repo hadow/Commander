@@ -18,7 +18,7 @@ namespace EW.Graphics
         /// <param name="paletteTextureIndex"></param>
         /// <param name="nv"></param>
         /// <param name="size"></param>
-        public static void FastCreateQuad(VertexPositionColorTexture[] vertices,Vector3 o,Sprite r,float paletteTextureIndex,int nv,Vector3 size)
+        public static void FastCreateQuad(Vertex[] vertices,Vector3 o,Sprite r,float paletteTextureIndex,int nv,Vector3 size)
         {
             var b = new Vector3(o.X + size.X, o.Y, o.Z);
             var c = new Vector3(o.X + size.X, o.Y + size.Y, o.Z + size.Z);
@@ -38,7 +38,7 @@ namespace EW.Graphics
         /// <param name="r"></param>
         /// <param name="paletteTextureIndex"></param>
         /// <param name="nv"></param>
-        public static void FastCreateQuad(VertexPositionColorTexture[] vertices,Vector3 a,Vector3 b,Vector3 c,Vector3 d,Sprite r,float paletteTextureIndex,int nv)
+        public static void FastCreateQuad(Vertex[] vertices,Vector3 a,Vector3 b,Vector3 c,Vector3 d,Sprite r,float paletteTextureIndex,int nv)
         {
             float sl = 0;
             float st = 0;
@@ -58,12 +58,12 @@ namespace EW.Graphics
                 attribC = -(attribC + ChannelSelect[(int)ss.SecondaryChannel] / 10);
             }
 
-            vertices[nv] = new VertexPositionColorTexture { Position = a, TextureCoordinate = new Vector2(r.Left,r.Top),UV = new Vector2(sl,st),Palette = paletteTextureIndex,C = attribC };
-            vertices[nv + 1] = new VertexPositionColorTexture { Position = b, TextureCoordinate = new Vector2(r.Right, r.Top), UV = new Vector2(sr, st), Palette = paletteTextureIndex, C = attribC };
-            vertices[nv + 2] = new VertexPositionColorTexture { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
-            vertices[nv + 3] = new VertexPositionColorTexture { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
-            vertices[nv + 4] = new VertexPositionColorTexture { Position = d, TextureCoordinate = new Vector2(r.Left, r.Bottom), UV = new Vector2(sl, sb), Palette = paletteTextureIndex, C = attribC };
-            vertices[nv + 5] = new VertexPositionColorTexture { Position = a, TextureCoordinate = new Vector2(r.Left, r.Top), UV = new Vector2(sl, st), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv] = new Vertex { Position = a, TextureCoordinate = new Vector2(r.Left,r.Top),UV = new Vector2(sl,st),Palette = paletteTextureIndex,C = attribC };
+            vertices[nv + 1] = new Vertex { Position = b, TextureCoordinate = new Vector2(r.Right, r.Top), UV = new Vector2(sr, st), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 2] = new Vertex { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 3] = new Vertex { Position = c, TextureCoordinate = new Vector2(r.Right, r.Bottom), UV = new Vector2(sr, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 4] = new Vertex { Position = d, TextureCoordinate = new Vector2(r.Left, r.Bottom), UV = new Vector2(sl, sb), Palette = paletteTextureIndex, C = attribC };
+            vertices[nv + 5] = new Vertex { Position = a, TextureCoordinate = new Vector2(r.Left, r.Top), UV = new Vector2(sl, st), Palette = paletteTextureIndex, C = attribC };
 
         }
 

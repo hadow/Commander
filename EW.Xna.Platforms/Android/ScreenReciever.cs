@@ -17,10 +17,32 @@ namespace EW.Xna.Platforms
 
         public override void OnReceive(Context context, Intent intent)
         {
-            throw new NotImplementedException();
+            if(intent.Action == Intent.ActionScreenOn)
+            {
+                KeyguardManager keyguard = (KeyguardManager)context.GetSystemService(Context.KeyguardService);
+                if (!keyguard.InKeyguardRestrictedInputMode())
+                    OnUnlocked();
+            }
+            else if(intent.Action == Intent.ActionScreenOff)
+            {
+                OnLocked();
+            }
+            else if(intent.Action == Intent.ActionUserPresent)
+            {
+                OnUnlocked();
+            }
         }
 
+        private void OnLocked()
+        {
+            ScreenReciever.ScreenLocked = true;
+        }
 
+        private void OnUnlocked()
+        {
+            ScreenReciever.ScreenLocked = false;
+            ((AndroidGameWindow)Game.Instance.Window).GameView.Resume();
+        }
 
     }
 }

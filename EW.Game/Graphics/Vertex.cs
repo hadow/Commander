@@ -1,26 +1,39 @@
 ﻿using System.Runtime.InteropServices;
+using EW.Xna.Platforms.Graphics;
+using EW.Xna.Platforms;
+
 namespace EW.Graphics
 {
 	[StructLayout(LayoutKind.Sequential)]
-	public struct Vertex
+	public struct Vertex:IVertexT
 	{
+        public Vector3 Position;
+        public Vector2 TextureCoordinate;
+        public Vector2 UV;
+        public float Palette;
+        public float C;
 
-		public readonly float X, Y, Z, S, T, U, V, P, C;
+        public static readonly VertexDeclaration VertexDeclaration;
 
-		public Vertex(float x, float y, float z, float s, float t, float u, float v, float p, float c)
-		{
-			X = x;
-			Y = y;
-			Z = z;
-			S = s;
-			T = t;
-			U = u;
-			V = v;
-			P = p;
-			C = c;
-		}
+        VertexDeclaration IVertexT.VertexDeclaration
+        {
+            get { return VertexDeclaration; }
+        }
 
-	}
+        static Vertex()
+        {
+            var elements = new VertexElement[]
+            {
+                new VertexElement(0,VertexElementFormat.Vector3,VertexElementUsage.Position,0),
+                new VertexElement(12,VertexElementFormat.Vector2,VertexElementUsage.TextureCoordinate,0),
+                new VertexElement(20,VertexElementFormat.Vector2,VertexElementUsage.TextureCoordinate,0),
+                new VertexElement(28,VertexElementFormat.Single,VertexElementUsage.Depth,0),
+                new VertexElement(32,VertexElementFormat.Color,VertexElementUsage.Color,0),
+            };
+            VertexDeclaration = new VertexDeclaration(elements);
+        }
+
+    }
 
 
 }

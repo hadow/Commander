@@ -10,9 +10,6 @@ namespace EW.Xna.Platforms.Graphics
     {
         public Vector3 Position;
         public Vector2 TextureCoordinate;
-        public Vector2 UV;
-        public float Palette;
-        public float C;
         public Color Color;
         public static readonly VertexDeclaration VertexDeclaration;
 

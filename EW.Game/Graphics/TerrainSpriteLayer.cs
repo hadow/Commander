@@ -31,7 +31,7 @@ namespace EW.Graphics
 
         readonly int rowStride;
 
-        readonly VertexPositionColorTexture[] vertices;
+        readonly Vertex[] vertices;
 
         public TerrainSpriteLayer(World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds)
         {
@@ -44,11 +44,11 @@ namespace EW.Graphics
             map = world.Map;
             rowStride = 6 * map.MapSize.X;
 
-            vertices = new VertexPositionColorTexture[rowStride * map.MapSize.Y];
+            vertices = new Vertex[rowStride * map.MapSize.Y];
 
             var vertexCount = rowStride * map.MapSize.Y;
 
-            vertexBuffer = new DynamicVertexBuffer(GraphicsDeviceManager.M.GraphicsDevice, typeof(VertexPositionColorTexture), vertexCount, BufferUsage.None);
+            vertexBuffer = new DynamicVertexBuffer(GraphicsDeviceManager.M.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
 
 
             emptySprite = new Sprite(sheet, Rectangle.Empty, TextureChannel.Alpha);
