@@ -47,6 +47,11 @@ namespace EW.Xna.Platforms
 
         }
 
+        /// <summary>
+        /// 标量化相对路径
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         internal static string NormalizeRelativePath(string name)
         {
             var uri = new Uri("file:///" + name);

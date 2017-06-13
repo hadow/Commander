@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using EW.Xna.Platforms.Graphics;
+using EW.Xna.Platforms.Utilities;
 namespace EW.Xna.Platforms.Content
 {
     /// <summary>
@@ -9,7 +10,8 @@ namespace EW.Xna.Platforms.Content
     /// </summary>
     public partial class ContentManager:IDisposable
     {
-
+        const byte ContentCompressedLzx = 0x80;
+        const byte ContentCompressedLz4 = 0x40;
         private bool disposed;
 
         private string _rootDirectory = string.Empty;
@@ -169,7 +171,34 @@ namespace EW.Xna.Platforms.Content
             byte version = xnbReader.ReadByte();
             byte flags = xnbReader.ReadByte();
 
+            bool compressedLzx = (flags & ContentCompressedLzx) != 0;
+            bool compressedLz4 = (flags & ContentCompressedLz4) != 0;
+
+            if (version != 5 && version != 4)
+                throw new InvalidDataException("Invalid XNB version");
+
+            // The next int32 is the length of the XNB file
+            int xnbLength = xnbReader.ReadInt32();
+
             Stream decompressedStream = null;
+            if(compressedLz4 || compressedLzx)
+            {
+                int decompressedSize = xnbReader.ReadInt32();
+
+                if (compressedLzx)
+                {
+                    int compressedSize = xnbLength - 14;
+                    decompressedStream = new LzxDecoderStream(stream, decompressedSize, compressedSize);
+                }
+                else if(compressedLz4)
+                {
+                    decompressedStream = new Lz4DecoderStream(stream);
+                }
+            }
+            else
+            {
+                decompressedStream = stream;
+            }
 
             var reader = new ContentReader(this, decompressedStream, this.graphicsDeviceService.GraphicsDevice, originalAssetName, version, recordDisposableObject);
             return reader;
@@ -198,7 +227,6 @@ namespace EW.Xna.Platforms.Content
             }
             catch(FileNotFoundException fileNotFound)
             {
-
                 throw new FileNotFoundException("The content file was not found.", fileNotFound);
             }
             catch(DirectoryNotFoundException directoryNotFound)

@@ -3,7 +3,7 @@ using System;
 namespace EW.Xna.Platforms.Graphics
 {
     /// <summary>
-    /// 
+    /// Defines usage for vertexx elements;
     /// </summary>
     public enum VertexElementUsage
     {

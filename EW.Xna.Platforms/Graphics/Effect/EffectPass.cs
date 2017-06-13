@@ -3,6 +3,10 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+    /// <summary>
+    /// Contains rendering state for drawing with an effect;
+    /// an effect can contain one or more passes;
+    /// </summary>
     public class EffectPass
     {
         private readonly Effect _effect;

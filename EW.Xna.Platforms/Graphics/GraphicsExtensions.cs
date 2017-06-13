@@ -28,6 +28,11 @@ namespace EW.Xna.Platforms.Graphics
             throw new ArgumentException();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="elementFormat"></param>
+        /// <returns></returns>
         public static VertexAttribPointerType OpenGLVertexAttribPointerT(this VertexElementFormat elementFormat)
         {
             switch (elementFormat)
@@ -38,6 +43,7 @@ namespace EW.Xna.Platforms.Graphics
                 case VertexElementFormat.Vector4:
                     return VertexAttribPointerType.Float;
                 case VertexElementFormat.Color:
+                case VertexElementFormat.Byte4:
                     return VertexAttribPointerType.UnsignedByte;
 
             }
@@ -46,6 +52,11 @@ namespace EW.Xna.Platforms.Graphics
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public static bool OpenGLVertexAttribNormalized(this VertexElement element)
         {
             if (element.VertexElementUsage == VertexElementUsage.Color)

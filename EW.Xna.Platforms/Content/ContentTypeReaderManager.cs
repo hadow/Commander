@@ -40,7 +40,9 @@ namespace EW.Xna.Platforms.Content
             var numberOfReaders = reader.Read7BitEncodedInt();
             var contentReaders = new ContentTypeReader[numberOfReaders];
             var needInitialize = new BitArray(numberOfReaders);
+
             _contentReaders = new Dictionary<Type, ContentTypeReader>(numberOfReaders);
+
             lock (_locker)
             {
                 for(var i = 0; i < numberOfReaders; i++)
@@ -90,13 +92,12 @@ namespace EW.Xna.Platforms.Content
                     reader.ReadInt32();
                 }
 
+                //Initialize any new readers
                 for(var i = 0; i < contentReaders.Length; i++)
                 {
                     if (needInitialize.Get(i))
                         contentReaders[i].Initialize(this);
                 }
-
-
             }
 
             return contentReaders;

@@ -27,6 +27,7 @@ namespace EW.Xna.Platforms.Graphics
         public EffectTechniqueCollection Techniques { get; private set; }
 
         public EffectTechnique CurrentTechnique { get; private set; }
+
         private Shader[] _shaders;
 
         internal ConstantBuffer[] ConstantBuffers { get; private set; }

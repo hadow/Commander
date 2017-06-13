@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms.Input.Touch;
+using EW.Xna.Platforms.Content;
 namespace EW.Xna.Platforms
 {
     public class Game:IDisposable
@@ -64,11 +65,13 @@ namespace EW.Xna.Platforms
             }
         }
 
+        private ContentManager _content;
+
         public Game()
         {
             _instance = this;
             _services = new GameServiceContainer();
-
+            _content = new ContentManager();
             Platform = GamePlatform.PlatformCreate(this);           //创建移动平台
             Platform.Activated += OnActivated;
             Platform.Deactivated += OnDeactivated;
@@ -130,6 +133,22 @@ namespace EW.Xna.Platforms
                 return Platform.Window;
             }
         }
+
+
+        public ContentManager Content
+        {
+            get { return _content; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentException();
+
+                _content = value;
+            }
+        }
+        
+
+
 
 
         /// <summary>
@@ -377,6 +396,12 @@ namespace EW.Xna.Platforms
             {
                 if (disposing)
                 {
+
+                    if(_content != null)
+                    {
+                        _content.Dispose();
+                        _content = null;
+                    }
                     if(_graphicsDeviceManager != null)
                     {
                         (_graphicsDeviceManager as GraphicsDeviceManager).Dispose();

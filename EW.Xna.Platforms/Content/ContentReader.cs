@@ -47,7 +47,9 @@ namespace EW.Xna.Platforms.Content
         {
             InitializeTypeReaders();
 
+            //Read primary object
             object result = ReadObject<T>();
+
             return result;
         }
 
