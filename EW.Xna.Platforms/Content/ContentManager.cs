@@ -36,6 +36,14 @@ namespace EW.Xna.Platforms.Content
 
         };
 
+        public ContentManager(IServiceProvider serviceProvider)
+        {
+            if (serviceProvider == null)
+                throw new ArgumentNullException("serviceProvider");
+
+            this.serviceProvider = serviceProvider;
+            AddContentManager(this);
+        }
 
 
         public ContentManager(IServiceProvider serviceProvider,string rootDirectory)

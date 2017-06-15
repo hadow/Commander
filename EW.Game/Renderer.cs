@@ -3,6 +3,7 @@ using System.Drawing;
 using EW.Graphics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
+using EW.Xna.Platforms.Content;
 namespace EW
 {
     public sealed class Renderer:IDisposable
@@ -19,12 +20,26 @@ namespace EW
 
         public RgbaColorRenderer WorldRgbaColorRenderer;
 
+
+        internal int TempBufferSize { get; private set; }
+        
+        internal int SheetSize { get; private set; }
         Size? lastResolution;
         EW.Xna.Platforms.Point? lastScroll;
         float? lastZoom;
 
         Texture2D currentPaletteTexture;
 
+        ContentManager content;
+
+        public Renderer(GraphicsSettings graphicSettings)
+        {
+
+            TempBufferSize = graphicSettings.BatchSize;
+            SheetSize = graphicSettings.SheetSize;
+           
+            SpriteRenderer = new SpriteRenderer(this, content.Load<Effect>("shp"));
+        }
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
         {
             GraphicsDeviceManager.M.GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
@@ -49,6 +64,17 @@ namespace EW
 
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="type"></param>
+        public void DrawBatch(Vertex[] vertices,int numVertices,PrimitiveType type)
+        {
+
+        }
 
         public void Dispose()
         {

@@ -71,7 +71,7 @@ namespace EW.Xna.Platforms
         {
             _instance = this;
             _services = new GameServiceContainer();
-            _content = new ContentManager();
+            _content = new ContentManager(_services);
             Platform = GamePlatform.PlatformCreate(this);           //创建移动平台
             Platform.Activated += OnActivated;
             Platform.Deactivated += OnDeactivated;

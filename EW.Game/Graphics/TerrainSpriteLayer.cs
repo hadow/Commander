@@ -127,7 +127,7 @@ namespace EW.Graphics
                     continue;
 
                 var rowOffset = rowStride * row;
-                vertexBuffer.SetData(System.Runtime.InteropServices.Marshal.SizeOf<VertexPositionColorTexture>()*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
+                vertexBuffer.SetData(System.Runtime.InteropServices.Marshal.SizeOf<Vertex>()*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
             }
         }
 

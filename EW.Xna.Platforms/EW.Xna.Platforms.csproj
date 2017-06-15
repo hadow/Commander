@@ -66,7 +66,9 @@
     <Compile Include="Content\ContenTypeReaders\StringReader.cs" />
     <Compile Include="Content\ContenTypeReaders\Texture2DReader.cs" />
     <Compile Include="Content\LzxDecoder.cs" />
+    <Compile Include="DrawableGameComponent.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="GameComponent.cs" />
     <Compile Include="GamePlatform.Mobile.cs" />
     <Compile Include="GameRunBehaviour.cs" />
     <Compile Include="GameServiceContainer.cs" />

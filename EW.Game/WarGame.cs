@@ -76,8 +76,7 @@ namespace EW
                 ModData = null;
             }
 
-
-            Renderer = new Renderer();
+            Renderer = new Renderer(Settings.Graphics);
             ModData = new ModData(GraphicsDevice,Mods[mod], Mods, true);
 
             using (new Support.PerfTimer("LoadMaps"))

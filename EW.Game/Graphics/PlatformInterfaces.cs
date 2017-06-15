@@ -12,12 +12,12 @@ namespace EW
 	}
 	public enum TextureScaleFilter { Nearest, Linear }
 
-	public enum PrimitiveType
-	{
-		PointList,
-		LineList,
-		TriangleList,
-	}
+	//public enum PrimitiveType
+	//{
+	//	PointList,
+	//	LineList,
+	//	TriangleList,
+	//}
 
 	public enum BlendMode : byte
 	{
