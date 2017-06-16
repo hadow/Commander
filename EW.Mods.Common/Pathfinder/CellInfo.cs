@@ -1,5 +1,4 @@
 using System;
-using EW.Game;
 namespace EW.Mods.Common.Pathfinder
 {
     /// <summary>

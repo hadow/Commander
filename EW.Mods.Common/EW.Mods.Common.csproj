@@ -251,9 +251,9 @@
       <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
       <Name>Eluant.Android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EW.Game\EW.Game.csproj">
+    <ProjectReference Include="..\EW.GameCenter\EW.GameCenter.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
-      <Name>EW.Game</Name>
+      <Name>EW.GameCenter</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>

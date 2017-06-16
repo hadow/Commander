@@ -17,12 +17,18 @@ namespace EW.Xna.Platforms
     public class DrawableGameComponent:GameComponent,IDrawable
     {
 
+        private bool _initialized;
+
         private int _drawOrder;
 
         private bool _visible = true;
 
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
+
+
+        public DrawableGameComponent(Game game) : base(game) { }
+
         public int DrawOrder { get { return _drawOrder; }
             set {
                 if(_drawOrder != value)
@@ -45,14 +51,22 @@ namespace EW.Xna.Platforms
             }
         }
 
-        protected virtual void OnVisibleChanged(object sender,EventArgs args)
+        public override void Initialize()
         {
-
+            if (!_initialized)
+            {
+                _initialized = true;
+                LoadContent();
+            }
         }
 
-        protected virtual void OnDrawOrderChanged(object sender,EventArgs args)
-        {
+        protected virtual void LoadContent() { }
 
-        }
+        protected virtual void OnVisibleChanged(object sender,EventArgs args){}
+
+        protected virtual void OnDrawOrderChanged(object sender,EventArgs args){}
+
+        public virtual void Draw(GameTime gameTime) { }
+
     }
 }

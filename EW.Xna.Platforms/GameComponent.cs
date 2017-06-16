@@ -32,6 +32,11 @@ namespace EW.Xna.Platforms
 
         public Game Game { get; private set; }
 
+
+        public GameComponent(Game game)
+        {
+            this.Game = game;
+        }
         public bool Enabled
         {
             get { return _enabled; }

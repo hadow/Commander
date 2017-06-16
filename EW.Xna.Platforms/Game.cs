@@ -1,12 +1,17 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms.Input.Touch;
 using EW.Xna.Platforms.Content;
 namespace EW.Xna.Platforms
 {
-    public class Game:IDisposable
+    public partial class Game:IDisposable
     {
+
+        private GameComponentCollection _components;
+
+        internal GamePlatform Platform;
 
 #if ANDROID
         [CLSCompliant(false)]
@@ -52,11 +57,14 @@ namespace EW.Xna.Platforms
         }
 
         private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
-
-
-
-
+        
         private TimeSpan _inactiveSleepTime = TimeSpan.FromSeconds(0.02f);
+
+        public GameComponentCollection Components
+        {
+            get { return _components; }
+        }
+
         internal static Game Instance
         {
             get
@@ -67,10 +75,24 @@ namespace EW.Xna.Platforms
 
         private ContentManager _content;
 
+
+        private SortingFilteringCollection<IDrawable> _drawables = new SortingFilteringCollection<IDrawable>(
+                d => d.Visible,
+                (d, handler) => d.VisibleChanged += handler,
+                (d,handler)=>d.VisibleChanged-=handler,
+                (d1,d2)=>Comparer<int>.Default.Compare(d1.DrawOrder,d2.DrawOrder),
+                (d,handler) =>d.DrawOrderChanged+=handler,
+                (d,handler) =>d.DrawOrderChanged-=handler
+            
+            );
+
+
+
         public Game()
         {
             _instance = this;
             _services = new GameServiceContainer();
+            _components = new GameComponentCollection();
             _content = new ContentManager(_services);
             Platform = GamePlatform.PlatformCreate(this);           //创建移动平台
             Platform.Activated += OnActivated;
@@ -84,7 +106,9 @@ namespace EW.Xna.Platforms
         }
 
         
-        internal GamePlatform Platform;
+        
+
+
         private GameServiceContainer _services;
         public GameServiceContainer Services
         {
@@ -247,7 +271,29 @@ namespace EW.Xna.Platforms
 
             Platform.BeforeInitialize();
             Initialize();
+
+            _components.ComponentAdded += Components_ComponentAdded;
+            _components.ComponentRemoved += Components_ComponentRemoved;
+
         }
+
+        #region Event Handlers
+
+        private void Components_ComponentAdded(object sender,GameComponentCollectionEventArgs e)
+        {
+            e.GameComponent.Initialize();
+
+        }
+
+        private void Components_ComponentRemoved(object sender,GameComponentCollectionEventArgs e)
+        {
+
+        }
+
+        #endregion
+
+
+
         private void AssertNotDisposed()
         {
             if (_isDisposed)
