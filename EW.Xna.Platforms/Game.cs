@@ -336,12 +336,12 @@ namespace EW.Xna.Platforms
         private void Components_ComponentAdded(object sender,GameComponentCollectionEventArgs e)
         {
             e.GameComponent.Initialize();
-
+            CategorizeComponent(e.GameComponent);
         }
 
         private void Components_ComponentRemoved(object sender,GameComponentCollectionEventArgs e)
         {
-
+            DecategorizeComponent(e.GameComponent);
         }
 
         #endregion
@@ -349,6 +349,9 @@ namespace EW.Xna.Platforms
 
         /// <summary>
         /// 初始化已存在的组件
+        /// Note:InitializeExistingComponents really should only be called once. Game.Initialize is the only method in a position to gurantee
+        /// that no component will get a duplicate Initialize call.
+        /// Further calls to Initialize occur immediately in response to Components.ComponentAdded.
         /// </summary>
         private void InitializeExistingComponents()
         {
@@ -382,6 +385,17 @@ namespace EW.Xna.Platforms
                 _drawables.Add((IDrawable)component);
         }
 
+        private void DecategorizeComponent(IGameComponent component)
+        {
+            if (component is IUpdateable)
+                _updateables.Remove((IUpdateable)component);
+            if (component is IDrawable)
+                _drawables.Remove((IDrawable)component);
+        }
+
+        /// <summary>
+        /// 解除连接组件
+        /// </summary>
         private void DecategorizeComponents()
         {
             _updateables.Clear();

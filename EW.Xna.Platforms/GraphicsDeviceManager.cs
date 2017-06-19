@@ -31,7 +31,6 @@ namespace EW.Xna.Platforms
         private DisplayOrientation _supportedOrientation;
 
         private bool _wantFullScreen = false;
-        public static GraphicsDeviceManager M;
         public bool IsFullScreen
         {
             get
@@ -140,9 +139,7 @@ namespace EW.Xna.Platforms
 
             _game.Services.AddService(typeof(IGraphicsDeviceManager),this);
             _game.Services.AddService(typeof(IGraphicsDeviceService), this);
-            if (M != null)
-                throw new InvalidOperationException("Don't Duplicate GraphicsDeviceManager Twice!");
-            M = this;
+
         }
 
         ~GraphicsDeviceManager()

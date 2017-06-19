@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using EW.Xna.Platforms;
 namespace EW.Graphics
 {
     /// <summary>
     /// 地形渲染
     /// </summary>
-    sealed class TerrainRenderer:IDisposable
+    sealed class TerrainRenderer:DrawableGameComponent
     {
 
         readonly Map map;
@@ -16,7 +16,7 @@ namespace EW.Graphics
         readonly Theater theater;
 
 
-        public TerrainRenderer(World world,WorldRenderer wr)
+        public TerrainRenderer(Game game,World world,WorldRenderer wr):base(game)
         {
 
             map = world.Map;
@@ -25,7 +25,7 @@ namespace EW.Graphics
             foreach(var template in map.Rules.TileSet.Templates)
             {
                 var palette = template.Value.Palette ?? TileSet.TerrainPaletteInternalName;
-                spriteLayers.GetOrAdd(palette, pal => new TerrainSpriteLayer(world, wr, theater.Sheet, BlendMode.Alpha, wr.Palette(palette), world.Type != WorldT.Editor));
+                spriteLayers.GetOrAdd(palette, pal => new TerrainSpriteLayer(game,world, wr, theater.Sheet, BlendMode.Alpha, wr.Palette(palette), world.Type != WorldT.Editor));
             }
 
             foreach(var cell in map.AllCells)
@@ -71,10 +71,11 @@ namespace EW.Graphics
             foreach (var r in wr.World.WorldActor.TraitsImplementing<IRenderOverlay>())
                 r.Render(wr);
         }
+        
 
-
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             map.Height.CellEntryChanged -= UpdateCell;
             map.Tiles.CellEntryChanged -= UpdateCell;
 

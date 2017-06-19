@@ -1,6 +1,6 @@
 ﻿using System;
 
-
+using EW.Xna.Platforms.Graphics;
 namespace EW.Xna.Platforms
 {
     public interface IDrawable
@@ -25,6 +25,11 @@ namespace EW.Xna.Platforms
 
         private bool _visible = true;
 
+
+        public GraphicsDevice GraphicsDevice
+        {
+            get { return this.Game.GraphicsDevice; }
+        }
         public event EventHandler<EventArgs> DrawOrderChanged;
         public event EventHandler<EventArgs> VisibleChanged;
 

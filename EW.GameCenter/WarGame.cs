@@ -26,7 +26,7 @@ namespace EW
         SpriteBatch spriteBatch;
         public GraphicsDeviceManager DeviceManager;
 
-        public static Renderer Renderer;
+        public Renderer Renderer;
         WorldRenderer worldRenderer;
         OrderManager orderManager;
         public WarGame() {
@@ -145,11 +145,13 @@ namespace EW
         }
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
-            {
-                texture = Texture2D.FromStream(this.GraphicsDevice, stream);
-            }
+            //spriteBatch = new SpriteBatch(GraphicsDevice);
+            //using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
+            //{
+            //    texture = Texture2D.FromStream(this.GraphicsDevice, stream);
+            //}
+
+            this.Components.Add(Renderer);
         }
 
         protected override void UnloadContent()

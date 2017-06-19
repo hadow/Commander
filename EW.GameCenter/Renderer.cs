@@ -22,7 +22,9 @@ namespace EW
 
 
         internal int TempBufferSize { get; private set; }
-        
+
+        float depthScale, depthOffset;
+
         internal int SheetSize { get; private set; }
         Size? lastResolution;
         EW.Xna.Platforms.Point? lastScroll;
@@ -30,6 +32,8 @@ namespace EW
 
         Texture2D currentPaletteTexture;
         
+
+        public Size Resolution { get { return new Size(GraphicsDevice.DisplayMode.Width,GraphicsDevice.DisplayMode.Height); } }
         public Renderer(Game game,GraphicsSettings graphicSettings):base(game)
         {
 
@@ -38,9 +42,19 @@ namespace EW
            
             SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("shp"));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mapGrid"></param>
+        public void InitializeDepthBuffer(MapGrid mapGrid)
+        {
+
+        }
+
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
         {
-            GraphicsDeviceManager.M.GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
+            GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
         }
         /// <summary>
         /// 
@@ -49,7 +63,13 @@ namespace EW
         /// <param name="zoom"></param>
         public void SetViewportParams(EW.Xna.Platforms.Point scroll,float zoom)
         {
+            if(lastScroll != scroll || lastZoom != zoom)
+            {
+                lastScroll = scroll;
+                lastZoom = zoom;
 
+                WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
+            }
         }
 
         public void SetPalette(HardwarePalette palette)
@@ -59,6 +79,7 @@ namespace EW
 
             currentPaletteTexture = palette.Texture;
 
+            WorldSpriteRenderer.SetPalette(currentPaletteTexture);
 
         }
 

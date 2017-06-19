@@ -15,6 +15,24 @@ namespace EW.Xna.Platforms
                 Order = order;
                 Item = item;
             }
+
+            public static AddJournalEntry<T> CreateKey(T item)
+            {
+                return new AddJournalEntry<T>(-1, item);
+            }
+
+            public override int GetHashCode()
+            {
+                return Item.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (!(obj is AddJournalEntry<T>))
+                    return false;
+
+                return object.Equals(Item, ((AddJournalEntry<T>)obj).Item);
+            }
         }
 
         class SortingFilteringCollection<T> : ICollection<T>
@@ -80,17 +98,39 @@ namespace EW.Xna.Platforms
 
             public void Add(T item)
             {
-
+                _addJournal.Add(new AddJournalEntry<T>(_addJournal.Count, item));
+                InvalidateCache();
             }
 
             public bool Remove(T item)
             {
+                if (_addJournal.Remove(AddJournalEntry<T>.CreateKey(item)))
+                    return true;
+
+                var index = _items.IndexOf(item);
+                if (index >= 0)
+                {
+                    UnsubscribeFromItemEvents(item);
+                    _removeJournal.Add(index);
+                    InvalidateCache();
+                    return true;
+                }
                 return false;
             }
 
             public void Clear()
             {
+                for(int i = 0; i < _items.Count; i++)
+                {
+                    _filterChangedUnsubscriber(_items[i], Item_FilterPropertyChanged);
+                    _sortChangedUnsubscriber(_items[i], Item_FilterPropertyChanged);
+                }
 
+                _addJournal.Clear();
+                _removeJournal.Clear();
+                _items.Clear();
+
+                InvalidateCache();
             }
 
             public bool Contains(T item)
@@ -217,6 +257,10 @@ namespace EW.Xna.Platforms
 
             }
 
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="item"></param>
             private void UnsubscribeFromItemEvents(T item)
             {
                 _filterChangedUnsubscriber(item, Item_FilterPropertyChanged);
@@ -243,7 +287,7 @@ namespace EW.Xna.Platforms
             }
 
             /// <summary>
-            /// 
+            /// 重新构建缓存
             /// </summary>
             private void InvalidateCache()
             {

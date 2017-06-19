@@ -7,7 +7,7 @@ namespace EW.Graphics
     /// <summary>
     ///  ¿ΩÁ‰÷»æ∆˜
     /// </summary>
-    public sealed class WorldRenderer:IDisposable
+    public sealed class WorldRenderer:DrawableGameComponent
     {
 
         public GameViewPort ViewPort { get; private set; }
@@ -32,7 +32,7 @@ namespace EW.Graphics
         /// </summary>
         readonly bool enableDepthBuffer;
 
-        internal WorldRenderer(ModData mod,World world)
+        internal WorldRenderer(Game game,ModData mod,World world):base(game)
         {
             World = world;
             TileSize = World.Map.Grid.TileSize;
@@ -63,7 +63,8 @@ namespace EW.Graphics
         {
             palette.ApplyModifiers(World.WorldActor.TraitsImplementing<IPaletteModifier>());
 
-            WarGame.Renderer.SetPalette(palette);
+            //WarGame.Renderer.SetPalette(palette);
+            ((WarGame)Game).Renderer.SetPalette(palette);
         }
 
 

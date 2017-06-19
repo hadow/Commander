@@ -233,6 +233,14 @@ namespace EW.Xna.Platforms.Graphics
             StateKey = unchecked(NextStateKey++);
         }
 
+        public void SetValue(Single value)
+        {
+            if (ParameterType != EffectParameterType.Single)
+                throw new InvalidCastException();
+            ((float[])Data)[0] = value;
+            StateKey = unchecked(NextStateKey++);
+        }
+
         public void SetValue(Vector2 value)
         {
             if (ParameterClass != EffectParameterClass.Vector || ParameterType != EffectParameterType.Single)
@@ -254,6 +262,19 @@ namespace EW.Xna.Platforms.Graphics
             fData[0] = value.X;
             fData[1] = value.Y;
             fData[2] = value.Z;
+            StateKey = unchecked(NextStateKey++);
+        }
+
+        public void SetValue(Vector4 value)
+        {
+            if (ParameterClass != EffectParameterClass.Vector || ParameterType != EffectParameterType.Single)
+                throw new InvalidCastException();
+
+            var fData = (float[])Data;
+            fData[0] = value.X;
+            fData[1] = value.Y;
+            fData[2] = value.Z;
+            fData[3] = value.W;
             StateKey = unchecked(NextStateKey++);
         }
 

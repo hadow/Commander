@@ -8,7 +8,7 @@ namespace EW.Graphics
     /// <summary>
     /// 
     /// </summary>
-    public sealed class TerrainSpriteLayer:IDisposable
+    public sealed class TerrainSpriteLayer:DrawableGameComponent
     {
         public bool restrictToBounds;
 
@@ -33,7 +33,7 @@ namespace EW.Graphics
 
         readonly Vertex[] vertices;
 
-        public TerrainSpriteLayer(World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds)
+        public TerrainSpriteLayer(Game game,World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds):base(game)
         {
             worldRender = wr;
             this.restrictToBounds = restrictToBounds;
@@ -120,19 +120,23 @@ namespace EW.Graphics
             var firstRow = cells.CandidateMapCoords.TopLeft.V.Clamp(0, map.MapSize.Y);
             var lastRow = (cells.CandidateMapCoords.BottomRight.V + 1).Clamp(firstRow, map.MapSize.Y);
 
+            int vertexSize = System.Runtime.InteropServices.Marshal.SizeOf<Vertex>();
             //Flush any visible changes to the GPU
-            for(var row = firstRow; row <= lastRow; row++)
+            for (var row = firstRow; row <= lastRow; row++)
             {
                 if (!dirtyRows.Remove(row))
                     continue;
 
                 var rowOffset = rowStride * row;
-                vertexBuffer.SetData(System.Runtime.InteropServices.Marshal.SizeOf<Vertex>()*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
+                vertexBuffer.SetData(vertexSize*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
             }
+            ((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(vertexBuffer, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
         }
+        
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             worldRender.PaletteInvalidated -= UpdatePaletteIndices;
             vertexBuffer.Dispose();
         }
