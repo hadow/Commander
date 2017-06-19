@@ -8,7 +8,7 @@ namespace EW.Graphics
     {
         readonly Renderer renderer;
 
-        readonly Action renderAction;
+        //readonly Action renderAction;
 
         readonly Effect effect;
 
@@ -24,7 +24,7 @@ namespace EW.Graphics
             this.renderer = renderer;
             this.effect = effect;
             vertices = new Vertex[renderer.TempBufferSize];
-            renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
+            //renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
         }
 
         public void DrawVertexBuffer(DynamicVertexBuffer buffer,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)

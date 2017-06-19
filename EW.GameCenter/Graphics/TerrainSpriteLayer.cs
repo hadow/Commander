@@ -48,7 +48,7 @@ namespace EW.Graphics
 
             var vertexCount = rowStride * map.MapSize.Y;
 
-            vertexBuffer = new DynamicVertexBuffer(GraphicsDeviceManager.M.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
+            vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
 
 
             emptySprite = new Sprite(sheet, Rectangle.Empty, TextureChannel.Alpha);

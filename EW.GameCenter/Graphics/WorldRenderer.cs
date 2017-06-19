@@ -53,7 +53,7 @@ namespace EW.Graphics
 
             Theater = new Theater(world.Map.Rules.TileSet);
 
-            terrainRenderer = new TerrainRenderer(world, this);
+            terrainRenderer = new TerrainRenderer(game,world, this);
         }
 
         /// <summary>
