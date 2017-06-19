@@ -9,6 +9,12 @@ namespace EW.Xna.Platforms
             public readonly int Order;
             public readonly T Item;
 
+
+            public AddJournalEntry(int order,T item)
+            {
+                Order = order;
+                Item = item;
+            }
         }
 
         class SortingFilteringCollection<T> : ICollection<T>
@@ -94,7 +100,7 @@ namespace EW.Xna.Platforms
 
             public void CopyTo(T[] array,int arrayIndex)
             {
-
+                _items.CopyTo(array, arrayIndex);
             }
 
             public int Count { get { return _items.Count; } }
@@ -108,6 +114,142 @@ namespace EW.Xna.Platforms
             {
                 return ((System.Collections.IEnumerable)_items).GetEnumerator();
             }
+
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <typeparam name="TUserData"></typeparam>
+            /// <param name="action"></param>
+            /// <param name="userData"></param>
+            public void ForEachFilteredItem<TUserData>(Action<T,TUserData> action,TUserData userData)
+            {
+                if (_shouldRebuildCache)
+                {
+
+                    //Rebuild the cache
+                    _cachedFilteredItems.Clear();
+                    for(int i = 0; i < _items.Count; i++)
+                    {
+                        if (_filter(_items[i]))
+                            _cachedFilteredItems.Add(_items[i]);
+                    }
+
+                    _shouldRebuildCache = false;
+                }
+
+                for(int i = 0; i < _cachedFilteredItems.Count; i++)
+                {
+                    action(_cachedFilteredItems[i], userData);
+                }
+
+                if (_shouldRebuildCache)
+                    _cachedFilteredItems.Clear();
+            }
+
+
+            /// <summary>
+            /// Sort high to low
+            /// </summary>
+            private static readonly Comparison<int> RemoveJournalSortComparison = (x, y) => Comparer<int>.Default.Compare(x, y);
+
+            /// <summary>
+            /// 
+            /// </summary>
+            private void ProcessRemoveJournal()
+            {
+                if (_removeJournal.Count == 0)
+                    return;
+
+                _removeJournal.Sort(RemoveJournalSortComparison);
+                for(int i = 0; i < _removeJournal.Count; i++)
+                {
+                    _items.RemoveAt(_removeJournal[i]);
+                }
+
+                _removeJournal.Clear();
+            }
+
+            private void ProcessAddJournal()
+            {
+                if (_addJournal.Count == 0)
+                    return;
+
+                _addJournal.Sort(_addJournalSortComparison);
+
+                int iAddJournal = 0;
+                int iItems = 0;
+
+                while (iItems < _items.Count && iAddJournal < _addJournal.Count)
+                {
+                    var addJournalItem = _addJournal[iAddJournal].Item;
+
+                    //
+                    if (_sort(addJournalItem, _items[iItems]) < 0)
+                    {
+                        SubscribeToItemEvents(addJournalItem);
+                        _items.Insert(iItems, addJournalItem);
+                        ++iAddJournal;
+                    }
+
+                    ++iItems;
+                }
+
+                for (; iAddJournal < _addJournal.Count; iAddJournal++)
+                {
+                    var addJournalItem = _addJournal[iAddJournal].Item;
+                    SubscribeToItemEvents(addJournalItem);
+                    _items.Add(addJournalItem);
+                }
+
+                _addJournal.Clear();
+            }
+
+
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="item"></param>
+            private void SubscribeToItemEvents(T item)
+            {
+                _filterChangedSubscriber(item, Item_FilterPropertyChanged);
+                _sortChangedSubscriber(item, Item_SortPropertyChanged);
+
+            }
+
+            private void UnsubscribeFromItemEvents(T item)
+            {
+                _filterChangedUnsubscriber(item, Item_FilterPropertyChanged);
+                _sortChangedUnsubscriber(item, Item_SortPropertyChanged);
+            }
+
+            private void Item_FilterPropertyChanged(object sender,EventArgs e)
+            {
+                InvalidateCache();
+            }
+
+            private void Item_SortPropertyChanged(object sender,EventArgs e)
+            {
+                var item = (T)sender;
+                var index = _items.IndexOf(item);
+
+                _addJournal.Add(new AddJournalEntry<T>(_addJournal.Count, item));
+                _removeJournal.Add(index);
+
+                //Until the item is back in place,we don't care about its events,we will re-subscribe when _addJournal is processed.
+                UnsubscribeFromItemEvents(item);
+                InvalidateCache();
+
+            }
+
+            /// <summary>
+            /// 
+            /// </summary>
+            private void InvalidateCache()
+            {
+                _shouldRebuildCache = true;
+            }
+
         }
     }
 }

@@ -76,6 +76,9 @@ namespace EW.Xna.Platforms
         private ContentManager _content;
 
 
+        /// <summary>
+        /// 绘制组件
+        /// </summary>
         private SortingFilteringCollection<IDrawable> _drawables = new SortingFilteringCollection<IDrawable>(
                 d => d.Visible,
                 (d, handler) => d.VisibleChanged += handler,
@@ -86,6 +89,16 @@ namespace EW.Xna.Platforms
             
             );
 
+        /// <summary>
+        /// 逻辑组件
+        /// </summary>
+        private SortingFilteringCollection<IUpdateable> _updateables = new SortingFilteringCollection<IUpdateable>(
+                u => u.Enabled,
+                (u, handler) => u.EnabledChanged += handler,
+                (u, handler) => u.EnabledChanged -= handler,
+                (u1, u2) => Comparer<int>.Default.Compare(u1.UpdateOrder, u2.UpdateOrder),
+                (u, handler) => u.UpdateOrderChanged += handler,
+                (u, handler) => u.UpdateOrderChanged -= handler);
 
 
         public Game()
@@ -105,8 +118,16 @@ namespace EW.Xna.Platforms
             Dispose(false);
         }
 
-        
-        
+        #region Events
+
+        public event EventHandler<EventArgs> Activated;
+        public event EventHandler<EventArgs> Deactivated;
+        public event EventHandler<EventArgs> Disposed;
+        public event EventHandler<EventArgs> Exiting;
+
+        #endregion
+
+
 
 
         private GameServiceContainer _services;
@@ -202,13 +223,37 @@ namespace EW.Xna.Platforms
             _gameTimer = Stopwatch.StartNew();
             switch (runBehaviour)
             {
+                case GameRunBehaviour.Asynchronous:
 
+                    Platform.AsyncRunLoopEnded += Platform_AsyncRunLoopEnded;
+                    Platform.StartRunLoop();
+                    break;
+                case GameRunBehaviour.Synchronous:
+                    DoUpdate(new GameTime());
+
+                    Platform.RunLoop();
+                    EndRun();
+                    DoExiting();
+                    break;
+                default:
+                    throw new ArgumentException(string.Format("Handling for the fun behaviour {0} is not implemented.", runBehaviour));
             }
 
         }
 
+        private void Platform_AsyncRunLoopEnded(object sender,EventArgs e)
+        {
+            AssertNotDisposed();
+
+            var platform = (GamePlatform)sender;
+            platform.AsyncRunLoopEnded -= Platform_AsyncRunLoopEnded;
+            EndRun();
+            DoExiting();
+        }
+
         protected virtual void BeginRun() { }
 
+        protected virtual void EndRun() { }
         /// <summary>
         /// 
         /// </summary>
@@ -220,6 +265,11 @@ namespace EW.Xna.Platforms
         }
 
         protected virtual void OnDeactivated(object sender,EventArgs args)
+        {
+
+        }
+
+        protected virtual void OnExiting(object sender,EventArgs args)
         {
 
         }
@@ -243,11 +293,13 @@ namespace EW.Xna.Platforms
         }
 
         /// <summary>
-        /// 
+        /// 初始化
         /// </summary>
         protected virtual void Initialize()
         {
             ApplyChanges(graphicsDeviceManager);
+
+            InitializeExistingComponents();
 
             _graphicsDeviceService = (IGraphicsDeviceService)Services.GetService(typeof(IGraphicsDeviceService));
 
@@ -272,6 +324,8 @@ namespace EW.Xna.Platforms
             Platform.BeforeInitialize();
             Initialize();
 
+
+            CategorizeComponents();
             _components.ComponentAdded += Components_ComponentAdded;
             _components.ComponentRemoved += Components_ComponentRemoved;
 
@@ -293,6 +347,46 @@ namespace EW.Xna.Platforms
         #endregion
 
 
+        /// <summary>
+        /// 初始化已存在的组件
+        /// </summary>
+        private void InitializeExistingComponents()
+        {
+
+            for(int i = 0; i < Components.Count; i++)
+            {
+                Components[i].Initialize();
+            }
+
+        }
+
+        private void CategorizeComponents()
+        {
+            DecategorizeComponents();
+            for(int i = 0; i < Components.Count; i++)
+            {
+                CategorizeComponent(Components[i]);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="component"></param>
+        private void CategorizeComponent(IGameComponent component)
+        {
+            if (component is IUpdateable)
+                _updateables.Add((IUpdateable)component);
+
+            if (component is IDrawable)
+                _drawables.Add((IDrawable)component);
+        }
+
+        private void DecategorizeComponents()
+        {
+            _updateables.Clear();
+            _drawables.Clear();
+        }
 
         private void AssertNotDisposed()
         {
@@ -309,16 +403,27 @@ namespace EW.Xna.Platforms
         public void Tick()
         {
             RetryTick:
+            //Advance the accumulated elapsed time.
+            //提前累积经过时间
             var currentTicks = _gameTimer.Elapsed.Ticks;
             _accumulatedElapsedTime += TimeSpan.FromTicks(currentTicks-_previousTicks);
             _previousTicks = currentTicks;
+
+            //If we're in the fixed timestep mode and not enough time has elapsed
+            //to perform an update we sleep off the remaining time to save battery lift and/or release CPU time to other threads and processes.
+            //如果我们当前处于固定时间步长模式，并且没有足够的时间来执行Update,我们将休息剩下的时间，以节省电量或释放CPU时间到其它线程和进程
             if(IsFixedTimeStep && _accumulatedElapsedTime < TargetElapsedTime)
             {
                 var sleepTime = (int)(TargetElapsedTime - _accumulatedElapsedTime).TotalMilliseconds;
+
+                //Note:While sleep can be inaccurate in general it is accurate enough for frame limiting purposes if some fluctuation is an acceptable result.
+                //虽然睡眠通常可能不准确，但如果某些波动是可接受的结果，则对于限制帧数来说它又是足够准确的
                 System.Threading.Thread.Sleep(sleepTime);
                 goto RetryTick;
             }
 
+            //Do not allow any update to take longer than our maximum.
+            //不要让任何更新所花费时间比最大值更长
             if(_accumulatedElapsedTime > _maxElapsedTime)
             {
                 _accumulatedElapsedTime = _maxElapsedTime;
@@ -328,7 +433,7 @@ namespace EW.Xna.Platforms
             {
                 _gameTime.ElapsedGameTime = TargetElapsedTime;
                 var stepCount = 0;
-                while(_accumulatedElapsedTime >= TargetElapsedTime)
+                while(_accumulatedElapsedTime >= TargetElapsedTime && !_shouldExit)
                 {
                     _gameTime.TotalGameTime += TargetElapsedTime;
                     _accumulatedElapsedTime -= TargetElapsedTime;
@@ -337,6 +442,7 @@ namespace EW.Xna.Platforms
                 }
 
                 _updateFrameLag += Math.Max(0, stepCount - 1);
+
                 if (_gameTime.IsRunningSlowly)
                 {
                     if (_updateFrameLag == 0)
@@ -344,22 +450,29 @@ namespace EW.Xna.Platforms
                 }
                 else if(_updateFrameLag >= 5)
                 {
+                    //If we lag more than 5 frames,start thinking we are running slowly
+                    //
                     _gameTime.IsRunningSlowly = true;
                 }
 
+                //Every time we just do one update and one draw,then we are not running slowly,so decrease the lag
                 if (stepCount == 1 && _updateFrameLag > 0)
                     _updateFrameLag--;
 
+                //Draw needs to know the total elapsed time that occured for the fixed length updates.
                 _gameTime.ElapsedGameTime = TimeSpan.FromTicks(TargetElapsedTime.Ticks * stepCount);
             }
             else
             {
+
+                //Perform a single variable length update.
                 _gameTime.ElapsedGameTime = _accumulatedElapsedTime;
                 _gameTime.TotalGameTime += _accumulatedElapsedTime;
                 _accumulatedElapsedTime = TimeSpan.Zero;
                 DoUpdate(_gameTime);
             }
 
+            //Draw unless the update suppressed it.
             if (_suppressDraw)
                 _suppressDraw = false;
             else
@@ -380,6 +493,8 @@ namespace EW.Xna.Platforms
             {
                 Update(gameTime);
 
+
+                //The TouchPanel needs to know the time for when touches arrive.
                 TouchPanelState.CurrentTimestamp = gameTime.TotalGameTime;
 
             }
@@ -397,6 +512,15 @@ namespace EW.Xna.Platforms
         }
 
         /// <summary>
+        /// 退出
+        /// </summary>
+        internal void DoExiting()
+        {
+            OnExiting(this, EventArgs.Empty);
+            UnloadContent();
+        }
+
+        /// <summary>
         /// 开始绘制
         /// </summary>
         /// <returns></returns>
@@ -410,18 +534,26 @@ namespace EW.Xna.Platforms
             Platform.Present();
         }
         /// <summary>
-        /// 
+        /// 绘制
         /// </summary>
         /// <param name="gameTime"></param>
-        protected virtual void Draw(GameTime gameTime) { }
+        protected virtual void Draw(GameTime gameTime)
+        {
+            _drawables.ForEachFilteredItem(DrawAction, gameTime);
+        }
+
+        private static readonly Action<IDrawable, GameTime> DrawAction = (drawable, gameTime) => drawable.Draw(gameTime);
+
         /// <summary>
-        /// 
+        /// 更新
         /// </summary>
         /// <param name="gameTime"></param>
         protected virtual void Update(GameTime gameTime)
         {
-
+            _updateables.ForEachFilteredItem(UpdateAction, gameTime);
         }
+
+        public static readonly Action<IUpdateable, GameTime> UpdateAction = (updateable, gametime) => updateable.Update(gametime);
 
         public void Dispose()
         {

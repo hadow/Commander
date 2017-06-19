@@ -13,6 +13,8 @@ namespace EW.Xna.Platforms
 
         event EventHandler<EventArgs> VisibleChanged;
 
+        void Draw(GameTime gameTime);
+
     }
     public class DrawableGameComponent:GameComponent,IDrawable
     {
