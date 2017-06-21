@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Traits;
 using EW.NetWork;
 using EW.Primitives;
+using EW.Support;
 namespace EW
 {
     public enum WorldT
@@ -25,6 +26,7 @@ namespace EW
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
 
+        public int Timestep;
 
         readonly Queue<Action<World>> frameEndActions = new Queue<Action<World>>();
 
@@ -36,7 +38,14 @@ namespace EW
 
         public Player[] Players = new Player[0];
 
+        public int WorldTick { get; private set; }
+
+        /// <summary>
+        /// ±Í ∂ «∑ÒTick
+        /// </summary>
         public bool ShouldTick { get { return Type != WorldT.Shellmap; } }
+
+        public bool Paused { get; internal set; }
         internal World(Map map,OrderManager orderManager,WorldT type)
         {
             Type = type;
@@ -50,10 +59,46 @@ namespace EW
 
         }
 
+
         public void Tick()
         {
+            if (!Paused)
+            {
+                WorldTick++;
+                
+                using(new PerfSample("tick_idle"))
+                {
+                    foreach(var ni in ActorsWithTrait<INotifyIdle>())
+                    {
+                        if (ni.Actor.IsIdle)
+                        {
+                            ni.Trait.TickIdle(ni.Actor);
+                        }
+                    }
+                }
+
+                using(new PerfSample("tick_activities"))
+                {
+                    foreach (var a in actors.Values)
+                        a.Tick();
+                }
+
+                ActorsWithTrait<ITick>().DoTimed(x => x.Trait.Tick(x.Actor), "Trait");
+
+            }
             while (frameEndActions.Count != 0)
                 frameEndActions.Dequeue()(this);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public IEnumerable<TraitPair<T>> ActorsWithTrait<T>()
+        {
+            return TraitDict.ActorsWithTrait<T>();
         }
 
         public void AddFrameEndTask(Action<World> a)

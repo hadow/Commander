@@ -1,11 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using EW.Graphics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
 using EW.Xna.Platforms.Content;
 namespace EW
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class Renderer:DrawableGameComponent
     {
         public SpriteRenderer SpriteRenderer;
@@ -31,7 +36,11 @@ namespace EW
         float? lastZoom;
 
         Texture2D currentPaletteTexture;
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        readonly Stack<Xna.Platforms.Rectangle> scissorState = new Stack<Xna.Platforms.Rectangle>();
 
         public Size Resolution { get { return new Size(GraphicsDevice.DisplayMode.Width,GraphicsDevice.DisplayMode.Height); } }
         public Renderer(Game game,GraphicsSettings graphicSettings):base(game)
@@ -55,6 +64,11 @@ namespace EW
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
         {
             GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
+        }
+
+        public void EndFrame()
+        {
+
         }
         /// <summary>
         /// 
@@ -83,6 +97,23 @@ namespace EW
 
         }
 
+
+        public void EnableScissor(EW.Xna.Platforms.Rectangle rect)
+        {
+            this.GraphicsDevice.ScissorRectangle = rect;
+            scissorState.Push(rect);
+            
+        }
+
+        public void DisableScissor()
+        {
+            scissorState.Pop();
+
+            if (scissorState.Any())
+            {
+                var rect = scissorState.Peek();
+            }
+        }
 
         /// <summary>
         /// 

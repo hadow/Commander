@@ -39,6 +39,11 @@ namespace EW.Support
         }
 
 
+        public static void LogLongTick(long startStopwatchTicks,long endStopwatchTicks,string name,object item)
+        {
+
+        }
+
         public void Dispose()
         {
 

@@ -138,7 +138,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 计算可视单元格
+        /// 计算可视范围内单元格
         /// </summary>
         /// <param name="insideBounds"></param>
         /// <returns></returns>

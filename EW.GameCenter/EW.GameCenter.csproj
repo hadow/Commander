@@ -179,6 +179,7 @@
     <Compile Include="WarGame.cs" />
     <Compile Include="World.cs" />
     <Compile Include="WDist.cs" />
+    <Compile Include="WorldUtils.cs" />
     <Compile Include="WPos.cs" />
     <Compile Include="WVect.cs" />
     <Compile Include="Graphics\Renderable.cs" />

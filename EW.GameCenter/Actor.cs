@@ -29,6 +29,8 @@ namespace EW
         public Rectangle VisualBounds { get; private set; }
 
         public bool IsInWorld { get; internal set; }
+
+        public bool IsIdle { get { return currentActivity == null; } }
         public bool Disposed { get; private set; }
         Activity currentActivity;
 

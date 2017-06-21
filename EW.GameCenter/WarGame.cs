@@ -16,11 +16,18 @@ namespace EW
     /// </summary>
     public class WarGame:Game
     {
+        /// <summary>
+        /// 120 ms net tick for 40ms local tick
+        /// </summary>
+        public const int NetTickScale = 3;
+        public const int Timestep = 40;
+
         public static MersenneTwister CosmeticRandom = new MersenneTwister();
         public static ModData ModData;
         public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
    
+
         Vector2 position;
         Texture2D texture;
         SpriteBatch spriteBatch;
@@ -29,6 +36,11 @@ namespace EW
         public Renderer Renderer;
         WorldRenderer worldRenderer;
         OrderManager orderManager;
+
+        public int LocalTick { get { return orderManager.LocalFrameNumber; } }
+
+        public int NetFrameNumber { get { return orderManager.NetFrameNumber; } }
+
         public WarGame() {
             DeviceManager = new GraphicsDeviceManager(this);
             DeviceManager.IsFullScreen = true;
@@ -165,13 +177,12 @@ namespace EW
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            LogicTick(gameTime);
         }
 
 
         protected override void Draw(GameTime gameTime)
         {
-
-
             spriteBatch.Begin();
             spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
             spriteBatch.End();
@@ -189,7 +200,10 @@ namespace EW
                 if (worldRenderer != null)
                 {
                     Renderer.BeginFrame(worldRenderer.ViewPort.TopLeft, worldRenderer.ViewPort.Zoom);
+
                     worldRenderer.Draw();
+
+                    Renderer.EndFrame();
                 }
             }
         }
@@ -197,9 +211,45 @@ namespace EW
         /// <summary>
         /// 
         /// </summary>
-        void LogicTick()
+        void LogicTick(GameTime time)
         {
+            InnerLogicTick(orderManager,time);
+        }
 
+        /// <summary>
+        /// ÄÚ²¿Âß¼­
+        /// </summary>
+        /// <param name="orderManager"></param>
+        void InnerLogicTick(OrderManager orderManager,GameTime time)
+        {
+            var tick = (long)time.ElapsedGameTime.TotalMilliseconds;
+
+            var world = orderManager.World;
+
+            var worldTimestep = world == null ? Timestep : world.Timestep;
+
+            var worldTickDelta = tick - orderManager.lastTickTime;
+
+            if(worldTimestep != 0 && worldTickDelta >= worldTimestep)
+            {
+                if (world == null) return;
+                //Don't tick when the shellmap is disabled
+                if (world.ShouldTick)
+                {
+                    var isNetTick = LocalTick % NetTickScale == 0;
+                    if (!isNetTick || orderManager.IsReadyForNextFrame)
+                    {
+                        ++orderManager.LocalFrameNumber;
+
+                        if (isNetTick)
+                            orderManager.Tick();
+
+                        world.Tick();
+                    }
+                    else if (orderManager.NetFrameNumber == 0)
+                        orderManager.lastTickTime = tick;
+                }
+            }
         }
 
         public static T CreateObject<T>(string name)
