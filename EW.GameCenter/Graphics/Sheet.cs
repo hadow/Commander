@@ -10,7 +10,7 @@ namespace EW.Graphics
     /// 然后这些缓冲区通常很大，并且保持着live,因为sheets 被使用它们的sprite 引用，如果此缓冲区在不需要时显式为空，则GC可以回收它。
     /// 有时甚至不需要创建一个缓冲区，因为使用该Sheet 的对象只能直接在纹理上工作。
     /// </summary>
-    public sealed class Sheet:IDisposable
+    public sealed class Sheet:GameComponent
     {
         bool releaseBufferOnCommit;
         bool dirty;
@@ -22,7 +22,7 @@ namespace EW.Graphics
         public readonly SheetT Type;
         
 
-        public Sheet(SheetT type,Size size)
+        public Sheet(Game game,SheetT type,Size size):base(game)
         {
             Type = type;
             Size = size;
@@ -68,7 +68,7 @@ namespace EW.Graphics
         {
             if(texture == null)
             {
-                texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Size.Width, Size.Height);
+                texture = new Texture2D(this.Game.GraphicsDevice, Size.Width, Size.Height);
                 dirty = true;
             }
 
@@ -102,8 +102,9 @@ namespace EW.Graphics
         }
 
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (texture != null)
             {
                 texture.Dispose();

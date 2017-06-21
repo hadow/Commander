@@ -18,7 +18,7 @@ namespace EW.Graphics
         Indexed = 1,
         BGRA = 2,
     }
-    public sealed class SheetBuilder:IDisposable
+    public sealed class SheetBuilder:GameComponent
     {
 
         public readonly SheetT Type;
@@ -32,16 +32,16 @@ namespace EW.Graphics
         Sheet current;
         TextureChannel channel;
         
-        public static Sheet AllocateSheet(SheetT type,int sheetSize,GraphicsDevice device)
+        public static Sheet AllocateSheet(SheetT type,int sheetSize,Game game)
         {
-            return new Sheet(type, new Size(sheetSize,sheetSize));
+            return new Sheet(game,type, new Size(sheetSize,sheetSize));
         }
         
-        public SheetBuilder(SheetT t,GraphicsDevice device):this(t,WarGame.Settings.Graphics.SheetSize,device){}
+        public SheetBuilder(SheetT t,Game game):this(t,WarGame.Settings.Graphics.SheetSize,game){}
 
-        public SheetBuilder(SheetT t,int sheetSize,GraphicsDevice device):this(t,()=>AllocateSheet(t,sheetSize,device)){}
+        public SheetBuilder(SheetT t,int sheetSize,Game game):this(game,t,()=>AllocateSheet(t,sheetSize,game)){}
         
-        public SheetBuilder(SheetT t,Func<Sheet> allocateSheet)
+        public SheetBuilder(Game game,SheetT t,Func<Sheet> allocateSheet):base(game)
         {
             channel = TextureChannel.Red;
             Type = t;
@@ -132,13 +132,24 @@ namespace EW.Graphics
         /// <summary>
         /// ÊÍ·Å×ÊÔ´
         /// </summary>
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    foreach (var sheet in sheets)
+        //        sheet.Dispose();
+
+        //    sheets.Clear();
+        //}
+
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             foreach (var sheet in sheets)
                 sheet.Dispose();
 
             sheets.Clear();
         }
+
+
 
 
 

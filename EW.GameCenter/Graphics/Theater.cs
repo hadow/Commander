@@ -23,7 +23,7 @@ namespace EW.Graphics
     /// <summary>
     /// 
     /// </summary>
-    public sealed class Theater:IDisposable
+    public sealed class Theater:GameComponent
     {
         readonly Dictionary<ushort, TheaterTemplate> templates = new Dictionary<ushort, TheaterTemplate>();
         readonly SheetBuilder sheetBuilder;
@@ -37,7 +37,7 @@ namespace EW.Graphics
         public Sheet Sheet { get { return sheetBuilder.Current; } }
         
 
-        public Theater(TileSet tileset)
+        public Theater(Game game,TileSet tileset):base(game)
         {
             this.tileset = tileset;
 
@@ -47,10 +47,10 @@ namespace EW.Graphics
             {
                 if (allocated)
                     throw new SheetOverflowException("Terrain sheet overflow.Try increasing the tileset SheetSize parameter.");
-                return new Sheet(SheetT.Indexed, new Size(tileset.SheetSize, tileset.SheetSize));
+                return new Sheet(game,SheetT.Indexed, new Size(tileset.SheetSize, tileset.SheetSize));
             };
 
-            sheetBuilder = new SheetBuilder(SheetT.Indexed, allocate);
+            sheetBuilder = new SheetBuilder(game,SheetT.Indexed, allocate);
             random = new MersenneTwister();
 
             var frameCache = new FrameCache(WarGame.ModData.DefaultFileSystem, WarGame.ModData.SpriteLoaders);
@@ -123,8 +123,14 @@ namespace EW.Graphics
             return template.Sprites[start * template.Stride + r.Index];
         }
 
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    sheetBuilder.Dispose();
+        //}
+
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             sheetBuilder.Dispose();
         }
     }

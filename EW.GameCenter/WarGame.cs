@@ -76,7 +76,7 @@ namespace EW
             }
 
             Renderer = new Renderer(this,Settings.Graphics);
-            ModData = new ModData(GraphicsDevice,Mods[mod], Mods, true);
+            ModData = new ModData(this,Mods[mod], Mods, true);
 
             using (new Support.PerfTimer("LoadMaps"))
                 ModData.MapCache.LoadMaps();
@@ -124,7 +124,7 @@ namespace EW
             using (new PerfTimer("NewWorld"))
                 orderManager.World = new World(map, orderManager, type);
 
-            worldRenderer = new WorldRenderer(ModData, orderManager.World);
+            worldRenderer = new WorldRenderer(this,ModData, orderManager.World);
 
             GC.Collect();
         }

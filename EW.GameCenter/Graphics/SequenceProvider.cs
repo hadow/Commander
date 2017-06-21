@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EW.Primitives;
 using EW.FileSystem;
+using EW.Xna.Platforms;
 namespace EW.Graphics
 {
     using Sequences = IReadOnlyDictionary<string, Lazy<IReadOnlyDictionary<string, ISpriteSequence>>>;
@@ -51,7 +52,7 @@ namespace EW.Graphics
     /// <summary>
     /// 序列对象提供
     /// </summary>
-    public class SequenceProvider:IDisposable
+    public class SequenceProvider:GameComponent
     {
 
         readonly ModData modData;
@@ -63,7 +64,7 @@ namespace EW.Graphics
 
         readonly Dictionary<string, UnitSequences> sequenceCache = new Dictionary<string, UnitSequences>();
 
-        public SequenceProvider(IReadOnlyFileSystem fileSystem,ModData modData,TileSet tileSet,MiniYaml additionalSequences)
+        public SequenceProvider(Game game,IReadOnlyFileSystem fileSystem,ModData modData,TileSet tileSet,MiniYaml additionalSequences):base(game)
         {
             this.modData = modData;
             this.tileSet = tileSet;
@@ -74,7 +75,7 @@ namespace EW.Graphics
                     return Load(fileSystem, additionalSequences);
             });
 
-            spriteCache = Exts.Lazy(() =>new SpriteCache(fileSystem,modData.SpriteLoaders,new SheetBuilder(SheetT.Indexed,modData.Device)));
+            spriteCache = Exts.Lazy(() =>new SpriteCache(fileSystem,modData.SpriteLoaders,new SheetBuilder(SheetT.Indexed,game)));
 
         }
 
@@ -140,11 +141,18 @@ namespace EW.Graphics
             SpriteCache.SheetBuilder.Current.ReleaseBuffer();
         }
 
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    if (spriteCache.IsValueCreated)
+        //        spriteCache.Value.SheetBuilder.Dispose();
+
+        //}
+
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (spriteCache.IsValueCreated)
                 spriteCache.Value.SheetBuilder.Dispose();
-
         }
     }
 }

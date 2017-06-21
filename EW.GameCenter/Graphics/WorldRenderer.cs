@@ -24,7 +24,7 @@ namespace EW.Graphics
 
         readonly Func<string, PaletteReference> createPaletteReference;
 
-        readonly HardwarePalette palette = new HardwarePalette();
+        readonly HardwarePalette palette; //= new HardwarePalette();
 
         public event Action PaletteInvalidated = null;
         /// <summary>
@@ -36,8 +36,8 @@ namespace EW.Graphics
         {
             World = world;
             TileSize = World.Map.Grid.TileSize;
-            ViewPort = new GameViewPort(this, world.Map);
-
+            ViewPort = new GameViewPort(game,this, world.Map);
+            palette = new HardwarePalette(game);
             createPaletteReference = CreatePaletteReference;
 
             foreach (var pal in world.TraitDict.ActorsWithTrait<ILoadsPalettes>())
@@ -51,7 +51,7 @@ namespace EW.Graphics
             var mapGrid = mod.Manifest.Get<MapGrid>();
             enableDepthBuffer = mapGrid.EnableDepthBuffer;
 
-            Theater = new Theater(world.Map.Rules.TileSet);
+            Theater = new Theater(game,world.Map.Rules.TileSet);
 
             terrainRenderer = new TerrainRenderer(game,world, this);
         }

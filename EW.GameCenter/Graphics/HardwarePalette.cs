@@ -7,7 +7,7 @@ namespace EW.Graphics
     /// <summary>
     /// 
     /// </summary>
-    public sealed class HardwarePalette:IDisposable
+    public sealed class HardwarePalette:DrawableGameComponent
     {
         public Texture2D Texture { get; private set; }
         public int Height { get; private set; }
@@ -20,7 +20,7 @@ namespace EW.Graphics
 
         byte[] buffer = new byte[0];
 
-        public HardwarePalette()
+        public HardwarePalette(Game game):base(game)
         {
             //Texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Palette.Size, Height);
 
@@ -33,11 +33,12 @@ namespace EW.Graphics
         }
 
 
-        public void Initialize()
+        //public void Initialize()
+        public override void Initialize()
         {
             if (Texture != null)
                 Texture.Dispose();
-            Texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Palette.Size, Height);
+            Texture = new Texture2D(this.GraphicsDevice, Palette.Size, Height);
             CopyModifiablePalettesToBuffer();
             CopyBufferToTexture();
         }
@@ -149,8 +150,14 @@ namespace EW.Graphics
             throw new InvalidOperationException("Palette '{0}' does not exist".F(name));
 
         }
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    Texture.Dispose();
+        //}
+
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             Texture.Dispose();
         }
     }

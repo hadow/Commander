@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using EW.Graphics;
 using EW.FileSystem;
-using EW.Primitives;
+using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
 using System.Linq;
 namespace EW
@@ -12,7 +12,7 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ModData:IDisposable
+    public sealed class ModData:GameComponent
     {
         public IEnumerable<string> Languages { get; private set; }
 
@@ -57,12 +57,11 @@ namespace EW
         {
             get { return defaultSequences.Value; }
         }
-        public ModData(GraphicsDevice device,Manifest mod,InstalledMods mods,bool useLoadScreen = false) : this(mod, mods, useLoadScreen)
-        {
-            this.Device = device;
-        }
+        //public ModData(Game game,Manifest mod,InstalledMods mods,bool useLoadScreen = false) : this(game,mod, mods, useLoadScreen)
+        //{
+        //}
 
-        public ModData(Manifest mod,InstalledMods mods,bool useLoadScreen = false)
+        public ModData(Game game,Manifest mod,InstalledMods mods,bool useLoadScreen = false):base(game)
         {
             Languages = new string[0];
 
@@ -112,7 +111,7 @@ namespace EW
             //ÐòÁÐ¼¯
             defaultSequences = Exts.Lazy(() => {
 
-                var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Value, null));
+                var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(game,DefaultFileSystem, this, t.Value, null));
                 return (IReadOnlyDictionary<string,SequenceProvider>)(new ReadOnlyDictionary<string, SequenceProvider>(items));
 
             });
@@ -186,10 +185,16 @@ namespace EW
 
 
 
-        public void Dispose()
-        {
-            MapCache.Dispose();
+        //public void Dispose()
+        //{
+        //    MapCache.Dispose();
 
+        //}
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            MapCache.Dispose();
         }
 
 

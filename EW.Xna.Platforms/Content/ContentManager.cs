@@ -222,7 +222,7 @@ namespace EW.Xna.Platforms.Content
             Stream stream;
             try
             {
-                var assetPath = Path.Combine(RootDirectory, assetName) + ".xnb";
+                var assetPath = Path.Combine(RootDirectory, assetName) + ".mgfxo";
 
                 stream = TitleContainer.OpenStream(assetPath);
 #if ANDROID

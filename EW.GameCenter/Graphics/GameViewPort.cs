@@ -9,7 +9,7 @@ namespace EW.Graphics
     /// <summary>
     /// 游戏视窗口
     /// </summary>
-    public class GameViewPort
+    public class GameViewPort:GameComponent
     {
 
         Point viewportSize;
@@ -61,7 +61,7 @@ namespace EW.Graphics
             {
                 var newValue = ClosestTo(AvailableZoomSteps, value);
                 zoom = newValue;
-                viewportSize = ((1f / zoom) * new Vector2(GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width, GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height)).ToPoint();
+                viewportSize = ((1f / zoom) * new Vector2(this.Game.GraphicsDevice.DisplayMode.Width, this.Game.GraphicsDevice.DisplayMode.Height)).ToPoint();
                 allCellsDirty = true;
                 cellsDirty = true;
             }
@@ -89,10 +89,10 @@ namespace EW.Graphics
             }
             return closestValue;
         }
-        public GameViewPort(WorldRenderer wr,Map map)
+        public GameViewPort(Game game,WorldRenderer wr,Map map):base(game)
         {
             worldRenderer = wr;
-
+            ScreenClip = Rectangle.FromLTRB(0, 0, Game.GraphicsDevice.DisplayMode.Width, Game.GraphicsDevice.DisplayMode.Height);
             var grid = WarGame.ModData.Manifest.Get<MapGrid>();
 
             if(wr.World.Type == WorldT.Editor)
@@ -167,7 +167,8 @@ namespace EW.Graphics
 
         //Rectangle(in viewport coords) that contains things to be drawn
         //static readonly Rectangle ScreenClip = Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height);
-        static readonly Rectangle ScreenClip =  Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.Viewport.Width,GraphicsDeviceManager.M.GraphicsDevice.Viewport.Height);
+        //readonly Rectangle ScreenClip = Rectangle.FromLTRB(0, 0, Game.GraphicsDevice.DisplayMode.Width, 0);
+        readonly Rectangle ScreenClip;
         /// <summary>
         /// 
         /// </summary>
