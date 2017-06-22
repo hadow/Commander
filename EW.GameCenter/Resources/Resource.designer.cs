@@ -26,7 +26,6 @@ namespace EW.GameCenter
 		
 		public static void UpdateIdValues()
 		{
-			global::Eluant.Android.Resource.String.library_name = global::EW.GameCenter.Resource.String.library_name;
 			global::EW.Xna.Platforms.Resource.String.library_name = global::EW.GameCenter.Resource.String.library_name;
 		}
 		

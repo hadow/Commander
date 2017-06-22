@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using EW.Xna.Platforms.Graphics;
 namespace EW.Xna.Platforms.Content
 {
@@ -15,6 +16,12 @@ namespace EW.Xna.Platforms.Content
             get { return contentManager; }
         }
         private ContentTypeReaderManager typeReaderManager;
+
+        internal int sharedResourceCount;
+
+        internal int version;
+
+        private List<KeyValuePair<int, Action<object>>> sharedResourceFixups;
         private GraphicsDevice graphicsDevice;
         internal GraphicsDevice GraphicsDevice { get { return graphicsDevice; } }
         private string assetName;
@@ -96,6 +103,8 @@ namespace EW.Xna.Platforms.Content
         {
             typeReaderManager = new ContentTypeReaderManager();
             typeReaders = typeReaderManager.LoadAssetReaders(this);
+            sharedResourceCount = Read7BitEncodedInt();
+            sharedResourceFixups = new List<KeyValuePair<int, Action<object>>>();
         }
 
 

@@ -48,7 +48,6 @@ namespace EW.Xna.Platforms.Content
                 for(var i = 0; i < numberOfReaders; i++)
                 {
                     string originalReaderTypeStr = reader.ReadString();
-
                     Func<ContentTypeReader> readerFunc;
                     if(typeCreators.TryGetValue(originalReaderTypeStr,out readerFunc))
                     {
@@ -59,7 +58,7 @@ namespace EW.Xna.Platforms.Content
                     {
                         string readerTypeStr = originalReaderTypeStr;
                         readerTypeStr = PrepareType(readerTypeStr);
-
+                        readerTypeStr = "EW.Xna.Platforms.Content.EffectReader, EW.Xna.Platforms";
                         var l_readerType = Type.GetType(readerTypeStr);
                         if (l_readerType != null)
                         {

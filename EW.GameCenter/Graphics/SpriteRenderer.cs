@@ -27,12 +27,13 @@ namespace EW.Graphics
             //renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
         }
 
-        public void DrawVertexBuffer(DynamicVertexBuffer buffer,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)
+        public void DrawVertexBuffer(VertexBufferBinding[] bindings,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)
         {
             effect.Parameters["DiffuseTexture"].SetValue(sheet.GetTexture());
 
             effect.CurrentTechnique.Passes[0].Apply();
 
+            renderer.GraphicsDevice.SetVertexBuffers(bindings);
             renderer.GraphicsDevice.DrawPrimitives(type, start, length);
         }
 

@@ -183,9 +183,9 @@ namespace EW
 
         protected override void Draw(GameTime gameTime)
         {
-            spriteBatch.Begin();
-            spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
-            spriteBatch.End();
+            //spriteBatch.Begin();
+            //spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
+            //spriteBatch.End();
             base.Draw(gameTime);
             RenderTick();
         }

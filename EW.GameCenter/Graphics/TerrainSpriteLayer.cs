@@ -27,6 +27,7 @@ namespace EW.Graphics
 
         readonly DynamicVertexBuffer vertexBuffer;
 
+        readonly VertexBufferBinding[] bindings;
         readonly HashSet<int> dirtyRows = new HashSet<int>();
 
         readonly int rowStride;
@@ -48,8 +49,11 @@ namespace EW.Graphics
 
             var vertexCount = rowStride * map.MapSize.Y;
 
+            this.bindings = new VertexBufferBinding[1];
+
             vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
 
+            this.bindings[0] = new VertexBufferBinding(vertexBuffer);
 
             emptySprite = new Sprite(sheet, Rectangle.Empty, TextureChannel.Alpha);
 
@@ -130,7 +134,7 @@ namespace EW.Graphics
                 var rowOffset = rowStride * row;
                 vertexBuffer.SetData(vertexSize*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
             }
-            ((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(vertexBuffer, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
+            ((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(bindings, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
         }
         
 

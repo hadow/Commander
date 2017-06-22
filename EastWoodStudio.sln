@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Common", "EW.Mods.Common\EW.Mods.Common.csproj", "{971CD67F-D10D-4DA6-939A-09CE9A52CDF9}"
 EndProject
@@ -10,7 +10,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Xna.Platforms", "EW.Xna.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.GameCenter", "EW.GameCenter\EW.GameCenter.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant.Android", "..\Eluant\Eluant\Eluant.Android.csproj", "{5913825E-0C80-4660-81B3-C2C55B35ADB6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,14 +54,14 @@ Global
 		{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}.Release|x86.ActiveCfg = Release|Any CPU
 		{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}.Release|x86.Build.0 = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Debug|x86.Build.0 = Debug|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.ActiveCfg = Release|Any CPU
-		{5913825E-0C80-4660-81B3-C2C55B35ADB6}.Release|x86.Build.0 = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Debug|x86.Build.0 = Debug|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.ActiveCfg = Release|Any CPU
+		{D4CFD952-4EDC-421D-84A5-998688815124}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

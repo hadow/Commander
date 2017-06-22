@@ -14,6 +14,7 @@ namespace EW.Xna.Platforms.Content
         const byte ContentCompressedLz4 = 0x40;
         private bool disposed;
 
+        private byte[] scratchBuffer;
         private string _rootDirectory = string.Empty;
         public string RootDirectory { get { return _rootDirectory; } set { _rootDirectory = value; } }
         private static List<WeakReference> ContentManagers = new List<WeakReference>();
@@ -222,7 +223,7 @@ namespace EW.Xna.Platforms.Content
             Stream stream;
             try
             {
-                var assetPath = Path.Combine(RootDirectory, assetName) + ".mgfxo";
+                var assetPath = Path.Combine(RootDirectory, assetName) + ".xnb";
 
                 stream = TitleContainer.OpenStream(assetPath);
 #if ANDROID
@@ -280,7 +281,14 @@ namespace EW.Xna.Platforms.Content
             loadedAssets.Clear();
         }
 
+        internal byte[] GetScratchBuffer(int size)
+        {
+            size = Math.Max(size, 1024 * 1024);
 
+            if (scratchBuffer == null || scratchBuffer.Length < size)
+                scratchBuffer = new byte[size];
+            return scratchBuffer;
+        }
 
         public void Dispose()
         {

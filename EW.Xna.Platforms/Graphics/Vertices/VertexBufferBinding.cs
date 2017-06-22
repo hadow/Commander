@@ -37,6 +37,12 @@ namespace EW.Xna.Platforms.Graphics
         }
 
 
+        public VertexBufferBinding(VertexBuffer vertexBuffer) : this(vertexBuffer, 0, 0)
+        {
+
+        }
+
+        public VertexBufferBinding(VertexBuffer vertexBuffer,int vertexOffset) : this(vertexBuffer, vertexOffset, 0) { }
         /// <summary>
         /// 
         /// </summary>
