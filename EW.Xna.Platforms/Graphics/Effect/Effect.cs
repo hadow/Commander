@@ -123,15 +123,18 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="reader"></param>
         private void ReadEffect(BinaryReader reader)
         {
-            //Constant Buffer
+            //Read in all the constant buffers.
             var buffers = (int)reader.ReadByte();
             ConstantBuffers = new ConstantBuffer[buffers];
 
             for(var c = 0; c < buffers; c++)
             {
                 var name = reader.ReadString();
+
+                //Create the backing system memory buffer.
                 var sizeInBytes = (int)reader.ReadInt16();
 
+                //Read the parameter index values.
                 var parameters = new int[reader.ReadByte()];
                 var offsets = new int[parameters.Length];
 
@@ -329,6 +332,8 @@ namespace EW.Xna.Platforms.Graphics
                 {
                     if (!_isClone)
                     {
+                        //Only the clone source can dispose the shaders
+                        //只有源Effect 可以释放shader
                         if(_shaders != null)
                         {
                             foreach (var shader in _shaders)

@@ -92,5 +92,13 @@ namespace EW.Xna.Platforms
         {
             return new Rectangle(left, top, right - left, bottom - top);
         }
+
+        public bool Intersects(Rectangle val)
+        {
+            return val.Left < Right &&
+                    Left < val.Right &&
+                    val.Top < Bottom &&
+                    Top < val.Bottom;
+        }
     }
 }

@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using EW.Graphics;
-using EW.Traits;
 using EW.Primitives;
 using EW.Xna.Platforms;
-namespace EW
+namespace EW.Traits
 {
     public enum PipType
     {
@@ -34,6 +34,41 @@ namespace EW
 
     public interface IExplodeModifier { bool ShouldExplode(Actor self); }
 
+    [Flags]
+    public enum DamageState
+    {
+        Undamaged = 1,
+        Light = 2,
+        Medium = 4,
+        Heavy = 8,
+        Critical = 16,
+        Dead = 32
+    }
+
+    public class Damage
+    {
+        public readonly int Value;
+
+        public readonly HashSet<string> DamageTypes;
+    }
+
+    public interface IHealth
+    {
+        DamageState DamageState { get; }
+
+        int HP { get; }
+
+        int MaxHP { get; }
+
+        int DisplayHP { get; }
+
+        bool IsDead { get; }
+
+        void InflictDamage(Actor self, Actor attacker, Damage damage, bool ignoreModifiers);
+
+        void Kill(Actor self, Actor attacker);
+
+    }
     /// <summary>
     /// µ¯Í·½Ó¿Ú
     /// </summary>
@@ -73,6 +108,11 @@ namespace EW
     public interface IRenderOverlay
     {
         void Render(WorldRenderer wr);
+    }
+
+    public interface IRender
+    {
+        IEnumerable<IRenderable> Render(Actor self, WorldRenderer wr);
     }
     #endregion
 

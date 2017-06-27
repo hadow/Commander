@@ -24,6 +24,7 @@ namespace EW
 
         public IOccupySpace OccupiesSpace { get; private set; }
 
+        
         public Rectangle Bounds { get; private set; }
 
         public Rectangle VisualBounds { get; private set; }
@@ -31,8 +32,13 @@ namespace EW
         public bool IsInWorld { get; internal set; }
 
         public bool IsIdle { get { return currentActivity == null; } }
+
+        public bool IsDead { get { return Disposed || (health != null && health.IsDead); } }
+
         public bool Disposed { get; private set; }
         Activity currentActivity;
+
+        readonly IHealth health;
 
 
         internal Actor(World world,string name,TypeDictionary initDict)

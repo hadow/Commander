@@ -1,6 +1,7 @@
 ﻿using System;
 using EW.Xna.Platforms;
 using EW.Graphics;
+using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Graphics;
+using EW.Xna.Platforms;
+using EW.Primitives;
 namespace EW.Traits
 {
 
@@ -16,15 +19,61 @@ namespace EW.Traits
     /// </summary>
     public class ScreenMap:IWorldLoaded
     {
+        static readonly IEnumerable<FrozenActor> NoFrozenActors = new FrozenActor[0];
+        readonly Func<Actor, bool> actorIsInWorld = a => a.IsInWorld;
+
+        readonly Func<FrozenActor, bool> frozenActorIsValid = fa => fa.IsValid;
+
+        
         WorldRenderer worldRenderer;
+
+        readonly Cache<Player, SpatiallyPartitioned<FrozenActor>> partitionedFrozenActors;
+
+        readonly SpatiallyPartitioned<Actor> partitionedActors;
 
         public ScreenMap(World world,ScreenMapInfo info)
         {
+            var size = world.Map.Grid.TileSize;
+            var width = world.Map.MapSize.X * size.Width;
+            var height = world.Map.MapSize.Y * size.Height;
 
+            partitionedFrozenActors = new Cache<Player, SpatiallyPartitioned<FrozenActor>>(_ => new SpatiallyPartitioned<FrozenActor>(width, height, info.BinSize));
+            partitionedActors = new SpatiallyPartitioned<Actor>(width, height, info.BinSize);
         }
         public void WorldLoaded(World w,WorldRenderer wr)
         {
             worldRenderer = wr;
+        }
+
+        public IEnumerable<Actor> ActorsInBox(Point a,Point b)
+        {
+            return ActorsInBox(RectWithCorners(a, b));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public IEnumerable<Actor> ActorsInBox(Rectangle r)
+        {
+            return partitionedActors.InBox(r).Where(actorIsInWorld);
+        }
+        static Rectangle RectWithCorners(Point a,Point b)
+        {
+            return Rectangle.FromLTRB(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y), Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
+        }
+
+        public IEnumerable<FrozenActor> FrozenActorsInBox(Player p,Point a,Point b)
+        {
+            return FrozenActorsInBox(p, RectWithCorners(a, b));
+        }
+
+        public IEnumerable<FrozenActor> FrozenActorsInBox(Player p,Rectangle r)
+        {
+            if (p == null)
+                return NoFrozenActors;
+            return partitionedFrozenActors[p].InBox(r).Where(frozenActorIsValid);
         }
 
     }

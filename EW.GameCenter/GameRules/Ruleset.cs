@@ -4,6 +4,7 @@ using EW.FileSystem;
 using EW.Primitives;
 using EW.GameRules;
 using EW.Graphics;
+using EW.Traits;
 using System.Threading.Tasks;
 namespace EW
 {

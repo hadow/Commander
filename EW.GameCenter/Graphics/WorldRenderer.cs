@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using EW.Xna.Platforms;
+using EW.Traits;
 namespace EW.Graphics
 {
     /// <summary>
@@ -62,8 +63,6 @@ namespace EW.Graphics
         public void RefreshPalette()
         {
             palette.ApplyModifiers(World.WorldActor.TraitsImplementing<IPaletteModifier>());
-
-            //WarGame.Renderer.SetPalette(palette);
             ((WarGame)Game).Renderer.SetPalette(palette);
         }
 
@@ -75,10 +74,22 @@ namespace EW.Graphics
         {
             if (World.WorldActor.Disposed)
                 return;
+
             RefreshPalette();
 
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             terrainRenderer.Draw(this, ViewPort);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        List<IFinalizedRenderable> GenerateRenderables()
+        {
+            var actors = World.ScreenMap.ActorsInBox(ViewPort.TopLeft, ViewPort.BottomRight).Append(World.WorldActor);
+
+            return null;
         }
 
         /// <summary>

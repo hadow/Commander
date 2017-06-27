@@ -58,6 +58,11 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="parameters"></param>
         public void Update(EffectParameterCollection parameters)
         {
+            // It should let us skip all parameter updates if nothing has changed.
+            // It should not be per-parameter as that is why you should use multiple constant buffers.
+
+            // If our state key becomes larger than the next state key 
+            // then the keys have rolled over and we need to reset.
             if (_stateKey > EffectParameter.NextStateKey)
                 _stateKey = 0;
 
@@ -65,6 +70,7 @@ namespace EW.Xna.Platforms.Graphics
             {
                 var index = _parameters[p];
                 var param = parameters[index];
+
                 if (param.StateKey < _stateKey)
                     continue;
 
@@ -126,7 +132,8 @@ namespace EW.Xna.Platforms.Graphics
         }
 
         /// <summary>
-        /// 
+        /// assumes  all parameters are array types.
+        /// EffectParameter now stores all values in array types.
         /// </summary>
         /// <param name="offset"></param>
         /// <param name="rows"></param>
@@ -134,9 +141,11 @@ namespace EW.Xna.Platforms.Graphics
         /// <param name="data"></param>
         private void SetData(int offset,int rows,int columns,object data)
         {
+            // Shader registers are always 4 bytes and all the incoming data objects should be 4bytes per element.
             const int elementSize = 4;
             const int rowSize = elementSize * 4;
 
+            //Take are of a single element.
             if (rows == 1 && columns == 1)
             {
                 //EffectParameter stores all values in array by default.
@@ -145,6 +154,7 @@ namespace EW.Xna.Platforms.Graphics
                 else
                     throw new NotImplementedException();
             }
+            //Take care of the single copy case!
             else if (rows == 1 || (rows == 4 && columns == 4))
             {
                 Buffer.BlockCopy(data as Array, 0, _buffer, offset, rows * columns * elementSize);

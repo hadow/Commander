@@ -3,6 +3,9 @@ using System;
 
 namespace EW.Xna.Platforms.Graphics
 {
+    /// <summary>
+    /// Added ConstantBufferCollection  to better manage applying constant buffers.
+    /// </summary>
     internal sealed class ConstantBufferCollection
     {
 

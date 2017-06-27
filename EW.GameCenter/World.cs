@@ -4,6 +4,7 @@ using EW.Traits;
 using EW.NetWork;
 using EW.Primitives;
 using EW.Support;
+using EW.Graphics;
 namespace EW
 {
     public enum WorldT
@@ -88,6 +89,15 @@ namespace EW
             }
             while (frameEndActions.Count != 0)
                 frameEndActions.Dequeue()(this);
+        }
+
+        /// <summary>
+        /// For things that want to update their render state once per tick.ignoring pause state
+        /// </summary>
+        /// <param name="wr"></param>
+        public void TickRender(WorldRenderer wr)
+        {
+
         }
 
 

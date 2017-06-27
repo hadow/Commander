@@ -1,6 +1,6 @@
 using System;
 using EW.Xna.Platforms;
-
+using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
     public class CustomSelectionSizeInfo : ITraitInfo

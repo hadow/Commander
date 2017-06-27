@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Linq;
 using EW.Graphics;
 using EW.Primitives;
+using EW.Traits;
 using Eluant;
 namespace EW.Scripting
 {
