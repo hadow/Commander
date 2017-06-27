@@ -1,5 +1,6 @@
 using EW.Scripting;
 using EW.Mods.Common.Traits;
+using EW.Traits;
 namespace EW.Mods.Common.Scripting
 {
     [ScriptPropertyGroup("Movement")]

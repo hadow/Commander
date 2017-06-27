@@ -51,6 +51,11 @@ namespace EW.Xna.Platforms.Graphics
             PlatformGraphicsDeviceResetting();
         }
 
+        public void SetData<T>(T[] data) where T : struct
+        {
+            var elementSizeInBytes = Utilities.ReflectionHelpers.SizeOf<T>.Get();
+            SetDataInternal<T>(0, data, 0, data.Length, elementSizeInBytes, SetDataOptions.None);
+        }
 
         public void SetData<T>(T[] data,int startIndex,int elementCount) where T : struct
         {

@@ -37,7 +37,7 @@ namespace EW.Xna.Platforms
 
         #region Private Fields
         private static readonly Vector3 zero = new Vector3(0f, 0f, 0f);
-
+        private static readonly Vector3 one = new Vector3(1f, 1f, 1f);
 
         #endregion
 
@@ -115,6 +115,7 @@ namespace EW.Xna.Platforms
 
         public static Vector3 Zero { get { return zero; } }
 
+        public static Vector3 One { get { return one; } }
         //public override int GetHashCode()
         //{
         //    unchecked

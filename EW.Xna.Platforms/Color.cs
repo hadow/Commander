@@ -90,6 +90,10 @@ namespace EW.Xna.Platforms
             return new Vector4(R/255.0f,G/255.0f,B/255.0f,A/255.0f);
         }
 
+        public Vector3 ToVector3()
+        {
+            return new Vector3(R / 255.0f, G / 255.0f, B / 255.0f);
+        }
 
 
 

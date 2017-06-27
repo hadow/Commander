@@ -27,10 +27,6 @@ namespace EW
         public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
    
-
-        Vector2 position;
-        Texture2D texture;
-        SpriteBatch spriteBatch;
         public GraphicsDeviceManager DeviceManager;
 
         public Renderer Renderer;
@@ -105,7 +101,6 @@ namespace EW
         public void LoadShellMap()
         {
             var shellmap = ChooseShellMap();
-
             using (new PerfTimer("StartGame"))
                 StartGame(shellmap, WorldT.Shellmap);
         }
@@ -144,25 +139,11 @@ namespace EW
 
         protected override void Initialize()
         {
-            //texture = new Texture2D(this.GraphicsDevice, 100, 100);
-            //Color[] colorData = new Color[100 * 100];
-            //for(int i = 0; i < 10000; i++)
-            //{
-            //    colorData[i] = Color.Red;
-            //}
-
-            //texture.SetData<Color>(colorData);
             base.Initialize();
-            Initialize(new Arguments());
+            //Initialize(new Arguments());
         }
         protected override void LoadContent()
         {
-            //spriteBatch = new SpriteBatch(GraphicsDevice);
-            //using (var stream = TitleContainer.OpenStream("Content/charactersheet.png"))
-            //{
-            //    texture = Texture2D.FromStream(this.GraphicsDevice, stream);
-            //}
-
             this.Components.Add(Renderer);
         }
 
@@ -177,17 +158,49 @@ namespace EW
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            LogicTick(gameTime);
+            //LogicTick(gameTime);
         }
 
-
+        private BasicEffect _effect;
+        private VertexBuffer _vb;
         protected override void Draw(GameTime gameTime)
         {
-            //spriteBatch.Begin();
-            //spriteBatch.Draw(texture, new Vector2(100, 100), Color.White);
-            //spriteBatch.End();
             base.Draw(gameTime);
-            RenderTick();
+            //RenderTick();
+
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+
+            if(_effect == null)
+            {
+                _effect = new BasicEffect(GraphicsDevice);
+
+                var vp = GraphicsDevice.Viewport;
+                Matrix projection;
+                Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1, out projection);
+                _effect.Projection = projection;
+            }
+
+            if(_vb == null)
+            {
+                _vb = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 6, BufferUsage.WriteOnly);
+                _vb.SetData(new[]
+                {
+                    new VertexPositionColor(new Vector3(100,100,0),Color.White),
+                    new VertexPositionColor(new Vector3(200,100,0),Color.White),
+                    new VertexPositionColor(new Vector3(200,200,0),Color.White),
+                    new VertexPositionColor(new Vector3(100,200,0),Color.White),
+                    new VertexPositionColor(new Vector3(100,100,0),Color.White),
+                    new VertexPositionColor(new Vector3(200,200,0),Color.White)
+
+                });
+                GraphicsDevice.SetVertexBuffer(_vb);
+
+            }
+
+            _effect.World = Matrix.Identity;
+            _effect.DiffuseColor = Color.Red.ToVector3();
+            _effect.CurrentTechnique.Passes[0].Apply();
+            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
         }
 
         /// <summary>

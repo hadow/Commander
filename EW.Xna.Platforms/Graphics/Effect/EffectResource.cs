@@ -10,9 +10,9 @@ namespace EW.Xna.Platforms.Graphics
     internal class EffectResource
     {
         const string SpriteEffectName = "EW.Xna.Platforms.Graphics.Effect.Resources.SpriteEffect.ogl.mgfxo";
-
+        const string BasicEffectName = "EW.Xna.Platforms.Graphics.Effect.Resources.BasicEffect.ogl.mgfxo";
         public static readonly EffectResource SpriteEffect = new EffectResource(SpriteEffectName);
-
+        public static readonly EffectResource BasicEffect = new EffectResource(BasicEffectName);
         private readonly object _locker = new object();
         private readonly string _name;
         private volatile byte[] _bytecode;

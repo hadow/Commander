@@ -391,6 +391,11 @@ namespace EW.Xna.Platforms.Graphics
             EffectCache = new Dictionary<int, Effect>();
         }
 
+        public void SetVertexBuffer(VertexBuffer vertexBuffer)
+        {
+            _vertexBuffersDirty |= (vertexBuffer == null) ? _vertexBuffers.Clear() : _vertexBuffers.Set(vertexBuffer, 0);
+        }
+
 
         /// <summary>
         /// 

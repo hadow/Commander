@@ -28,6 +28,25 @@ namespace EW.Xna.Platforms.Graphics
             return new VertexBufferBinding(_vertexBuffers[slot], _vertexOffsets[slot], InstanceFrequencies[slot]);
         }
 
+        public bool Set(VertexBuffer vertexBuffer,int vertexOffset)
+        {
+            if (Count == 1 && InstanceFrequencies[0] == 0 && _vertexBuffers[0] == vertexBuffer && _vertexOffsets[0] == vertexOffset)
+                return false;
+
+            VertexDeclarations[0] = vertexBuffer.VertexDeclaration;
+            InstanceFrequencies[0] = 0;
+            _vertexBuffers[0] = vertexBuffer;
+            _vertexOffsets[0] = vertexOffset;
+            if (Count > 1)
+            {
+                Array.Clear(VertexDeclarations, 1, Count - 1);
+                Array.Clear(InstanceFrequencies, 1, Count - 1);
+                Array.Clear(_vertexBuffers, 1, Count - 1);
+                Array.Clear(_vertexOffsets, 1, Count - 1);
+            }
+            Count = 1;
+            return true;
+        }
         /// <summary>
         /// 
         /// </summary>

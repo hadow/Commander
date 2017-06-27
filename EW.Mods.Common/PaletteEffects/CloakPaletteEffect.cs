@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Primitives;
 using EW.Graphics;
+using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 

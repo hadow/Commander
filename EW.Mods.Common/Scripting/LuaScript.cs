@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
 using EW.Scripting;
+using EW.Traits;
 namespace EW.Common.Scripting
 {
     public class LuaScriptInfo:ITraitInfo
