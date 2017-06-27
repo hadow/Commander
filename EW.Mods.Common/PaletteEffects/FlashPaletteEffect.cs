@@ -1,5 +1,5 @@
 ﻿using System;
-
+using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
     public class FlashPaletteEffectInfo : ITraitInfo
@@ -9,7 +9,23 @@ namespace EW.Mods.Common.Traits
             return new FlashPaletteEffect();
         }
     }
-    public class FlashPaletteEffect
+
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class FlashPaletteEffect:IPaletteModifier,ITick
     {
+
+        public void AdjustPalette(IReadOnlyDictionary<string,MutablePalette> palettes)
+        {
+
+        }
+
+
+        public void Tick(Actor self)
+        {
+
+        }
     }
 }
