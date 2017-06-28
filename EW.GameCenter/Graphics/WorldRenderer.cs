@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using EW.Xna.Platforms;
 using EW.Traits;
 namespace EW.Graphics
@@ -10,6 +11,7 @@ namespace EW.Graphics
     /// </summary>
     public sealed class WorldRenderer:DrawableGameComponent
     {
+        public static readonly Func<IRenderable, int> RenderableScreenZPositionComparisonKey = r => ZPosition(r.Pos, r.ZOffset);
 
         public GameViewPort ViewPort { get; private set; }
 
@@ -77,6 +79,8 @@ namespace EW.Graphics
 
             RefreshPalette();
 
+            var renderables = GenerateRenderables();
+
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             terrainRenderer.Draw(this, ViewPort);
         }
@@ -88,6 +92,14 @@ namespace EW.Graphics
         List<IFinalizedRenderable> GenerateRenderables()
         {
             var actors = World.ScreenMap.ActorsInBox(ViewPort.TopLeft, ViewPort.BottomRight).Append(World.WorldActor);
+
+            if (World.RenderPlayer != null)
+                actors = actors.Append(World.RenderPlayer.PlayerActor);
+
+            var worldRenderables = actors.SelectMany(a => a.Render(this));
+
+            worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
+            ((WarGame)this.Game).Renderer.WorldVoxelRenderer.beg
 
             return null;
         }

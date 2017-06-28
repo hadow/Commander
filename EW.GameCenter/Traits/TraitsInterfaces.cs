@@ -114,6 +114,11 @@ namespace EW.Traits
     {
         IEnumerable<IRenderable> Render(Actor self, WorldRenderer wr);
     }
+
+    public interface IRenderModifier
+    {
+        IEnumerable<IRenderable> ModifyRender(Actor self, WorldRenderer wr, IEnumerable<IRenderable> r);
+    }
     #endregion
 
     public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }

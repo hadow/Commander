@@ -39,6 +39,20 @@ namespace EW
 
         public Player[] Players = new Player[0];
 
+        Player renderPlayer;
+
+        public Player RenderPlayer
+        {
+            get
+            {
+                return (renderPlayer == null || (renderPlayer.WinState != WinState.Undefined)) ? null : renderPlayer;
+            }
+            set
+            {
+                renderPlayer = value;
+            }
+        }
+
         public int WorldTick { get; private set; }
 
         /// <summary>

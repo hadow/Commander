@@ -26,6 +26,8 @@ namespace EW
         public RgbaColorRenderer WorldRgbaColorRenderer;
 
 
+        public VoxelRenderer WorldVoxelRenderer { get; private set; }
+
         internal int TempBufferSize { get; private set; }
 
         float depthScale, depthOffset;
@@ -51,6 +53,7 @@ namespace EW
 
             WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
             SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            WorldVoxelRenderer = new VoxelRenderer(this, this.Game.Content.Load<Effect>("glsl/vxl"));
         }
 
         /// <summary>
@@ -65,6 +68,7 @@ namespace EW
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
         {
             GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
+            SetViewportParams(scroll, zoom);
         }
 
         public void EndFrame()

@@ -7,6 +7,7 @@ using EW.Scripting;
 using EW.Activities;
 using EW.Traits;
 using EW.Primitives;
+using EW.Graphics;
 using EW.Xna.Platforms;
 namespace EW
 {
@@ -40,6 +41,8 @@ namespace EW
 
         readonly IHealth health;
 
+        readonly IRender[] renders;
+        readonly IRenderModifier[] renderModifiers;
 
         internal Actor(World world,string name,TypeDictionary initDict)
         {
@@ -67,6 +70,9 @@ namespace EW
                 }
             }
 
+            renders = TraitsImplementing<IRender>().ToArray();
+            renderModifiers = TraitsImplementing<IRenderModifier>().ToArray();
+
             Bounds = DetermineBounds();
         }
 
@@ -90,6 +96,33 @@ namespace EW
         public void Tick()
         {
             currentActivity = ActivityUtils.RunActivity(this, currentActivity);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wr"></param>
+        /// <returns></returns>
+        public IEnumerable<IRenderable> Render(WorldRenderer wr)
+        {
+            var renderables = Renderables(wr);
+            foreach (var modifier in renderModifiers)
+                renderables = modifier.ModifyRender(this, wr, renderables);
+
+            return renderables;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wr"></param>
+        /// <returns></returns>
+        IEnumerable<IRenderable> Renderables(WorldRenderer wr)
+        {
+            foreach (var render in renders)
+                foreach (var renderable in render.Render(this, wr))
+                    yield return renderable;
         }
 
 
