@@ -41,9 +41,13 @@ namespace EW
             DeviceManager = new GraphicsDeviceManager(this);
             DeviceManager.IsFullScreen = true;
             DeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
-            //Initialize(new Arguments());
         }
 
+        protected override void Initialize()
+        {
+            base.Initialize();
+            Initialize(new Arguments());
+        }
 
         protected override void BeginRun()
         {
@@ -137,11 +141,6 @@ namespace EW
         }
 
 
-        protected override void Initialize()
-        {
-            base.Initialize();
-            //Initialize(new Arguments());
-        }
         protected override void LoadContent()
         {
             this.Components.Add(Renderer);
@@ -158,7 +157,7 @@ namespace EW
         protected override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            //LogicTick(gameTime);
+            LogicTick(gameTime);
         }
 
         private BasicEffect _effect;
@@ -166,41 +165,41 @@ namespace EW
         protected override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
-            //RenderTick();
+            RenderTick();
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            if(_effect == null)
-            {
-                _effect = new BasicEffect(GraphicsDevice);
+            //if(_effect == null)
+            //{
+            //    _effect = new BasicEffect(GraphicsDevice);
 
-                var vp = GraphicsDevice.Viewport;
-                Matrix projection;
-                Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1, out projection);
-                _effect.Projection = projection;
-            }
+            //    var vp = GraphicsDevice.Viewport;
+            //    Matrix projection;
+            //    Matrix.CreateOrthographicOffCenter(0, vp.Width, vp.Height, 0, 0, 1, out projection);
+            //    _effect.Projection = projection;
+            //}
 
-            if(_vb == null)
-            {
-                _vb = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 6, BufferUsage.WriteOnly);
-                _vb.SetData(new[]
-                {
-                    new VertexPositionColor(new Vector3(100,100,0),Color.White),
-                    new VertexPositionColor(new Vector3(200,100,0),Color.White),
-                    new VertexPositionColor(new Vector3(200,200,0),Color.White),
-                    new VertexPositionColor(new Vector3(100,200,0),Color.White),
-                    new VertexPositionColor(new Vector3(100,100,0),Color.White),
-                    new VertexPositionColor(new Vector3(200,200,0),Color.White)
+            //if(_vb == null)
+            //{
+            //    _vb = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 6, BufferUsage.WriteOnly);
+            //    _vb.SetData(new[]
+            //    {
+            //        new VertexPositionColor(new Vector3(100,100,0),Color.White),
+            //        new VertexPositionColor(new Vector3(200,100,0),Color.White),
+            //        new VertexPositionColor(new Vector3(200,200,0),Color.White),
+            //        new VertexPositionColor(new Vector3(100,200,0),Color.White),
+            //        new VertexPositionColor(new Vector3(100,100,0),Color.White),
+            //        new VertexPositionColor(new Vector3(200,200,0),Color.White)
 
-                });
-                GraphicsDevice.SetVertexBuffer(_vb);
+            //    });
+            //    GraphicsDevice.SetVertexBuffer(_vb);
 
-            }
+            //}
 
-            _effect.World = Matrix.Identity;
-            _effect.DiffuseColor = Color.Red.ToVector3();
-            _effect.CurrentTechnique.Passes[0].Apply();
-            GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
+            //_effect.World = Matrix.Identity;
+            //_effect.DiffuseColor = Color.Red.ToVector3();
+            //_effect.CurrentTechnique.Passes[0].Apply();
+            //GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
         }
 
         /// <summary>

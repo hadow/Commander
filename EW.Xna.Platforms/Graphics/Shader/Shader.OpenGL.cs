@@ -24,117 +24,127 @@ namespace EW.Xna.Platforms.Graphics
         {
             _glslCode = System.Text.Encoding.ASCII.GetString(shaderBytecode);
 
-//            if (isVertexShader)
-//            {
-//                _glslCode = @"
-//                                #ifdef GL_ES
-//                                precision highp float;
-//                                precision mediump int;
-//                                #endif
+            if (isVertexShader)
+            {
+                _glslCode = @"
+                                #ifdef GL_ES
+                                precision highp float;
+                                precision mediump int;
+                                #endif
+                                
+                                uniform vec4 vs_uniforms_vec4[3];
+                                uniform vec4 posFixup;
+                                #define Scroll vs_uniforms_vec4[0]
+                                #define r1 vs_uniforms_vec4[1]
+                                #define r2 vs_uniforms_vec4[2]    
+                                //uniform vec3 Scroll;
+                                //uniform vec3 r1, r2;
 
-//                                uniform vec3 Scroll;
-//                                uniform vec3 r1, r2;
+                                attribute vec4 vs_v0;
+                                attribute vec4 vs_v1;
+                                attribute vec2 vs_v2;
+                                varying vec4 vTexCoord;
+                                varying vec2 vTexMetadata;
+                                varying vec4 vChannelMask;
+                                varying vec4 vDepthMask;
 
-//                                attribute vec4 aVertexPosition;
-//                                attribute vec4 aVertexTexCoord;
-//                                attribute vec2 aVertexTexMetadata;
-//                                varying vec4 vTexCoord;
-//                                varying vec2 vTexMetadata;
-//                                varying vec4 vChannelMask;
-//                                varying vec4 vDepthMask;
+                                vec4 DecodeChannelMask(float x)
+                                {
+	                                if (x > 0.7)
+		                                return vec4(0,0,0,1);
+	                                if (x > 0.5)
+		                                return vec4(0,0,1,0);
+	                                if (x > 0.3)
+		                                return vec4(0,1,0,0);
+	                                else
+		                                return vec4(1,0,0,0);
+                                }
 
-//                                vec4 DecodeChannelMask(float x)
-//                                {
-//	                                if (x > 0.7)
-//		                                return vec4(0,0,0,1);
-//	                                if (x > 0.5)
-//		                                return vec4(0,0,1,0);
-//	                                if (x > 0.3)
-//		                                return vec4(0,1,0,0);
-//	                                else
-//		                                return vec4(1,0,0,0);
-//                                }
+                                void main()
+                                {
+	                                gl_Position = vec4((vs_v0.xyz - Scroll.xyz) * r1.xyz + r2.xyz, 1);
+                                    gl_Position.y = gl_Position.y * posFixup.y;
+                                    gl_Position.xy += posFixup.zw * gl_Position.ww;
+                                    gl_Position.z = gl_Position.z * 2.0 - gl_Position.w;
+	                                vTexCoord = vs_v1;
+	                                vTexMetadata = vs_v2;
+	                                vChannelMask = DecodeChannelMask(abs(vs_v2.t));
+	                                if (vs_v2.t < 0.0)
+	                                {
+		                                float x = -vs_v2.t * 10.0;
+		                                vDepthMask = DecodeChannelMask(x - floor(x));
+	                                }
+	                                else
+		                                vDepthMask = vec4(0,0,0,0);
+                                } 
+";
 
-//                                void main()
-//                                {
-//	                                gl_Position = vec4((aVertexPosition.xyz - Scroll.xyz) * r1 + r2, 1);
-//	                                vTexCoord = aVertexTexCoord;
-//	                                vTexMetadata = aVertexTexMetadata;
-//	                                vChannelMask = DecodeChannelMask(abs(aVertexTexMetadata.t));
-//	                                if (aVertexTexMetadata.t < 0.0)
-//	                                {
-//		                                float x = -aVertexTexMetadata.t * 10.0;
-//		                                vDepthMask = DecodeChannelMask(x - floor(x));
-//	                                }
-//	                                else
-//		                                vDepthMask = vec4(0,0,0,0);
-//                                } 
-//";
+            }
+            else
+            {
+                _glslCode = @"
 
-//            }
-//            else
-//            {
-//                _glslCode = @"
+                    #extension GL_EXT_frag_depth : enable
+                    #ifdef GL_ES
+                    precision mediump float;
+                    precision mediump int;
+                    #endif
+                    uniform sampler2D DiffuseTexture, Palette;
+                    uniform vec4 ps_uniforms_vec4[2];
+                    #define EnableDepthPreview ps_uniforms_vec4[0]
+                    #define DepthTextureScale ps_uniforms_vec4[1]
+                    //uniform bool EnableDepthPreview;
+                    //uniform float DepthTextureScale;
 
-//                    #extension GL_EXT_frag_depth : enable
-//                    #ifdef GL_ES
-//                    precision mediump float;
-//                    precision mediump int;
-//                    #endif
-//                    uniform sampler2D DiffuseTexture, Palette;
-                    
-//                    uniform bool EnableDepthPreview;
-//                    uniform float DepthTextureScale;
+                    varying vec4 vTexCoord;
+                    varying vec2 vTexMetadata;
+                    varying vec4 vChannelMask;
+                    varying vec4 vDepthMask;
 
-//                    varying vec4 vTexCoord;
-//                    varying vec2 vTexMetadata;
-//                    varying vec4 vChannelMask;
-//                    varying vec4 vDepthMask;
+                    float jet_r(float x)
+                    {
+	                    return x < 0.7 ? 4.0 * x - 1.5 : -4.0 * x + 4.5;
+                    }
 
-//                    float jet_r(float x)
-//                    {
-//	                    return x < 0.7 ? 4.0 * x - 1.5 : -4.0 * x + 4.5;
-//                    }
+                    float jet_g(float x)
+                    {
+	                    return x < 0.5 ? 4.0 * x - 0.5 : -4.0 * x + 3.5;
+                    }
 
-//                    float jet_g(float x)
-//                    {
-//	                    return x < 0.5 ? 4.0 * x - 0.5 : -4.0 * x + 3.5;
-//                    }
+                    float jet_b(float x)
+                    {
+	                    return x < 0.3 ? 4.0 * x + 0.5 : -4.0 * x + 2.5;
+                    }
 
-//                    float jet_b(float x)
-//                    {
-//	                    return x < 0.3 ? 4.0 * x + 0.5 : -4.0 * x + 2.5;
-//                    }
+                    void main()
+                    {
+	                    vec4 x = texture2D(DiffuseTexture, vTexCoord.st);
+	                    vec2 p = vec2(dot(x, vChannelMask), vTexMetadata.s);
+	                    vec4 c = texture2D(Palette, p);
+	                    if (c.a == 0.0)
+		                    discard;
 
-//                    void main()
-//                    {
-//	                    vec4 x = texture2D(DiffuseTexture, vTexCoord.st);
-//	                    vec2 p = vec2(dot(x, vChannelMask), vTexMetadata.s);
-//	                    vec4 c = texture2D(Palette, p);
-//	                    if (c.a == 0.0)
-//		                    discard;
+	                    float depth = gl_FragCoord.z;
+	                    if (length(vDepthMask) > 0.0)
+	                    {
+		                    vec4 y = texture2D(DiffuseTexture, vTexCoord.pq);
+		                    depth = depth + DepthTextureScale.x * dot(y, vDepthMask);
+	                    }
+	                    gl_FragDepthEXT = 0.5 * depth + 0.5;
 
-//	                    float depth = gl_FragCoord.z;
-//	                    if (length(vDepthMask) > 0.0)
-//	                    {
-//		                    vec4 y = texture2D(DiffuseTexture, vTexCoord.pq);
-//		                    depth = depth + DepthTextureScale * dot(y, vDepthMask);
-//	                    }
-//	                    gl_FragDepthEXT = 0.5 * depth + 0.5;
-
-//	                    if (EnableDepthPreview)
-//	                    {
-//		                    float x = 1.0 - gl_FragDepthEXT;
-//		                    float r = clamp(jet_r(x), 0.0, 1.0);
-//		                    float g = clamp(jet_g(x), 0.0, 1.0);
-//		                    float b = clamp(jet_b(x), 0.0, 1.0);
-//		                    gl_FragColor = vec4(r, g, b, 1.0);
-//	                    }
-//	                    else
-//		                    gl_FragColor = c;
-//                    }
-//                ";
-//            }
+	                    if (EnableDepthPreview.x>=0.0)
+	                    {
+		                    float x = 1.0 - gl_FragDepthEXT;
+		                    float r = clamp(jet_r(x), 0.0, 1.0);
+		                    float g = clamp(jet_g(x), 0.0, 1.0);
+		                    float b = clamp(jet_b(x), 0.0, 1.0);
+		                    gl_FragColor = vec4(r, g, b, 1.0);
+	                    }
+	                    else
+		                    gl_FragColor = c;
+                    }
+                ";
+            }
             HashKey = EW.Xna.Platforms.Utilities.Hash.ComputeHash(shaderBytecode);
         }
         /// <summary>

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using EW.Xna.Platforms;
 using EW.Traits;
+using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
@@ -43,17 +44,16 @@ namespace EW.Graphics
             palette = new HardwarePalette(game);
             createPaletteReference = CreatePaletteReference;
 
+            var mapGrid = mod.Manifest.Get<MapGrid>();
+            enableDepthBuffer = mapGrid.EnableDepthBuffer;
+
             foreach (var pal in world.TraitDict.ActorsWithTrait<ILoadsPalettes>())
             {
                 pal.Trait.LoadPalettes(this);
             }
 
             palette.Initialize();
-
             
-            var mapGrid = mod.Manifest.Get<MapGrid>();
-            enableDepthBuffer = mapGrid.EnableDepthBuffer;
-
             Theater = new Theater(game,world.Map.Rules.TileSet);
 
             terrainRenderer = new TerrainRenderer(game,world, this);
@@ -79,10 +79,16 @@ namespace EW.Graphics
 
             RefreshPalette();
 
-            var renderables = GenerateRenderables();
+
+            if (enableDepthBuffer)
+                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+            //var renderables = GenerateRenderables();
 
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             terrainRenderer.Draw(this, ViewPort);
+
+            if (enableDepthBuffer)
+                GraphicsDevice.DepthStencilState = DepthStencilState.None;
         }
 
         /// <summary>
@@ -99,7 +105,7 @@ namespace EW.Graphics
             var worldRenderables = actors.SelectMany(a => a.Render(this));
 
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
-            ((WarGame)this.Game).Renderer.WorldVoxelRenderer.beg
+            ((WarGame)this.Game).Renderer.WorldVoxelRenderer.BeginFrame();
 
             return null;
         }

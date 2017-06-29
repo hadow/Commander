@@ -179,6 +179,11 @@ namespace EW.Xna.Platforms
             return new Color((uint)(alpha << 24 + red << 16 + green << 8 + blue));
         }
 
+        public static Color FromArgb(int argb)
+        {
+            return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
+        }
+
         public int ToArgb()
         {
             return (int)_packedValue;

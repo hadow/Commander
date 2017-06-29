@@ -121,7 +121,13 @@ namespace EW.Graphics
             CopyModifiablePalettesToBuffer();
             CopyBufferToTexture();
 
-
+            //Reset modified palettes back to their original colors,ready for next time.
+            foreach(var kvp in modifiablePalettes)
+            {
+                var originalPalette = palettes[kvp.Key];
+                var modifiedPalette = kvp.Value;
+                modifiedPalette.SetFromPalette(originalPalette);
+            }
         }
 
         /// <summary>

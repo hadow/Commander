@@ -68,10 +68,6 @@
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
-    <Compile Include="PaletteEffects\CloakPaletteEffect.cs" />
-    <Compile Include="PaletteEffects\FlashPaletteEffect.cs" />
-    <Compile Include="PaletteEffects\MenuPaletteEffect.cs" />
-    <Compile Include="PaletteEffects\RotationPaletteEffect.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />
@@ -148,6 +144,10 @@
     <Compile Include="Traits\Multipliers\SpeedMultiplier.cs" />
     <Compile Include="Traits\Multipliers\UpgradableMultiplier.cs" />
     <Compile Include="Traits\MustBeDestroyed.cs" />
+    <Compile Include="Traits\PaletteEffects\FlashPaletteEffect.cs" />
+    <Compile Include="Traits\PaletteEffects\GlobalLightingPaletteEffect.cs" />
+    <Compile Include="Traits\PaletteEffects\MenuPaletteEffect.cs" />
+    <Compile Include="Traits\PaletteEffects\RotationPaletteEffect.cs" />
     <Compile Include="Traits\Passenger.cs" />
     <Compile Include="Traits\Player\MissionObjectives.cs" />
     <Compile Include="Traits\Player\PlayerStatistics.cs" />
@@ -209,6 +209,7 @@
     <Compile Include="Traits\World\MusicPlaylist.cs" />
     <Compile Include="Traits\World\PaletteFromCurrentTileset.cs" />
     <Compile Include="Traits\World\PaletteFromFile.cs" />
+    <Compile Include="Traits\World\PaletteFromPaletteWithAlpha.cs" />
     <Compile Include="Traits\World\PaletteFromRGBA.cs" />
     <Compile Include="Traits\World\PathFinder.cs" />
     <Compile Include="Traits\World\RadarPings.cs" />
@@ -223,6 +224,7 @@
     <Compile Include="Traits\World\TerrainGeometryOverlay.cs" />
     <Compile Include="Traits\World\ValidateOrder.cs" />
     <Compile Include="Traits\World\WarheadDebugOverlay.cs" />
+    <Compile Include="Traits\PaletteEffects\CloakPaletteEffect.cs" />
     <Compile Include="Warheads\CreateEffectWarhead.cs" />
     <Compile Include="Warheads\CreateResourceWarhead.cs" />
     <Compile Include="Warheads\DamageWarhead.cs" />
@@ -247,9 +249,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.GameCenter\EW.GameCenter.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>

@@ -59,7 +59,24 @@ namespace EW.Graphics
 
         }
 
-        void Render(VoxelRenderData renderData,float[] t,float[] lightDirection,float[] ambientLight)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="renderData"></param>
+        /// <param name="t"></param>
+        /// <param name="lightDirection"></param>
+        /// <param name="ambientLight"></param>
+        /// <param name="diffuseLight"></param>
+        /// <param name="colorPaletteTextureMidIndex"></param>
+        /// <param name="normalsPaletteTextureMidIndex"></param>
+        void Render(VoxelRenderData renderData,float[] t,float[] lightDirection,
+            float[] ambientLight,float[] diffuseLight,float colorPaletteTextureMidIndex,float normalsPaletteTextureMidIndex)
+        {
+            shader.Parameters["DiffuseTexture"].SetValue(renderData.Sheet.GetTexture());
+            shader.Parameters["PaletteRows"].SetValue(new Vector2(colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex));
+            //shader.Parameters["TransformMatrix"].SetValue(new Matrix());
+            //shader.Parameters["LightDirection"].set
+        }
 
         public void BeginFrame()
         {

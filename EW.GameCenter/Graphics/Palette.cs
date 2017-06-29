@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using EW.Xna.Platforms;
 namespace EW.Graphics
 {
     public interface IPalette
@@ -9,10 +10,18 @@ namespace EW.Graphics
 
         void CopyToArray(Array destination, int destinationOffset);
     }
+
+    public interface IPaletteRemap { Color GetRemappedColor(Color original, int index); }
+
     public static class Palette
     {
         public const int Size = 256;
 
+
+        public static Color GetColor(this IPalette palette,int index)
+        {
+            return Color.FromArgb((int)palette[index]);
+        }
         public static IPalette AsReadOnly(this IPalette palette)
         {
             if (palette is ImmutablePalette)
@@ -41,7 +50,7 @@ namespace EW.Graphics
     }
 
     /// <summary>
-    /// 
+    /// 不变的调色板
     /// </summary>
     public class ImmutablePalette : IPalette
     {
@@ -57,6 +66,20 @@ namespace EW.Graphics
             var i = 0;
             foreach (var sourceColor in sourceColors)
                 colors[i++] = sourceColor;
+        }
+
+        public ImmutablePalette(IPalette p,IPaletteRemap r):this(p)
+        {
+            for (var i = 0; i < Palette.Size; i++)
+                colors[i] = (uint)r.GetRemappedColor(this.GetColor(i), i).ToArgb();
+        }
+
+        public ImmutablePalette(IPalette p)
+        {
+            for(int i = 0; i < Palette.Size; i++)
+            {
+                colors[i] = p[i];
+            }
         }
 
         /// <summary>
@@ -76,7 +99,7 @@ namespace EW.Graphics
                     colors[i] = (uint)((255 << 24) | (r << 16) | (g << 8) | b);
                 }
             }
-            colors[0] = 0;
+            colors[0] = 0;  //Convert black background to transparency
             foreach (var i in remapShadow)
                 colors[i] = 140u << 24;
 
@@ -99,7 +122,7 @@ namespace EW.Graphics
     }
 
     /// <summary>
-    /// 
+    /// 可变的调色板
     /// </summary>
     public class MutablePalette : IPalette
     {
@@ -128,6 +151,11 @@ namespace EW.Graphics
             {
                 colors[index] = value;
             }
+        }
+
+        public void SetColor(int index,Color color)
+        {
+            colors[index] = (uint)color.ToArgb();
         }
     }
 

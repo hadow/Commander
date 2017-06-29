@@ -40,6 +40,7 @@ namespace EW.Mods.Common.Traits
 
         public void LoadPalettes(WorldRenderer wr)
         {
+
             if (info.Tileset != null && info.Tileset.ToLowerInvariant() != world.Map.Tileset.ToLowerInvariant())
                 return;
 

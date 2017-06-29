@@ -18,6 +18,9 @@ namespace EW.Mods.Common.Traits
         [FieldLoader.Require]
         public readonly string Filename = null;
 
+        /// <summary>
+        /// Map listed indices to shadow.Ignores previous color.
+        /// </summary>
         public readonly int[] ShadowIndex = { };
 
         public readonly bool AllowModifiers = true;
@@ -49,6 +52,7 @@ namespace EW.Mods.Common.Traits
         {
             get
             {
+                //Only expose the palette if it is available for the shellmap's tileset (which is a requirement for its use).
                 if (info.Tileset == null || info.Tileset == world.Map.Rules.TileSet.Id)
                     yield return info.Name;
             }

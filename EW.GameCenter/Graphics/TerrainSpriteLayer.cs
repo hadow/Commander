@@ -25,6 +25,9 @@ namespace EW.Graphics
 
         readonly PaletteReference palette;
 
+        /// <summary>
+        /// Extract terrain vertex bufer into a reusable class.
+        /// </summary>
         readonly DynamicVertexBuffer vertexBuffer;
 
         readonly VertexBufferBinding[] bindings;
@@ -67,6 +70,15 @@ namespace EW.Graphics
         /// </summary>
         void UpdatePaletteIndices()
         {
+            //Everything in the layer uses the same palette,
+            //so we can fix the indices in one pass
+            for(var i= 0; i < vertices.Length; i++)
+            {
+                var v = vertices[i];
+                vertices[i] = new Vertex(v.Position, v.TextureCoordinate, v.UV, palette.TextureIndex, v.C);
+            }
+
+
             for(var row = 0; row < map.MapSize.Y; row++)
             {
                 dirtyRows.Add(row);
@@ -138,6 +150,13 @@ namespace EW.Graphics
         }
         
 
+        /// <summary>
+        /// Detach event handlers on dispose in TerrainSpriteLayer
+        /// 
+        /// The WorldRenderer outlives the TerrainSpriteLayer and thus keeps it alive longer than expected via the event handler.
+        /// We detach it to allow the GC to reclaim it
+        /// </summary>
+        /// <param name="disposing"></param>
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

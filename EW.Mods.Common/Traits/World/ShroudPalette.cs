@@ -11,6 +11,9 @@ namespace EW.Mods.Common.Traits
         public readonly string Name = "shroud";
 
 
+        /// <summary>
+        /// Palette type
+        /// </summary>
         public readonly bool Fog = false;
 
         public object Create(ActorInitializer init)
