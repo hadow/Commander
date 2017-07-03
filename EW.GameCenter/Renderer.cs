@@ -57,12 +57,13 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 初始化深度缓冲区
         /// </summary>
         /// <param name="mapGrid"></param>
         public void InitializeDepthBuffer(MapGrid mapGrid)
         {
-
+            this.depthScale = mapGrid == null || !mapGrid.EnableDepthBuffer ? 0 : (float)Resolution.Height / (Resolution.Height + mapGrid.TileSize.Height * mapGrid.MaximumTerrainHeight);
+            this.depthOffset = this.depthScale / 2;
         }
 
         public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
@@ -91,6 +92,10 @@ namespace EW
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="palette"></param>
         public void SetPalette(HardwarePalette palette)
         {
             if (palette.Texture == currentPaletteTexture)

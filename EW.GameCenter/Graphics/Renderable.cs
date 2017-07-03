@@ -17,7 +17,7 @@ namespace EW.Graphics
 
         IRenderable WithZOffset(int newOffset);
 
-        IRenderable OffsetBy(WVect offset);
+        IRenderable OffsetBy(WVec offset);
 
         IRenderable AsDecoration();
 

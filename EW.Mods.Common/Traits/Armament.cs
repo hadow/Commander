@@ -6,7 +6,7 @@ namespace EW.Mods.Common.Traits
 
     public class Barrel
     {
-        public WVect Offset;
+        public WVec Offset;
         public WAngle Yaw;
     }
     public class ArmamentInfo : UpgradableTraitInfo, IRulesetLoaded, Requires<AttackBaseInfo>
@@ -23,7 +23,7 @@ namespace EW.Mods.Common.Traits
 
         public readonly int FireDelay = 0;
 
-        public readonly WVect[] LocalOffset = { };
+        public readonly WVec[] LocalOffset = { };
 
         public readonly WAngle[] LocalYaw = { };
 

@@ -133,7 +133,7 @@ namespace EW.Traits
                 rang = newRange;
                 vRange = newVRange;
 
-                var offset = new WVect(newRange, newRange, newVRange);
+                var offset = new WVec(newRange, newRange, newVRange);
 
                 TopLeft = newPos - offset;
                 BottomRight = newPos + offset;

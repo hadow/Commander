@@ -95,6 +95,8 @@ namespace EW
 
             ModData.InitializeLoaders(ModData.DefaultFileSystem);
 
+            var grid = ModData.Manifest.Contains<MapGrid>() ? ModData.Manifest.Get<MapGrid>() : null;
+            Renderer.InitializeDepthBuffer(grid);
             //ModData.LoadScreen.StartGame(args);
             LoadShellMap();
         }

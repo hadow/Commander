@@ -15,10 +15,10 @@ namespace EW.Mods.Common.Traits
 
         public readonly bool UseClassicFacingFudge = false;
 
-        public WVect LocalToWorld(WVect vec){
+        public WVec LocalToWorld(WVec vec){
             if (!UseClassicPerspectiveFudge)
-                return new WVect(vec.Y, -vec.X, vec.Z);
-            return new WVect(vec.Y, -CameraPitch.Sin() * vec.X / 1024, vec.Z);
+                return new WVec(vec.Y, -vec.X, vec.Z);
+            return new WVec(vec.Y, -CameraPitch.Sin() * vec.X / 1024, vec.Z);
         }
 
 

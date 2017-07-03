@@ -103,7 +103,11 @@ namespace EW.Traits
     #endregion
 
     #region Render Interface
-
+    public interface IRenderAboveShroudWhenSelected
+    {
+        IEnumerable<IRenderable> RenderAboveShroud(Actor self, WorldRenderer wr);
+    }
+    public interface IRenderAboveWorld { void RenderAboveWorld(Actor self, WorldRenderer wr); }
 
     public interface IRenderOverlay
     {

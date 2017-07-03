@@ -31,18 +31,18 @@ namespace EW
         /// </summary>
         public readonly byte MaximumTerrainHeight = 0;
 
-        public WVect[][] CellCorners { get; private set; }
+        public WVec[][] CellCorners { get; private set; }
 
         internal readonly CVec[][] TilesByDistance;
 
-        public readonly WVect[] SubCellOffsets =
+        public readonly WVec[] SubCellOffsets =
         {
-            new WVect(0,0,0),   //full cell - index 0
-            new WVect(-299,-256,0), //top left - index 1
-            new WVect(256,-256,0),  //top right -index 2
-            new WVect(0,0,0),       //center -index 3
-            new WVect(-299,256,0),  //bottom left -index 4
-            new WVect(256,256,0),   //bottom right -index 5
+            new WVec(0,0,0),   //full cell - index 0
+            new WVec(-299,-256,0), //top left - index 1
+            new WVec(256,-256,0),  //top right -index 2
+            new WVec(0,0,0),       //center -index 3
+            new WVec(-299,256,0),  //bottom left -index 4
+            new WVec(256,256,0),   //bottom right -index 5
         };
 
         readonly int[][] cellCornerHalfHeights = new int[][]
@@ -92,17 +92,17 @@ namespace EW
             else if (defaultSubCellIndex < (SubCellOffsets.Length > 1 ? 1 : 0) || defaultSubCellIndex >= SubCellOffsets.Length)
                 throw new InvalidDataException("Subcell default index must be a valid index into the offset triples and musb be greater than 0 for mods with subcells.");
 
-            var leftDelta = Type == MapGridT.RectangularIsometric ? new WVect(-512, 0, 0) : new WVect(-512, -512, 0);
-            var topDelta = Type == MapGridT.RectangularIsometric ? new WVect(0, -512, 0) : new WVect(512, -512, 0);
-            var rightDelta = Type == MapGridT.RectangularIsometric ? new WVect(512, 0, 0) : new WVect(512, 512, 0);
-            var bottomDelta = Type == MapGridT.RectangularIsometric ? new WVect(0, 512, 0) : new WVect(-512, 512, 0);
+            var leftDelta = Type == MapGridT.RectangularIsometric ? new WVec(-512, 0, 0) : new WVec(-512, -512, 0);
+            var topDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, -512, 0) : new WVec(512, -512, 0);
+            var rightDelta = Type == MapGridT.RectangularIsometric ? new WVec(512, 0, 0) : new WVec(512, 512, 0);
+            var bottomDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, 512, 0) : new WVec(-512, 512, 0);
 
-            CellCorners = cellCornerHalfHeights.Select(ramp => new WVect[]
+            CellCorners = cellCornerHalfHeights.Select(ramp => new WVec[]
             {
-                leftDelta + new WVect(0,0,512*ramp[0]),
-                topDelta + new WVect(0,0,512*ramp[1]),
-                rightDelta + new WVect(0,0,512*ramp[2]),
-                bottomDelta+new WVect(0,0,512*ramp[3])
+                leftDelta + new WVec(0,0,512*ramp[0]),
+                topDelta + new WVec(0,0,512*ramp[1]),
+                rightDelta + new WVec(0,0,512*ramp[2]),
+                bottomDelta+new WVec(0,0,512*ramp[3])
 
             }).ToArray();
 
@@ -152,6 +152,14 @@ namespace EW
             }
 
             return ts.Select(list => list.ToArray()).ToArray();
+        }
+
+        public WVec OffsetOfSubCell(SubCell subCell)
+        {
+            if (subCell == SubCell.Invalid || subCell == SubCell.Any)
+                return WVec.Zero;
+
+            return SubCellOffsets[(int)subCell];
         }
     }
 }

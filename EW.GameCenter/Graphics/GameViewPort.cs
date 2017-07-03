@@ -181,12 +181,12 @@ namespace EW.Graphics
             var map = worldRenderer.World.Map;
             
             //mpos -> cpos -> wpos
-            var ctl = map.CenterOfCell(((MPos)bounds.TopLeft).ToCPos(map)) - new WVect(512, 512, 0);
-            var cbr = map.CenterOfCell(((MPos)bounds.BottomRight).ToCPos(map)) + new WVect(512, 512, 0);
+            var ctl = map.CenterOfCell(((MPos)bounds.TopLeft).ToCPos(map)) - new WVec(512, 512, 0);
+            var cbr = map.CenterOfCell(((MPos)bounds.BottomRight).ToCPos(map)) + new WVec(512, 512, 0);
 
             //Convert to screen coordinates
-            var tl = WorldToViewPx(worldRenderer.ScreenPxPosition(ctl - new WVect(0, 0, ctl.Z))).Clamp(ScreenClip);
-            var br = WorldToViewPx(worldRenderer.ScreenPxPosition(cbr - new WVect(0, 0, cbr.Z))).Clamp(ScreenClip);
+            var tl = WorldToViewPx(worldRenderer.ScreenPxPosition(ctl - new WVec(0, 0, ctl.Z))).Clamp(ScreenClip);
+            var br = WorldToViewPx(worldRenderer.ScreenPxPosition(cbr - new WVec(0, 0, cbr.Z))).Clamp(ScreenClip);
 
             return Rectangle.FromLTRB(tl.X - tileSize.Width, tl.Y - tileSize.Height, br.X + tileSize.Width, br.Y + tileSize.Height);
         }

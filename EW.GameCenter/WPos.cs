@@ -37,19 +37,19 @@ namespace EW
             return !(a == b);
         }
 
-        public static WPos operator +(WPos a,WVect b)
+        public static WPos operator +(WPos a,WVec b)
         {
             return new WPos(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         }
 
-        public static WPos operator -(WPos a,WVect b)
+        public static WPos operator -(WPos a,WVec b)
         {
             return new WPos(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
 
-        public static  WVect operator -(WPos a,WPos b)
+        public static  WVec operator -(WPos a,WPos b)
         {
-            return new WVect(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+            return new WVec(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
         }
         #endregion
     }
