@@ -37,7 +37,7 @@ namespace EW
         EW.Xna.Platforms.Point? lastScroll;
         float? lastZoom;
 
-        Texture2D currentPaletteTexture;
+        public Texture2D currentPaletteTexture;
 
         /// <summary>
         /// 

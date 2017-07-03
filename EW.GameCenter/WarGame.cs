@@ -144,6 +144,9 @@ namespace EW
         protected override void LoadContent()
         {
             this.Components.Add(Renderer);
+
+            spriteBatch = new SpriteBatch(this.GraphicsDevice);
+
         }
 
         protected override void UnloadContent()
@@ -162,14 +165,27 @@ namespace EW
 
         private BasicEffect _effect;
         private VertexBuffer _vb;
+        private SpriteBatch spriteBatch;
+        private VertexBufferBinding[] bindings = new VertexBufferBinding[1];
         protected override void Draw(GameTime gameTime)
         {
+            
+
             base.Draw(gameTime);
             RenderTick();
 
+            GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
+            Vector2 topLeftOfSprite = new Vector2(150, 150);
+            Color tintColor = Color.White;
+            spriteBatch.Draw(Renderer.currentPaletteTexture, topLeftOfSprite, tintColor);
+            spriteBatch.End();
+
+
+
             //GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            //if(_effect == null)
+            //if (_effect == null)
             //{
             //    _effect = new BasicEffect(GraphicsDevice);
 
@@ -179,7 +195,10 @@ namespace EW
             //    _effect.Projection = projection;
             //}
 
-            //if(_vb == null)
+            //_effect.World = Matrix.Identity;
+            //_effect.DiffuseColor = Color.Red.ToVector3();
+            //_effect.CurrentTechnique.Passes[0].Apply();
+            //if (_vb == null)
             //{
             //    _vb = new VertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, 6, BufferUsage.WriteOnly);
             //    _vb.SetData(new[]
@@ -192,13 +211,12 @@ namespace EW
             //        new VertexPositionColor(new Vector3(200,200,0),Color.White)
 
             //    });
-            //    GraphicsDevice.SetVertexBuffer(_vb);
+            //    //GraphicsDevice.SetVertexBuffer(_vb);
 
+            //    bindings[0] = new VertexBufferBinding(_vb);
+            //    GraphicsDevice.SetVertexBuffers(bindings);
             //}
 
-            //_effect.World = Matrix.Identity;
-            //_effect.DiffuseColor = Color.Red.ToVector3();
-            //_effect.CurrentTechnique.Passes[0].Apply();
             //GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, 2);
         }
 

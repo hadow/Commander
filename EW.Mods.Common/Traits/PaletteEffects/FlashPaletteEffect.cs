@@ -45,6 +45,8 @@ namespace EW.Mods.Common.Traits
         {
             if (remainingFrames == 0)
                 return;
+
+            var frac = (float)remainingFrames / Info.Length;
         }
 
 
