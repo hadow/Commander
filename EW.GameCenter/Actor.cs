@@ -44,6 +44,7 @@ namespace EW
         readonly IRender[] renders;
         readonly IRenderModifier[] renderModifiers;
 
+        public Player Owner { get; set; }
         internal Actor(World world,string name,TypeDictionary initDict)
         {
             var init = new ActorInitializer(this, initDict);
@@ -195,6 +196,15 @@ namespace EW
             return luaInterface.Value.ContainsKey(name);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newOwner"></param>
+        public void ChangeOwner(Player newOwner)
+        {
+
+        }
 
         #endregion
         public void Dispose()

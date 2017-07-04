@@ -13,6 +13,8 @@ namespace EW.Scripting
     {
         void OnScriptBind(ScriptContext context);
     }
+
+    public sealed class ExposedForDestroyedActors : Attribute { }
     /// <summary>
     /// 
     /// </summary>
@@ -23,6 +25,9 @@ namespace EW.Scripting
         public ScriptPropertyGroupAttribute(string category) { Category = category; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public abstract class ScriptActorProperties
     {
         protected readonly Actor Self;
@@ -31,6 +36,21 @@ namespace EW.Scripting
         public ScriptActorProperties(ScriptContext context,Actor self)
         {
             Self = self;
+            Context = context;
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public abstract class ScriptPlayerProperties
+    {
+        protected readonly Player Player;
+        protected readonly ScriptContext Context;
+
+        public ScriptPlayerProperties(ScriptContext context,Player player)
+        {
+            Player = player;
             Context = context;
         }
     }
@@ -56,6 +76,8 @@ namespace EW.Scripting
 
         public readonly Cache<ActorInfo, Type[]> ActorCommands;
 
+        
+
         static readonly object[] NoArguments = new object[0];
         public ScriptContext(World world,WorldRenderer worldRenderer,IEnumerable<string> scripts)
         {
@@ -66,6 +88,11 @@ namespace EW.Scripting
             knownActorCommands = WarGame.ModData.ObjectCreator.GetTypesImplementing<ScriptActorProperties>().ToArray();
             
             ActorCommands = new Cache<ActorInfo, Type[]>(FilterActorCommands);
+
+
+            var knownPlayerCommands = WarGame.ModData.ObjectCreator.GetTypesImplementing<ScriptPlayerProperties>().ToArray();
+
+            PlayerCommands = FilterCommands(world.Map.Rules.Actors["player"], knownPlayerCommands);
 
             runtime.Globals["GameDir"] = Platform.GameDir;
             runtime.DoBuffer(File.Open(Platform.ResolvePath(".", "lua", "scriptwrapper.lua"), FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();

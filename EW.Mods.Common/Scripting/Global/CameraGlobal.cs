@@ -1,10 +1,21 @@
 using System;
-using System.Collections.Generic;
-
+using EW.Scripting;
 
 namespace EW.Common.Scripting.Global
 {
-    class CameraGlobal
+    [ScriptGlobal("Camera")]
+    public class CameraGlobal:ScriptGlobal
     {
+
+        public CameraGlobal(ScriptContext context) : base(context) { }
+
+        public WPos Position
+        {
+            get { return Context.WorldRenderer.ViewPort.CenterPosition; }
+            set
+            {
+                Context.WorldRenderer.ViewPort.Center(value);
+            }
+        }
     }
 }

@@ -80,12 +80,14 @@
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activities\Attack.cs" />
+    <Compile Include="Scripting\CallLuaFunc.cs" />
     <Compile Include="Scripting\Global\ActorGlobal.cs" />
     <Compile Include="Scripting\Global\CameraGlobal.cs" />
     <Compile Include="Scripting\Global\DataTimeGlobal.cs" />
     <Compile Include="Scripting\Global\MapGlobal.cs" />
     <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
+    <Compile Include="Scripting\Properties\GeneralProperties.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />
     <Compile Include="Scripting\ScriptTriggers.cs" />
     <Compile Include="SpriteLoaders\ShpTDLoader.cs" />

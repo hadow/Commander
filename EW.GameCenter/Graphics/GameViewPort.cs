@@ -223,5 +223,16 @@ namespace EW.Graphics
         {
             return (1f / Zoom * view.ToVector2()).ToPoint() + TopLeft;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos"></param>
+        public void Center(WPos pos)
+        {
+            CenterLocation = worldRenderer.ScreenPxPosition(pos).Clamp(mapBounds);
+            cellsDirty = true;
+            allCellsDirty = true;
+        }
     }
 }

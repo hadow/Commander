@@ -13,7 +13,14 @@ namespace EW.Scripting
     }
 
     /// <summary>
-    /// 
+    /// Provides global bindings in lua code
+    /// <remarks>
+    ///     Instance methods and properties declared in derived classes will be made available in Lua.
+    ///     Use<see cref="ScriptActorProperties"/> on your derived class to specify the name exposed in Lua.
+    ///     
+    ///     Any parameters to your method that are <see cref="LuaValue"/> will be disposed automatically when your method completes.
+    ///     
+    /// </remarks>
     /// </summary>
     public abstract class ScriptGlobal:ScriptObjectWrapper
     {
