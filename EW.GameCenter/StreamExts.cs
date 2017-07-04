@@ -65,6 +65,13 @@ namespace EW
                 return s.ReadBytes((int)(s.Length - s.Position));
         }
 
+        public static string ReadAllText(this Stream s)
+        {
+            using (s)
+            using (var sr = new StreamReader(s))
+                return sr.ReadToEnd();
+        }
+
         public static string ReadASCIIZ(this Stream s)
         {
             var bytes = new List<byte>();

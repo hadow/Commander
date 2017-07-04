@@ -54,6 +54,11 @@ namespace EW
             return PlatformT.Unknown;
         }
 
+        public static string ResolvePath(params string[] path)
+        {
+            return ResolvePath(path.Aggregate(Path.Combine));
+        }
+
         public static string ResolvePath(string path)
         {
             path = path.TrimEnd(new char[] { ' ', '\t' });

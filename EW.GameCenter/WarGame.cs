@@ -139,6 +139,9 @@ namespace EW
 
             worldRenderer = new WorldRenderer(this,ModData, orderManager.World);
 
+            using (new PerfTimer("LoadComplete"))
+                orderManager.World.LoadComplete(worldRenderer);
+
             GC.Collect();
         }
 

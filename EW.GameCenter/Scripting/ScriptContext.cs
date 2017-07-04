@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
+using System.IO;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Traits;
@@ -46,9 +47,13 @@ namespace EW.Scripting
         public WorldRenderer WorldRenderer { get; private set;}
 
         readonly MemoryConstrainedLuaRuntime runtime;
+
         readonly LuaFunction tick;
+
         readonly Type[] knownActorCommands;
+
         public readonly Type[] PlayerCommands;
+
         public readonly Cache<ActorInfo, Type[]> ActorCommands;
 
         static readonly object[] NoArguments = new object[0];
@@ -58,10 +63,12 @@ namespace EW.Scripting
             this.World = world;
             this.WorldRenderer = worldRenderer;
 
-
+            knownActorCommands = WarGame.ModData.ObjectCreator.GetTypesImplementing<ScriptActorProperties>().ToArray();
+            
             ActorCommands = new Cache<ActorInfo, Type[]>(FilterActorCommands);
 
-            runtime.Globals["GameDir"] = "";
+            runtime.Globals["GameDir"] = Platform.GameDir;
+            runtime.DoBuffer(File.Open(Platform.ResolvePath(".", "lua", "scriptwrapper.lua"), FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();
             tick = (LuaFunction)runtime.Globals["Tick"];
 
             //Register globals
@@ -99,15 +106,16 @@ namespace EW.Scripting
                 }
             }
 
-
+            //System functions do not count towards the memory limit
+            //系统函数不计入内存限制
             runtime.MaxMemoryUse = runtime.MemoryUse + MaxUserScriptMemory;
-            //using(var loadScript = (LuaFunction)runtime.Globals["ExecuteSandboxedScript"])
-            //{
-            //    foreach(var s in scripts)
-            //    {
-            //        loadScript.Call(s,world.)
-            //    }
-            //}
+            using (var loadScript = (LuaFunction)runtime.Globals["ExecuteSandboxedScript"])
+            {
+                foreach (var s in scripts)
+                {
+                    loadScript.Call(s, world.Map.Open(s).ReadAllText()).Dispose();
+                }
+            }
         }
 
         Type[] FilterActorCommands(ActorInfo ai)

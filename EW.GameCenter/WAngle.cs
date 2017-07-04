@@ -8,6 +8,7 @@ namespace EW
     /// </summary>
     public struct WAngle : IEquatable<WAngle>
     {
+        public static readonly WAngle Zero = new WAngle(0);
         public readonly int Angle;
         public WAngle(int a)
         {
@@ -37,6 +38,8 @@ namespace EW
 
             return new WAngle(degrees * 1024 / 360);
         }
+
+        public int Facing { get { return Angle / 4; } }
 
         public int Sin()
         {

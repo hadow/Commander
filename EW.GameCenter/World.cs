@@ -74,6 +74,25 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="wr"></param>
+        public void LoadComplete(WorldRenderer wr)
+        {
+            using (new PerfTimer("ScreenMap.WorldLoaded"))
+                ScreenMap.WorldLoaded(this, wr);
+
+            foreach(var wlh in WorldActor.TraitsImplementing<IWorldLoaded>())
+            {
+                if (wlh == ScreenMap)
+                    continue;
+
+                using (new PerfTimer(wlh.GetType().Name + ".WorldLoaded"))
+                    wlh.WorldLoaded(this, wr);
+            }
+        }
+
 
         public void Tick()
         {

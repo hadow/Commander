@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics

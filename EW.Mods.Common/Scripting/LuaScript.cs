@@ -19,11 +19,13 @@ namespace EW.Common.Scripting
     /// <summary>
     /// Lua ½Å±¾
     /// </summary>
-    public class LuaScript:ITick,IWorldLoaded
+    public class LuaScript:ITick,IWorldLoaded,INotifyActorDisposing
     {
 
         readonly LuaScriptInfo info;
         ScriptContext context;
+
+        bool disposed;
         public LuaScript(LuaScriptInfo info)
         {
             this.info = info;
@@ -44,6 +46,16 @@ namespace EW.Common.Scripting
             context = new ScriptContext(world,render,scripts);
             context.WorldLoaded();
 
+        }
+
+        public void Disposing(Actor self)
+        {
+            if (disposed)
+                return;
+            if (context != null)
+                context.Dispose();
+
+            disposed = true;
         }
 
     }

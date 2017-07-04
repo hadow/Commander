@@ -131,10 +131,6 @@ namespace EW
             return ActorID == other.ActorID;
         }
 
-        public void Dispose()
-        {
-
-        }
 
         #region Trait
 
@@ -201,6 +197,26 @@ namespace EW
 
 
         #endregion
+        public void Dispose()
+        {
+            World.AddFrameEndTask(w =>
+            {
+                if (Disposed)
+                    return;
+
+                if (IsInWorld)
+                    World.Remove(this);
+
+                foreach (var t in TraitsImplementing<INotifyActorDisposing>())
+                    t.Disposing(this);
+
+                World.TraitDict.RemoveActor(this);
+                Disposed = true;
+
+                if (luaInterface != null)
+                    luaInterface.Value.OnActorDestroyed();
+            });
+        }
 
     }
 }

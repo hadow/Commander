@@ -96,6 +96,8 @@ namespace EW.Traits
 
     public interface INotifyAddToWorld { void AddedToWorld(Actor self); }
 
+    public interface INotifyActorDisposing { void Disposing(Actor self); }
+
     public interface INotifyRemovedFromWorld { void RemovedFromWorld(Actor self); }
 
     public interface INotifySold { void Selling(Actor self); void Sold(Actor self); }

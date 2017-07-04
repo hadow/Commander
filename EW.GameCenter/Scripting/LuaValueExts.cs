@@ -9,7 +9,14 @@ namespace EW.Scripting
     /// </summary>
     public static class LuaValueExts
     {
+        public static Type WrappedClrType(this LuaValue value)
+        {
+            object inner;
+            if (value.TryGetClrObject(out inner))
+                return inner.GetType();
 
+            return value.GetType();
+        }
 
         public static LuaValue ToLuaValue(this object obj,ScriptContext context)
         {

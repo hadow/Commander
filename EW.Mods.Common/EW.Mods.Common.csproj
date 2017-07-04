@@ -252,9 +252,9 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.Android.csproj">
-      <Project>{5913825e-0c80-4660-81b3-c2c55b35adb6}</Project>
-      <Name>Eluant.Android</Name>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.GameCenter\EW.GameCenter.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>

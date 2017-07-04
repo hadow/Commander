@@ -295,6 +295,12 @@ namespace EW
             return InnerGet<T>().All();
         }
 
+        public void RemoveActor(Actor a)
+        {
+            foreach (var t in traits)
+                t.Value.RemoveActor(a.ActorID);
+        }
+
         static void CheckDestroyed(Actor actor)
         {
             if (actor.Disposed)

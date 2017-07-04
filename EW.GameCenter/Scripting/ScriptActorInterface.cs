@@ -40,5 +40,10 @@ namespace EW.Scripting
             throw new NotImplementedException();
         }
 
+
+        public void OnActorDestroyed()
+        {
+            InitializeBindings();
+        }
     }
 }
