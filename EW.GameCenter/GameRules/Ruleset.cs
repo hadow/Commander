@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.FileSystem;
 using EW.Primitives;
@@ -186,6 +187,52 @@ namespace EW
             var result = MiniYaml.Load(fileSystem, files, additional).ToDictionaryWithConflictLog(k => k.Key.ToLowerInvariant(), makeObject, "LoadFromManifest<" + name + ">");
 
             return new ReadOnlyDictionary<string, T>(result);
+        }
+
+        public static bool DefinesUnsafeCustomRules(ModData modData,IReadOnlyFileSystem fileSystem,MiniYaml mapRules,MiniYaml mapWeapons,MiniYaml mapVoices,MiniYaml mapNotifications,MiniYaml mapSequences)
+        {
+
+            if (AnyCustomYaml(mapWeapons) || AnyCustomYaml(mapVoices) || AnyCustomYaml(mapNotifications) || AnyCustomYaml(mapSequences))
+                return true;
+
+            if(mapRules != null)
+            {
+                if (AnyFlaggedTraits(modData, mapRules.Nodes))
+                    return true;
+
+                if(mapRules.Value != null)
+                {
+                    var mapFiles = FieldLoader.GetValue<string[]>("value", mapRules.Value);
+                    foreach (var f in mapFiles)
+                        if (AnyFlaggedTraits(modData, MiniYaml.FromStream(fileSystem.Open(f), f)))
+                            return true;
+                }
+            }
+            return false;
+        }
+
+        static bool AnyCustomYaml(MiniYaml yaml)
+        {
+            return yaml != null && (yaml.Value != null || yaml.Nodes.Any());
+        }
+
+        static bool AnyFlaggedTraits(ModData modData,List<MiniYamlNode> actors)
+        {
+            foreach(var actorNode in actors)
+            {
+                foreach(var traitNode in actorNode.Value.Nodes)
+                {
+                    try
+                    {
+                        var traitName = traitNode.Key.Split('@')[0];
+                        var traitType = modData.ObjectCreator.FindType(traitName + "Info");
+                        if (traitType.GetInterface("ILobbyCustomRulesIgnore") == null)
+                            return true;
+                    }
+                    catch { }
+                }
+            }
+            return false;
         }
     }
 }

@@ -179,12 +179,12 @@ namespace EW
             base.Draw(gameTime);
             RenderTick();
 
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
-            Vector2 topLeftOfSprite = new Vector2(150, 150);
-            Color tintColor = Color.White;
-            spriteBatch.Draw(Renderer.currentPaletteTexture, topLeftOfSprite, tintColor);
-            spriteBatch.End();
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
+            //spriteBatch.Begin();
+            //Vector2 topLeftOfSprite = new Vector2(150, 150);
+            //Color tintColor = Color.White;
+            //spriteBatch.Draw(Renderer.currentPaletteTexture, topLeftOfSprite, tintColor);
+            //spriteBatch.End();
 
 
 

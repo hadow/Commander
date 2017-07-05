@@ -267,7 +267,7 @@ namespace EW
 
                 var rules = Ruleset.Load(modData, this, TileSet, ruleDefinitions, weaponDefinitions, voiceDefinitions, notificationDefinitions, musicDefinitions, sequenceDefinitions);
 
-                var flagged = false;
+                var flagged = Ruleset.DefinesUnsafeCustomRules(modData,this,ruleDefinitions,weaponDefinitions,voiceDefinitions,notificationDefinitions,sequenceDefinitions);
                 return Pair.New(rules, flagged);
 
             });
@@ -275,6 +275,7 @@ namespace EW
             if (Package.Contains("map.png"))
                 using (var dataStream = p.GetStream("map.png"))
                     newData.Preview = BitmapFactory.DecodeStream(dataStream);
+
             innerData = newData;
         }
 

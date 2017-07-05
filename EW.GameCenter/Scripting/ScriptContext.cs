@@ -95,7 +95,11 @@ namespace EW.Scripting
             PlayerCommands = FilterCommands(world.Map.Rules.Actors["player"], knownPlayerCommands);
 
             runtime.Globals["GameDir"] = Platform.GameDir;
-            runtime.DoBuffer(File.Open(Platform.ResolvePath(".", "lua", "scriptwrapper.lua"), FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();
+            //var directory = Directory.GetCurrentDirectory();
+            //var directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            //var directory = Android.App.Application.Context.ApplicationContext.PackageResourcePath;
+            var directory = Platform.ResolvePath(".", "lua", "scriptwrapper.lua");
+            runtime.DoBuffer(File.Open(directory, FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();
             tick = (LuaFunction)runtime.Globals["Tick"];
 
             //Register globals

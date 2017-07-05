@@ -2,7 +2,7 @@ using System;
 using Eluant;
 using EW.Scripting;
 using EW.Primitives;
-
+using EW.Mods.Common.Traits;
 namespace EW.Common.Scripting.Global
 {
     [ScriptGlobal("Actor")]
@@ -27,6 +27,16 @@ namespace EW.Common.Scripting.Global
             ActorInfo ai;
             if (!Context.World.Map.Rules.Actors.TryGetValue(type, out ai))
                 throw new LuaException("Unknown actor type '{0}'".F(type));
+
+            var bi = ai.TraitInfoOrDefault<BuildableInfo>();
+            if (bi == null)
+                return 0;
+            var time = bi.BuildDuration;
+            if(time == -1)
+            {
+
+            }
+            return time;
         }
     }
 }

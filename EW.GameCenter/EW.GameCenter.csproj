@@ -660,6 +660,7 @@
     <AndroidAsset Include="Content\lua\sandbox.lua" />
     <AndroidAsset Include="Content\lua\scriptwrapper.lua" />
     <AndroidAsset Include="Content\lua\stacktraceplus.lua" />
+    <AndroidAsset Include="Content\glsl\shp.xnb" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -696,6 +697,11 @@
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
+    <AndroidNativeLibrary Include="lib\armeabi\libxlua.so">
+      <Abi>armeabi</Abi>
+    </AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\logo.png" />
     <AndroidAsset Include="Content\mods\cnc\preview.png" />
   </ItemGroup>
@@ -705,9 +711,14 @@
   <ItemGroup>
     <AndroidAsset Include="Content\charactersheet.png" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Content\glsl\" />
-    <Folder Include="Content\mods\common\" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

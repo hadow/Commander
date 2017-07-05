@@ -10,7 +10,7 @@ struct VSInputT
 {
 	float4 aVertexPosition : POSITION0;
 	float4 aVertexTexCoord : TEXCOORD0;
-	float2 aVertexTexMetadata : TEXCOORD1;	
+	float2 aVertexTexMetadata : NORMAL;	
 };
 
 
@@ -23,9 +23,9 @@ BEGIN_CONSTANTS
 	float DepthTextureScale		_ps(c0) _cb(c3);
 	bool EnableDepthPreview		_ps(c1) _cb(c4);
 	
-MATRIX_CONSTANTS
+//MATRIX_CONSTANTS
 
-    float4x4 MatrixTransform    _vs(c3) _cb(c0);
+//    float4x4 MatrixTransform    _vs(c3) _cb(c0);
 
 END_CONSTANTS
 
@@ -46,7 +46,7 @@ struct VSOutput
 VSOutput SpriteVertexShader(VSInputT input)
 {
 	VSOutput output;
-    output.position = mul(input.aVertexPosition, MatrixTransform);
+    output.position = mul(input.aVertexPosition, float4(0,0,0,0));
 	//output.color = color;
 	output.texCoord = input.aVertexTexCoord+input.aVertexTexMetadata + Scroll + r1 + r2;
 	return output;
