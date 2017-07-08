@@ -687,7 +687,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="lib\x86\libxlua.so">
+    <AndroidNativeLibrary Include="lib\x86\liblua.so">
       <Abi>x86</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>

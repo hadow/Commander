@@ -38,10 +38,10 @@ add_known_module("debug", "debug module")
 add_known_module("coroutine", "coroutine module")
 
 -- lua5.2
-add_known_module("bit32", "bit32 module")
+--add_known_module("bit32", "bit32 module")
 -- luajit
-add_known_module("bit", "bit module")
-add_known_module("jit", "jit module")
+--add_known_module("bit", "bit module")
+--add_known_module("jit", "jit module")
 
 
 local m_user_known_tables = {}

@@ -20,7 +20,44 @@ namespace EW.Scripting
 
         public static LuaValue ToLuaValue(this object obj,ScriptContext context)
         {
+            if (obj is LuaValue)
+                return (LuaValue)obj;
 
+            if (obj == null)
+                return LuaNil.Instance;
+
+            if (obj is double)
+                return (double)obj;
+
+            if (obj is int)
+                return (int)obj;
+
+            if (obj is bool)
+                return (bool)obj;
+
+            if (obj is string)
+                return (string)obj;
+
+            if(obj is IScriptBindable)
+            {
+                var notify = obj as IScriptNotifyBind;
+                if (notify != null)
+                    notify.OnScriptBind(context);
+
+                return new LuaCustomClrObject(obj);
+            }
+
+            if(obj is Array)
+            {
+                var array = (Array)obj;
+                var i = 1;
+                var table = context.CreateTable();
+
+                foreach (var x in array)
+                    using (LuaValue key = i++, value = x.ToLuaValue(context))
+                        table.Add(key, value);
+                return table;
+            }
             throw new InvalidOperationException("Cannot convert type {0} to Lua,Class Must implement IScriptBindable.");
         }
 

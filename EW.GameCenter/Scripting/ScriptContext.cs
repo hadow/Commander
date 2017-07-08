@@ -81,7 +81,20 @@ namespace EW.Scripting
         static readonly object[] NoArguments = new object[0];
         public ScriptContext(World world,WorldRenderer worldRenderer,IEnumerable<string> scripts)
         {
+            LuaRuntime.LoadAndroidAsset += (string filename) =>
+              {
+                  using (StreamReader sr = new StreamReader(Android.App.Application.Context.Assets.Open(Platform.ResolvePath(".", "lua", filename))))
+                  {
+                      var luaContent = sr.ReadToEnd();
+                      if (!string.IsNullOrEmpty(luaContent))
+                      {
+                          runtime.LoadBuffer(luaContent, filename);
+                          
+                      }
+                  }
+              };
             runtime = new MemoryConstrainedLuaRuntime();
+            
             this.World = world;
             this.WorldRenderer = worldRenderer;
 
@@ -94,12 +107,19 @@ namespace EW.Scripting
 
             PlayerCommands = FilterCommands(world.Map.Rules.Actors["player"], knownPlayerCommands);
 
-            runtime.Globals["GameDir"] = Platform.GameDir;
+            runtime.Globals["GameDir"] = Platform.SupportDir;
+            
             //var directory = Directory.GetCurrentDirectory();
             //var directory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             //var directory = Android.App.Application.Context.ApplicationContext.PackageResourcePath;
             var directory = Platform.ResolvePath(".", "lua", "scriptwrapper.lua");
-            runtime.DoBuffer(File.Open(directory, FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();
+            string content;
+            using (StreamReader sr = new StreamReader(Android.App.Application.Context.Assets.Open(Platform.ResolvePath(".", "lua", "scriptwrapper.lua"))))
+            {
+                content = sr.ReadToEnd();
+            }
+            //runtime.DoBuffer(File.Open(directory, FileMode.Open, FileAccess.Read).ReadAllText(), "scriptwrapper.lua").Dispose();
+            runtime.DoBuffer(content, "scriptwrapper.lua").Dispose();
             tick = (LuaFunction)runtime.Globals["Tick"];
 
             //Register globals
@@ -149,6 +169,14 @@ namespace EW.Scripting
             }
         }
 
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="searcher"></param>
+        /// <param name="index"></param>
+        
+
         Type[] FilterActorCommands(ActorInfo ai)
         {
             return FilterCommands(ai, knownActorCommands);
@@ -194,6 +222,7 @@ namespace EW.Scripting
 
         }
 
+        public LuaTable CreateTable() { return runtime.CreateTable(); }
 
 
         public void Dispose() { }

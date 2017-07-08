@@ -189,6 +189,11 @@ namespace EW
             customDataLoaded = true;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public T Get<T>() where T : IGlobalModData
         {
             if (!customDataLoaded)
