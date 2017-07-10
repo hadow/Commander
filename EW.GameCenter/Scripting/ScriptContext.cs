@@ -10,6 +10,8 @@ using EW.Traits;
 using Eluant;
 namespace EW.Scripting
 {
+    //Tag interfaces specifying the type of bindings to create.
+    
     public interface IScriptNotifyBind
     {
         void OnScriptBind(ScriptContext context);

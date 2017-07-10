@@ -144,6 +144,16 @@ namespace EW.Graphics
                     continue;
 
                 var rowOffset = rowStride * row;
+
+                unsafe
+                {
+                    fixed(Vertex* vPtr = &vertices[0])
+                    {
+
+                    }
+
+                }
+
                 vertexBuffer.SetData(vertexSize*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
             }
             ((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(bindings, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);

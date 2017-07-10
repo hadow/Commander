@@ -325,7 +325,115 @@ namespace EW
         /// <param name="cell"></param>
         void UpdateProjection(CPos cell)
         {
+            MPos uv;
+            if(Grid.MaximumTerrainHeight == 0)
+            {
+                uv = cell.ToMPos(Grid.Type);
+                cellProjection[cell] = new[] { (PPos)uv };
+                var inverse = inverseCellProjection[uv];
+                inverse.Clear();
+                inverse.Add(uv);
+                return;
+                   
+            }
 
+            if (!initializedCellProjection)
+                InitializeCellPojection();
+
+            uv = cell.ToMPos(Grid.Type);
+
+            foreach (var puv in cellProjection[uv])
+                inverseCellProjection[(MPos)puv].Remove(uv);
+
+            var projected = ProjectCellInner(uv);
+            cellProjection[uv] = projected;
+
+            foreach (var puv in projected)
+                inverseCellProjection[(MPos)puv].Add(uv);
+
+        }
+
+        static readonly PPos[] NoProjectedCells = { };
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <returns></returns>
+        PPos[] ProjectCellInner(MPos uv)
+        {
+            var mapHeight = Height;
+            if (!mapHeight.Contains(uv))
+                return NoProjectedCells;
+
+            var height = mapHeight[uv];
+            if (height == 0)
+                return new[] { (PPos)uv };
+
+            if((height & 1) == 1)
+            {
+                var ti = Rules.TileSet.GetTileInfo(Tiles[uv]);
+                if (ti != null && ti.RampT != 0)
+                    height += 1;
+            }
+
+            var candidates = new List<PPos>();
+
+            if ((height & 1) == 1)
+            {
+                if ((uv.V & 1) == 1)
+                    candidates.Add(new PPos(uv.U + 1, uv.V - height));
+                else
+                    candidates.Add(new PPos(uv.U - 1, uv.V - height));
+
+                candidates.Add(new PPos(uv.U, uv.V - height));
+                candidates.Add(new PPos(uv.U, uv.V - height + 1));
+                candidates.Add(new PPos(uv.U, uv.V - height - 1));
+            }
+            else
+                candidates.Add(new PPos(uv.U, uv.V - height));
+
+            return candidates.Where(c => mapHeight.Contains((MPos)c)).ToArray();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <returns></returns>
+        public PPos[] ProjectedCellsCovering(MPos uv)
+        {
+            if (!initializedCellProjection)
+                InitializeCellPojection();
+
+            if (!cellProjection.Contains(uv))
+                return NoProjectedCells;
+
+            return cellProjection[uv];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        void InitializeCellPojection()
+        {
+            if (initializedCellProjection)
+                return;
+
+            initializedCellProjection = true;
+
+            cellProjection = new CellLayer<PPos[]>(this);
+            inverseCellProjection = new CellLayer<List<MPos>>(this);
+
+            foreach(var cell in AllCells)
+            {
+                var uv = cell.ToMPos(Grid.Type);
+                cellProjection[uv] = new PPos[0];
+                inverseCellProjection[uv] = new List<MPos>();
+                    
+            }
+
+            foreach (var cell in AllCells)
+                UpdateProjection(cell);
         }
 
         /// <summary>

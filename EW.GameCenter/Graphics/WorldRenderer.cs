@@ -180,6 +180,7 @@ namespace EW.Graphics
 
         /// <summary>
         /// Conversion between world and screen coordinates
+        /// 在世界坐标和屏幕坐标之间转换
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>

@@ -20,6 +20,11 @@ namespace EW.Xna.Platforms.Graphics
             base.SetDataInternal<T>(0, data, startIndex, elementCount, elementSizeInBytes, options);
         }
 
+        public void SetData(IntPtr data,int start,int length)
+        {
+
+        }
+
 
     }
 }
