@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using EW.Primitives;
 namespace EW
 {
+
+    public interface ISuppressInitExport { }
     /// <summary>
     /// 
     /// </summary>
@@ -11,6 +13,10 @@ namespace EW
     {
         public string Type;
 
+
+        /// <summary>
+        /// Convert ActorReference field to Lazy Makes LoadMaps 40% faster
+        /// </summary>
         Lazy<TypeDictionary> initDict;
 
         public TypeDictionary InitDict { get { return initDict.Value; } }

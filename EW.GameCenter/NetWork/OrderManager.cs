@@ -1,5 +1,6 @@
 using System;
-
+using System.Collections;
+using System.Collections.Generic;
 namespace EW.NetWork
 {
     /// <summary>
@@ -15,10 +16,15 @@ namespace EW.NetWork
         public int NetFrameNumber { get; private set; }
         public int LocalFrameNumber;
 
-
+        List<Order> localOrders = new List<Order>();
         public bool IsReadyForNextFrame
         {
             get { return NetFrameNumber >= 1; }
+        }
+
+        public void IssueOrder(Order order)
+        {
+            localOrders.Add(order);
         }
 
         /// <summary>

@@ -52,6 +52,11 @@ namespace EW.Traits
         public readonly HashSet<string> DamageTypes;
     }
 
+    public interface IGameOver
+    {
+        void GameOver(World world);
+    }
+
     public interface IHealth
     {
         DamageState DamageState { get; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Traits;
@@ -169,6 +170,29 @@ namespace EW.Scripting
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="a"></param>
+        public void RegisterMapActor(string name,Actor a)
+        {
+            using(var registerGlobal = (LuaFunction)runtime.Globals["RegisterSandboxedGlobal"])
+            {
+                if (runtime.Globals.ContainsKey(name))
+                    throw new LuaException("The global name '{0}' is reserved,and may not be used by a map actor".F(name));
+
+                using (var obj = a.ToLuaValue(this))
+                {
+                    registerGlobal.Call(name, obj).Dispose();
+                        
+                }
+            }
+
+            
+                
+        }
+
         
         /// <summary>
         /// 
@@ -204,17 +228,31 @@ namespace EW.Scripting
 
         public void WorldLoaded()
         {
+            if (FatalErrorOccurred)
+                return;
+
+            using (var worldLoaded = (LuaFunction)runtime.Globals["WorldLoaded"])
+                worldLoaded.Call().Dispose();
 
         }
 
-
+        public bool FatalErrorOccurred { get; private set; }
         /// <summary>
         /// ÖÂÃü´íÎó
         /// </summary>
         /// <param name="message"></param>
         public void FatalError(string message)
         {
+            var stacktrace = new StackTrace().ToString();
 
+            FatalErrorOccurred = true;
+
+            World.AddFrameEndTask(w =>
+            {
+                World.EndGame();
+                World.SetPauseState(true);
+                World.PauseStateLocked = true;
+            });
         }
 
         private void LogDebugMessage(string message)

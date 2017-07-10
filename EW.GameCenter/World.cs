@@ -133,6 +133,47 @@ namespace EW
 
         }
 
+        public event Action GameOver = () => { };
+        public bool IsGameOver { get; private set; }
+        /// <summary>
+        /// Ω· ¯”Œœ∑
+        /// </summary>
+        public void EndGame()
+        {
+            if (!IsGameOver)
+            {
+                IsGameOver = true;
+
+                foreach(var t in WorldActor.TraitsImplementing<IGameOver>())
+                {
+                    t.GameOver(this);
+                }
+
+                GameOver();
+            }
+        }
+
+
+        public bool PauseStateLocked { get; set; }
+
+        public bool PredictedPaused { get; internal set; }
+        /// <summary>
+        /// …Ë÷√‘›Õ£
+        /// </summary>
+        /// <param name="paused"></param>
+        public void SetPauseState(bool paused)
+        {
+            if (PauseStateLocked)
+                return;
+            IssueOrder(Order.PauseGame(paused));
+            PredictedPaused = paused;
+        }
+
+        public void IssueOrder(Order order)
+        {
+            //Avoid exposing the OM to mod code;
+            OrderManager.IssueOrder(order);
+        }
 
         /// <summary>
         /// 

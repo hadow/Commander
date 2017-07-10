@@ -73,6 +73,9 @@ namespace EW
         public CPos Value(World world) { return value; }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class OwnerInit : IActorInit<Player>
     {
 
