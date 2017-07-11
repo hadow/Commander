@@ -18,6 +18,9 @@ namespace EW.Scripting
     }
 
     public sealed class ExposedForDestroyedActors : Attribute { }
+
+    public sealed class ScriptActorPropertyActivityAttribute : Attribute { }
+
     /// <summary>
     /// 
     /// </summary>

@@ -4,6 +4,9 @@ using EW.Activities;
 using EW.Scripting;
 namespace EW.Mods.Common.Activities
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public sealed class CallLuaFunc:Activity,IDisposable
     {
 

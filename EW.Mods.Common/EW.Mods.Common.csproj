@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\Move\Move.cs" />
+    <Compile Include="Activities\SimpleTeleport.cs" />
     <Compile Include="ActorInitializer.cs" />
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateMachine.cs" />
@@ -72,6 +73,9 @@
     <Compile Include="ModContent.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
+    <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
+    <Compile Include="Pathfinder\PathGraph.cs" />
+    <Compile Include="Pathfinder\PathSearch.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />
     <Compile Include="Projectiles\Bullet.cs" />
     <Compile Include="Projectiles\GravityBomb.cs" />
@@ -200,6 +204,7 @@
     <Compile Include="Traits\Repairable.cs" />
     <Compile Include="Traits\RevealsShroud.cs" />
     <Compile Include="Traits\Scripting\ScriptTriggers.cs" />
+    <Compile Include="Traits\ScriptTags.cs" />
     <Compile Include="Traits\SelfHealing.cs" />
     <Compile Include="Traits\Sellable.cs" />
     <Compile Include="Traits\ShakeOnDeath.cs" />

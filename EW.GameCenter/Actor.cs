@@ -45,6 +45,10 @@ namespace EW
         readonly IRenderModifier[] renderModifiers;
 
         public Player Owner { get; set; }
+
+        public CPos Location { get { return OccupiesSpace.TopLeft; } }
+
+        public WPos CenterPosition { get { return OccupiesSpace.CenterPosition; } }
         internal Actor(World world,string name,TypeDictionary initDict)
         {
             var init = new ActorInitializer(this, initDict);
@@ -204,6 +208,38 @@ namespace EW
         public void ChangeOwner(Player newOwner)
         {
 
+        }
+
+        #endregion
+
+
+        #region Activity
+
+        public void QueueActivity(bool queued,Activity nextActivity)
+        {
+            if (!queued)
+                CancelActivity();
+            QueueActivity(nextActivity);
+        }
+
+        public void QueueActivity(Activity nextActivity)
+        {
+            if (currentActivity == null)
+                currentActivity = nextActivity;
+            else
+                currentActivity.Queue(nextActivity);
+        }
+
+
+        public void CancelActivity()
+        {
+            if (currentActivity != null)
+                currentActivity.Cancel(this);
+        }
+
+        public Activity GetCurrentActivity()
+        {
+            return currentActivity;
         }
 
         #endregion

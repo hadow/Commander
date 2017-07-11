@@ -10,9 +10,20 @@ namespace EW.Common.Scripting.Global
     {
         public ActorGlobal(ScriptContext context) : base(context) { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="addToWorld"></param>
+        /// <param name="initTable"></param>
+        /// <returns></returns>
         public Actor Create(string type,bool addToWorld,LuaTable initTable)
         {
             var initDict = new TypeDictionary();
+
+
+
+
 
             //The actor must be added to the world at the end of the tick;
             var a = Context.World.CreateActor(false, type, initDict);

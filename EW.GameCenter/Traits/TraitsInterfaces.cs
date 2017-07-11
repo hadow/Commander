@@ -216,10 +216,7 @@ namespace EW.Traits
     /// 
     /// </summary>
     public interface IUpgradableInfo : ITraitInfo { }
-    public interface IMove
-    {
-
-    }
+    public interface IMove{}
     public interface IMoveInfo : ITraitInfoInterface { }
     
     public interface IOccupySapceInfo : ITraitInfoInterface

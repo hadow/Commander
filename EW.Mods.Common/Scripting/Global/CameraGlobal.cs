@@ -9,6 +9,9 @@ namespace EW.Common.Scripting.Global
 
         public CameraGlobal(ScriptContext context) : base(context) { }
 
+        /// <summary>
+        /// The center of the visible viewport.
+        /// </summary>
         public WPos Position
         {
             get { return Context.WorldRenderer.ViewPort.CenterPosition; }

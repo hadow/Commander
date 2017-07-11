@@ -55,7 +55,11 @@ namespace EW.Mods.Common.Traits
 
     public class Mobile:UpgradableTrait<MobileInfo>
     {
+        CPos fromCell, toCell;
 
+        public CPos ToCell { get { return toCell; } }
+
+        public CPos FromCell { get { return fromCell; } }
         public Mobile(ActorInitializer init, MobileInfo info): base(info)
         {
 

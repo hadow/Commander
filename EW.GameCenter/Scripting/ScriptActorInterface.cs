@@ -16,6 +16,9 @@ namespace EW.Scripting
         }
 
 
+        /// <summary>
+        /// ≥ı ºªØ∞Û∂®
+        /// </summary>
         void InitializeBindings()
         {
             var commandClasses = Context.ActorCommands[actor.Info].AsEnumerable();
