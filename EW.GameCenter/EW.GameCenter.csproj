@@ -158,6 +158,7 @@
     <Compile Include="Scripting\ScriptMemberWrapper.cs" />
     <Compile Include="Scripting\ScriptObjectWrapper.cs" />
     <Compile Include="Scripting\LuaValueExts.cs" />
+    <Compile Include="Scripting\ScriptPlayerInterface.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="StreamExts.cs" />

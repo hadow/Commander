@@ -14,6 +14,7 @@ namespace EW.Mods.Common.Scripting
             mobile = self.Trait<Mobile>();
         }
 
+        [ScriptActorPropertyActivity]
         public void ScriptedMove(CPos cell)
         {
             Self.QueueActivity(new Move(Self, cell));

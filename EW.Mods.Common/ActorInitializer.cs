@@ -5,6 +5,7 @@ namespace EW.Mods.Common
 {
     public class FacingInit : IActorInit<int>
     {
+        [FieldLoader.FieldFromYamlKey]
         readonly int value = 128;
 
         public FacingInit()
@@ -20,6 +21,7 @@ namespace EW.Mods.Common
 
     public class SubCellInit : IActorInit<SubCell>
     {
+        [FieldLoader.FieldFromYamlKey]
         readonly int value = (int)SubCell.FullCell;
 
         public SubCellInit() { }
@@ -31,14 +33,14 @@ namespace EW.Mods.Common
         public SubCell Value(World world) { return (SubCell)value; }
     }
 
-    public class LocationInit : IActorInit<CPos>
-    {
-        readonly CPos value = CPos.Zero;
+    //public class LocationInit : IActorInit<CPos>
+    //{
+    //    readonly CPos value = CPos.Zero;
 
-        public LocationInit() { }
+    //    public LocationInit() { }
 
-        public LocationInit(CPos init) { value = init; }
+    //    public LocationInit(CPos init) { value = init; }
 
-        public CPos Value(World world) { return value; }
-    }
+    //    public CPos Value(World world) { return value; }
+    //}
 }

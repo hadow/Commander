@@ -44,7 +44,7 @@ namespace EW.Scripting
                 throw new InvalidOperationException("[ScriptGlobal] attribute not found for global table '{0}'");
 
             Name = names.First().Name;
-
+            Bind(new[] { this });
         }
     }
 }

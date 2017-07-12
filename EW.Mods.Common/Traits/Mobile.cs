@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using EW.Primitives;
 using EW.Traits;
+using EW.Activities;
+using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.Traits
 {
 
@@ -55,6 +57,7 @@ namespace EW.Mods.Common.Traits
 
     public class Mobile:UpgradableTrait<MobileInfo>
     {
+        readonly Actor self;
         CPos fromCell, toCell;
 
         public CPos ToCell { get { return toCell; } }
@@ -64,5 +67,7 @@ namespace EW.Mods.Common.Traits
         {
 
         }
+
+        public Activity ScriptedMove(CPos cell) { return new Move(self, cell); }
     }
 }

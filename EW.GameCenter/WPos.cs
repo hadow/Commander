@@ -8,6 +8,7 @@ namespace EW
     {
         public readonly int X, Y, Z;
 
+        public static readonly WPos Zero = new WPos(0, 0, 0);
         public WPos(int x,int y,int z)
         {
             X = x;

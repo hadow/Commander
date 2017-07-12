@@ -23,6 +23,10 @@ namespace EW.Scripting
         {
             var commandClasses = Context.ActorCommands[actor.Info].AsEnumerable();
 
+
+            if (actor.Disposed)
+                commandClasses = commandClasses.Where(c => c.HasAttribute<ExposedForDestroyedActors>());
+
             var args = new object[] { Context, actor };
             var objects = commandClasses.Select(cg => {
 

@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Activities\Move\Move.cs" />
     <Compile Include="Activities\SimpleTeleport.cs" />
+    <Compile Include="Activities\UnloadCargo.cs" />
     <Compile Include="ActorInitializer.cs" />
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateMachine.cs" />
@@ -87,12 +88,14 @@
     <Compile Include="Scripting\CallLuaFunc.cs" />
     <Compile Include="Scripting\Global\ActorGlobal.cs" />
     <Compile Include="Scripting\Global\CameraGlobal.cs" />
+    <Compile Include="Scripting\Global\CoordinateClobals.cs" />
     <Compile Include="Scripting\Global\DataTimeGlobal.cs" />
     <Compile Include="Scripting\Global\MapGlobal.cs" />
     <Compile Include="Scripting\Global\PlayerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
     <Compile Include="Scripting\Properties\GeneralProperties.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />
+    <Compile Include="Scripting\Properties\TransportProperties.cs" />
     <Compile Include="Scripting\ScriptTriggers.cs" />
     <Compile Include="SpriteLoaders\ShpTDLoader.cs" />
     <Compile Include="SpriteLoaders\ShpTSLoader.cs" />
@@ -117,6 +120,7 @@
     <Compile Include="Traits\Buildings\RepairableBuilding.cs" />
     <Compile Include="Traits\Burns.cs" />
     <Compile Include="Traits\Capturable.cs" />
+    <Compile Include="Traits\Cargo.cs" />
     <Compile Include="Traits\Cloak.cs" />
     <Compile Include="Traits\CombatDebugOverlay.cs" />
     <Compile Include="Traits\Crates\Crate.cs" />

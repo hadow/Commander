@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eluant;
 using EW.Scripting;
 using EW.Primitives;
@@ -21,9 +22,30 @@ namespace EW.Common.Scripting.Global
         {
             var initDict = new TypeDictionary();
 
+            foreach(var kv in initTable)
+            {
+                using (kv.Key)
+                using (kv.Value)
+                {
+                    //Find the requested type
+                    var typeName = kv.Key.ToString();
+                    var initType = WarGame.ModData.ObjectCreator.FindType(typeName + "Init");
+                    if (initType == null)
+                        throw new LuaException("Unknown initializer type '{0}'".F(typeName));
 
+                    //Cast it up to an IactorInit<T>
+                    var genericType = initType.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IActorInit));
+                    var innerType = genericType.GetGenericArguments().First();
+                    var valueType = innerType.IsEnum ? typeof(int) : initType;
 
+                    object value;
+                    if (!kv.Value.TryGetClrValue(valueType, out value))
+                        throw new LuaException("Invalid data type for '{0}' (expected '{1}')".F(typeName, valueType.Name));
 
+                    var test = initType.GetConstructor(new[] { innerType }).Invoke(new[] { value });
+                    initDict.Add(test);
+                }
+            }
 
             //The actor must be added to the world at the end of the tick;
             var a = Context.World.CreateActor(false, type, initDict);

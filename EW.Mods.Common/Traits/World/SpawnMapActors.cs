@@ -40,10 +40,7 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class SkipMakeAnimsInit : IActorInit, ISuppressInitExport
-    {
-
-    }
+    public class SkipMakeAnimsInit : IActorInit, ISuppressInitExport{}
 
     public class SpawnedByMapInit : IActorInit<string>, ISuppressInitExport
     {
