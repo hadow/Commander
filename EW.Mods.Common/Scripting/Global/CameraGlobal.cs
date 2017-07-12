@@ -18,6 +18,7 @@ namespace EW.Common.Scripting.Global
             set
             {
                 Context.WorldRenderer.ViewPort.Center(value);
+                Console.Write("Position:" + value);
             }
         }
     }

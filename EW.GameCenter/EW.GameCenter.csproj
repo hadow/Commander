@@ -134,6 +134,7 @@
     <Compile Include="ModData.cs" />
     <Compile Include="NetWork\Order.cs" />
     <Compile Include="NetWork\OrderManager.cs" />
+    <Compile Include="NetWork\Session.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="OurActivity.cs" />
     <Compile Include="Platform.cs" />

@@ -22,7 +22,7 @@ namespace EW.Mods.Common.Pathfinder
             var graph = new PathGraph(LayerPoolForWorld(world), mi, self, world, checkForBlocked);
             var search = new PathSearch(graph);
 
-            return search;
+            return null;
         }
 
 

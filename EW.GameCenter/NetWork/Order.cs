@@ -25,7 +25,7 @@ namespace EW
 
         public static Order PauseGame(bool paused)
         {
-            return new Order("PauseGame", null, false) { TargetString = paused ? "Pause" : "UnPause"; }
+            return new Order("PauseGame", null, false) { TargetString = paused ? "Pause" : "UnPause" };
         }
     }
 }

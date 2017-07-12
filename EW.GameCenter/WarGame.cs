@@ -21,6 +21,7 @@ namespace EW
         /// </summary>
         public const int NetTickScale = 3;
         public const int Timestep = 40;
+        public const int TimestepJankThreshold = 250;
 
         public static MersenneTwister CosmeticRandom = new MersenneTwister();
         public static ModData ModData;
@@ -142,6 +143,13 @@ namespace EW
             using (new PerfTimer("LoadComplete"))
                 orderManager.World.LoadComplete(worldRenderer);
 
+            if (orderManager.GameStarted)
+                return;
+
+            orderManager.LocalFrameNumber = 0;
+            orderManager.LastTickTime = RunTime;
+            orderManager.StartGame();
+            worldRenderer.RefreshPalette();
             GC.Collect();
         }
 
@@ -177,7 +185,7 @@ namespace EW
             
 
             base.Draw(gameTime);
-            RenderTick();
+            //RenderTick();
 
             //GraphicsDevice.Clear(Color.CornflowerBlue);
             //spriteBatch.Begin();
@@ -257,32 +265,41 @@ namespace EW
         /// <param name="orderManager"></param>
         void InnerLogicTick(OrderManager orderManager,GameTime time)
         {
-            var tick = (long)time.ElapsedGameTime.TotalMilliseconds;
+            //var tick = (long)time.TotalGameTime.TotalMilliseconds;
+            var tick = RunTime;
 
             var world = orderManager.World;
 
             var worldTimestep = world == null ? Timestep : world.Timestep;
 
-            var worldTickDelta = tick - orderManager.lastTickTime;
+            var worldTickDelta = tick - orderManager.LastTickTime;
 
             if(worldTimestep != 0 && worldTickDelta >= worldTimestep)
             {
-                if (world == null) return;
-                //Don't tick when the shellmap is disabled
-                if (world.ShouldTick)
+                using(new PerfSample("tick_time"))
                 {
-                    var isNetTick = LocalTick % NetTickScale == 0;
-                    if (!isNetTick || orderManager.IsReadyForNextFrame)
+
+                    var integralTickTimestep = (worldTickDelta / worldTimestep) * worldTimestep;
+                    orderManager.LastTickTime += integralTickTimestep >= TimestepJankThreshold ? integralTickTimestep : worldTimestep;
+
+                    if (world == null) return;
+                    //Don't tick when the shellmap is disabled
+                    if (world.ShouldTick)
                     {
-                        ++orderManager.LocalFrameNumber;
+                        var isNetTick = LocalTick % NetTickScale == 0;
+                        if (!isNetTick || orderManager.IsReadyForNextFrame)
+                        {
+                            ++orderManager.LocalFrameNumber;
 
-                        if (isNetTick)
-                            orderManager.Tick();
+                            if (isNetTick)
+                                orderManager.Tick();
 
-                        world.Tick();
+                            world.Tick();
+                        }
+                        else if (orderManager.NetFrameNumber == 0)
+                            orderManager.LastTickTime = RunTime;
+                    
                     }
-                    else if (orderManager.NetFrameNumber == 0)
-                        orderManager.lastTickTime = tick;
                 }
             }
         }

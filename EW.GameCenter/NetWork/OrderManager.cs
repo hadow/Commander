@@ -11,12 +11,25 @@ namespace EW.NetWork
         public World World;
 
 
-        public long lastTickTime;
+        public long LastTickTime;
 
         public int NetFrameNumber { get; private set; }
         public int LocalFrameNumber;
 
         List<Order> localOrders = new List<Order>();
+
+        public Session LobbyInfo = new Session();
+
+        public bool GameStarted { get { return NetFrameNumber != 0; } }
+        public void StartGame()
+        {
+            if (GameStarted)
+                return;
+            NetFrameNumber = 1;
+
+        }
+
+
         public bool IsReadyForNextFrame
         {
             get { return NetFrameNumber >= 1; }

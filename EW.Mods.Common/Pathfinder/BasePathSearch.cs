@@ -32,12 +32,13 @@ namespace EW.Mods.Common.Pathfinder
 
         CPos Expand();
     }
-    public abstract class BasePathSearch:IPathSearch
+    public abstract class BasePathSearch
     {
 
         protected BasePathSearch(IGraph<CellInfo> graph)
         {
 
         }
+        
     }
 }

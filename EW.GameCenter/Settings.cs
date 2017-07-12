@@ -25,6 +25,7 @@ namespace EW
 
         public bool AllowZoom = true;
 
+        public bool ShowShellmap = true;
         
 
     }

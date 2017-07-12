@@ -58,7 +58,7 @@ namespace EW
         /// <summary>
         /// ±Í ∂ «∑ÒTick
         /// </summary>
-        public bool ShouldTick { get { return Type != WorldT.Shellmap; } }
+        public bool ShouldTick { get { return Type != WorldT.Shellmap || WarGame.Settings.Game.ShowShellmap; } }
 
         public bool Paused { get; internal set; }
         internal World(Map map,OrderManager orderManager,WorldT type)
@@ -66,7 +66,7 @@ namespace EW
             Type = type;
             OrderManager = orderManager;
             Map = map;
-
+            Timestep = orderManager.LobbyInfo.GlobalSettings.Timestep;
             var worldActorT = type == WorldT.Editor ? "EditorWorld" : "World";
             WorldActor = CreateActor(worldActorT, new TypeDictionary());
             ActorMap = WorldActor.Trait<ActorMap>();
@@ -130,7 +130,7 @@ namespace EW
         /// <param name="wr"></param>
         public void TickRender(WorldRenderer wr)
         {
-
+            ActorsWithTrait<ITickRender>().DoTimed(x => x.Trait.TickRender(wr, x.Actor), "Render");
         }
 
         public event Action GameOver = () => { };

@@ -244,6 +244,7 @@ namespace EW.Traits
 
     public interface ITick { void Tick(Actor self); }
 
+    public interface ITickRender { void TickRender(WorldRenderer wr, Actor self); }
 
     public interface IWorldLoaded { void WorldLoaded(World w,WorldRenderer render); }
 

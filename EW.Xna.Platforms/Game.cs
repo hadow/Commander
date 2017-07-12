@@ -21,8 +21,14 @@ namespace EW.Xna.Platforms
         private static Game _instance = null;
 
         private TimeSpan _accumulatedElapsedTime;
+
         private readonly GameTime _gameTime = new GameTime();
+
         private Stopwatch _gameTimer;
+        public long RunTime
+        {
+            get { return _gameTimer.ElapsedMilliseconds; }
+        }
         private long _previousTicks = 0;
         private int _updateFrameLag;
 
