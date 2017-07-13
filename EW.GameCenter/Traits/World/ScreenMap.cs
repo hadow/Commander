@@ -50,6 +50,13 @@ namespace EW.Traits
             return ActorsInBox(RectWithCorners(a, b));
         }
 
+        Rectangle ActorBounds(Actor a)
+        {
+            var pos = worldRenderer.ScreenPxPosition(a.CenterPosition);
+            var bounds = a.Bounds;
+            bounds.Offset(pos.X, pos.Y);
+            return bounds;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -74,6 +81,16 @@ namespace EW.Traits
             if (p == null)
                 return NoFrozenActors;
             return partitionedFrozenActors[p].InBox(r).Where(frozenActorIsValid);
+        }
+
+        public void Add(Actor a)
+        {
+            partitionedActors.Add(a, ActorBounds(a));
+        }
+
+        public void Remove(Actor a)
+        {
+            partitionedActors.Remove(a);
         }
 
     }

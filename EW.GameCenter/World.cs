@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Traits;
 using EW.NetWork;
@@ -75,7 +76,7 @@ namespace EW
         }
 
         /// <summary>
-        /// /
+        /// 加载完成
         /// </summary>
         /// <param name="wr"></param>
         public void LoadComplete(WorldRenderer wr)
@@ -120,6 +121,8 @@ namespace EW
                 ActorsWithTrait<ITick>().DoTimed(x => x.Trait.Tick(x.Actor), "Trait");
 
             }
+
+            //
             while (frameEndActions.Count != 0)
                 frameEndActions.Dequeue()(this);
         }
@@ -187,7 +190,7 @@ namespace EW
 
         public void AddFrameEndTask(Action<World> a)
         {
-            frameEndActions.Enqueue(a);
+            frameEndActions.Enqueue(a);//将对象添加到Queue结尾处
         }
 
         public Actor CreateActor(string name,TypeDictionary initDict)
@@ -214,6 +217,25 @@ namespace EW
                 Add(a);
             }
             return a;
+        }
+
+
+        public void AddToMaps(Actor self,IOccupySpace ios)
+        {
+            ActorMap.AddInfluence(self, ios);
+            ActorMap.AddPosition(self, ios);
+
+            //if(!self.Bounds.Size.ise)
+            ScreenMap.Add(self);
+        }
+
+        public void RemoveFromMaps(Actor self,IOccupySpace ios)
+        {
+            ActorMap.RemoveInfluence(self, ios);
+            ActorMap.RemovePosition(self, ios);
+
+            //if(!self.Bounds.Size.is)
+            ScreenMap.Remove(self);
         }
 
 
@@ -253,8 +275,19 @@ namespace EW
             return nextAID++;
         }
 
+        public bool Disposing;
+
         public void Dispose()
         {
+            Disposing = true;
+            frameEndActions.Clear();
+
+            //Dispose newer actors first,and the world actor last
+            foreach (var a in actors.Values.Reverse())
+                a.Dispose();
+
+            while (frameEndActions.Count != 0)
+                frameEndActions.Dequeue()(this);    //移除并返回位于Queue开始处的对象
         }
     }
 

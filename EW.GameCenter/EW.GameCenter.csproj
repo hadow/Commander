@@ -164,6 +164,8 @@
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="StreamExts.cs" />
     <Compile Include="Support\MersenneTwister.cs" />
+    <Compile Include="Support\PerfHistory.cs" />
+    <Compile Include="Support\PerfItem.cs" />
     <Compile Include="Support\PerfSample.cs" />
     <Compile Include="Support\PerfTimer.cs" />
     <Compile Include="Sync.cs" />

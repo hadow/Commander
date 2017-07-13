@@ -319,6 +319,44 @@ namespace EW
             
         }
 
+        public bool Contains(CPos cell)
+        {
+            if (Grid.Type == MapGridT.RectangularIsometric && cell.X < cell.Y)
+                return false;
+            return Contains(cell.ToMPos(this));
+        }
+
+        public bool Contains(MPos uv)
+        {
+            return CustomTerrain.Contains(uv) && ContainsAllProjectedCellsCovering(uv);
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <returns></returns>
+        bool ContainsAllProjectedCellsCovering(MPos uv)
+        {
+            if (Grid.MaximumTerrainHeight == 0)
+                return Contains((PPos)uv);
+
+            var projectedCells = ProjectedCellsCovering(uv);
+            if (projectedCells.Length == 0)
+                return false;
+
+            foreach (var puv in projectedCells)
+                if (!Contains(puv))
+                    return false;
+            return true;
+        }
+
+        public bool Contains(PPos puv)
+        {
+            return Bounds.Contains(puv.U, puv.V);
+        }
+
         /// <summary>
         /// 
         /// </summary>

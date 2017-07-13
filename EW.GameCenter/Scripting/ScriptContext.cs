@@ -7,6 +7,7 @@ using System.Diagnostics;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Traits;
+using EW.Support;
 using Eluant;
 namespace EW.Scripting
 {
@@ -62,7 +63,7 @@ namespace EW.Scripting
     }
 
     /// <summary>
-    /// 
+    /// Lua 脚本本地上下文实现
     /// </summary>
     public sealed class ScriptContext:IDisposable
     {
@@ -82,7 +83,7 @@ namespace EW.Scripting
 
         public readonly Cache<ActorInfo, Type[]> ActorCommands;
 
-        
+        bool disposed;
 
         static readonly object[] NoArguments = new object[0];
         public ScriptContext(World world,WorldRenderer worldRenderer,IEnumerable<string> scripts)
@@ -218,6 +219,11 @@ namespace EW.Scripting
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         static IEnumerable<Type> ExtractRequiredTypes(Type t)
         {
             var outer = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(Requires<>));
@@ -225,12 +231,21 @@ namespace EW.Scripting
         }
 
 
+        /// <summary>
+        /// scriptwrapper.lua->Tick()
+        /// </summary>
+        /// <param name="actor"></param>
         public void Tick(Actor actor)
         {
-           
-           tick.Call().Dispose();
+            if (FatalErrorOccurred || disposed)
+                return;
+            using(new PerfSample("tick_lua"))
+                tick.Call().Dispose();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void WorldLoaded()
         {
             if (FatalErrorOccurred)
@@ -262,12 +277,20 @@ namespace EW.Scripting
 
         private void LogDebugMessage(string message)
         {
-
+            Console.WriteLine("Lua debug:{0}", message);
         }
 
         public LuaTable CreateTable() { return runtime.CreateTable(); }
 
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            disposed = true;
+            if (runtime != null)
+                runtime.Dispose();
+        }
     }
 }

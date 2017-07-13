@@ -25,6 +25,7 @@ namespace EW
 
         public IOccupySpace OccupiesSpace { get; private set; }
 
+        public int Generation;
         
         public Rectangle Bounds { get; private set; }
 

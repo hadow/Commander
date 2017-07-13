@@ -295,6 +295,7 @@ namespace EW
                                 orderManager.Tick();
 
                             world.Tick();
+                            PerfHistory.Tick();
                         }
                         else if (orderManager.NetFrameNumber == 0)
                             orderManager.LastTickTime = RunTime;

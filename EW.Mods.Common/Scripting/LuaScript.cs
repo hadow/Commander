@@ -35,8 +35,6 @@ namespace EW.Common.Scripting
 
         public void Tick(Actor actor)
         {
-
-            Android.Util.Log.Info("AATick", actor.ActorID.ToString());
             context.Tick(actor);
         }
 

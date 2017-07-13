@@ -80,6 +80,16 @@ namespace EW.Xna.Platforms
             get { return emptyRectangle; }
         }
 
+        public Point Size
+        {
+            get { return new Point(this.Width, this.Height); }
+            set
+            {
+                Width = value.X;
+                Height = value.Y;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -99,6 +109,12 @@ namespace EW.Xna.Platforms
                     Left < val.Right &&
                     val.Top < Bottom &&
                     Top < val.Bottom;
+        }
+
+        public void Offset(int offsetX,int offsetY)
+        {
+            X += offsetX;
+            Y += offsetY;
         }
     }
 }

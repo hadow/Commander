@@ -1,6 +1,6 @@
 ﻿using System;
 using EW.Activities;
-
+using EW.Traits;
 namespace EW.Mods.Common.Activities
 {
     public class SimpleTeleport:Activity
@@ -14,6 +14,8 @@ namespace EW.Mods.Common.Activities
 
         public override Activity Tick(Actor self)
         {
+            self.Trait<IPositionable>().SetPosition(self, destination);
+            self.Generation++;
             return NextActivity;
         }
     }

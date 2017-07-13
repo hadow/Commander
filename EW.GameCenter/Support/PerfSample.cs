@@ -16,7 +16,7 @@ namespace EW.Support
 
         public void Dispose()
         {
-
+            PerfHistory.Increment(item, 1000.0 * Math.Max(0, Stopwatch.GetTimestamp() - ticks) / Stopwatch.Frequency);
         }
     }
 }

@@ -246,6 +246,11 @@ namespace EW
             return tpl.Contains(r.Index) ? tpl[r.Index] : null;
         }
 
+        public bool TryGetTerrainIndex(string type,out byte index)
+        {
+            return terrainIndexByType.TryGetValue(type, out index);
+        }
+
 
     }
 }

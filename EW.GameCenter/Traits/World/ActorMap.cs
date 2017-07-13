@@ -34,7 +34,7 @@ namespace EW.Traits
         }
 
         /// <summary>
-        /// 
+        /// ¸ñ×Ó´¥·¢Æ÷
         /// </summary>
         class CellTrigger
         {
@@ -210,9 +210,13 @@ namespace EW.Traits
 
 
         readonly ActorMapInfo info;
+
         readonly Map map;
+
         readonly Dictionary<int, CellTrigger> cellTriggers = new Dictionary<int, CellTrigger>();
+
         readonly Dictionary<CPos, List<CellTrigger>> cellTriggerInfluence = new Dictionary<CPos, List<CellTrigger>>();
+
         readonly Dictionary<int, ProximityTrigger> proximityTriggers = new Dictionary<int, ProximityTrigger>();
 
         int nextTriggerId;
@@ -314,6 +318,79 @@ namespace EW.Traits
             return new ActorsAtEnumerable(influence[uv]);
         }
 
+        public void AddInfluence(Actor self,IOccupySpace ios)
+        {
+            foreach(var c in ios.OccupiedCells())
+            {
+                var uv = c.First.ToMPos(map);
+                if (!influence.Contains(uv))
+                    continue;
+
+                influence[uv] = new InfluenceNode
+                {
+                    Next = influence[uv],
+                    SubCell = c.Second,
+                    Actor = self
+                };
+
+                List<CellTrigger> triggers;
+                if (cellTriggerInfluence.TryGetValue(c.First, out triggers))
+                    foreach (var t in triggers)
+                        t.Dirty = true;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="ios"></param>
+        public void RemoveInfluence(Actor self,IOccupySpace ios)
+        {
+            foreach(var c in ios.OccupiedCells())
+            {
+                var uv = c.First.ToMPos(map);
+                if (!influence.Contains(uv))
+                    continue;
+
+                var temp = influence[uv];
+                RemoveInfluenceInner(ref temp, self);
+                influence[uv] = temp;
+                List<CellTrigger> triggers;
+                if (cellTriggerInfluence.TryGetValue(c.First, out triggers))
+                    foreach (var t in triggers)
+                        t.Dirty = true;
+            }
+        }
+
+        static void RemoveInfluenceInner(ref InfluenceNode influenceNode,Actor toRemove)
+        {
+            if (influenceNode == null)
+                return;
+
+            if (influenceNode.Actor == toRemove)
+                influenceNode = influenceNode.Next;
+
+            if (influenceNode != null)
+                RemoveInfluenceInner(ref influenceNode.Next, toRemove);
+            
+        }
+
+        public void AddPosition(Actor a,IOccupySpace ios)
+        {
+            UpdatePosition(a, ios);
+        }
+
+        public void RemovePosition(Actor a,IOccupySpace ios)
+        {
+            removeActorPosition.Add(a);
+        }
+
+        public void UpdatePosition(Actor a,IOccupySpace ios)
+        {
+            RemovePosition(a, ios);
+            addActorPosition.Add(a);
+        }
         
     }
 }

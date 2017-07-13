@@ -12,6 +12,10 @@ namespace EW.Primitives
         readonly int rows, cols, binSize;
 
         readonly Dictionary<T, Rectangle>[] itemBoundsBins;
+        readonly Dictionary<T, Rectangle> itemBounds = new Dictionary<T, Rectangle>();
+
+        readonly Action<Dictionary<T, Rectangle>, T, Rectangle> addItem = (bin, actor, bounds) => bin.Add(actor, bounds);
+        readonly Action<Dictionary<T, Rectangle>, T, Rectangle> removeItem = (bin, actor, bounds) => bin.Remove(actor);
         public SpatiallyPartitioned(int width,int height,int binSize)
         {
             this.binSize = binSize;
@@ -19,6 +23,12 @@ namespace EW.Primitives
             rows = Exts.IntegerDivisionRoundingAwayFromZero(height, binSize);
             cols = Exts.IntegerDivisionRoundingAwayFromZero(width, binSize);
             itemBoundsBins = Exts.MakeArray(rows * cols, _ => new Dictionary<T, Rectangle>());
+        }
+
+        void ValidateBounds(T actor,Rectangle bounds)
+        {
+            if (bounds.Width == 0 || bounds.Height == 0)
+                throw new ArgumentException("Bounds of actor {0} are empty.".F(actor));
         }
 
         /// <summary>
@@ -40,6 +50,17 @@ namespace EW.Primitives
             minCol = Math.Max(0, left / binSize);
             maxRow = Math.Min(rows, Exts.IntegerDivisionRoundingAwayFromZero(bottom, binSize));
             maxCol = Math.Min(cols, Exts.IntegerDivisionRoundingAwayFromZero(right, binSize));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="bounds"></param>
+        /// <param name="action"></param>
+        void MutateBins(T actor,Rectangle bounds,Action<Dictionary<T,Rectangle>,T,Rectangle> action)
+        {
+
         }
 
         /// <summary>
@@ -81,6 +102,19 @@ namespace EW.Primitives
         Dictionary<T,Rectangle> BinAt(int row,int col)
         {
             return itemBoundsBins[row * cols + col];
+        }
+
+        public void Add(T item,Rectangle bounds)
+        {
+            ValidateBounds(item, bounds);
+            itemBounds.Add(item, bounds);
+            MutateBins(item, bounds, addItem);
+        }
+
+        public void Remove(T item)
+        {
+            MutateBins(item, itemBounds[item], removeItem);
+            itemBounds.Remove(item);
         }
     }
 }

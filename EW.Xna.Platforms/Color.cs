@@ -22,6 +22,11 @@ namespace EW.Xna.Platforms
             Red = new Color(0xff0000ff);
             CornflowerBlue = new Color(0xffed9564);
             White = new Color(uint.MaxValue);
+            Fuchsia = new Color(0xffff00ff);
+            Lime = new Color(0xff00ff00);
+            LightBlue = new Color(0xffe6d8ad);
+            Teal = new Color(0xff808000);
+            Orange = new Color(0xff00a5ff);
         }
 
         [CLSCompliant(false)]
@@ -124,6 +129,17 @@ namespace EW.Xna.Platforms
         public static Color Yellow { get; private set; }
         
         public static Color CornflowerBlue { get; private set; }
+
+        public static Color Fuchsia { get; private set; }
+
+        public static Color Lime { get; private set; }
+
+        public static Color LightBlue { get; private set; }
+
+        public static Color Teal { get; private set; }
+
+        public static Color Orange { get; private set; }
+
         public bool Equals(Color other)
         {
             return this.PackedValue == other.PackedValue;
