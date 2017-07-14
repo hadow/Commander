@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using EW.Xna.Platforms;
 namespace EW.Traits
 {
     public enum SubCell
@@ -14,6 +15,11 @@ namespace EW.Traits
 
     public class ActorMapInfo:ITraitInfo
     {
+        /// <summary>
+        /// Size of partition bins(cells)
+        /// </summary>
+        public readonly int BinSize = 10;
+
         public object Create(ActorInitializer init)
         {
             return new ActorMap(init.World, this);
@@ -89,7 +95,7 @@ namespace EW.Traits
         }
         
         /// <summary>
-        /// 
+        /// ½ü¾àÀë´¥·¢Æ÷
         /// </summary>
         class ProximityTrigger:IDisposable
         {
@@ -103,7 +109,9 @@ namespace EW.Traits
             readonly Action<Actor> onActorExited;
 
             WPos position;
+
             WDist rang;
+
             WDist vRange;
 
             IEnumerable<Actor> currentActors = Enumerable.Empty<Actor>();
@@ -119,6 +127,25 @@ namespace EW.Traits
             {
                 if (!Dirty)
                     return;
+
+                var oldActors = currentActors;
+                var delta = new WVec(rang, rang, WDist.Zero);
+
+                currentActors = am.ActorsInBox(position - delta, position + delta).Where(a=>(a.CenterPosition - position).HorizontalLengthSquared<rang.LengthSquared &&
+                    (vRange.Length == 0 || (a.World.Map.DistanceAboveTerrain(a.CenterPosition).LengthSquared<=vRange.LengthSquared ))).ToList();
+
+                var entered = currentActors.Except(oldActors);
+                var exited = oldActors.Except(currentActors);
+
+                if (onActorEntered != null)
+                    foreach (var a in entered)
+                        onActorEntered(a);
+
+                if (onActorExited != null)
+                    foreach (var a in exited)
+                        onActorExited(a);
+
+
             }
 
             /// <summary>
@@ -155,6 +182,7 @@ namespace EW.Traits
         class Bin
         {
             public readonly List<Actor> Actors = new List<Actor>();
+
             public readonly List<ProximityTrigger> ProximityTriggers = new List<ProximityTrigger>();
         }
 
@@ -391,6 +419,102 @@ namespace EW.Traits
             RemovePosition(a, ios);
             addActorPosition.Add(a);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public IEnumerable<Actor> ActorsInBox(WPos a,WPos b)
+        {
+            var left = Math.Min(a.X, b.X);
+            var top = Math.Min(a.Y, b.Y);
+            var right = Math.Max(a.X, b.X);
+            var bottom = Math.Max(a.Y, b.Y);
+
+            var region = BinRectangleCoveringWorldArea(left, top, right, bottom);
+
+            var minCol = region.Left;
+            var minRow = region.Top;
+            var maxCol = region.Right;
+            var maxRow = region.Bottom;
+
+            for(var row = minRow; row <= maxRow; row++)
+            {
+                for(var col = minCol; col <= maxCol; col++)
+                {
+                    foreach(var actor in BinAt(row, col).Actors)
+                    {
+                        if (actor.IsInWorld)
+                        {
+                            var c = actor.CenterPosition;
+                            if (left <= c.X && c.X <= right && top <= c.Y && c.Y <= bottom)
+                                yield return actor;
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        Bin BinAt(int binRow,int binCol)
+        {
+            return bins[binRow * cols + binCol];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worldLeft"></param>
+        /// <param name="worldTop"></param>
+        /// <param name="worldRight"></param>
+        /// <param name="worldBottom"></param>
+        /// <returns></returns>
+        Rectangle BinRectangleCoveringWorldArea(int worldLeft,int worldTop,int worldRight,int worldBottom)
+        {
+            var minCol = WorldCoordtoBinIndex(worldLeft).Clamp(0,cols-1);
+            var minRow = WorldCoordtoBinIndex(worldTop).Clamp(0, rows - 1);
+            var maxCol = WorldCoordtoBinIndex(worldRight).Clamp(0, cols - 1);
+            var maxRow = WorldCoordtoBinIndex(worldBottom).Clamp(0, rows - 1);
+            return Rectangle.FromLTRB(minCol, minRow, maxCol, maxRow);
+        }
+
+        int WorldCoordtoBinIndex(int world)
+        {
+            return CellCoordToBinIndex(world / 1024);
+        }
+
+        int CellCoordToBinIndex(int cell)
+        {
+            return cell / info.BinSize;
+        }
         
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <param name="checkTransient"></param>
+        /// <returns></returns>
+        public bool HasFreeSubCell(CPos cell,bool checkTransient = true)
+        {
+            return FreeSubCell(cell, SubCell.Any, checkTransient) != SubCell.Invalid;
+        }
+
+        public SubCell FreeSubCell(CPos cell,SubCell preferredSubCell = SubCell.Any,bool checkTransient = true)
+        {
+
+            return SubCell.Invalid;
+        }
+        
+        public bool AnyActorsAt(CPos a)
+        {
+            var uv = a.ToMPos(map);
+            if (!influence.Contains(uv))
+                return false;
+
+            return influence[uv] != null;
+        }
     }
 }

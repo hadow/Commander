@@ -11,6 +11,8 @@ namespace EW
         public static readonly WDist Zero = new WDist(0);
         public readonly int Length;
 
+        public long LengthSquared { get { return (long)Length * Length; } }
+
         public WDist(int r) { Length = r; }
         public int CompareTo(object obj)
         {

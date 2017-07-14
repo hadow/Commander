@@ -9,6 +9,9 @@ namespace EW.Traits
 
     public class ScreenMapInfo : ITraitInfo
     {
+        /// <summary>
+        /// Size of partition bins (world pixels)
+        /// </summary>
         public readonly int BinSize = 250;
 
         public object Create(ActorInitializer init) { return new ScreenMap(init.World,this); }

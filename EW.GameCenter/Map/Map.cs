@@ -706,5 +706,17 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// /
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public WDist DistanceAboveTerrain(WPos pos)
+        {
+            var cell = CellContaining(pos);
+            var delta = pos - CenterOfCell(cell);
+            return new WDist(delta.Z);
+        }
+
     }
 }
