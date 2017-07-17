@@ -23,6 +23,9 @@ namespace EW
 
         public readonly uint ActorID;
 
+        /// <summary>
+        /// Õ¼¾Ý¿Õ¼ä
+        /// </summary>
         public IOccupySpace OccupiesSpace { get; private set; }
 
         public int Generation;

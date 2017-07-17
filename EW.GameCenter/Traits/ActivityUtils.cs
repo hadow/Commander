@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using EW.Activities;
 using EW.Support;
 using System.Diagnostics;
@@ -37,6 +38,11 @@ namespace EW.Traits
             }
             return act;
 
+        }
+
+        public static Activity SequenceActivities(params Activity[] acts)
+        {
+            return acts.Reverse().Aggregate((next, a) => { a.Queue(next); return a; });
         }
 
     }

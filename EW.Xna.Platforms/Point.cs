@@ -100,5 +100,10 @@ namespace EW.Xna.Platforms
             return new Point(Math.Min(r.Right, Math.Max(X, r.Left)), Math.Min(r.Bottom, Math.Max(Y, r.Top)));
         }
 
+        public bool IsEmpty
+        {
+            get { return X == 0 && Y == 0; }
+        }
+
     }
 }

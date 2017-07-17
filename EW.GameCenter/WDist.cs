@@ -76,5 +76,7 @@ namespace EW
             return true;
         }
 
+        public static WDist FromCells(int cells) { return new WDist(1024 * cells); }
+
     }
 }

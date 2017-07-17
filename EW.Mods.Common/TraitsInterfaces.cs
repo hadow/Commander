@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
-namespace EW.Mods.Common
+using EW.Primitives;
+namespace EW.Mods.Common.Traits
 {
 	public interface IRenderActorPreviewInfo : ITraitInfo
 	{
@@ -12,4 +13,14 @@ namespace EW.Mods.Common
 
 
     public interface IConditionConsumerInfo:ITraitInfo{}
+
+    public interface IDeathActorInitModifier
+    {
+        void ModifyDeathActorInit(Actor self, TypeDictionary inits);
+    }
+
+    public interface IActorPreviewInitModifier
+    {
+        void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
+    }
 }

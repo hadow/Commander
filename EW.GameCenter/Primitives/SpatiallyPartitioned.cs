@@ -116,5 +116,10 @@ namespace EW.Primitives
             MutateBins(item, itemBounds[item], removeItem);
             itemBounds.Remove(item);
         }
+
+        public void Update(T item,Rectangle bounds)
+        {
+
+        }
     }
 }

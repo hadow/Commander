@@ -108,6 +108,14 @@ namespace EW.Traits
 
     public interface INotifySold { void Selling(Actor self); void Sold(Actor self); }
 
+    public interface INotifyBlockingMove { void OnNotifyBlockingMove(Actor self, Actor blocking); }
+
+    public interface INotifyCrushed
+    {
+        void OnCrush(Actor self, Actor crusher, HashSet<string> crushClasses);
+
+        void WarnCrush(Actor self, Actor crusher, HashSet<string> crushClasses);
+    }
     #endregion
 
     #region Render Interface
@@ -233,7 +241,7 @@ namespace EW.Traits
 
         Activity MoveToTarget(Actor self, Target target);
 
-        Activity MoveIntoTarget(Activity self, Target target);
+        Activity MoveIntoTarget(Actor self, Target target);
 
         Activity VisualMove(Actor self, WPos fromPos, WPos toPos);
 

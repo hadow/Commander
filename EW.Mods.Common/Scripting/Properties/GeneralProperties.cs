@@ -78,6 +78,9 @@ namespace EW.Mods.Common.Scripting
         /// </summary>
         public WPos CenterPosition { get { return Self.CenterPosition; } }
 
+        /// <summary>
+        /// The direction that the actor is facing.
+        /// </summary>
         public int Facing
         {
             get
@@ -102,6 +105,11 @@ namespace EW.Mods.Common.Scripting
         public void CallFunc(LuaFunction func)
         {
             Self.QueueActivity(new CallLuaFunc(func, Context));
+        }
+
+        public void Stop()
+        {
+            Self.CancelActivity();
         }
 
     }

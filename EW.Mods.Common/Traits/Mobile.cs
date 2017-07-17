@@ -5,6 +5,7 @@ using EW.Primitives;
 using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Activities;
+using EW.Mods.Common.Traits;
 namespace EW.Mods.Common.Traits
 {
     [Flags]
@@ -33,6 +34,10 @@ namespace EW.Mods.Common.Traits
         /// Allow multiple units in one cell.
         /// </summary>
         public readonly bool SharesCell = false;
+
+        public readonly int TurnSpeed = 255;
+
+        public readonly HashSet<string> Crushes = new HashSet<string>();
         /// <summary>
         /// 地形信息
         /// </summary>
@@ -213,13 +218,18 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class Mobile:UpgradableTrait<MobileInfo>,IPositionable,INotifyAddToWorld,INotifyRemovedFromWorld,IMove
+    public class Mobile:UpgradableTrait<MobileInfo>,IPositionable,INotifyAddToWorld,INotifyRemovedFromWorld,IMove,IFacing,ISync,IActorPreviewInitModifier,IDeathActorInitModifier,INotifyBlockingMove
     {
+        internal int TicksBeforePathing = 0;
+
         readonly Actor self;
 
         CPos fromCell, toCell;
 
         public SubCell FromSubCell, ToSubCell;
+
+        [Sync]
+        public int PathHash;
 
         [Sync]
         public CPos ToCell { get { return toCell; } }
@@ -232,6 +242,15 @@ namespace EW.Mods.Common.Traits
 
         public CPos TopLeft { get { return ToCell; } }
 
+        public int TurnSpeed { get { return Info.TurnSpeed; } }
+
+        int facing;
+        [Sync]
+        public int Facing
+        {
+            get { return facing; }
+            set { facing = value; }
+        }
         public Mobile(ActorInitializer init, MobileInfo info): base(info)
         {
             self = init.Self;
@@ -247,7 +266,7 @@ namespace EW.Mods.Common.Traits
             return new[] { Pair.New(FromCell, FromSubCell), Pair.New(ToCell, ToSubCell) };
         }
 
-        public Activity ScriptedMove(CPos cell) { return new Move(self, cell); }
+        
 
         public bool CanEnterCell(CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
         {
@@ -273,7 +292,28 @@ namespace EW.Mods.Common.Traits
         /// <param name="subCell"></param>
         public void SetPosition(Actor self,CPos cell,SubCell subCell = SubCell.Any)
         {
+            subCell = GetValidSubCell(subCell);
+            SetLocation(cell, subCell, cell, subCell);
+            SetVisualPosition(self, self.World.Map.CenterOfSubCell(cell, subCell));
+            FinishedMoving(self);
+        }
 
+        public void FinishedMoving(Actor self)
+        {
+            if (!self.IsAtGroundLevel())
+                return;
+            var actors = self.World.ActorMap.GetActorsAt(toCell).Where(a => a != self).ToList();
+            if (!AnyCrushables(actors))
+                return;
+
+            var notifiers = actors.SelectMany(a => a.TraitsImplementing<INotifyCrushed>().Select(t => new TraitPair<INotifyCrushed>(a, t)));
+            foreach (var notifyCrushed in notifiers)
+                notifyCrushed.Trait.OnCrush(notifyCrushed.Actor, self, Info.Crushes);
+        }
+
+        bool AnyCrushables(List<Actor> actors)
+        {
+            return true;
         }
 
         public void SetPosition(Actor self,WPos pos)
@@ -288,9 +328,51 @@ namespace EW.Mods.Common.Traits
         /// <param name="pos"></param>
         public void SetVisualPosition(Actor self,WPos pos)
         {
-
+            CenterPosition = pos;
+            self.World.UpdateMaps(self, this);
         }
 
+        public SubCell GetValidSubCell(SubCell preferred = SubCell.Any)
+        {
+            if (preferred == SubCell.Any)
+                preferred = FromSubCell;
+
+            if (Info.SharesCell)
+            {
+                if (preferred <= SubCell.FullCell)
+                    return self.World.Map.Grid.DefaultSubCell;
+            }
+            else
+            {
+                if (preferred != SubCell.FullCell)
+                    return SubCell.FullCell;
+            }
+            return preferred;
+        }
+
+        public void SetLocation(CPos from,SubCell fromSub,CPos to,SubCell toSub)
+        {
+            if (FromCell == from && ToCell == to && FromSubCell == fromSub && ToSubCell == toSub)
+                return;
+            RemoveInfluence();
+            fromCell = from;
+            toCell = to;
+            FromSubCell = fromSub;
+            ToSubCell = toSub;
+            AddInfluence();
+        }
+
+        public void RemoveInfluence()
+        {
+            if (self.IsInWorld)
+                self.World.ActorMap.RemoveInfluence(self, this);
+        }
+
+        public void AddInfluence()
+        {
+            if (self.IsInWorld)
+                self.World.ActorMap.AddInfluence(self, this);
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -303,6 +385,82 @@ namespace EW.Mods.Common.Traits
         public void RemovedFromWorld(Actor self)
         {
             self.World.RemoveFromMaps(self, this);
+        }
+
+
+        //public Activity ScriptedMove(CPos cell) { return new Move(self, cell); }
+
+        #region IMove interface
+
+        public bool IsMoving { get; set; }
+
+        public CPos NearestMoveableCell(CPos target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveTo(CPos cell,int nearEnough) { return new Move(self, cell, WDist.FromCells(nearEnough)); }
+
+        public Activity MoveTo(CPos cell,Actor ignoredActor) { return new Move(self, cell, ignoredActor); }
+
+        public Activity MoveWithinRange(Target target,WDist range) { return new MoveWithinRange(self, target, WDist.Zero, range); }
+
+        public Activity MoveWithinRange(Target target,WDist minRange,WDist maxRange) { return new MoveWithinRange(self, target, minRange, maxRange); }
+
+        public Activity MoveFollow(Actor self,Target target,WDist minRange,WDist maxRange) { return new Follow(self, target, minRange, maxRange); }
+
+        public Activity MoveTo(Func<List<CPos>> pathFunc) { return new Move(self, pathFunc); }
+
+        public Activity MoveToTarget(Actor self,Target target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveIntoTarget(Actor self,Target target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool CanEnterTargetNow(Actor self,Target target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveIntoWorld(Actor self,CPos cell,SubCell subCell = SubCell.Any)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity VisualMove(Actor self,WPos fromPos,WPos toPos)
+        {
+            throw new NotImplementedException();
+        }
+        public Activity VisualMove(Actor self,WPos fromPos,WPos toPos,CPos cell)
+        {
+            throw new NotImplementedException();
+        }
+        
+        
+        #endregion
+
+        void IActorPreviewInitModifier.ModifyActorPreviewInit(Actor self,TypeDictionary inits)
+        {
+
+        }
+
+        void IDeathActorInitModifier.ModifyDeathActorInit(Actor self,TypeDictionary inits)
+        {
+
+        }
+
+        public void OnNotifyBlockingMove(Actor self,Actor blocking)
+        {
+
+        }
+
+        public SubCell GetAvailableSubCell(CPos a,SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,bool checkTransientActors = true)
+        {
+            throw new NotImplementedException();
         }
     }
 }

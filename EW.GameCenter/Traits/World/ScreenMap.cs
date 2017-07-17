@@ -96,5 +96,10 @@ namespace EW.Traits
             partitionedActors.Remove(a);
         }
 
+
+        public void Update(Actor a)
+        {
+            partitionedActors.Update(a, ActorBounds(a));
+        }
     }
 }

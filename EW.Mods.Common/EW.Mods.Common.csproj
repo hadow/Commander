@@ -50,9 +50,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
+    <Compile Include="Activities\Move\MoveAdjacentTo.cs" />
+    <Compile Include="Activities\Move\MoveWithinRange.cs" />
     <Compile Include="Activities\SimpleTeleport.cs" />
+    <Compile Include="Activities\Turn.cs" />
     <Compile Include="Activities\UnloadCargo.cs" />
+    <Compile Include="ActorExts.cs" />
     <Compile Include="ActorInitializer.cs" />
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateMachine.cs" />
@@ -257,6 +262,7 @@
     <Compile Include="Traits\World\ValidateOrder.cs" />
     <Compile Include="Traits\World\WarheadDebugOverlay.cs" />
     <Compile Include="Traits\PaletteEffects\CloakPaletteEffect.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="Warheads\CreateEffectWarhead.cs" />
     <Compile Include="Warheads\CreateResourceWarhead.cs" />
     <Compile Include="Warheads\DamageWarhead.cs" />

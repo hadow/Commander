@@ -275,6 +275,17 @@ namespace EW
             return nextAID++;
         }
 
+        public void UpdateMaps(Actor self,IOccupySpace ios)
+        {
+            if (!self.IsInWorld)
+                return;
+            if (!self.Bounds.Size.IsEmpty)
+                ScreenMap.Update(self);
+
+            ActorMap.UpdatePosition(self, ios);
+
+        }
+
         public bool Disposing;
 
         public void Dispose()
