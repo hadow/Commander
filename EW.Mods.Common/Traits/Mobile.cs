@@ -213,7 +213,7 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class Mobile:UpgradableTrait<MobileInfo>,IPositionable,INotifyAddToWorld,INotifyRemovedFromWorld
+    public class Mobile:UpgradableTrait<MobileInfo>,IPositionable,INotifyAddToWorld,INotifyRemovedFromWorld,IMove
     {
         readonly Actor self;
 

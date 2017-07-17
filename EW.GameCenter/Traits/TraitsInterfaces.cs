@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.Primitives;
+using EW.Activities;
 using EW.Xna.Platforms;
 namespace EW.Traits
 {
@@ -216,7 +217,32 @@ namespace EW.Traits
     /// 
     /// </summary>
     public interface IUpgradableInfo : ITraitInfo { }
-    public interface IMove{}
+    public interface IMove
+    {
+        Activity MoveTo(CPos cell, int nearEnough);
+
+        Activity MoveTo(CPos cell, Actor ignoredActor);
+
+        Activity MoveWithinRange(Target target, WDist range);
+
+        Activity MoveWithinRange(Target target, WDist minRange, WDist maxRange);
+
+        Activity MoveFollow(Actor self, Target target, WDist minRange, WDist maxRange);
+
+        Activity MoveIntoWorld(Actor self, CPos cell, SubCell subCell = SubCell.Any);
+
+        Activity MoveToTarget(Actor self, Target target);
+
+        Activity MoveIntoTarget(Activity self, Target target);
+
+        Activity VisualMove(Actor self, WPos fromPos, WPos toPos);
+
+        CPos NearestMoveableCell(CPos target);
+
+        bool IsMoving { get; set; }
+
+        bool CanEnterTargetNow(Actor self, Target target);
+    }
     public interface IMoveInfo : ITraitInfoInterface { }
     
     public interface IOccupySapceInfo : ITraitInfoInterface
