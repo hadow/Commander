@@ -4,7 +4,7 @@ using System.Linq;
 using EW.Graphics;
 using EW.Scripting;
 using EW.Traits;
-namespace EW.Common.Scripting
+namespace EW.Mods.Common.Scripting
 {
     public class LuaScriptInfo:ITraitInfo
     {

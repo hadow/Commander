@@ -83,7 +83,6 @@ namespace EW
         {
             using (new PerfTimer("ScreenMap.WorldLoaded"))
                 ScreenMap.WorldLoaded(this, wr);
-
             foreach(var wlh in WorldActor.TraitsImplementing<IWorldLoaded>())
             {
                 if (wlh == ScreenMap)
@@ -91,6 +90,8 @@ namespace EW
 
                 using (new PerfTimer(wlh.GetType().Name + ".WorldLoaded"))
                     wlh.WorldLoaded(this, wr);
+
+                Console.WriteLine("Name:" + wlh.GetType().Name);
             }
         }
 

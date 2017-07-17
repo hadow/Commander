@@ -12,4 +12,16 @@ namespace EW.Mods.Common.Traits
     public class Turreted
     {
     }
+
+    public class TurretFacingInit : IActorInit<int>
+    {
+        [FieldLoader.FieldFromYamlKey]
+        readonly int value = 128;
+
+        public TurretFacingInit() { }
+
+        public TurretFacingInit(int init) { value = init; }
+
+        public int Value(World world) { return value; }
+    }
 }

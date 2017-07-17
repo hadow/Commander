@@ -83,6 +83,8 @@ namespace EW
         public readonly string PlayerName = "Neutral";
         Player player;
 
+        public OwnerInit() { }
+
         public OwnerInit(string playerName)
         {
             PlayerName = playerName;

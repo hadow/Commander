@@ -19,7 +19,7 @@ namespace EW.Mods.Common.Traits
 
         public void WorldLoaded(World world,WorldRenderer wr)
         {
-            foreach(var kv in world.Map.ActorDefinitions)
+            foreach (var kv in world.Map.ActorDefinitions)
             {
                 var actorReference = new ActorReference(kv.Value.Value, kv.Value.ToDictionary());
 
