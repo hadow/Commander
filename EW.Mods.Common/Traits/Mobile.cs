@@ -64,6 +64,22 @@ namespace EW.Mods.Common.Traits
                 Cost = cost;
             }
         }
+        /// <summary>
+        /// This struct allows us to cache the terrain info for the tileset used by the world.
+        /// This allows us to speed up some performance-sensitive pathfinding calculations.
+        /// </summary>
+        public struct WorldMovementInfo
+        {
+            internal readonly World World;
+            internal readonly TerrainInfo[] TerrainInfos;
+
+            internal WorldMovementInfo(World world,MobileInfo info)
+            {
+                World = world;
+                TerrainInfos = info.TilesetTerrainInfo[world.Map.Rules.TileSet];
+
+            }
+        }
 
         [FieldLoader.LoadUsing("LoadSpeeds",true)]
         public readonly Dictionary<string, TerrainInfo> TerrainSpeeds;
@@ -91,6 +107,11 @@ namespace EW.Mods.Common.Traits
         public override  object Create(ActorInitializer init)
         {
             return new Mobile(init, this);
+        }
+
+        public WorldMovementInfo GetWorldMovementInfo(World world)
+        {
+            return new WorldMovementInfo(world, this);
         }
 
         /// <summary>

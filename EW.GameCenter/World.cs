@@ -87,11 +87,11 @@ namespace EW
             {
                 if (wlh == ScreenMap)
                     continue;
+                Console.WriteLine("Name:" + wlh.GetType().Name);
 
                 using (new PerfTimer(wlh.GetType().Name + ".WorldLoaded"))
                     wlh.WorldLoaded(this, wr);
 
-                Console.WriteLine("Name:" + wlh.GetType().Name);
             }
         }
 

@@ -116,6 +116,20 @@ namespace EW
             for (var i = 0; i < entries.Length; i++)
                 entries[i] = clearValue;
         }
+
+        public static CellLayer<T> CreateInstance(Func<MPos,T> initialCellValueFactory,Size size,MapGridT mapGridT)
+        {
+            var cellLayer = new CellLayer<T>(mapGridT, size);
+            for(var v = 0; v < size.Height; v++)
+            {
+                for(var u = 0; u < size.Width; u++)
+                {
+                    var mpos = new MPos(u, v);
+                    cellLayer[mpos] = initialCellValueFactory(mpos);
+                }
+            }
+            return cellLayer;
+        }
             
     }
 }

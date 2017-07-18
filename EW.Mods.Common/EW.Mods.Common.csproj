@@ -80,6 +80,7 @@
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
+    <Compile Include="Pathfinder\Constants.cs" />
     <Compile Include="Pathfinder\PathGraph.cs" />
     <Compile Include="Pathfinder\PathSearch.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />

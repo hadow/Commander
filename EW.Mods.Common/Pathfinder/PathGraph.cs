@@ -64,11 +64,26 @@ namespace EW.Mods.Common.Pathfinder
 
         public Actor IgnoredActor { get; set; }
 
+        readonly CellConditions checkConditions;
+        
+        readonly MobileInfo mobileInfo;
+
+        readonly MobileInfo.WorldMovementInfo worldMovementInfo;
+
+        readonly CellInfoLayerPool.PooledCellInfoLayer pooledLayer;
+
         CellLayer<CellInfo> cellInfo;
 
         public PathGraph(CellInfoLayerPool layerPool,MobileInfo mobileInfo,Actor actor,World world,bool checkForBlocked)
         {
-
+            pooledLayer = layerPool.Get();
+            cellInfo = pooledLayer.Layer;
+            World = world;
+            this.mobileInfo = mobileInfo;
+            worldMovementInfo = mobileInfo.GetWorldMovementInfo(world);
+            Actor = actor;
+            LaneBias = 1;
+            checkConditions = checkForBlocked ? CellConditions.TransientActors:CellConditions.None;
 
         }
         public List<GraphConnection> GetConnections(CPos position)
