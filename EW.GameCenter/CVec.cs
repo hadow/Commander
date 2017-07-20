@@ -15,6 +15,18 @@ namespace EW
         public int Length { get { return Exts.ISqrt(LengthSquard); } }
         public bool Equals(CVec other) { return other == this; }
 
+        public static readonly CVec[] Directions =
+        {
+            new CVec(-1,-1),
+            new CVec(-1,0),
+            new CVec(-1,1),
+            new CVec(0,-1),
+            new CVec(0,1),
+            new CVec(1,-1),
+            new CVec(1,0),
+            new CVec(1,1),
+        };
+
         public override bool Equals(object obj)
         {
             return base.Equals(obj);

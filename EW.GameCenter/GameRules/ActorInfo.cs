@@ -12,8 +12,11 @@ namespace EW
     {
 
         public readonly string Name;
+
         readonly TypeDictionary traits = new TypeDictionary();
+
         List<ITraitInfo> constructOrderCache = null;
+
         public ActorInfo(ObjectCreator creator,string name,MiniYaml node)
         {
             try
@@ -111,6 +114,11 @@ namespace EW
             return constructOrderCache;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         public static IEnumerable<Type> PrerequisitesOf(ITraitInfo info)
         {
             var interfaces = info.GetType().GetInterfaces();

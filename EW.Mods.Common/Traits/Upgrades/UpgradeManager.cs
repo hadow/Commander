@@ -5,9 +5,15 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-
-    public class UpgradeManagerInfo : TraitInfo<UpgradeManager>
+    /// <summary>
+    /// Attach this to a unit to enable dynamic upgrades by warheads,experience,crates,support power,etc.
+    /// </summary>
+    public class UpgradeManagerInfo : TraitInfo<UpgradeManager>,IRulesetLoaded
     {
+        public void RulesetLoaded(Ruleset rules,ActorInfo info)
+        {
+
+        }
 
     }
     public class UpgradeManager

@@ -226,8 +226,8 @@ namespace EW
             ActorMap.AddInfluence(self, ios);
             ActorMap.AddPosition(self, ios);
 
-            //if(!self.Bounds.Size.ise)
-            ScreenMap.Add(self);
+            if(!self.Bounds.Size.IsEmpty)
+                ScreenMap.Add(self);
         }
 
         public void RemoveFromMaps(Actor self,IOccupySpace ios)
@@ -235,8 +235,8 @@ namespace EW
             ActorMap.RemoveInfluence(self, ios);
             ActorMap.RemovePosition(self, ios);
 
-            //if(!self.Bounds.Size.is)
-            ScreenMap.Remove(self);
+            if(!self.Bounds.Size.IsEmpty)
+                ScreenMap.Remove(self);
         }
 
 

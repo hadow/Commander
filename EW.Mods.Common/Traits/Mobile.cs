@@ -168,6 +168,23 @@ namespace EW.Mods.Common.Traits
             return false;
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="worldMovementInfo"></param>
+        /// <param name="self"></param>
+        /// <param name="cell"></param>
+        /// <param name="ignoreActor"></param>
+        /// <param name="check"></param>
+        /// <returns></returns>
+        public int MovementCostToEnterCell(WorldMovementInfo worldMovementInfo,Actor self,CPos cell,Actor ignoreActor = null,CellConditions check = CellConditions.All)
+        {
+            var cost = MovementCostForCell(worldMovementInfo.World.Map, worldMovementInfo.TerrainInfos, cell);
+            if (cost == int.MaxValue || !CanMoveFreelyInto(worldMovementInfo.World, self, cell, ignoreActor, check))
+                return int.MaxValue;
+            return cost;
+        }
         /// <summary>
         /// 移动的代价
         /// </summary>
@@ -236,6 +253,11 @@ namespace EW.Mods.Common.Traits
         public int CalculateTilesetMovementClass(TileSet tileset)
         {
             return TilesetTerrainInfo[tileset].Select(ti => ti.Cost < int.MaxValue).ToBits();
+        }
+
+        public int GetMovementClass(TileSet tileset)
+        {
+            return TilesetMovementClass[tileset];
         }
     }
 

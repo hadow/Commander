@@ -44,7 +44,14 @@ namespace EW
             {
                 foreach(var t in a.TraitInfos<IRulesetLoaded>())
                 {
-
+                    try
+                    {
+                        t.RulesetLoaded(this, a);
+                    }
+                    catch(YamlException e)
+                    {
+                        throw new YamlException("Actor type {0}:{1}".F(a.Name, e.Message));
+                    }
                 }
             }
 
@@ -82,7 +89,8 @@ namespace EW
                 modData.HandleLoadingProgress();
 
                 var loader = new Task(f);
-                loader.Start();
+                //启动任务，并安排到当前任务队列线程中执行(System.Threading.Tasks.TaskScheduler);
+                loader.Start();     
 
                 //Animate the loadscreen while we wait
                 while (!loader.Wait(40))
@@ -168,7 +176,7 @@ namespace EW
 
 
         /// <summary>
-        /// 
+        /// 合并Yaml文件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="name"></param>

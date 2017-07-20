@@ -38,7 +38,20 @@ namespace EW.Mods.Common.Pathfinder
 
         public abstract IEnumerable<Pair<CPos,int>> Considered { get; }
 
+        protected IPriorityQueue<GraphConnection> OpenQueue { get; private set; }
+
+        protected readonly IPriorityQueue<GraphConnection> StartPoints;
+
         public Player Owner { get { return Graph.Actor.Owner; } }
+
+        public int MaxCost { get; private set; }
+        protected BasePathSearch(IGraph<CellInfo> graph)
+        {
+            Graph = graph;
+            OpenQueue = new PriorityQueue<GraphConnection>(GraphConnection.ConnectionCostComparer);
+            StartPoints = new PriorityQueue<GraphConnection>(GraphConnection.ConnectionCostComparer);
+        }
+
 
         public IPathSearch Reverse()
         {
@@ -86,10 +99,6 @@ namespace EW.Mods.Common.Pathfinder
         public bool CanExpand { get; }
 
         public void Dispose() { }
-        protected BasePathSearch(IGraph<CellInfo> graph)
-        {
-
-        }
 
         protected Func<CPos, int> heuristic;    //启发式，下探
         protected Func<CPos, bool> isGoal;

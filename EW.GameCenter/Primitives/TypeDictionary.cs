@@ -17,9 +17,9 @@ namespace EW.Primitives
         {
             var t = val.GetType();
 
-            foreach (var i in t.GetInterfaces())
+            foreach (var i in t.GetInterfaces())//继承接口
                 InnerAdd(i, val);
-            foreach (var tt in t.BaseTypes())
+            foreach (var tt in t.BaseTypes())   //继承基类
                 InnerAdd(tt, val);
         }
 
