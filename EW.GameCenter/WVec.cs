@@ -31,6 +31,8 @@ namespace EW
         public static bool operator !=(WVec a,WVec b) { return !(a == b); }
         #endregion
 
+        public int Length { get { return (int)Exts.ISqrt(LengthSquared); } }
+
         public long LengthSquared { get { return (long)X * X + (long)Y * Y + (long)Z * Z; } }
 
         public long HorizontalLengthSquared { get { return (long)X * X + (long)Y * Y; } }

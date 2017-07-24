@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 using EW.Primitives;
 namespace EW.Mods.Common.Pathfinder
 {
+    /// <summary>
+    /// 搜寻路径
+    /// </summary>
     public sealed class PathSearch:BasePathSearch
     {
         LinkedList<Pair<CPos, int>> considered;
@@ -15,6 +18,9 @@ namespace EW.Mods.Common.Pathfinder
         {
             considered = new LinkedList<Pair<CPos, int>>();
         }
+
+        //PERF:Maintain a pool of layers used for paths searches for each world.These searches are performed often 
+        //so we wish to avoid the high cost of initializing a new search space every time by reusing the old ones.
         static readonly ConditionalWeakTable<World, CellInfoLayerPool> LayerPoolTable = new ConditionalWeakTable<World, CellInfoLayerPool>();
         static readonly ConditionalWeakTable<World, CellInfoLayerPool>.CreateValueCallback CreateLayerPool = world => new CellInfoLayerPool(world.Map);
 
@@ -42,10 +48,60 @@ namespace EW.Mods.Common.Pathfinder
             return search;
         }
 
-        protected override void AddInitialCell(CPos cell)
+
+        protected override void AddInitialCell(CPos location)
         {
-            throw new NotImplementedException();
+            var cost = heuristic(location);
+            Graph[location] = new CellInfo(0, cost, location, CellStatus.Open);
+            var connection = new GraphConnection(location, cost);
+            OpenQueue.Add(connection);
+            StartPoints.Add(connection);
+            considered.AddLast(new Pair<CPos, int>(location, 0));
         }
+
+        /// <summary>
+        /// This function analyzes the neighbors of the most promising node in the Pathfinding graph
+        /// using the A* algorithm (A-Star) and returns that node
+        /// </summary>
+        /// <returns>The most promising node of the iteration</returns>
+        public override CPos Expand()
+        {
+            var currentMinNode = OpenQueue.Pop().Destination;
+
+            var currentCell = Graph[currentMinNode];
+            Graph[currentMinNode] = new CellInfo(currentCell.CostSoFar, currentCell.EstimatedTotal, currentCell.PreviousPos, CellStatus.Closed);
+
+            if (Graph.CustomCost != null && Graph.CustomCost(currentMinNode) == Constants.InvalidNode)
+                return currentMinNode;
+
+            foreach(var connection in Graph.GetConnections(currentMinNode))
+            {
+                var gCost = currentCell.CostSoFar + connection.Cost;
+
+                var neighborCPos = connection.Destination;
+                var neighborCell = Graph[neighborCPos];
+
+                // Cost is even higher;next direction;
+                if (neighborCell.Status == CellStatus.Closed || gCost >= neighborCell.CostSoFar)
+                    continue;
+
+                int hCost;
+                if (neighborCell.Status == CellStatus.Open)
+                    hCost = neighborCell.EstimatedTotal - neighborCell.CostSoFar;
+                else
+                    hCost = heuristic(neighborCPos);
+
+                var estimatedCost = gCost + hCost;
+                Graph[neighborCPos] = new CellInfo(gCost, estimatedCost, currentMinNode, CellStatus.Open);
+
+                if (neighborCell.Status != CellStatus.Open)
+                    OpenQueue.Add(new GraphConnection(neighborCPos, estimatedCost));
+            }
+
+            return currentMinNode;
+
+        }
+
 
 
     }

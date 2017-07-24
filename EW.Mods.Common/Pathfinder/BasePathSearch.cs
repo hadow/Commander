@@ -66,16 +66,19 @@ namespace EW.Mods.Common.Pathfinder
 
         public IPathSearch WithIgnoredActor(Actor a)
         {
+            Graph.IgnoredActor = a;
             return this;
         }
 
-        public IPathSearch WithHeuristic(Func<CPos,int> f)
+        public IPathSearch WithHeuristic(Func<CPos,int> h)
         {
+            heuristic = h;
             return this;
         }
 
         public IPathSearch WithCustomCost(Func<CPos,int> f)
         {
+            Graph.CustomCost = f;
             return this;
         }
 
@@ -86,6 +89,8 @@ namespace EW.Mods.Common.Pathfinder
 
         public IPathSearch FromPoint(CPos from)
         {
+            if (Graph.World.Map.Contains(from))
+                AddInitialCell(from);
             return this;
         }
 
@@ -94,16 +99,20 @@ namespace EW.Mods.Common.Pathfinder
             return false;
         }
 
-        public CPos Expand() { return CPos.Zero; }
+        public abstract CPos Expand();
 
-        public bool CanExpand { get; }
+        public bool CanExpand { get { return !OpenQueue.Empty; } }
 
         public void Dispose() { }
 
         protected Func<CPos, int> heuristic;    //启发式，下探
         protected Func<CPos, bool> isGoal;
 
-
+        /// <summary>
+        /// 预估委托
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <returns> a gelegate that calcuates the estimation for a node</returns>
         protected static Func<CPos,int> DefaultEstimator(CPos destination)
         {
             return here =>

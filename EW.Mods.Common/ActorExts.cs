@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using EW.Traits;
 
 namespace EW.Mods.Common
 {
@@ -22,6 +22,17 @@ namespace EW.Mods.Common
                 return false;
 
             return map.DistanceAboveTerrain(self.CenterPosition).Length == 0;
+        }
+
+        public static bool AppearsFriendlyTo(this Actor self,Actor toActor)
+        {
+            var stance = toActor.Owner.Stances[self.Owner];
+            if(stance == Stance.Ally)
+            {
+                return true;
+            }
+
+            return stance == Stance.Ally;
         }
     }
 }

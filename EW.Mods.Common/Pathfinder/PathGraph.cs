@@ -104,6 +104,11 @@ namespace EW.Mods.Common.Pathfinder
 
         };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public List<GraphConnection> GetConnections(CPos position)
         {
             var previousPos = cellInfo[position].PreviousPos;
@@ -146,6 +151,18 @@ namespace EW.Mods.Common.Pathfinder
         {
             var cellCost = movementCost;
 
+            if (direction.X * direction.Y != 0)
+                cellCost = (cellCost * 34) / 24;
+
+            if(CustomCost != null)
+            {
+                var customCost = CustomCost(neighborCPos);
+                if (customCost == Constants.InvalidNode)
+                    return Constants.InvalidNode;
+
+                cellCost += customCost;
+
+            }
             return cellCost;
         }
 

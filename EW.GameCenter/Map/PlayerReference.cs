@@ -19,6 +19,7 @@ namespace EW
 
         public bool Playable = false;
 
+        public bool Spectating = false;
         public string[] Enemies = { };
         public string[] Allies = { };   //盟国
         public PlayerReference(MiniYaml my)

@@ -20,7 +20,7 @@ namespace EW.Traits
     public enum Stance
     {
         None = 0,
-        Enemy = 1,      
+        Enemy = 1,      //敌对
         Neutral = 2,    //中立国
         Ally = 4,       //同盟国
     }
@@ -70,7 +70,7 @@ namespace EW.Traits
 
         bool IsDead { get; }
 
-        void InflictDamage(Actor self, Actor attacker, Damage damage, bool ignoreModifiers);
+        void InflictDamage(Actor self, Actor attacker, int damage,IWarHead warhead, bool ignoreModifiers);
 
         void Kill(Actor self, Actor attacker);
 
@@ -116,6 +116,8 @@ namespace EW.Traits
 
         void WarnCrush(Actor self, Actor crusher, HashSet<string> crushClasses);
     }
+
+    public interface INotifyDiscovered { void OnDiscovered(Actor self, Player discoverer, bool playNotification); }
     #endregion
 
     #region Render Interface
@@ -139,6 +141,14 @@ namespace EW.Traits
     {
         IEnumerable<IRenderable> ModifyRender(Actor self, WorldRenderer wr, IEnumerable<IRenderable> r);
     }
+    #endregion
+
+    #region Modifier Interface
+
+
+    public interface IDefaultVisibility { bool IsVisible(Actor self, Player byPlayer); }
+    public interface IVisibilityModifier { bool IsVisible(Actor self, Player byPlayer); }
+
     #endregion
 
     public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }

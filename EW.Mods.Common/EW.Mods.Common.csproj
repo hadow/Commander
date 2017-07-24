@@ -75,6 +75,8 @@
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\RangeCircleRenderable.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
+    <Compile Include="HitShapes\CircleShape.cs" />
+    <Compile Include="HitShapes\IHitShape.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Traits\Player\BaseAttackNotifier.cs" />
     <Compile Include="Traits\Player\ConquestVictoryConditions.cs" />
     <Compile Include="Traits\Player\DeveloperMode.cs" />
+    <Compile Include="Traits\Player\EnemyWatcher.cs" />
     <Compile Include="Traits\Player\FrozenActorLayer.cs" />
     <Compile Include="Traits\Player\GlobalUpgradeManager.cs" />
     <Compile Include="Traits\Player\MissionObjectives.cs" />
@@ -221,6 +224,7 @@
     <Compile Include="Traits\Sellable.cs" />
     <Compile Include="Traits\ShakeOnDeath.cs" />
     <Compile Include="Traits\Sound\ActorLostNotification.cs" />
+    <Compile Include="Traits\Sound\AnnounceOnSeen.cs" />
     <Compile Include="Traits\Sound\CaptureNotification.cs" />
     <Compile Include="Traits\Sound\DeathSounds.cs" />
     <Compile Include="Traits\Sound\SoundOnDamageTransition.cs" />

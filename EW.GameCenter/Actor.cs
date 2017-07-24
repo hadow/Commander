@@ -47,20 +47,21 @@ namespace EW
 
         readonly IRender[] renders;
         readonly IRenderModifier[] renderModifiers;
-
+        readonly IVisibilityModifier[] visibilityModifiers;
+        readonly IDefaultVisibility defaultVisibility;
         public Player Owner { get; set; }
 
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
 
         public WPos CenterPosition { get { return OccupiesSpace.CenterPosition; } }
-        internal Actor(World world,string name,TypeDictionary initDict)
+        internal Actor(World world, string name, TypeDictionary initDict)
         {
             var init = new ActorInitializer(this, initDict);
-            
+
             World = world;
             ActorID = world.NextAID();
-            
-            if(name != null)
+
+            if (name != null)
             {
                 name = name.ToLowerInvariant();
 
@@ -69,10 +70,10 @@ namespace EW
                     throw new NotImplementedException("No rules definition for unit {0}".F(name));
                 }
                 Info = world.Map.Rules.Actors[name];
-                foreach(var trait in Info.TraitsInConstructOrder())
+                foreach (var trait in Info.TraitsInConstructOrder())
                 {
                     AddTrait(trait.Create(init));
-                    if(trait is IOccupySapceInfo)
+                    if (trait is IOccupySapceInfo)
                     {
                         OccupiesSpace = Trait<IOccupySpace>();
                     }
@@ -81,9 +82,14 @@ namespace EW
 
             renders = TraitsImplementing<IRender>().ToArray();
             renderModifiers = TraitsImplementing<IRenderModifier>().ToArray();
-
+            visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
+            defaultVisibility = Trait<IDefaultVisibility>();
             Bounds = DetermineBounds();
         }
+
+
+
+
 
         /// <summary>
         /// 
@@ -140,6 +146,13 @@ namespace EW
             return ActorID == other.ActorID;
         }
 
+        public bool CanBeViewedByPlayer(Player player)
+        {
+            foreach (var visibilityModifier in visibilityModifiers)
+                if (!visibilityModifier.IsVisible(this, player))
+                    return false;
+            return defaultVisibility.IsVisible(this, player);
+        }
 
         #region Trait
 
