@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
-
+using EW.Xna.Platforms;
 namespace EW.Mods.Common
 {
     public static class ActorExts
@@ -33,6 +33,18 @@ namespace EW.Mods.Common
             }
 
             return stance == Stance.Ally;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="order"></param>
+        /// <param name="targetLine"></param>
+        /// <returns></returns>
+        public static Target ResolveFrozenActorOrder(this Actor self,Order order,Color targetLine)
+        {
+            return Target.Invalid;
         }
     }
 }

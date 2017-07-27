@@ -437,6 +437,11 @@ namespace EW.Mods.Common.Traits
 
         public bool IsMoving { get; set; }
 
+        /// <summary>
+        /// 附近可移动的单元格
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
         public CPos NearestMoveableCell(CPos target)
         {
             throw new NotImplementedException();

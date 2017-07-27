@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
     <Compile Include="Activities\Move\MoveAdjacentTo.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Scripting\Global\TriggerGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
     <Compile Include="Scripting\Properties\GeneralProperties.cs" />
+    <Compile Include="Scripting\Properties\HealthProperties.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />
     <Compile Include="Scripting\Properties\TransportProperties.cs" />
     <Compile Include="Scripting\ScriptTriggers.cs" />
@@ -119,8 +121,11 @@
     <Compile Include="Traits\Armament.cs" />
     <Compile Include="Traits\Armor.cs" />
     <Compile Include="Traits\Attack\AttackBase.cs" />
+    <Compile Include="Traits\Attack\AttackFollow.cs" />
     <Compile Include="Traits\Attack\AttackFrontal.cs" />
     <Compile Include="Traits\Attack\AttackMove.cs" />
+    <Compile Include="Traits\Attack\AttackSuicides.cs" />
+    <Compile Include="Traits\Attack\AttackWander.cs" />
     <Compile Include="Traits\AutoTarget.cs" />
     <Compile Include="Traits\Buildable.cs" />
     <Compile Include="Traits\Buildings\Building.cs" />
@@ -155,6 +160,7 @@
     <Compile Include="Traits\ICommonTraits.cs" />
     <Compile Include="Traits\Infantry\ScaredyCat.cs" />
     <Compile Include="Traits\Infantry\TakeCover.cs" />
+    <Compile Include="Traits\Infantry\TerrainModifiesDamage.cs" />
     <Compile Include="Traits\Mobile.cs" />
     <Compile Include="Traits\Modifiers\AlwaysVisible.cs" />
     <Compile Include="Traits\Modifiers\DisabledOverlay.cs" />
@@ -194,7 +200,6 @@
     <Compile Include="Traits\Radar\RadarColorFromTerrain.cs" />
     <Compile Include="Traits\RejectsOrders.cs" />
     <Compile Include="Traits\Render\CustomTerrainDebugOverlay.cs" />
-    <Compile Include="Traits\Render\DrawLineToTarget.cs" />
     <Compile Include="Traits\Render\Hovers.cs" />
     <Compile Include="Traits\Render\RenderDebugState.cs" />
     <Compile Include="Traits\Render\RenderDetectionCircle.cs" />

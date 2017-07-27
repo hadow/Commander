@@ -5,24 +5,32 @@ namespace EW.Mods.Common.Traits
 {
     public abstract class UpgradableTraitInfo : IUpgradableInfo
     {
-
+        [UpgradeUsedReference]
         public readonly HashSet<string> UpgradeTypes = new HashSet<string>();
 
         public readonly int UpgradeMinEnabledLevel = 0;
 
         public readonly int UpgradeMaxEnabledLevel = int.MaxValue;
 
+        /// <summary>
+        /// The maximum upgrade level that this trait will accept.
+        /// </summary>
         public readonly int UpgradeMaxAcceptedLevel = 1;
 
         public abstract object Create(ActorInitializer init);
     }
 
 
-
-    public abstract class UpgradableTrait<T>:IUpgradable,IDisabledTrait where T:UpgradableTraitInfo
+    /// <summary>
+    /// Abstract base for enabling and disabling trait using upgrades.
+    /// Requires basing *Info on UpgradableTraitInfo and using base(info) constructor.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class UpgradableTrait<T>:IUpgradable,IDisabledTrait,ISync where T:UpgradableTraitInfo
     {
 
         public readonly T Info;
+        [Sync]
         public bool IsTraitDisabled { get; private set; }
 
         public IEnumerable<string> UpgradeTypes { get { return Info.UpgradeTypes; } }
@@ -49,6 +57,7 @@ namespace EW.Mods.Common.Traits
             if (!Info.UpgradeTypes.Contains(type))
                 return;
 
+            //Restrict the levels to the allowed range
             oldLevel = oldLevel.Clamp(0, Info.UpgradeMaxAcceptedLevel);
             newLevel = newLevel.Clamp(0, Info.UpgradeMaxAcceptedLevel);
 
@@ -69,12 +78,7 @@ namespace EW.Mods.Common.Traits
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="self"></param>
-        /// <param name="oldLevel"></param>
-        /// <param name="newLevel"></param>
+        //Subclasses can add upgrade support by querying IsTraitDisables and/or overriding these methods
         protected virtual void UpgradeLevelChanged(Actor self,int oldLevel,int newLevel) { }
 
         protected virtual void UpgradeEnabled(Actor self) { }

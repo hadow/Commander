@@ -118,6 +118,12 @@ namespace EW.Traits
     }
 
     public interface INotifyDiscovered { void OnDiscovered(Actor self, Player discoverer, bool playNotification); }
+
+    public interface INotifySelected { void Selected(Actor self); }
+
+    public interface INotifyBecomingIdle { void OnBecomingIdle(Actor self); }
+
+    public interface INotifyOwnerChanged { void OnOwnerChanged(Actor self, Player oldOwner, Player newOwner); }
     #endregion
 
     #region Render Interface
@@ -141,6 +147,11 @@ namespace EW.Traits
     {
         IEnumerable<IRenderable> ModifyRender(Actor self, WorldRenderer wr, IEnumerable<IRenderable> r);
     }
+
+    public interface IPostRenderSelection
+    {
+        IEnumerable<IRenderable> RenderAfterWorld(WorldRenderer wr);
+    }
     #endregion
 
     #region Modifier Interface
@@ -149,6 +160,11 @@ namespace EW.Traits
     public interface IDefaultVisibility { bool IsVisible(Actor self, Player byPlayer); }
     public interface IVisibilityModifier { bool IsVisible(Actor self, Player byPlayer); }
 
+    public interface IDamageModifier { int GetDamageModifier(Actor attacker, IWarHead warhead); }
+
+    public interface ISpeedModifier { int GetSpeedModifier(); }
+
+    public interface IReloadModifier { int GetReloadModifier(); }
     #endregion
 
     public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }
@@ -177,26 +193,37 @@ namespace EW.Traits
 
         void SetVisualPosition(Actor self, WPos wPos);
     }
+    #region Order Interface
+        public interface IOrderTargeter
+        {
+            string OrderID { get; }
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IOrderTargeter
+            int OrderPriority { get; }
+
+            bool CanTarget(Actor self, Target target, List<Actor> othersAtTarget, ref TargetModifiers modifiers, ref string cursor);
+
+            bool IsQueued { get; }
+
+            bool TargetOverridesSelection(TargetModifiers modifiers);
+        }
+        public interface IIssueOrder
+        {
+            IEnumerable<IOrderTargeter> Orders { get; }
+
+            Order IssueOrder(Actor self, IOrderTargeter order, Target target, bool queued);
+        }
+
+    public interface IResolveOrder
     {
-        string OrderID { get; }
-
-        int OrderPriority { get; }
-
-        bool CanTarget(Actor self, Target target, List<Actor> othersAtTarget, ref TargetModifiers modifiers, ref string cursor);
-
-        bool IsQueued { get; }
-
-        bool TargetOverridesSelection(TargetModifiers modifiers);
+        void ResolveOrder(Actor self, Order order);
     }
-    public interface IIssueOrder
-    {
 
-    }
+    public interface IOrderVoice { string VoicePhraseForOrder(Actor self, Order order); }
+
+    #endregion
+    
+
+    public interface IDisable { bool Disabled { get; } }
 
     public interface IDisabledTrait { bool IsTraitDisabled { get; } }
 

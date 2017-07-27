@@ -99,7 +99,14 @@ namespace EW.Mods.Common.Traits
         /// <param name="ignoreModifiers"></param>
         public void InflictDamage(Actor self,Actor attacker,int damage,IWarHead warhead,bool ignoreModifiers)
         {
+            if (IsDead)
+                return;
 
+            var oldState = DamageState;
+            if(!ignoreModifiers && damage > 0)
+            {
+
+            }
         }
 
         public void Kill(Actor self,Actor attacker)

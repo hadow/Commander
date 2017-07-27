@@ -1,6 +1,6 @@
 using System;
-
-
+using System.Collections.Generic;
+using EW.Traits;
 namespace EW.Activities
 {
     /// <summary>
@@ -28,6 +28,11 @@ namespace EW.Activities
                 NextActivity.Queue(activity);
             else
                 NextActivity = activity;
+        }
+
+        public virtual IEnumerable<Target> GetTargets(Actor self)
+        {
+            yield break;
         }
 
     }

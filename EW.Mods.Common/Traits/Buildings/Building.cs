@@ -23,5 +23,7 @@ namespace EW.Mods.Common.Traits
     }
     public class Building
     {
+
+        public bool BuildComplete { get; private set; }
     }
 }

@@ -106,6 +106,7 @@
     <Compile Include="Graphics\Sprite.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
     <Compile Include="Graphics\SpriteRenderer.cs" />
+    <Compile Include="Graphics\TargetLineRenderable.cs" />
     <Compile Include="Graphics\TerrainRenderer.cs" />
     <Compile Include="Graphics\TerrainSpriteLayer.cs" />
     <Compile Include="Graphics\Theater.cs" />
@@ -173,6 +174,7 @@
     <Compile Include="TraitDictionary.cs" />
     <Compile Include="Traits\ActivityUtils.cs" />
     <Compile Include="Traits\DebugPauseState.cs" />
+    <Compile Include="Traits\DrawLineToTarget.cs" />
     <Compile Include="Traits\LintAttributes.cs" />
     <Compile Include="Traits\Player\FixedColorPalette.cs" />
     <Compile Include="Traits\Player\FrozenActorLayer.cs" />
@@ -717,14 +719,8 @@
   <ItemGroup>
     <AndroidAsset Include="Content\charactersheet.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
+    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

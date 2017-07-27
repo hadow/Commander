@@ -5,12 +5,13 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class TurretedInfo : ITraitInfo
+    public class TurretedInfo : ITraitInfo,UsesInit<TurretFacingInit>,Requires<BodyOrientationInfo>
     {
         public virtual object Create(ActorInitializer init) { return new Turreted(); }
     }
-    public class Turreted
+    public class Turreted:ITick,INotifyCreated,ISync,IDeathActorInitModifier
     {
+
     }
 
     public class TurretFacingInit : IActorInit<int>

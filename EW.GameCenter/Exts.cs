@@ -27,15 +27,20 @@ namespace EW
             return v;
         }
 
-        public static int ISqrt(int number, ISqrtRoundMode rount = ISqrtRoundMode.Floor)
+        public static int ISqrt(int number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
         {
             return 0;
         }
 
 
-        public static uint ISqrt(uint number, ISqrtRoundMode rount = ISqrtRoundMode.Floor)
+        public static uint ISqrt(uint number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
         {
             return 0;
+        }
+
+        public static long ISqrt(long number,ISqrtRoundMode round = ISqrtRoundMode.Floor)
+        {
+            return 0L;
         }
 
         public static string F(this string fmt,params object[] args)

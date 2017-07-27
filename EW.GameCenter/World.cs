@@ -54,6 +54,8 @@ namespace EW
             }
         }
 
+        public Player LocalPlayer { get; private set; }
+
         public int WorldTick { get; private set; }
 
         /// <summary>

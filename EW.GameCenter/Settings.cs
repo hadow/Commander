@@ -26,8 +26,8 @@ namespace EW
         public bool AllowZoom = true;
 
         public bool ShowShellmap = true;
-        
 
+        public bool DrawTargetLine = true;
     }
 
     public class SoundSettings

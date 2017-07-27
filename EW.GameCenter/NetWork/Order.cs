@@ -15,7 +15,6 @@ namespace EW
         public bool IsImmediate;
         public bool SuppressVisualFeedback;
 
-
         Order(string orderString,Actor subject,Actor targetActor,CPos targetLocation,string targetString,bool queued,CPos extraLocation,uint extraData)
         {
 

@@ -72,5 +72,8 @@ namespace EW.Mods.Common.Traits
         public void Created(Actor self) { }
 
         public bool ShouldExplode(Actor self) { return false; }
+
+        public int FireDelay { get; private set; }
+        public bool IsReloading { get { return FireDelay > 0 || IsTraitDisabled; } }
     }
 }

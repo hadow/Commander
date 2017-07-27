@@ -45,6 +45,7 @@ namespace EW
 
         readonly IHealth health;
 
+        readonly IDisable[] disables;
         readonly IRender[] renders;
         readonly IRenderModifier[] renderModifiers;
         readonly IVisibilityModifier[] visibilityModifiers;
@@ -80,6 +81,7 @@ namespace EW
                 }
             }
 
+            disables = TraitsImplementing<IDisable>().ToArray();
             renders = TraitsImplementing<IRender>().ToArray();
             renderModifiers = TraitsImplementing<IRenderModifier>().ToArray();
             visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
@@ -152,6 +154,14 @@ namespace EW
                 if (!visibilityModifier.IsVisible(this, player))
                     return false;
             return defaultVisibility.IsVisible(this, player);
+        }
+
+        public bool IsDisabled()
+        {
+            foreach (var disable in disables)
+                if (disable.Disabled)
+                    return true;
+            return false;
         }
 
         #region Trait
