@@ -5,7 +5,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class FirepowerMultiplierInfo : UpgradableMultiplierInfo
+    public class FirepowerMultiplierInfo : UpgradeMultiplierTraitInfo
     {
         public override object Create(ActorInitializer init)
         {

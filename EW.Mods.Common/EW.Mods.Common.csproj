@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\Air\FlyAttack.cs" />
     <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
@@ -60,7 +61,9 @@
     <Compile Include="Activities\UnloadCargo.cs" />
     <Compile Include="ActorExts.cs" />
     <Compile Include="ActorInitializer.cs" />
+    <Compile Include="AI\HackyAI.cs" />
     <Compile Include="AI\Squad.cs" />
+    <Compile Include="AI\StateBase.cs" />
     <Compile Include="AI\StateMachine.cs" />
     <Compile Include="ColorValidator.cs" />
     <Compile Include="Commands\ChatCommands.cs" />
@@ -78,8 +81,10 @@
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="HitShapes\CircleShape.cs" />
     <Compile Include="HitShapes\IHitShape.cs" />
+    <Compile Include="HitShapes\Rectangle.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
+    <Compile Include="Orders\DeployOrderTargeter.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
@@ -115,6 +120,7 @@
     <Compile Include="SpriteLoaders\TmpTDLoader.cs" />
     <Compile Include="Traits\AffectsShroud.cs" />
     <Compile Include="Traits\Air\Aircraft.cs" />
+    <Compile Include="Traits\Air\AttackPlane.cs" />
     <Compile Include="Traits\Air\FallsToEarth.cs" />
     <Compile Include="Traits\Air\FlyAwayOnIdle.cs" />
     <Compile Include="Traits\AmmoPool.cs" />

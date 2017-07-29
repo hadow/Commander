@@ -47,26 +47,37 @@ namespace EW.Mods.Common.Traits
 
         public List<CPos> FindUnitPath(CPos source,CPos target,Actor self)
         {
-            var mi = self.Info.TraitInfo<MobileInfo>();
+            //var mi = self.Info.TraitInfo<MobileInfo>();
 
-            var domainIndex = world.WorldActor.TraitOrDefault<DomainIndex>();
+            //var domainIndex = world.WorldActor.TraitOrDefault<DomainIndex>();
 
-            if (domainIndex != null)
-            {
-                var passable = mi.GetMovementClass(world.Map.Rules.TileSet);
-                if (!domainIndex.IsPassable(source, target, (uint)passable))
-                    return EmptyPath;
-            }
+            //if (domainIndex != null)
+            //{
+            //    var passable = mi.GetMovementClass(world.Map.Rules.TileSet);
+            //    if (!domainIndex.IsPassable(source, target, (uint)passable))
+            //        return EmptyPath;
+            //}
 
-            List<CPos> pb;
-            using (var fromSrc = PathSearch.FromPoint(world, mi, self, target, source, true))
-            using (var fromDest = PathSearch.FromPoint(world, mi, self, source, target, true).Reverse())
-                pb = FindBidiPath(fromSrc, fromDest);
+            //List<CPos> pb;
+            //using (var fromSrc = PathSearch.FromPoint(world, mi, self, target, source, true))
+            //using (var fromDest = PathSearch.FromPoint(world, mi, self, source, target, true).Reverse())
+            //    pb = FindBidiPath(fromSrc, fromDest);
+            throw new NotImplementedException();
         }
 
         public List<CPos> FindBidiPath(IPathSearch fromSrc,IPathSearch fromDest)
         {
             return EmptyPath;
+        }
+
+        public List<CPos> FindPath(IPathSearch search)
+        {
+            return EmptyPath;
+        }
+
+        public List<CPos> FindUnitPathToRange(CPos source,SubCell srcSub,WPos target,WDist range,Actor self)
+        {
+            throw new NotImplementedException();
         }
     }
 }

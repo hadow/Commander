@@ -1,4 +1,5 @@
 ﻿using System;
+using EW.Activities;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
@@ -17,6 +18,11 @@ namespace EW.Mods.Common.Traits
         public AttackFrontal(Actor self, AttackFrontalInfo info):base(self,info)
         {
 
+        }
+
+        public override Activity GetAttackActivity(Actor self, Target newTarget, bool allowMove, bool forceAttack)
+        {
+            return new Activities.Attack(self, newTarget, allowMove, forceAttack);
         }
     }
 }

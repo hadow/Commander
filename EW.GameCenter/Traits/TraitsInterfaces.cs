@@ -98,6 +98,8 @@ namespace EW.Traits
 
     public interface INotifyIdle { void TickIdle(Actor self); }
 
+
+    
     public interface INotifyCreated { void Created(Actor self); }
 
     public interface INotifyAddToWorld { void AddedToWorld(Actor self); }

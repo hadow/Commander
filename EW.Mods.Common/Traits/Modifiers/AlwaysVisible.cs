@@ -8,7 +8,11 @@ namespace EW.Mods.Common.Traits
     {
 
     }
-    public class AlwaysVisible
+    public class AlwaysVisible:IDefaultVisibility
     {
+        public bool IsVisible(Actor self,Player byPlayer)
+        {
+            return true;
+        }
     }
 }

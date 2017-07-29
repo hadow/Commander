@@ -366,6 +366,20 @@ namespace EW
                     addMethod.Invoke(set, new[] { GetValue(fieldName, fieldType.GetGenericArguments()[0], parts[i].Trim(), field) });
                 return set;
             }
+            else if(fieldType.IsGenericType && fieldType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                var dict = Activator.CreateInstance(fieldType);
+                var arguments = fieldType.GetGenericArguments();
+                var addMethod = fieldType.GetMethod("Add", arguments);
+                foreach(var node in yaml.Nodes)
+                {
+                    var key = GetValue(fieldName, arguments[0], node.Key, field);
+                    var val = GetValue(fieldName, arguments[1], node.Value, field);
+                    addMethod.Invoke(dict, new[] { key, val });
+                }
+                return dict;
+
+            }
             return null;
         }
 

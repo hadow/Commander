@@ -23,4 +23,6 @@ namespace EW.Mods.Common.Traits
     {
         void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
     }
+
+    public interface INotifyAttack { void Attacking(Actor self, Target target, Armament a, Barrel barrel); }
 }

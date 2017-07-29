@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using EW.Traits;
+using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
 
@@ -11,7 +12,20 @@ namespace EW.Mods.Common.Traits
     }
     public class Turreted:ITick,INotifyCreated,ISync,IDeathActorInitModifier
     {
+        public virtual void Tick(Actor self)
+        {
 
+        }
+
+        public void Created(Actor self)
+        {
+
+        }
+
+        public void ModifyDeathActorInit(Actor self,TypeDictionary init)
+        {
+
+        }
     }
 
     public class TurretFacingInit : IActorInit<int>

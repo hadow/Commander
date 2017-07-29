@@ -4,7 +4,7 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Traits
 {
-    public class InaccuracyMultiplierInfo : UpgradableMultiplierInfo
+    public class InaccuracyMultiplierInfo : UpgradeMultiplierTraitInfo
     {
         public override object Create(ActorInitializer init)
         {

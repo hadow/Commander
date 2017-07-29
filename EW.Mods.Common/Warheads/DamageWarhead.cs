@@ -15,7 +15,11 @@ namespace EW.Mods.Common.Warheads
         [FieldLoader.LoadUsing("LoadVersus")]
         public readonly Dictionary<string, int> Versus;
 
-
+        public static object LoadVersus(MiniYaml yaml)
+        {
+            var nd = yaml.ToDictionary();
+            return nd.ContainsKey("Versus") ? nd["Versus"].ToDictionary(my => FieldLoader.GetValue<int>("(value)", my.Value)) : new Dictionary<string, int>();
+        }
 
     }
 }
