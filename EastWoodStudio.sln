@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Common", "EW.Mods.Common\EW.Mods.Common.csproj", "{971CD67F-D10D-4DA6-939A-09CE9A52CDF9}"
 EndProject
@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Cnc", "EW.Mods.Cnc\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Xna.Platforms", "EW.Xna.Platforms\EW.Xna.Platforms.csproj", "{62338638-3D8A-4E57-969E-1C82298C0649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.GameCenter", "EW.GameCenter\EW.GameCenter.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Game.Android", "EW.GameCenter\EW.Game.Android.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
 EndProject

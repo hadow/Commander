@@ -55,9 +55,9 @@
     <AndroidResource Include="Resources\Values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EW.GameCenter\EW.GameCenter.csproj">
+    <ProjectReference Include="..\EW.GameCenter\EW.Game.Android.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
-      <Name>EW.GameCenter</Name>
+      <Name>EW.Game.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Mods.Common\EW.Mods.Common.csproj">
       <Project>{971cd67f-d10d-4da6-939a-09ce9a52cdf9}</Project>

@@ -6,7 +6,7 @@
     <ProjectGuid>{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}</ProjectGuid>
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>EW.GameCenter</RootNamespace>
+    <RootNamespace>EW.Game</RootNamespace>
     <AssemblyName>EW.GameCenter</AssemblyName>
     <AndroidApplication>true</AndroidApplication>
     <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
