@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
+using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
 
     public interface IRenderActorPreviewSpritesInfo:ITraitInfo{
-        IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init, RenderSpritesInfo rs, string image, int facings);
+        IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init, RenderSpritesInfo rs, string image, int facings,PaletteReference p);
     }
 
     public class RenderSpritesInfo:ITraitInfo{

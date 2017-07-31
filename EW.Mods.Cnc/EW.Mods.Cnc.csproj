@@ -46,6 +46,7 @@
     <Compile Include="CncLoadScreen.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Traits\Render\WithDeliveryAnimation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -54,6 +55,10 @@
     <AndroidResource Include="Resources\Values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EW.GameCenter\EW.GameCenter.csproj">
+      <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
+      <Name>EW.GameCenter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Mods.Common\EW.Mods.Common.csproj">
       <Project>{971cd67f-d10d-4da6-939a-09ce9a52cdf9}</Project>
       <Name>EW.Mods.Common</Name>

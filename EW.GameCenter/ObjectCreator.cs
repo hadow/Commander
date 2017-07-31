@@ -45,10 +45,11 @@ namespace EW
                 if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
                 {
 #if DEBUG
-                    var pdbPath = path.Replace(".dll", ".pdb");
-                    var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
+                    //var pdbPath = path.Replace(".dll", ".pdb");
+                    //var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
 
-                    assembly = Assembly.Load(data, pdbData);
+                    //assembly = Assembly.Load(data, pdbData);
+                    assembly = Assembly.Load(data);
 
                     //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
                     //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
