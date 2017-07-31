@@ -25,4 +25,9 @@ namespace EW.Mods.Common.Traits
     }
 
     public interface INotifyAttack { void Attacking(Actor self, Target target, Armament a, Barrel barrel); }
+
+
+    public interface IAcceptResourcesInfo : ITraitInfo { }
+
+
 }

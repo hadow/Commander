@@ -723,6 +723,8 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
     <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.pdb" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
   </ItemGroup>
