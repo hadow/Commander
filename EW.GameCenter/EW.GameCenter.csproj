@@ -96,6 +96,8 @@
     <Compile Include="Graphics\GameViewPort.cs" />
     <Compile Include="Graphics\HardwarePalette.cs" />
     <Compile Include="Graphics\HSLColor.cs" />
+    <Compile Include="Graphics\Model.cs" />
+    <Compile Include="Graphics\ModelAnimation.cs" />
     <Compile Include="Graphics\Palette.cs" />
     <Compile Include="Graphics\PaletteReference.cs" />
     <Compile Include="Graphics\PlayerColorRemap.cs" />
@@ -112,7 +114,7 @@
     <Compile Include="Graphics\Theater.cs" />
     <Compile Include="Graphics\Util.cs" />
     <Compile Include="Graphics\VoxelLoader.cs" />
-    <Compile Include="Graphics\VoxelRenderer.cs" />
+    <Compile Include="Graphics\ModelRenderer.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="InstalledMods.cs" />
     <Compile Include="Manifest.cs" />
@@ -195,6 +197,7 @@
     <Compile Include="WDist.cs" />
     <Compile Include="WorldUtils.cs" />
     <Compile Include="WPos.cs" />
+    <Compile Include="WRot.cs" />
     <Compile Include="WVec.cs" />
     <Compile Include="Graphics\Renderable.cs" />
   </ItemGroup>

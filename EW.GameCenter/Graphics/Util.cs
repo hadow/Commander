@@ -105,5 +105,49 @@ namespace EW.Graphics
 
         }
 
+
+        public static float[] IdentityMatrix()
+        {
+            return Exts.MakeArray(16, j => (j % 5 == 0) ? 1.0f : 0);
+        }
+
+
+        /// <summary>
+        /// ¾ØÕóËõ·Å
+        /// </summary>
+        /// <param name="sx"></param>
+        /// <param name="sy"></param>
+        /// <param name="sz"></param>
+        /// <returns></returns>
+        public static float[] ScaleMaxtrix(float sx,float sy,float sz)
+        {
+            var mtx = IdentityMatrix();
+            mtx[0] = sx;
+            mtx[5] = sy;
+            mtx[10] = sz;
+            return mtx;
+        }
+
+        public static float[] MakeFloatMatrix(int[] imtx)
+        {
+            var fmtx = new float[16];
+            for (var i = 0; i < 16; i++)
+                fmtx[i] = imtx[i] * 1f / imtx[15];
+            return fmtx;
+        }
+
+        public static float[] MatrixMultiply(float[] lhs,float[] rhs)
+        {
+            var mtx = new float[16];
+            for(var i =0;i<4;i++)
+                for(var j = 0;j<4;j++)
+                {
+                    mtx[4 * i + j] = 0;
+                    for (var k = 0; k < 4; k++)
+                        mtx[4 * i + j] += lhs[4 * k + j] * rhs[4 * i + k];
+                }
+            return mtx;
+        }
+
     }
 }

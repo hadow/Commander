@@ -5,14 +5,14 @@ using EW.Primitives;
 using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
-    public class VoxelRenderProxy
+    public class ModelRenderProxy
     {
         public readonly Sprite Sprite;
         public readonly Sprite ShadowSprite;
         public readonly float ShadowDirection;
         public readonly Vector3[] ProjectedShadowBounds;
 
-        public VoxelRenderProxy(Sprite sprite,Sprite shadowSprite,Vector3[] projectedShadowBounds,float shadowDirection)
+        public ModelRenderProxy(Sprite sprite,Sprite shadowSprite,Vector3[] projectedShadowBounds,float shadowDirection)
         {
             Sprite = sprite;
             ShadowSprite = shadowSprite;
@@ -22,10 +22,12 @@ namespace EW.Graphics
     }
 
 
-    public sealed class VoxelRenderer
+    public sealed class ModelRenderer
     {
         static readonly float[] ShadowDiffuse = new float[] { 0, 0, 0 };
+        static readonly float[] ShadowAmbient = new float[] { 1, 1, 1 };
 
+        static readonly Vector2 SpritePadding = new Vector2(2, 2);
 
         readonly List<Pair<Sheet, Action>> doRender = new List<Pair<Sheet, Action>>();
 
@@ -35,9 +37,10 @@ namespace EW.Graphics
 
         SheetBuilder sheetBuilder;
 
-        public VoxelRenderer(Renderer renderer,Effect shader)
+        public ModelRenderer(Renderer renderer,Effect shader)
         {
             this.renderer = renderer;
+            this.shader = shader;
         }
 
         public void SetPalette(Texture palette)
@@ -69,7 +72,7 @@ namespace EW.Graphics
         /// <param name="diffuseLight"></param>
         /// <param name="colorPaletteTextureMidIndex"></param>
         /// <param name="normalsPaletteTextureMidIndex"></param>
-        void Render(VoxelRenderData renderData,float[] t,float[] lightDirection,
+        void Render(ModelRenderData renderData,float[] t,float[] lightDirection,
             float[] ambientLight,float[] diffuseLight,float colorPaletteTextureMidIndex,float normalsPaletteTextureMidIndex)
         {
             shader.Parameters["DiffuseTexture"].SetValue(renderData.Sheet.GetTexture());
@@ -77,6 +80,17 @@ namespace EW.Graphics
             //shader.Parameters["TransformMatrix"].SetValue(new Matrix());
             //shader.Parameters["LightDirection"].set
         }
+
+
+        public ModelRenderProxy RenderAsync(WorldRenderer wr,IEnumerable<ModelAnimation> models,WRot camera,float scale,
+            float[] groundNormal,WRot lightSource,float[] lightAmbientColor,float[] lightDiffuseColor,PaletteReference color,PaletteReference normals,PaletteReference shadowPalette)
+        {
+
+            throw new NotImplementedException();
+        }
+
+
+
 
         public void BeginFrame()
         {

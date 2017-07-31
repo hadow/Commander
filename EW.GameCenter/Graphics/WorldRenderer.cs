@@ -105,7 +105,7 @@ namespace EW.Graphics
             var worldRenderables = actors.SelectMany(a => a.Render(this));
 
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
-            ((WarGame)this.Game).Renderer.WorldVoxelRenderer.BeginFrame();
+            ((WarGame)this.Game).Renderer.WorldModelRenderer.BeginFrame();
 
             return null;
         }
@@ -219,8 +219,17 @@ namespace EW.Graphics
         }
 
 
-        public void Dispose()
+        //public void Dispose()
+        //{
+        //    World.Dispose();
+
+        //    Theater.Dispose();
+        //    terrainRenderer.Dispose();
+        //}
+
+        protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             World.Dispose();
 
             Theater.Dispose();

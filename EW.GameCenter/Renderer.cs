@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using EW.Graphics;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
-using EW.Xna.Platforms.Content;
 namespace EW
 {
     /// <summary>
@@ -26,7 +24,7 @@ namespace EW
         public RgbaColorRenderer WorldRgbaColorRenderer;
 
 
-        public VoxelRenderer WorldVoxelRenderer { get; private set; }
+        public ModelRenderer WorldModelRenderer { get; private set; }
 
         internal int TempBufferSize { get; private set; }
 
