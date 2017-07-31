@@ -10,6 +10,7 @@ namespace EW
 
         public string Faction;  //派系
 
+        public bool OwnsWorld = false;
 
         public bool LockSpawn = false;
         public int Spawn = 0;
@@ -20,6 +21,8 @@ namespace EW
         public bool Playable = false;
 
         public bool Spectating = false;
+
+        public bool NonCombatant = false;
         public string[] Enemies = { };
         public string[] Allies = { };   //盟国
         public PlayerReference(MiniYaml my)

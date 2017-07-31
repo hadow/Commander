@@ -337,4 +337,9 @@ namespace EW.Traits
     {
         IEnumerable<string> PaletteNames { get; }
     }
+
+    public interface ICreatePlayers
+    {
+        void CreatePlayers(World w);
+    }
 }

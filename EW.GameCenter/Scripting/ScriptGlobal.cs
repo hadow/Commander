@@ -41,7 +41,7 @@ namespace EW.Scripting
             var type = GetType();
             var names = type.GetCustomAttributes<ScriptGlobalAttribute>(true);
             if (names.Length != 1)
-                throw new InvalidOperationException("[ScriptGlobal] attribute not found for global table '{0}'");
+                throw new InvalidOperationException("[ScriptGlobal] attribute not found for global table '{0}'".F(type));
 
             Name = names.First().Name;
             Bind(new[] { this });

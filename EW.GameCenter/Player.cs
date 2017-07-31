@@ -4,6 +4,7 @@ using Eluant;
 using Eluant.ObjectBinding;
 using EW.Traits;
 using EW.Scripting;
+using EW.NetWork;
 namespace EW
 {
     public enum WinState { Undefined,Won,Lost}
@@ -35,6 +36,16 @@ namespace EW
             return a.CanBeViewedByPlayer(this);
         }
         public Dictionary<Player, Stance> Stances = new Dictionary<Player, Stance>();
+
+
+        public Player(World world,Session.Client client,PlayerReference pr)
+        {
+
+        }
+
+
+
+
         #region Scripting interface
 
         Lazy<ScriptPlayerInterface> luaInterface;

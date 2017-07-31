@@ -77,6 +77,19 @@ namespace EW
 
         }
 
+        public void SetPlayers(IEnumerable<Player> players,Player localPlayer)
+        {
+            if (Players.Length > 0)
+                throw new InvalidOperationException("Players are fixed once they have been set.");
+            Players = players.ToArray();
+            SetLocalPlayer(localPlayer);
+        }
+
+        void SetLocalPlayer(Player localPlayer)
+        {
+
+        }
+
         /// <summary>
         /// º”‘ÿÕÍ≥…
         /// </summary>

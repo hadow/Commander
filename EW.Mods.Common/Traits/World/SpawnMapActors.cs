@@ -19,16 +19,17 @@ namespace EW.Mods.Common.Traits
 
         public void WorldLoaded(World world,WorldRenderer wr)
         {
+            Console.WriteLine("SpawnMapActors:"+world.Map.ActorDefinitions.Count);
             foreach (var kv in world.Map.ActorDefinitions)
             {
                 var actorReference = new ActorReference(kv.Value.Value, kv.Value.ToDictionary());
 
                 var ownerName = actorReference.InitDict.Get<OwnerInit>().PlayerName;
 
+                Console.WriteLine("ownername:" + ownerName);
                 //If there is no real player associated,don't spawn it.
                 if (!world.Players.Any(p => p.InternalName == ownerName))
                     continue;
-
                 var initDict = actorReference.InitDict;
                 initDict.Add(new SkipMakeAnimsInit());
                 initDict.Add(new SpawnedByMapInit(kv.Key));

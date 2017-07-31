@@ -4,6 +4,7 @@ using EW.Scripting;
 using EW.Mods.Common.Traits;
 namespace EW.Mods.Common.Scripting
 {
+    [ScriptGlobal("Lighting")]
     public class LightingGlobal:ScriptGlobal
     {
         readonly IEnumerable<FlashPaletteEffect> flashPaletteEffects;

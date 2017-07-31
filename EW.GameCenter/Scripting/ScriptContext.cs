@@ -88,18 +88,18 @@ namespace EW.Scripting
         static readonly object[] NoArguments = new object[0];
         public ScriptContext(World world,WorldRenderer worldRenderer,IEnumerable<string> scripts)
         {
-            //LuaRuntime.LoadAndroidAsset += (string filename) =>
-            //  {
-            //      using (StreamReader sr = new StreamReader(Android.App.Application.Context.Assets.Open(Platform.ResolvePath(".", "lua", filename))))
-            //      {
-            //          var luaContent = sr.ReadToEnd();
-            //          if (!string.IsNullOrEmpty(luaContent))
-            //          {
-            //              runtime.LoadBuffer(luaContent, filename);
+            LuaRuntime.LoadAndroidAsset += (string filename) =>
+              {
+                  using (StreamReader sr = new StreamReader(Android.App.Application.Context.Assets.Open(Platform.ResolvePath(".", "lua", filename))))
+                  {
+                      var luaContent = sr.ReadToEnd();
+                      if (!string.IsNullOrEmpty(luaContent))
+                      {
+                          runtime.LoadBuffer(luaContent, filename);
 
-            //          }
-            //      }
-            //  };
+                      }
+                  }
+              };
             runtime = new MemoryConstrainedLuaRuntime();
             
             this.World = world;
@@ -264,6 +264,8 @@ namespace EW.Scripting
         public void FatalError(string message)
         {
             var stacktrace = new StackTrace().ToString();
+            Console.WriteLine("Fatal Lua Error:{0}", message);
+            Console.WriteLine(stacktrace);
 
             FatalErrorOccurred = true;
 
