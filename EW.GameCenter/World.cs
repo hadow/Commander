@@ -15,7 +15,7 @@ namespace EW
         Editor,
     }
     /// <summary>
-    /// 世界
+    /// 虚拟世界
     /// </summary>
     public sealed class World:IDisposable
     {
@@ -28,6 +28,7 @@ namespace EW
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
 
+        public readonly MersenneTwister SharedRandom;
         public int Timestep;
 
         readonly Queue<Action<World>> frameEndActions = new Queue<Action<World>>();
@@ -70,11 +71,17 @@ namespace EW
             OrderManager = orderManager;
             Map = map;
             Timestep = orderManager.LobbyInfo.GlobalSettings.Timestep;
+            SharedRandom = new MersenneTwister(orderManager.LobbyInfo.GlobalSettings.RandomSeed);
+
+
             var worldActorT = type == WorldT.Editor ? "EditorWorld" : "World";
             WorldActor = CreateActor(worldActorT, new TypeDictionary());
             ActorMap = WorldActor.Trait<ActorMap>();
             ScreenMap = WorldActor.Trait<ScreenMap>();
 
+
+            foreach (var cmp in WorldActor.TraitsImplementing<ICreatePlayers>())
+                cmp.CreatePlayers(this);
         }
 
         public void SetPlayers(IEnumerable<Player> players,Player localPlayer)

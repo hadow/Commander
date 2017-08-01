@@ -7,7 +7,7 @@ namespace EW
     public class PlayerReference
     {
         public string Name;
-
+        public string Bot = null;
         public string Faction;  //派系
 
         public bool OwnsWorld = false;
@@ -25,6 +25,8 @@ namespace EW
         public bool NonCombatant = false;
         public string[] Enemies = { };
         public string[] Allies = { };   //盟国
+
+        public PlayerReference() { }
         public PlayerReference(MiniYaml my)
         {
             FieldLoader.Load(this, my);

@@ -167,6 +167,12 @@ namespace EW.Traits
     public interface ISpeedModifier { int GetSpeedModifier(); }
 
     public interface IReloadModifier { int GetReloadModifier(); }
+
+    public interface IFogVisibilityModifier
+    {
+        bool IsVisible(Actor actor);
+        bool HasFogVisibility();
+    }
     #endregion
 
     public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }

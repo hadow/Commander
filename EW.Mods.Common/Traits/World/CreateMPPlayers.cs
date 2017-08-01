@@ -9,7 +9,9 @@ namespace EW.Mods.Common.Traits
     {
 
     }
-
+    /// <summary>
+    /// 创建地图上的玩家
+    /// </summary>
     public class CreateMPPlayers:ICreatePlayers
     {
 

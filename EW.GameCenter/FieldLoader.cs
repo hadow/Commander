@@ -61,11 +61,7 @@ namespace EW
             }
         }
 
-        /// <summary>
-        /// 转化属性
-        /// </summary>
-        [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-        public sealed class TranslateAttribute : Attribute { }
+        
 
         [AttributeUsage(AttributeTargets.Field)]
         public class SerializeAttribute : Attribute
@@ -130,14 +126,7 @@ namespace EW
             public IgnoreAttribute() : base(false) { }
         }
 
-        [AttributeUsage(AttributeTargets.Field)]
-        public sealed class FieldFromYamlKeyAttribute : SerializeAttribute
-        {
-            public FieldFromYamlKeyAttribute()
-            {
-                FromYamlKey = true;
-            }
-        }
+        
 
         static readonly ConcurrentCache<Type, FieldLoadInfo[]> TypeLoadInfo = new ConcurrentCache<Type, FieldLoadInfo[]>(BuildTypeLoadInfo);
 
@@ -504,6 +493,22 @@ namespace EW
             if (p == "no" || p == "false") return false;
 
             return InvalidValueAction(p, fieldType, field);
+        }
+    }
+
+    /// <summary>
+    /// 转化属性
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class TranslateAttribute : Attribute { }
+
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class FieldFromYamlKeyAttribute : FieldLoader.SerializeAttribute
+    {
+        public FieldFromYamlKeyAttribute()
+        {
+            FromYamlKey = true;
         }
     }
 }

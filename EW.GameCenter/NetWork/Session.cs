@@ -26,7 +26,12 @@ namespace EW.NetWork
 
         public class Global
         {
+            public string Map;
+            public string ServerName;
             public int Timestep = 40;
+            public int RandomSeed = 0;
+            public bool EnableSinglePlayer;
+            public bool AllowSpectators = true;
         }
     }
 }

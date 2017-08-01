@@ -18,6 +18,13 @@ namespace EW.Scripting
             return value.GetType();
         }
 
+
+        /// <summary>
+        /// CLR -> Lua
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static LuaValue ToLuaValue(this object obj,ScriptContext context)
         {
             if (obj is LuaValue)
