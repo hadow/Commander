@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Globalization;
 using EW.Primitives;
 using EW.Xna.Platforms;
+using EW.Graphics;
 namespace EW
 {
     /// <summary>
@@ -368,6 +369,23 @@ namespace EW
                 }
                 return dict;
 
+            }
+            else if (fieldType == typeof(HSLColor))
+            {
+                if (value != null)
+                {
+                    EW.Xna.Platforms.Color rgb;
+                    if (HSLColor.TryParseRGB(value, out rgb))
+                        return new HSLColor(rgb);
+
+                    var parts = value.Split(',');
+                    if (parts.Length == 3 || parts.Length == 4)
+                        return new HSLColor((byte)Exts.ParseIntegerInvariant(parts[0]).Clamp(0, 255),
+                            (byte)Exts.ParseIntegerInvariant(parts[1]).Clamp(0,255),
+                            (byte)Exts.ParseIntegerInvariant(parts[2]).Clamp(0,255));
+                }
+
+                return InvalidValueAction(value, fieldType, fieldName);
             }
             return null;
         }
