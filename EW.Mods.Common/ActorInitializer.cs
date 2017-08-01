@@ -5,7 +5,7 @@ namespace EW.Mods.Common
 {
     public class FacingInit : IActorInit<int>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly int value = 128;
 
         public FacingInit()
@@ -21,7 +21,7 @@ namespace EW.Mods.Common
 
     public class SubCellInit : IActorInit<SubCell>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly int value = (int)SubCell.FullCell;
 
         public SubCellInit() { }

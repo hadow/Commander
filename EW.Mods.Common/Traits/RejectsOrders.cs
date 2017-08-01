@@ -8,10 +8,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new RejectsOrders(this);
         }
     }
-    public class RejectsOrders
+    public class RejectsOrders : UpgradableTrait<RejectsOrdersInfo>
     {
+
+        public RejectsOrders(RejectsOrdersInfo info) : base(info) { }
     }
 }

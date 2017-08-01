@@ -134,7 +134,7 @@ namespace EW.Mods.Common.Traits
 
     public  class HealthInit : IActorInit<int>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly int value = 100;
 
         readonly bool allowZero;

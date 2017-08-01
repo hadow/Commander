@@ -9,11 +9,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithDecoration(init.Self, this);
         }
     }
 
-    public class WithDecoration
+    public class WithDecoration:UpgradableTrait<WithDecorationInfo>
     {
+        public WithDecoration(Actor self,WithDecorationInfo info) : base(info) { }
     }
 }

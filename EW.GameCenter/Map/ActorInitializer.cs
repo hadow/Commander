@@ -64,7 +64,7 @@ namespace EW
     /// </summary>
     public class LocationInit : IActorInit<CPos>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly CPos value = CPos.Zero;
         public LocationInit() { }
 
@@ -79,7 +79,7 @@ namespace EW
     public class OwnerInit : IActorInit<Player>
     {
 
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         public readonly string PlayerName = "Neutral";
         Player player;
 

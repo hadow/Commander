@@ -8,10 +8,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithShadow(this);
         }
     }
-    public class WithShadow
+    public class WithShadow:UpgradableTrait<WithShadowInfo>
     {
+
+        public WithShadow(WithShadowInfo info) : base(info) { }
     }
 }

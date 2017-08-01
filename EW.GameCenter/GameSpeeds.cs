@@ -4,7 +4,7 @@ namespace EW
 {
     public class GameSpeed
     {
-        [FieldLoader.Translate]
+        [Translate]
         public readonly string Name = "Default";
 
         public readonly int Timestep = 40;

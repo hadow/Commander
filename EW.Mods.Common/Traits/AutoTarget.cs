@@ -5,7 +5,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class AutoTargetInfo : ITraitInfo,Requires<AttackBaseInfo>,UsesInit<StanceInit>
+    public class AutoTargetInfo : UpgradableTraitInfo,Requires<AttackBaseInfo>,UsesInit<StanceInit>
     {
         public readonly bool AllowMovement = true;
 
@@ -26,13 +26,18 @@ namespace EW.Mods.Common.Traits
         public readonly bool TargetWhenDamaged = true;
 
 
-        public object Create(ActorInitializer init)
+        public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new AutoTarget(init, this);
         }
     }
-    public class AutoTarget
+    public class AutoTarget:UpgradableTrait<AutoTargetInfo>
     {
+
+        public AutoTarget(ActorInitializer init,AutoTargetInfo info) : base(info)
+        {
+
+        }
     }
 
 
@@ -49,7 +54,7 @@ namespace EW.Mods.Common.Traits
     public enum UnitStance { HoldFire,ReturnFire,Defend,AttackAnything}
     public class StanceInit : IActorInit<UnitStance>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly UnitStance value = UnitStance.AttackAnything;
 
         public StanceInit() { }

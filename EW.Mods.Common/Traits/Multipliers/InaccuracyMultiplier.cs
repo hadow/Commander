@@ -8,10 +8,11 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new InaccuracyMultiplier(this, init.Self.Info.Name);
         }
     }
-    public class InaccuracyMultiplier
+    public class InaccuracyMultiplier:UpgradeMultiplierTrait
     {
+        public InaccuracyMultiplier(InaccuracyMultiplierInfo info,string actorType) : base(info, "InaccuracyMultiplier", actorType) { }
     }
 }

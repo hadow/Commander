@@ -9,14 +9,17 @@ namespace EW.Mods.Common.Traits.Render
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithIdleOverlay(init.Self, this);
         }
         public IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init,RenderSpritesInfo rs,string image,int facings,PaletteReference p)
         {
             throw new NotImplementedException();
         }
     }
-    public class WithIdleOverlay
+    public class WithIdleOverlay:UpgradableTrait<WithIdleOverlayInfo>
     {
+
+
+        public WithIdleOverlay(Actor self,WithIdleOverlayInfo info) : base(info) { }
     }
 }

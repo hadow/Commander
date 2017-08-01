@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
@@ -10,7 +11,7 @@ namespace EW.Mods.Common.Traits
         }
 
     }
-    public class HiddenUnderShroud
+    public class HiddenUnderShroud:IDefaultVisibility
     {
         protected readonly HiddenUnderShroudInfo Info;
 
@@ -20,6 +21,11 @@ namespace EW.Mods.Common.Traits
             Info = info;
         }
 
-
+        
+        public bool IsVisible(Actor self,Player byPlayer)
+        {
+            return true;
+        }
+        
     }
 }

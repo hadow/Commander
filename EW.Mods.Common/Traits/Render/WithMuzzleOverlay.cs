@@ -9,10 +9,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithMuzzleOverlay(init.Self, this);
         }
     }
-    class WithMuzzleOverlay
+    class WithMuzzleOverlay:UpgradableTrait<WithMuzzleOverlayInfo>
     {
+
+        public WithMuzzleOverlay(Actor self,WithMuzzleOverlayInfo info) : base(info) { }
     }
 }

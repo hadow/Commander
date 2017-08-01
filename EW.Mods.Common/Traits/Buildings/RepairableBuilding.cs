@@ -8,11 +8,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new RepairableBuilding(init.Self, this);
         }
     }
 
-    public class RepairableBuilding
+    public class RepairableBuilding:UpgradableTrait<RepairableBuildingInfo>
     {
+        public RepairableBuilding(Actor self,RepairableBuildingInfo info) : base(info) { }
     }
 }

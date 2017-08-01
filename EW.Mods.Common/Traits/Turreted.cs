@@ -30,7 +30,7 @@ namespace EW.Mods.Common.Traits
 
     public class TurretFacingInit : IActorInit<int>
     {
-        [FieldLoader.FieldFromYamlKey]
+        [FieldFromYamlKey]
         readonly int value = 128;
 
         public TurretFacingInit() { }

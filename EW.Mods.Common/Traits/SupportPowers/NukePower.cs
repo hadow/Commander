@@ -6,11 +6,13 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new NukePower(init.Self, this);
         }
     }
 
-    class NukePower
+    class NukePower:SupportPower
     {
+
+        public NukePower(Actor self,NukePowerInfo info) : base(self, info) { }
     }
 }

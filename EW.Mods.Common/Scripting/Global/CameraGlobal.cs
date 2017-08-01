@@ -14,11 +14,15 @@ namespace EW.Common.Scripting.Global
         /// </summary>
         public WPos Position
         {
-            get { return Context.WorldRenderer.ViewPort.CenterPosition; }
+            get
+            {
+                Console.WriteLine("get Position:" + Context.WorldRenderer.ViewPort.CenterPosition);
+                return Context.WorldRenderer.ViewPort.CenterPosition;
+            }
             set
             {
                 Context.WorldRenderer.ViewPort.Center(value);
-                Console.Write("Position:" + value);
+                Console.Write("set Position:" + value);
             }
         }
     }

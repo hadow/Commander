@@ -6,10 +6,16 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new RequiresPower(init.Self, this);
         }
     }
-    class RequiresPower
+    class RequiresPower:UpgradableTrait<RequiresPowerInfo>
     {
+
+
+        public RequiresPower(Actor self,RequiresPowerInfo info) : base(info)
+        {
+
+        }
     }
 }

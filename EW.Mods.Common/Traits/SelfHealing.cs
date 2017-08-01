@@ -8,10 +8,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new SelfHealing(init.Self, this);
         }
     }
-    class SelfHealing
+    class SelfHealing:UpgradableTrait<SelfHealingInfo>,ITick
     {
+        public SelfHealing(Actor self,SelfHealingInfo info) : base(info) { }
+        public void Tick(Actor self) { }
     }
 }

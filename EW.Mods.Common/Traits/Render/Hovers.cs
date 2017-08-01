@@ -10,10 +10,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new Hovers(this, init.Self);
         }
     }
-    public class Hovers
+    public class Hovers:UpgradableTrait<HoversInfo>
     {
+
+        public Hovers(HoversInfo info,Actor self) : base(info) { }
     }
 }

@@ -78,8 +78,7 @@ namespace EW
             WorldActor = CreateActor(worldActorT, new TypeDictionary());
             ActorMap = WorldActor.Trait<ActorMap>();
             ScreenMap = WorldActor.Trait<ScreenMap>();
-
-
+            
             foreach (var cmp in WorldActor.TraitsImplementing<ICreatePlayers>())
                 cmp.CreatePlayers(this);
         }
@@ -109,8 +108,6 @@ namespace EW
             {
                 if (wlh == ScreenMap)
                     continue;
-                Console.WriteLine("Name:" + wlh.GetType().Name);
-
                 using (new PerfTimer(wlh.GetType().Name + ".WorldLoaded"))
                     wlh.WorldLoaded(this, wr);
 

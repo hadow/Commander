@@ -1,16 +1,25 @@
 ﻿using System;
+using EW.Activities;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    class AttackOmniInfo : AttackBaseInfo
+    public class AttackOmniInfo : AttackBaseInfo
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new AttackOmni(init.Self, this);
         }
     }
-    class AttackOmni
+    public class AttackOmni:AttackBase
     {
+
+
+        public AttackOmni(Actor self,AttackOmniInfo info) : base(self, info) { }
+
+        public override Activity GetAttackActivity(Actor self, Target newTarget, bool allowMove, bool forceAttack)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

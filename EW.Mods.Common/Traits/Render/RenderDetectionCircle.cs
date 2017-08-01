@@ -8,10 +8,12 @@ namespace EW.Mods.Common.Traits
     {
         public object Create(ActorInitializer init)
         {
-            return new RenderDetectionCircle();
+            return new RenderDetectionCircle(init.Self, this);
         }
     }
-    class RenderDetectionCircle
+    class RenderDetectionCircle:ITick
     {
+        public RenderDetectionCircle(Actor self,RenderDetectionCircleInfo info) { }
+        public void Tick(Actor self) { }
     }
 }

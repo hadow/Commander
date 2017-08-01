@@ -11,5 +11,7 @@ namespace EW.Mods.Common.Traits
 
     public abstract class AffectsShroud
     {
+
+        public AffectsShroud(Actor self,AffectsShroudInfo info) { }
     }
 }

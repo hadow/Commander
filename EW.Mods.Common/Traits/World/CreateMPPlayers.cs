@@ -17,6 +17,7 @@ namespace EW.Mods.Common.Traits
 
         public void CreatePlayers(World w)
         {
+            Console.WriteLine("Create player:");
             var players = new MapPlayers(w.Map.PlayerDefinitions).Players;
             var worldPlayers = new List<Player>();
 
@@ -28,7 +29,7 @@ namespace EW.Mods.Common.Traits
                 if (kv.Value.OwnsWorld)
                     w.WorldActor.Owner = player;
             }
-
+            
             Player localPlayer = null;
 
             //Create the regular playable players.

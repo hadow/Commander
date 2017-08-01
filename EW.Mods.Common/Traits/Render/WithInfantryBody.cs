@@ -9,10 +9,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithInfantryBody(init, this);
         }
     }
-    public class WithInfantryBody
+    public class WithInfantryBody:UpgradableTrait<WithInfantryBodyInfo>
     {
+
+        public WithInfantryBody(ActorInitializer init,WithInfantryBodyInfo info) : base(info) { }
     }
 }

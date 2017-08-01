@@ -7,10 +7,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new Cloak(this);
         }
     }
-    public class Cloak
+    public class Cloak:UpgradableTrait<CloakInfo>
     {
+
+        public Cloak(CloakInfo info) : base(info) { }
     }
 }

@@ -7,10 +7,14 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new Wanders(init.Self, this);
         }
     }
-    public class Wanders
+    public class Wanders:UpgradableTrait<WandersInfo>
     {
+        public Wanders(Actor self,WandersInfo info) : base(info)
+        {
+
+        }
     }
 }

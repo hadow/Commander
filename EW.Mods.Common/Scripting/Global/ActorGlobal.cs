@@ -21,9 +21,11 @@ namespace EW.Common.Scripting.Global
         public Actor Create(string type,bool addToWorld,LuaTable initTable)
         {
             var initDict = new TypeDictionary();
-
-            foreach(var kv in initTable)
+            if (initTable == null)
+                Console.WriteLine("init Table is null");
+            foreach (var kv in initTable)
             {
+                
                 using (kv.Key)
                 using (kv.Value)
                 {

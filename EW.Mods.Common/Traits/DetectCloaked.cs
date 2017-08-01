@@ -7,10 +7,12 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new DetectCloaked(this);
         }
     }
-    public class DetectCloaked
+    public class DetectCloaked:UpgradableTrait<DetectCloakedInfo>
     {
+        public DetectCloaked(DetectCloakedInfo info) : base(info) { }
+
     }
 }

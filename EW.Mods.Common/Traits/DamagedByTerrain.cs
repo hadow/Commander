@@ -8,10 +8,11 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new DamagedByTerrain(init.Self, this);
         }
     }
-    class DamagedByTerrain
+    class DamagedByTerrain:UpgradableTrait<DamagedByTerrainInfo>
     {
+        public DamagedByTerrain(Actor self,DamagedByTerrainInfo info) : base(info) { }
     }
 }

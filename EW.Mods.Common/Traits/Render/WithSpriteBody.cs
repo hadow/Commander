@@ -9,11 +9,14 @@ namespace EW.Mods.Common.Traits
 
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new WithSpriteBody(init, this);
         }
     }
 
-    public class WithSpriteBody
+    public class WithSpriteBody:UpgradableTrait<WithSpriteBodyInfo>
     {
+        public WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info) : this(init, info, () => 0) { }
+
+        protected WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info,Func<int> baseFacing) : base(info) { }
     }
 }

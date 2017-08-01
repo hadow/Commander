@@ -7,12 +7,15 @@ namespace EW.Mods.Common.Traits
 
     public class PowerInfo : UpgradableTraitInfo
     {
+        public readonly int Amount = 0;
+
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new Power(init.Self, this);
         }
     }
-    class Power
+    public class Power:UpgradableTrait<PowerInfo>
     {
+        public Power(Actor self,PowerInfo info) : base(info) { }
     }
 }

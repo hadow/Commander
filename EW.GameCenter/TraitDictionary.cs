@@ -144,13 +144,13 @@ namespace EW
                     actors = container.actors;
                     traits = container.traits;
                     this.actor = actor;
-                    
+                    Reset();
 
                 }
 
                 public void Reset()
                 {
-                    index = actors.BinarySearchMany(actor) - 1;
+                    index = actors.BinarySearchMany(actor) - 1;//Searches the entire sorted List<T> for an element using the default comparer and returns the zero-based index of the element.
                 }
 
                 public bool MoveNext()

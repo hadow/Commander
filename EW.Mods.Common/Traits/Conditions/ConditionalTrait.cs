@@ -8,9 +8,9 @@ namespace EW.Mods.Common.Traits
         public abstract object Create(ActorInitializer init);
     }
 
-    public class ConditionalTrait
+    public abstract class ConditionalTrait<T>:ISync where T:ConditionalTraitInfo
     {
-        public ConditionalTrait()
+        public ConditionalTrait(T info)
         {
         }
     }

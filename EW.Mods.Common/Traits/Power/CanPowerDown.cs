@@ -7,11 +7,13 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new CanPowerDown(init.Self, this);
         }
     }
 
-    public class CanPowerDown
+    public class CanPowerDown:UpgradableTrait<CanPowerDownInfo>
     {
+
+        public CanPowerDown(Actor self,CanPowerDownInfo info) : base(info) { }
     }
 }

@@ -8,7 +8,7 @@ namespace EW.Mods.Common.Traits
     {
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new ReloadDelayMultiplier(this, init.Self.Info.Name);
         }
     }
     public class ReloadDelayMultiplier:UpgradeMultiplierTrait,IReloadModifier

@@ -51,7 +51,7 @@ namespace EW.Mods.Common.Traits
 
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new Armament(init.Self, this);
         }
     }
     public class Armament:UpgradableTrait<ArmamentInfo>,INotifyCreated,ITick,IExplodeModifier
