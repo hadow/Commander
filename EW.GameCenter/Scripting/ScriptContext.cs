@@ -194,9 +194,6 @@ namespace EW.Scripting
                         
                 }
             }
-
-            
-                
         }
 
         

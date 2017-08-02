@@ -12,6 +12,9 @@ namespace EW.Mods.Common.Scripting
     {
         public BaseActorProperties(ScriptContext context,Actor self) : base(context, self) { }
 
+        /// <summary>
+        /// Specifies whether the actor is in the world.
+        /// </summary>
         public bool IsInWorld
         {
             get { return Self.IsInWorld; }
@@ -24,10 +27,18 @@ namespace EW.Mods.Common.Scripting
             }
         }
 
+        /// <summary>
+        /// Specifies whether the actor is alive or dead.
+        /// </summary>
         public bool IsDead { get { return Self.IsDead; } }
 
+        /// <summary>
+        /// Specifies whether the actor is idle (not performing any activities).
+        /// </summary>
         public bool IsIdle { get { return Self.IsIdle; } }
-
+        /// <summary>
+        /// The player that owns the actor;
+        /// </summary>
         public Player Owner
         {
             get { return Self.Owner; }
@@ -38,7 +49,9 @@ namespace EW.Mods.Common.Scripting
                     
             }
         }
-
+        /// <summary>
+        /// The type of the actor.
+        /// </summary>
         public string Type { get { return Self.Info.Name; } }
 
         public bool HasProperty(string name)
@@ -87,7 +100,6 @@ namespace EW.Mods.Common.Scripting
             {
                 if (facing == null)
                     throw new LuaException("Actor '{0}' doesn't define a facing".F(Self));
-                Console.WriteLine("Facing:" + facing);
                 return facing.Facing;
             }
         }

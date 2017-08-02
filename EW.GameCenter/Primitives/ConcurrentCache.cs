@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 namespace EW.Primitives
 {
     /// <summary>
-    /// 
+    /// ²¢·¢»º´æ
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>

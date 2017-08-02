@@ -9,9 +9,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.GameCenter.Resource", IsApplication=true)]
+[assembly: global::Android.Runtime.ResourceDesignerAttribute("EW.Resource", IsApplication=true)]
 
-namespace EW.GameCenter
+namespace EW
 {
 	
 	
@@ -26,7 +26,7 @@ namespace EW.GameCenter
 		
 		public static void UpdateIdValues()
 		{
-			global::EW.Xna.Platforms.Resource.String.library_name = global::EW.GameCenter.Resource.String.library_name;
+			global::EW.Xna.Platforms.Resource.String.library_name = global::EW.Resource.String.library_name;
 		}
 		
 		public partial class Attribute

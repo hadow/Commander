@@ -17,7 +17,6 @@ namespace EW.Mods.Common.Traits
 
         public void CreatePlayers(World w)
         {
-            Console.WriteLine("Create player:");
             var players = new MapPlayers(w.Map.PlayerDefinitions).Players;
             var worldPlayers = new List<Player>();
 

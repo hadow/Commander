@@ -28,6 +28,10 @@ namespace EW.Scripting
             Context = context;
         }
 
+        /// <summary>
+        /// bind to clr object
+        /// </summary>
+        /// <param name="clrObjects"></param>
         protected void Bind(IEnumerable<object> clrObjects)
         {
             members = new Dictionary<string, ScriptMemberWrapper>();

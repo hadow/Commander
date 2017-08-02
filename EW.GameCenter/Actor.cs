@@ -16,7 +16,15 @@ namespace EW
     /// </summary>
     public sealed class Actor:IScriptBindable,IScriptNotifyBind, ILuaTableBinding,ILuaEqualityBinding,IEquatable<Actor>,IDisposable
     {
-
+        /// <summary>
+        /// 哈希同步
+        /// </summary>
+        internal struct SyncHash
+        {
+            public readonly ISync Trait;
+            public readonly int Hash;
+            public SyncHash(ISync trait,int hash) { Trait = trait; Hash = hash; }
+        }
         public readonly ActorInfo Info;
 
         public readonly World World;
@@ -50,6 +58,13 @@ namespace EW
         readonly IRenderModifier[] renderModifiers;
         readonly IVisibilityModifier[] visibilityModifiers;
         readonly IDefaultVisibility defaultVisibility;
+
+        /// <summary>
+        /// Cache sync hash functions per actor for faster sync calculations.(缓存每个Actor 的哈希函数值，用于更快的同步计算
+        /// 
+        /// 
+        /// </summary>
+        internal IEnumerable<SyncHash> SyncHashes { get; private set; }
         public Player Owner { get; set; }
 
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
@@ -87,6 +102,11 @@ namespace EW
             visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
             defaultVisibility = Trait<IDefaultVisibility>();
             Bounds = DetermineBounds();
+
+            SyncHashes = TraitsImplementing<ISync>()
+                .Select(sync => Pair.New(sync, Sync.GetHashFunction(sync)))
+                .ToArray()
+                .Select(pair => new SyncHash(pair.First, pair.Second(pair.First)));
         }
 
 
