@@ -65,7 +65,7 @@ namespace EW.Scripting
                         table.Add(key, value);
                 return table;
             }
-            throw new InvalidOperationException("Cannot convert type {0} to Lua,Class Must implement IScriptBindable.");
+            throw new InvalidOperationException("Cannot convert type {0} to Lua,Class Must implement IScriptBindable.".F(obj.GetType()));
         }
 
         public static bool TryGetClrValue<T>(this LuaValue value,out T clrObject)
@@ -92,6 +92,7 @@ namespace EW.Scripting
             if (nullable != null)
                 t = nullable;
 
+            //value wrapps a clr object
             if(value.TryGetClrObject(out temp))
             {
                 if(temp.GetType() == t)
@@ -160,7 +161,7 @@ namespace EW.Scripting
                                 kv.Value.Dispose();
                             }
                             if (!elementHasClrValue)
-                                throw new LuaException("Unable to convert table value of type {0} to type{1}");
+                                throw new LuaException("Unable to convert table value of type {0} to type{1}".F(kv.Value.WrappedClrType(),innerT));
                         }
 
                         array.SetValue(element, i++);

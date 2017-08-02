@@ -5,6 +5,9 @@ using System.Linq;
 using Eluant;
 namespace EW.Scripting
 {
+    /// <summary>
+    /// 脚本成员变量封装
+    /// </summary>
     public class ScriptMemberWrapper
     {
         readonly ScriptContext context;
@@ -59,28 +62,65 @@ namespace EW.Scripting
                 var propertyInfo = (PropertyInfo)MemberInfo;
                 object clrValue;
                 if (!value.TryGetClrValue(propertyInfo.PropertyType, out clrValue))
-                    throw new LuaException("Unable to Convert {0} to CLR type {1}");
+                    throw new LuaException("Unable to Convert {0} to CLR type {1}".F(value.WrappedClrType().Name,propertyInfo.PropertyType));
 
                 propertyInfo.SetValue(Target, clrValue, null);
                 
             }
+            else
+            {
+                throw new LuaException("The property '{0}' is read-only".F(MemberInfo.Name));
+            }
         }
+
 
         LuaValue Invoke(LuaVararg args)
         {
             object[] clrArgs = null;
             try
             {
+                if (!IsMethod)
+                    throw new LuaException("Trying to invoke a ScriptMemberWrapper that isn't a method !");
+
                 var methodInfo = (MethodInfo)MemberInfo;
                 var parameterInfos = methodInfo.GetParameters();
 
                 clrArgs = new object[parameterInfos.Length];
 
+                var argCount = args.Count;
+                for(var i = 0; i < parameterInfos.Length; i++)
+                {
+                    if (i >= argCount)
+                    {
+                        if (!parameterInfos[i].IsOptional)
+                            throw new LuaException("Argument '{0}' of '{1}' is not optional.".F(parameterInfos[i].LuaDocString(), MemberInfo.LuaDocString()));
+
+                        clrArgs[i] = parameterInfos[i].DefaultValue;
+                        continue;
+                    }
+
+                    if (!args[i].TryGetClrValue(parameterInfos[i].ParameterType, out clrArgs[i]))
+                        throw new LuaException("Unable to convert parameter {0} to {1}".F(i, parameterInfos[i].ParameterType.Name));
+                }
                 return methodInfo.Invoke(Target, clrArgs).ToLuaValue(context);
             }
             finally
             {
+                //clean up all the lua arguments that were given to us
+                foreach (var arg in args)
+                    arg.Dispose();
+                args.Dispose();
 
+                if(clrArgs != null)
+                {
+                    foreach(var arg in clrArgs)
+                    {
+                        if (!(arg is LuaValue[]))
+                            continue;
+                        foreach (var value in (LuaValue[])arg)
+                            value.Dispose();
+                    }
+                }
             }
         }
 

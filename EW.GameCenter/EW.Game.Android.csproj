@@ -160,6 +160,7 @@
     <Compile Include="Scripting\ScriptActorInterface.cs" />
     <Compile Include="Scripting\ScriptContext.cs" />
     <Compile Include="Scripting\ScriptGlobal.cs" />
+    <Compile Include="Scripting\ScriptMemberExts.cs" />
     <Compile Include="Scripting\ScriptMemberWrapper.cs" />
     <Compile Include="Scripting\ScriptObjectWrapper.cs" />
     <Compile Include="Scripting\LuaValueExts.cs" />
@@ -720,14 +721,7 @@
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Content\charactersheet.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
