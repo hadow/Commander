@@ -1,3 +1,4 @@
+using System;
 using EW.Scripting;
 using EW.Mods.Common.Traits;
 using EW.Mods.Common.Activities;
@@ -17,6 +18,7 @@ namespace EW.Mods.Common.Scripting
         [ScriptActorPropertyActivity]
         public void ScriptedMove(CPos cell)
         {
+            Console.WriteLine("Scripted Move");
             Self.QueueActivity(new Move(Self, cell));
         }
 

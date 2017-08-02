@@ -111,6 +111,7 @@ namespace EW.Mods.Common.Scripting
         [ScriptActorPropertyActivity]
         public void Teleport(CPos cell)
         {
+            Console.WriteLine("Teleport");
             Self.QueueActivity(new SimpleTeleport(cell));
         }
 
@@ -122,6 +123,7 @@ namespace EW.Mods.Common.Scripting
         [ScriptActorPropertyActivity]
         public void CallFunc(LuaFunction func)
         {
+            Console.WriteLine("CallFunc");
             Self.QueueActivity(new CallLuaFunc(func, Context));
         }
 

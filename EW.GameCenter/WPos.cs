@@ -4,7 +4,7 @@ using Eluant.ObjectBinding;
 using EW.Scripting;
 namespace EW
 {
-    public struct WPos:IEquatable<WPos>,IScriptBindable,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
+    public struct WPos:IScriptBindable,IEquatable<WPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public readonly int X, Y, Z;
 

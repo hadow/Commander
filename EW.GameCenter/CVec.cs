@@ -4,7 +4,7 @@ using Eluant.ObjectBinding;
 using EW.Scripting;
 namespace EW
 {
-    public struct CVec:IEquatable<CVec>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaUnaryMinusBinding,ILuaEqualityBinding,ILuaTableBinding
+    public struct CVec:IScriptBindable,IEquatable<CVec>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaUnaryMinusBinding,ILuaEqualityBinding,ILuaTableBinding
     {
 
         public readonly int X, Y;

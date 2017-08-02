@@ -8,7 +8,7 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public struct CPos:IEquatable<CPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
+    public struct CPos:IScriptBindable,IEquatable<CPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public readonly int X, Y;
         public CPos(int x,int y) { X = x;Y = y; }

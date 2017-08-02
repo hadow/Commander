@@ -21,8 +21,6 @@ namespace EW.Common.Scripting.Global
         public Actor Create(string type,bool addToWorld,LuaTable initTable)
         {
             var initDict = new TypeDictionary();
-            if (initTable == null)
-                Console.WriteLine("init Table is null");
             foreach (var kv in initTable)
             {
                 
@@ -34,11 +32,10 @@ namespace EW.Common.Scripting.Global
                     var initType = WarGame.ModData.ObjectCreator.FindType(typeName + "Init");
                     if (initType == null)
                         throw new LuaException("Unknown initializer type '{0}'".F(typeName));
-
                     //Cast it up to an IactorInit<T>
-                    var genericType = initType.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IActorInit));
+                    var genericType = initType.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IActorInit<>));
                     var innerType = genericType.GetGenericArguments().First();
-                    var valueType = innerType.IsEnum ? typeof(int) : initType;
+                    var valueType = innerType.IsEnum ? typeof(int) : innerType;
 
                     object value;
                     if (!kv.Value.TryGetClrValue(valueType, out value))

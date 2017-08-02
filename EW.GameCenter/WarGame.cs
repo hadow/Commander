@@ -185,7 +185,7 @@ namespace EW
             
 
             base.Draw(gameTime);
-            //RenderTick();
+            RenderTick();
 
             //GraphicsDevice.Clear(Color.CornflowerBlue);
             //spriteBatch.Begin();
