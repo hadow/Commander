@@ -31,10 +31,31 @@ namespace EW.Mods.Common.Traits
             return new AutoTarget(init, this);
         }
     }
-    public class AutoTarget:UpgradableTrait<AutoTargetInfo>
+    public class AutoTarget:UpgradableTrait<AutoTargetInfo>,ITick,ISync
     {
+        readonly AttackBase[] attackBases;
+        readonly AttackFollow[] attackFollows;
+
+        [Sync]
+        int nextScanTime = 0;
+
+        [Sync]
+        public Actor Aggressor;
+
+        [Sync]
+        public Actor TargetedActor;
+
+        public UnitStance Stance;
+
+
+
 
         public AutoTarget(ActorInitializer init,AutoTargetInfo info) : base(info)
+        {
+
+        }
+
+        public void Tick(Actor self)
         {
 
         }

@@ -114,6 +114,11 @@ namespace EW.Mods.Common.Scripting
             Self.QueueActivity(new SimpleTeleport(cell));
         }
 
+
+        /// <summary>
+        /// Run an arbitrary Lua function.
+        /// </summary>
+        /// <param name="func"></param>
         [ScriptActorPropertyActivity]
         public void CallFunc(LuaFunction func)
         {
@@ -125,5 +130,26 @@ namespace EW.Mods.Common.Scripting
             Self.CancelActivity();
         }
 
+
+        public string Stance
+        {
+            get
+            {
+                if (autotarget == null)
+                    return null;
+                return autotarget.Stance.ToString();
+            }
+            set
+            {
+                if (autotarget == null)
+                    return;
+                UnitStance stance;
+
+                if (!Enum<UnitStance>.TryParse(value, true, out stance))
+                    throw new LuaException("Unknown stance type '{0}'".F(value));
+
+                autotarget.Stance = stance;
+            }
+        }
     }
 }
