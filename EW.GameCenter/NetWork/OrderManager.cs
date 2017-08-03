@@ -10,7 +10,7 @@ namespace EW.NetWork
     {
         public World World;
 
-
+        public IConnection Connection { get; private set; }
         public long LastTickTime;
 
         public int NetFrameNumber { get; private set; }
