@@ -135,8 +135,10 @@
     <Compile Include="Map\ProjectedCellRegion.cs" />
     <Compile Include="MiniYaml.cs" />
     <Compile Include="ModData.cs" />
+    <Compile Include="NetWork\Connection.cs" />
     <Compile Include="NetWork\Order.cs" />
     <Compile Include="NetWork\OrderManager.cs" />
+    <Compile Include="NetWork\ReplayConnection.cs" />
     <Compile Include="NetWork\Session.cs" />
     <Compile Include="NetWork\SyncReport.cs" />
     <Compile Include="ObjectCreator.cs" />

@@ -55,6 +55,10 @@ namespace EW
             base.BeginRun();
         }
 
+        /// <summary>
+        /// ≥ı ºªØ
+        /// </summary>
+        /// <param name="args"></param>
         internal void Initialize(Arguments args)
         {
             string customModPath = null;

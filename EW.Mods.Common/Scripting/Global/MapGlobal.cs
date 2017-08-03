@@ -23,6 +23,17 @@ namespace EW.Mods.Common.Scripting
         }
 
 
+        /// <summary>
+        /// Returns the difficulty selected by the player before starting the mission.
+        /// </summary>
+        public string Difficulty
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
+
 
 
     }

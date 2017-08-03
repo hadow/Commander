@@ -9,7 +9,7 @@ using EW.Primitives;
 namespace EW.Mods.Common.Activities
 {
     /// <summary>
-    /// 
+    /// 前进
     /// </summary>
     public class Move:Activity
     {
@@ -24,6 +24,8 @@ namespace EW.Mods.Common.Activities
         CPos? destination;          //目的地
         public Move(Actor self,CPos destination)
         {
+            mobile = self.Trait<Mobile>();
+
             getPath = () =>
             {
                 List<CPos> path;

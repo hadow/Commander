@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.Traits;
@@ -16,7 +17,16 @@ namespace EW.Mods.Common.Traits
         Dictionary<uint, MovementClassDomainIndex> domainIndexes;
         public void WorldLoaded(World world,WorldRenderer wr)
         {
+            domainIndexes = new Dictionary<uint, MovementClassDomainIndex>();
 
+            var tileSet = world.Map.Rules.TileSet;
+
+            var movementClasses = world.Map.Rules.Actors.Where(ai => ai.Value.HasTraitInfo<MobileInfo>()).Select(ai => (uint)ai.Value.TraitInfo<MobileInfo>().GetMovementClass(tileSet)).Distinct();
+
+            foreach(var mc in movementClasses)
+            {
+                domainIndexes[mc] = new MovementClassDomainIndex(world, mc);
+            }
         }
 
         public bool IsPassable(CPos p1,CPos p2,uint movementClass)
@@ -26,6 +36,9 @@ namespace EW.Mods.Common.Traits
 
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     class MovementClassDomainIndex
     {
         readonly Map map;
@@ -33,7 +46,13 @@ namespace EW.Mods.Common.Traits
         readonly CellLayer<int> domains;
         readonly Dictionary<int, HashSet<int>> transientConnections;
 
-
+        public MovementClassDomainIndex(World world,uint movementClass)
+        {
+            map = world.Map;
+            this.movementClass = movementClass;
+            domains = new CellLayer<int>(world.Map);
+            transientConnections = new Dictionary<int, HashSet<int>>();
+        }
 
         public bool IsPassable(CPos p1,CPos p2)
         {

@@ -43,7 +43,7 @@ namespace EW.Mods.Common.Scripting
         public void WorldLoaded(World world,WorldRenderer render)
         {
             var scripts = info.Scripts ?? Enumerable.Empty<string>();
-            context = new ScriptContext(world,render,scripts);
+            context = new ScriptContext(world, render, scripts);
             context.WorldLoaded();
 
         }

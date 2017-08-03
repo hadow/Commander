@@ -6,7 +6,7 @@ namespace EW.Mods.Common.Traits
     public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
 
     public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }
-    public class CargoInfo : ITraitInfo, Requires<IOccupySapceInfo>, Requires<UpgradeManagerInfo>
+    public class CargoInfo : ITraitInfo, Requires<IOccupySapceInfo>
     {
         public readonly string[] LoadingUpgrades = { };
 
@@ -52,6 +52,7 @@ namespace EW.Mods.Common.Traits
             foreach (var u in p.Info.GrantUpgrades)
                 upgradeManager.GrantUpgrade(self, u, p);
 
+            Console.WriteLine("Cargo Line:55");
         }
 
         public Actor Unload(Actor self)

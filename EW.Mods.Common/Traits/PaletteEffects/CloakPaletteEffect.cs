@@ -34,7 +34,7 @@ namespace EW.Mods.Common.Traits
             var i = (int)t;
             var p = b[paletteName];
 
-            for(var j = 0; j < colors.Length; i++)
+            for(var j = 0; j < colors.Length; j++)
             {
                 var k = (i + j) % 16 + 0xb0;
                 p.SetColor(k, colors[j]);

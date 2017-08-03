@@ -27,7 +27,7 @@ namespace EW
 
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
-
+        
         public readonly MersenneTwister SharedRandom;
         public int Timestep;
 
@@ -65,6 +65,14 @@ namespace EW
         public bool ShouldTick { get { return Type != WorldT.Shellmap || WarGame.Settings.Game.ShowShellmap; } }
 
         public bool Paused { get; internal set; }
+
+        public bool IsReplay
+        {
+            get
+            {
+                return OrderManager.Connection is ReplayConnection;
+            }
+        }
         internal World(Map map,OrderManager orderManager,WorldT type)
         {
             Type = type;
@@ -79,8 +87,16 @@ namespace EW
             ActorMap = WorldActor.Trait<ActorMap>();
             ScreenMap = WorldActor.Trait<ScreenMap>();
             
+            //Add players
             foreach (var cmp in WorldActor.TraitsImplementing<ICreatePlayers>())
                 cmp.CreatePlayers(this);
+
+            //Set defaults for any unset stances
+            foreach (var p in Players)
+                foreach (var q in Players)
+                    if (!p.Stances.ContainsKey(q))
+                        p.Stances[q] = Stance.Neutral;
+
         }
 
         public void SetPlayers(IEnumerable<Player> players,Player localPlayer)
@@ -93,11 +109,20 @@ namespace EW
 
         void SetLocalPlayer(Player localPlayer)
         {
+            if (localPlayer == null)
+                return;
 
+            if (!Players.Contains(localPlayer))
+                throw new ArgumentException("The local player must be one of the players in the world.", "localPlayer");
+
+            if (IsReplay)
+                return;
+            LocalPlayer = localPlayer;
+            RenderPlayer = LocalPlayer;
         }
 
         /// <summary>
-        /// 加载完成
+        /// 世界场景加载完成
         /// </summary>
         /// <param name="wr"></param>
         public void LoadComplete(WorldRenderer wr)

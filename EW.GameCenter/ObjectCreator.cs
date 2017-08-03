@@ -50,6 +50,7 @@ namespace EW
 
                     //assembly = Assembly.Load(data, pdbData);
                     assembly = Assembly.Load(data);
+                    
 
                     //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
                     //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);

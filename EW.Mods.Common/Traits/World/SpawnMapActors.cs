@@ -6,7 +6,9 @@ using System.Linq;
 namespace EW.Mods.Common.Traits
 {
 
-
+    /// <summary>
+    /// Spawns the initial units for each player upon game start.
+    /// </summary>
     public class SpawnMapActorsInfo : TraitInfo<SpawnMapActors>{}
 
 
@@ -24,8 +26,6 @@ namespace EW.Mods.Common.Traits
                 var actorReference = new ActorReference(kv.Value.Value, kv.Value.ToDictionary());
 
                 var ownerName = actorReference.InitDict.Get<OwnerInit>().PlayerName;
-
-                Console.WriteLine("ownername:" + ownerName);
                 //If there is no real player associated,don't spawn it.
                 if (!world.Players.Any(p => p.InternalName == ownerName))
                     continue;

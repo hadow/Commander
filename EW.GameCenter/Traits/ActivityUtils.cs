@@ -9,7 +9,7 @@ namespace EW.Traits
     {
 
         /// <summary>
-        /// 
+        /// 活动运行
         /// </summary>
         /// <param name="self"></param>
         /// <param name="act"></param>
