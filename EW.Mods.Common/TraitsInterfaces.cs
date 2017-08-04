@@ -5,6 +5,12 @@ using EW.Traits;
 using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
+
+    public interface IObservesVariablesInfo : ITraitInfo
+    {
+
+    }
+
 	public interface IRenderActorPreviewInfo : ITraitInfo
 	{
         IEnumerable<IActorPreview> RenderPreview(ActorPreviewInitializer init);

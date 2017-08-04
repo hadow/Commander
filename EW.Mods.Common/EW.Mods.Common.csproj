@@ -165,6 +165,7 @@
     <Compile Include="Traits\Cargo.cs" />
     <Compile Include="Traits\Cloak.cs" />
     <Compile Include="Traits\CombatDebugOverlay.cs" />
+    <Compile Include="Traits\Conditions\ConditionManager.cs" />
     <Compile Include="Traits\Crates\Crate.cs" />
     <Compile Include="Traits\Crates\CrateAction.cs" />
     <Compile Include="Traits\Crates\ExplodeCrateAction.cs" />
@@ -371,6 +372,10 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.GameCenter\EW.Game.Android.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.Game.Android</Name>

@@ -142,7 +142,7 @@
     <Compile Include="NetWork\Session.cs" />
     <Compile Include="NetWork\SyncReport.cs" />
     <Compile Include="ObjectCreator.cs" />
-    <Compile Include="OurActivity.cs" />
+    <Compile Include="MyActivity.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Primitives\Cache.cs" />
@@ -693,6 +693,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>
@@ -720,12 +724,8 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
