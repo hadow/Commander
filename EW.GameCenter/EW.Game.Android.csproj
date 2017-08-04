@@ -147,6 +147,7 @@
     <Compile Include="Player.cs" />
     <Compile Include="Primitives\Cache.cs" />
     <Compile Include="Primitives\ConcurrentCache.cs" />
+    <Compile Include="Primitives\Int2.cs" />
     <Compile Include="Primitives\Pair.cs" />
     <Compile Include="Primitives\PriorityQueue.cs" />
     <Compile Include="Primitives\ReadOnlyDictionary.cs" />
@@ -692,10 +693,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
       <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
       <Name>EW.Xna.Platforms</Name>
