@@ -103,10 +103,10 @@ namespace EW
             defaultVisibility = Trait<IDefaultVisibility>();
             Bounds = DetermineBounds();
 
-            //SyncHashes = TraitsImplementing<ISync>()
-            //    .Select(sync => Pair.New(sync, Sync.GetHashFunction(sync)))
-            //    .ToArray()
-            //    .Select(pair => new SyncHash(pair.First, pair.Second(pair.First)));
+            SyncHashes = TraitsImplementing<ISync>()
+                .Select(sync => Pair.New(sync, Sync.GetHashFunction(sync)))
+                .ToArray()
+                .Select(pair => new SyncHash(pair.First, pair.Second(pair.First)));
         }
 
 
