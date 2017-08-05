@@ -38,6 +38,11 @@ namespace EW
             return X.GetHashCode() ^ Y.GetHashCode() ^ Z.GetHashCode();
         }
 
+        public override string ToString()
+        {
+            return X + "," + Y + "," + Z;
+        }
+
         #region operator
 
         public static bool operator ==(WPos a,WPos b)

@@ -80,7 +80,7 @@ namespace EW
             {
                 var l = il.DefineLabel();
                 il.Emit(OpCodes.Ldc_I4, 0xaaa);
-                il.Emit(OpCodes.Brtrue, 1);
+                il.Emit(OpCodes.Brtrue, l);
                 il.Emit(OpCodes.Pop);
                 il.Emit(OpCodes.Ldc_I4, 0x555);
                 il.MarkLabel(l);

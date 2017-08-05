@@ -16,13 +16,13 @@ namespace EW.Common.Scripting.Global
         {
             get
             {
-                Console.WriteLine("get Position:" + Context.WorldRenderer.ViewPort.CenterPosition);
+                Console.WriteLine("get Position:" + Context.WorldRenderer.ViewPort.CenterPosition.ToString());
                 return Context.WorldRenderer.ViewPort.CenterPosition;
             }
             set
             {
                 Context.WorldRenderer.ViewPort.Center(value);
-                Console.Write("set Position:" + value);
+                Console.Write("set Position:" + value.ToString());
             }
         }
     }

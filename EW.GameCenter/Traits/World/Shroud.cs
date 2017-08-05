@@ -13,13 +13,14 @@ namespace EW.Traits
 
         public bool ExploredMapLocked = false;
 
-        public object Create(ActorInitializer init) { return new Shroud(init.Self); }
+        public object Create(ActorInitializer init) { return new Shroud(init.Self,this); }
     }
 
 
     public class Shroud:ISync,INotifyCreated
     {
         readonly Actor self;
+        readonly ShroudInfo info;
         readonly Map map;
 
         readonly CellLayer<short> visibleCount;
@@ -27,19 +28,34 @@ namespace EW.Traits
         readonly CellLayer<bool> explored;
 
 
+        [Sync]
         bool disabled;
 
-        [Sync]
         public bool Disabled
         {
             get { return disabled; }
+            set
+            {
+                if (disabled == value)
+                    return;
+                disabled = value;
+
+            }
         }
+
+        bool fogEnabled;
+
+        public bool FogEnabled { get { return !Disabled && fogEnabled; } }
+
+        public bool ExploreMapEnabled { get; private set; }
+
 
         public int Hash { get; private set; }
 
-        public Shroud(Actor self)
+        public Shroud(Actor self,ShroudInfo info)
         {
             this.self = self;
+            this.info = info;
             map = this.self.World.Map;
 
             visibleCount = new CellLayer<short>(map);
