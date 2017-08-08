@@ -8,6 +8,12 @@ namespace EW.Graphics
     {
         uint this[int index] { get; }
 
+        /// <summary>
+        /// By allowing a palette to be copied to an array,
+        /// a speedup can be gained in HardwarePalette since palettes can be block copied using native magic rather than having to copy them item by item
+        /// </summary>
+        /// <param name="destination"></param>
+        /// <param name="destinationOffset"></param>
         void CopyToArray(Array destination, int destinationOffset);
     }
 
@@ -50,7 +56,7 @@ namespace EW.Graphics
     }
 
     /// <summary>
-    /// 不变的调色板
+    /// 不可变的调色板
     /// </summary>
     public class ImmutablePalette : IPalette
     {
@@ -117,6 +123,11 @@ namespace EW.Graphics
         /// <param name="destinationOffset"></param>
         public void CopyToArray(Array destination,int destinationOffset)
         {
+            //Buffer only affects arrays of primitive types;this class does not apply to objects.
+            //Each primitive type is treated as a series of bytes without regard to any behaviour or limitation associated with the primitive type.
+            //Buffer provides methods to copy bytes from one array of primitive types to another array of primitive types.get a byte from an array,set a byte in an arrary
+            //and obtain the length of an array.
+            //This class provides better performance for manipulating primitive types than similar methods in the System.Array class.
             Buffer.BlockCopy(colors, 0, destination, destinationOffset * 4, Palette.Size * 4);
         }
     }

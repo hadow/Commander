@@ -6,13 +6,15 @@ using EW.Traits;
 namespace EW.Graphics
 {
     /// <summary>
-    /// 
+    /// 硬件颜色寄存器
     /// </summary>
     public sealed class HardwarePalette:DrawableGameComponent
     {
         public Texture2D Texture { get; private set; }
         public int Height { get; private set; }
+
         readonly Dictionary<string, ImmutablePalette> palettes = new Dictionary<string, ImmutablePalette>();
+
         readonly Dictionary<string, MutablePalette> modifiablePalettes = new Dictionary<string, MutablePalette>();
 
         readonly Dictionary<string, int> indices = new Dictionary<string, int>();
@@ -45,7 +47,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 拷贝缓冲区字节数据添充贴图数据
         /// </summary>
         void CopyBufferToTexture()
         {
@@ -63,7 +65,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 拷贝调色板至缓冲区
         /// </summary>
         /// <param name="index"></param>
         /// <param name="p"></param>
@@ -102,9 +104,21 @@ namespace EW.Graphics
         }
         
 
+        /// <summary>
+        /// 替换调色板
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="p"></param>
         public void ReplacePalette(string name,IPalette p)
         {
+            if (modifiablePalettes.ContainsKey(name))
+                CopyPaletteToBuffer(indices[name], modifiablePalettes[name] = new MutablePalette(p));
+            else if (palettes.ContainsKey(name))
+                CopyPaletteToBuffer(indices[name], palettes[name] = new ImmutablePalette(p));
+            else
+                throw new InvalidOperationException("Palette '{0}' does not exist".F(name));
 
+            CopyBufferToTexture();
         }
 
 
@@ -131,7 +145,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// Get a palette index
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -144,6 +158,11 @@ namespace EW.Graphics
         }
 
 
+        /// <summary>
+        /// Get a palette.
+        /// /summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public IPalette GetPalette(string name)
         {
             MutablePalette mutable;

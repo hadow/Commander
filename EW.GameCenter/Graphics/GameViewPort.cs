@@ -42,6 +42,7 @@ namespace EW.Graphics
         float zoom = 1f;
 
         bool allCellsDirty = true;
+
         bool cellsDirty = true;
 
         ProjectedCellRegion cells;
@@ -225,9 +226,9 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 聚焦中心点
         /// </summary>
-        /// <param name="pos"></param>
+        /// <param name="pos">世界坐标点</param>
         public void Center(WPos pos)
         {
             CenterLocation = worldRenderer.ScreenPxPosition(pos).Clamp(mapBounds);

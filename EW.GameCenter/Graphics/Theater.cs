@@ -21,7 +21,7 @@ namespace EW.Graphics
         }
     }
     /// <summary>
-    /// 
+    /// 剧场
     /// </summary>
     public sealed class Theater:GameComponent
     {
@@ -105,7 +105,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 切片精灵
+        /// 地形切片精灵
         /// </summary>
         /// <param name="r"></param>
         /// <param name="variant"></param>
