@@ -162,7 +162,7 @@ namespace EW
         {
             this.Components.Add(Renderer);
 
-            spriteBatch = new SpriteBatch(this.GraphicsDevice);
+            //spriteBatch = new SpriteBatch(this.GraphicsDevice);
 
         }
 
