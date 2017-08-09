@@ -5,7 +5,7 @@ namespace EW.Mods.Common.Traits
 {
 
 
-    class CrateInfo : ITraitInfo, Requires<RenderSpritesInfo>
+    class CrateInfo : ITraitInfo,IPositionableInfo,Requires<RenderSpritesInfo>
     {
         public object Create(ActorInitializer init)
         {

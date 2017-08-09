@@ -188,7 +188,10 @@ namespace EW.Traits
 
         IEnumerable<Pair<CPos, SubCell>> OccupiedCells();
     }
-    public interface IPositionableInfo : ITraitInfoInterface { }
+    public interface IPositionableInfo : IOccupySapceInfo
+    {
+        bool CanEnterCell(World world, Actor self, CPos cell, Actor ignoreActor = null, bool checkTransientActors = true);
+    }
     public interface IPositionable : IOccupySpace
     {
         bool IsLeavingCell(CPos location, SubCell subCell = SubCell.Any);

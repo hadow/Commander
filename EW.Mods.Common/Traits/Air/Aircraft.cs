@@ -4,8 +4,10 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class AircraftInfo : ITraitInfo
+    public class AircraftInfo : ITraitInfo,IPositionableInfo
     {
+
+
         public object Create(ActorInitializer init)
         {
             return new Aircraft();
