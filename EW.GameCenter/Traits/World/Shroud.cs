@@ -19,6 +19,7 @@ namespace EW.Traits
 
     public class Shroud:ISync,INotifyCreated
     {
+        enum ShroudCellType : byte { Shroud,Fog,Visible}
         readonly Actor self;
         readonly ShroudInfo info;
         readonly Map map;
@@ -27,6 +28,8 @@ namespace EW.Traits
         readonly CellLayer<short> generatedShroudCount;
         readonly CellLayer<bool> explored;
 
+        //Per-cell cache of the resolved cell type (shroud/fog/visible)
+        readonly CellLayer<ShroudCellType> resolvedType;
 
         [Sync]
         bool disabled;
@@ -61,10 +64,45 @@ namespace EW.Traits
             visibleCount = new CellLayer<short>(map);
             generatedShroudCount = new CellLayer<short>(map);
             explored = new CellLayer<bool>(map);
+
+            resolvedType = new CellLayer<ShroudCellType>(map);
         }
+
+
         void INotifyCreated.Created(Actor self)
         {
 
+        }
+
+        public bool IsVisible(CPos cell)
+        {
+            return IsVisible(cell.ToMPos(map));
+        }
+
+        public bool IsVisible(MPos uv)
+        {
+            if (!resolvedType.Contains(uv))
+                return false;
+
+            foreach (var puv in map.ProjectedCellsCovering(uv))
+                if (IsVisible(puv))
+                    return true;
+
+            return false;
+        }
+
+        public bool IsVisible(WPos pos)
+        {
+            return IsVisible(map.ProjectedCellCovering(pos));
+        }
+
+        public bool IsVisible(PPos puv)
+        {
+            if (!FogEnabled)
+                return map.Contains(puv);
+
+            var uv = (MPos)puv;
+            return resolvedType.Contains(uv) && resolvedType[uv] == ShroudCellType.Visible;
         }
     }
 }

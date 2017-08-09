@@ -55,6 +55,12 @@ namespace EW
             }
         }
 
+        public bool FogObscures(CPos p) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(p); }
+
+        public bool FogObscures(WPos pos) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(pos); }
+
+        public bool FogObscures(Actor a) { return RenderPlayer != null && !RenderPlayer.CanViewActor(a); }
+
         public Player LocalPlayer { get; private set; }
 
         public int WorldTick { get; private set; }

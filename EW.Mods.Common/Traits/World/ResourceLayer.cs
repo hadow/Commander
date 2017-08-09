@@ -34,11 +34,11 @@ namespace EW.Mods.Common.Traits
             Content = new CellLayer<CellContents>(world.Map);
             RenderContent = new CellLayer<CellContents>(world.Map);
 
-            RenderContent.CellEntryChanged += UpdateSpriteLayer;
+            RenderContent.CellEntryChanged += UpdateSpriteLayers;
         }
 
 
-        void UpdateSpriteLayer(CPos cell)
+        void UpdateSpriteLayers(CPos cell)
         {
 
         }
@@ -55,6 +55,44 @@ namespace EW.Mods.Common.Traits
                     return new TerrainSpriteLayer(w, wr, first.Sheet, first.BlendMode, pal, wr.World.Type != WorldT.Editor);
                 });
             }
+
+            foreach(var cell in w.Map.AllCells)
+            {
+                ResourceType t;
+                if (!resources.TryGetValue(w.Map.Resources[cell].Type, out t))
+                    continue;
+
+                if (!AllowResourceAt(t, cell))
+                    continue;
+
+                Content[cell] = CreateResourceCell(t, cell);
+            }
+
+            foreach(var cell in w.Map.AllCells)
+            {
+                var type = Content[cell].Type;
+                if(type != null)
+                {
+
+                    var adjacent = GetAdjacentCellsWith(type, cell);
+                }
+            }
+        }
+
+        int GetAdjacentCellsWith(ResourceType t,CPos cell)
+        {
+            var sum = 0;
+            for(var u = -1; u < 2; u++)
+            {
+                for(var v = -1; v < 2; v++)
+                {
+                    var c = cell + new CVec(u, v);
+
+                    if (Content.Contains(c) && Content[c].Type == t)
+                        ++sum;
+                }
+            }
+            return sum;
         }
 
         CellContents CreateResourceCell(ResourceType t,CPos cell)
@@ -98,12 +136,35 @@ namespace EW.Mods.Common.Traits
 
         public void TickRender(WorldRenderer wr,Actor self)
         {
+            var remove = new List<CPos>();
+            foreach(var c in dirty)
+            {
+                if(!self.World.FogObscures(c))
+                {
+                    RenderContent[c] = Content[c];
+                    
+                }
+            }
+        }
+
+
+        protected virtual void UpdateRenderedSprite(CPos cell)
+        {
 
         }
 
+        bool disposed;
         public void Disposing(Actor self)
         {
+            if (disposed)
+                return;
 
+            foreach (var kv in spriteLayers.Values)
+                kv.Dispose();
+
+            RenderContent.CellEntryChanged -= UpdateSpriteLayers;
+
+            disposed = true;
         }
 
 

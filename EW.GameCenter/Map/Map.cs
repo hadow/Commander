@@ -449,6 +449,13 @@ namespace EW
             return cellProjection[uv];
         }
 
+        public PPos ProjectedCellCovering(WPos pos)
+        {
+            var projectedPos = pos - new WVec(0, pos.Z, pos.Z);
+
+            return (PPos)CellContaining(projectedPos).ToMPos(Grid.Type);
+        }
+
         /// <summary>
         /// 
         /// </summary>

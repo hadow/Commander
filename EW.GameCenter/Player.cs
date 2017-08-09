@@ -38,6 +38,8 @@ namespace EW
         public bool HasObjectives = false;
 
         readonly IFogVisibilityModifier[] fogVisibilities; 
+
+
         public bool CanViewActor(Actor a)
         {
             return a.CanBeViewedByPlayer(this);
