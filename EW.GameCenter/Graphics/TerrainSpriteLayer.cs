@@ -6,10 +6,13 @@ using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
-    /// 
+    /// 地形图层
     /// </summary>
-    public sealed class TerrainSpriteLayer:DrawableGameComponent
+    public sealed class TerrainSpriteLayer:IDisposable
     {
+        /// <summary>
+        /// 限定边界
+        /// </summary>
         public bool restrictToBounds;
 
         public readonly Sheet Sheet;
@@ -37,7 +40,7 @@ namespace EW.Graphics
 
         readonly Vertex[] vertices;
 
-        public TerrainSpriteLayer(Game game,World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds):base(game)
+        public TerrainSpriteLayer(World world,WorldRenderer wr,Sheet sheet,BlendMode blendMode,PaletteReference palette,bool restrictToBounds)
         {
             worldRender = wr;
             this.restrictToBounds = restrictToBounds;
@@ -54,7 +57,7 @@ namespace EW.Graphics
 
             this.bindings = new VertexBufferBinding[1];
 
-            vertexBuffer = new DynamicVertexBuffer(this.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
+            vertexBuffer = new DynamicVertexBuffer(wr.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
 
             this.bindings[0] = new VertexBufferBinding(vertexBuffer);
 
@@ -85,6 +88,12 @@ namespace EW.Graphics
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="uv"></param>
+        /// <param name="sprite"></param>
+        /// <param name="pos"></param>
         public void Update(MPos uv,Sprite sprite,Vector3 pos)
         {
 
@@ -99,6 +108,10 @@ namespace EW.Graphics
             }
             else
                 sprite = emptySprite;
+
+            //The vertex buffer does not have geometry for cells outside the map
+            if (!map.Tiles.Contains(uv))
+                return;
 
             var offset = rowStride * uv.V + 6 * uv.U;
 
@@ -156,7 +169,7 @@ namespace EW.Graphics
 
                 vertexBuffer.SetData(vertexSize*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
             }
-            ((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(bindings, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
+            //((WarGame)Game).Renderer.WorldSpriteRenderer.DrawVertexBuffer(bindings, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
         }
         
 
@@ -166,10 +179,8 @@ namespace EW.Graphics
         /// The WorldRenderer outlives the TerrainSpriteLayer and thus keeps it alive longer than expected via the event handler.
         /// We detach it to allow the GC to reclaim it
         /// </summary>
-        /// <param name="disposing"></param>
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             worldRender.PaletteInvalidated -= UpdatePaletteIndices;
             vertexBuffer.Dispose();
         }

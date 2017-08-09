@@ -54,19 +54,19 @@ namespace EW.Mods.Common.Traits
             }
         }
 
-        static Color ColorForEffect(EffectType t,Color orig)
-        {
-            switch (t)
-            {
-                case EffectType.Black:
-                    return Color.FromArgb();
-                case EffectType.Desaturated:
-                    return Color.FromArgb();
-                default:
-                case EffectType.None:
-                    return orig;
-            }
-        }
+        //static Color ColorForEffect(EffectType t,Color orig)
+        //{
+        //    switch (t)
+        //    {
+        //        case EffectType.Black:
+        //            return Color.FromArgb();
+        //        case EffectType.Desaturated:
+        //            return Color.FromArgb();
+        //        default:
+        //        case EffectType.None:
+        //            return orig;
+        //    }
+        //}
 
         public void TickRender(WorldRenderer wr,Actor self)
         {

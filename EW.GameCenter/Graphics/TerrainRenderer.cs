@@ -12,6 +12,9 @@ namespace EW.Graphics
 
         readonly Map map;
 
+        /// <summary>
+        /// 缓存地形图层
+        /// </summary>
         readonly Dictionary<string, TerrainSpriteLayer> spriteLayers = new Dictionary<string, TerrainSpriteLayer>();
 
         readonly Theater theater;
@@ -26,7 +29,7 @@ namespace EW.Graphics
             foreach(var template in map.Rules.TileSet.Templates)
             {
                 var palette = template.Value.Palette ?? TileSet.TerrainPaletteInternalName;
-                spriteLayers.GetOrAdd(palette, pal => new TerrainSpriteLayer(game,world, wr, theater.Sheet, BlendMode.Alpha, wr.Palette(palette), world.Type != WorldT.Editor));
+                spriteLayers.GetOrAdd(palette, pal => new TerrainSpriteLayer(world, wr, theater.Sheet, BlendMode.Alpha, wr.Palette(palette), world.Type != WorldT.Editor));
             }
 
             foreach(var cell in map.AllCells)

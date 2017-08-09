@@ -491,7 +491,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// Convert from isometric cell position to world position;
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
@@ -500,7 +500,7 @@ namespace EW
             if (Grid.Type == MapGridT.Rectangular)
                 return new WPos(1024 * cell.X + 512, 1024 * cell.Y + 512, 0);
 
-            //Convert from isometric cell position to world position;
+            //
             var z = Height.Contains(cell) ? 512 * Height[cell] : 0;
             return new WPos(512 * (cell.X - cell.Y + 1), 512 * (cell.X + cell.Y + 1), z);
         }

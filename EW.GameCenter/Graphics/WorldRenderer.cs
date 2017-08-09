@@ -111,7 +111,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 缓存或内联一些代理，以避免重复分配
+        /// 缓存或内联调色代理，以避免重复分配
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
