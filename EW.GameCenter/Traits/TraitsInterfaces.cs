@@ -188,7 +188,7 @@ namespace EW.Traits
 
         IEnumerable<Pair<CPos, SubCell>> OccupiedCells();
     }
-    public interface IPositionableInfo : IOccupySapceInfo
+    public interface IPositionableInfo : IOccupySpaceInfo
     {
         bool CanEnterCell(World world, Actor self, CPos cell, Actor ignoreActor = null, bool checkTransientActors = true);
     }
@@ -301,7 +301,7 @@ namespace EW.Traits
     }
     public interface IMoveInfo : ITraitInfoInterface { }
     
-    public interface IOccupySapceInfo : ITraitInfoInterface
+    public interface IOccupySpaceInfo : ITraitInfoInterface
     {
         IReadOnlyDictionary<CPos, SubCell> OccupiedCells(ActorInfo info, CPos location, SubCell subCell = SubCell.Any);
 

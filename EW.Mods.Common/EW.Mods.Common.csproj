@@ -197,6 +197,7 @@
     <Compile Include="Traits\Huntable.cs" />
     <Compile Include="Traits\Husk.cs" />
     <Compile Include="Traits\ICommonTraits.cs" />
+    <Compile Include="Traits\Immobile.cs" />
     <Compile Include="Traits\Infantry\ScaredyCat.cs" />
     <Compile Include="Traits\Infantry\TakeCover.cs" />
     <Compile Include="Traits\Infantry\TerrainModifiesDamage.cs" />

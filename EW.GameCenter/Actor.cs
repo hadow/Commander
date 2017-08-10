@@ -89,7 +89,7 @@ namespace EW
                 foreach (var trait in Info.TraitsInConstructOrder())
                 {
                     AddTrait(trait.Create(init));
-                    if (trait is IOccupySapceInfo)
+                    if (trait is IOccupySpaceInfo)
                     {
                         OccupiesSpace = Trait<IOccupySpace>();
                     }
