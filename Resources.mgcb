@@ -19,3 +19,9 @@
 /processorParam:DebugMode=Auto
 /build:glsl/shp.fx
 
+#begin glsl/BasicEffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:glsl/BasicEffect.fx
+

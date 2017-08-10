@@ -49,7 +49,9 @@ namespace EW
             TempBufferSize = graphicSettings.BatchSize;
             SheetSize = graphicSettings.SheetSize;
 
-            WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            //WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            //SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            WorldSpriteRenderer = new SpriteRenderer(this, new Effect(this.GraphicsDevice,SpriteEffects);
             SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
             //WorldVoxelRenderer = new VoxelRenderer(this, this.Game.Content.Load<Effect>("glsl/vxl"));
         }

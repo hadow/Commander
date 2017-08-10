@@ -27,7 +27,7 @@ namespace EW.Mods.Common.Traits
     /// <summary>
     /// Unit is able to move
     /// </summary>
-    public class MobileInfo:UpgradableTraitInfo,IMoveInfo,IPositionableInfo,IOccupySapceInfo,IFacingInfo,
+    public class MobileInfo:UpgradableTraitInfo,IMoveInfo,IPositionableInfo,IOccupySpaceInfo,IFacingInfo,
         UsesInit<FacingInit>, UsesInit<LocationInit>, UsesInit<SubCellInit>
     {
         /// <summary>
@@ -100,7 +100,7 @@ namespace EW.Mods.Common.Traits
             return new ReadOnlyDictionary<CPos, SubCell>(new Dictionary<CPos, SubCell>() { { location, subCell } });
         }
 
-        bool IOccupySapceInfo.SharesCell { get { return SharesCell; } }
+        bool IOccupySpaceInfo.SharesCell { get { return SharesCell; } }
 
         public int GetInitialFacing() { return InitialFacing; }
 
@@ -258,6 +258,11 @@ namespace EW.Mods.Common.Traits
         public int GetMovementClass(TileSet tileset)
         {
             return TilesetMovementClass[tileset];
+        }
+
+        public bool CanEnterCell(World world,Actor self,CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
+        {
+            return false;
         }
     }
 

@@ -65,7 +65,7 @@ namespace EW.Graphics
         public void RefreshPalette()
         {
             palette.ApplyModifiers(World.WorldActor.TraitsImplementing<IPaletteModifier>());
-            ((WarGame)Game).Renderer.SetPalette(palette);
+            WarGame.Renderer.SetPalette(palette);
         }
 
 
@@ -105,7 +105,7 @@ namespace EW.Graphics
             var worldRenderables = actors.SelectMany(a => a.Render(this));
 
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
-            ((WarGame)this.Game).Renderer.WorldModelRenderer.BeginFrame();
+            WarGame.Renderer.WorldModelRenderer.BeginFrame();
 
             return null;
         }

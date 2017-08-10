@@ -6,7 +6,7 @@ namespace EW.Mods.Common.Traits
     public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
 
     public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }
-    public class CargoInfo : ITraitInfo, Requires<IOccupySapceInfo>
+    public class CargoInfo : ITraitInfo, Requires<IOccupySpaceInfo>
     {
         public readonly string[] LoadingUpgrades = { };
 

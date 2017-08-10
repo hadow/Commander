@@ -4,7 +4,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class AircraftInfo : ITraitInfo,IPositionableInfo
+    public class AircraftInfo : ITraitInfo
     {
 
 

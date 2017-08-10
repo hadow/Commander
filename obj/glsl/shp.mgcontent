@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <SourceFile>C:/Users/hadow/Source/Repos/EastWoodStudio/glsl/shp.fx</SourceFile>
+  <SourceTime>2017-08-11T00:08:21.5052534+08:00</SourceTime>
+  <DestFile>C:/Users/hadow/Source/Repos/EastWoodStudio/EW.GameCenter/Content/glsl/shp.xnb</DestFile>
+  <DestTime>2017-08-11T00:08:25.9741095+08:00</DestTime>
+  <Importer>EffectImporter</Importer>
+  <ImporterTime>2017-08-04T22:18:56.3765183+08:00</ImporterTime>
+  <Processor>EffectProcessor</Processor>
+  <ProcessorTime>2017-08-04T22:18:56.3765183+08:00</ProcessorTime>
+  <Parameters>
+    <Key>DebugMode</Key>
+    <Value>Auto</Value>
+  </Parameters>
+  <Dependencies>
+    <string>C:\Users\hadow\Source\Repos\EastWoodStudio\glsl\Macros.fxh</string>
+  </Dependencies>
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

@@ -30,7 +30,7 @@ namespace EW
    
         public GraphicsDeviceManager DeviceManager;
 
-        public Renderer Renderer;
+        public static Renderer Renderer;
         WorldRenderer worldRenderer;
         OrderManager orderManager;
 
