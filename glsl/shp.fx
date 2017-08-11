@@ -37,7 +37,7 @@ DECLARE_TEXTURE(Palette,1);
 struct VSOutput
 {
 	float4 position		: SV_Position;
-	float4 color		: COLOR0;
+	//float4 color		: COLOR0;
     float4 vTexCoord		: TEXCOORD0;
 	float2 vTexMetadata	: TEXCOORD1;
 };
@@ -51,7 +51,6 @@ VSOutput SpriteVertexShader(VSInputT input)
 	output.position = mul(input.aVertexPosition, MatrixTransform);
 	output.vTexCoord = input.aVertexTexCoord;
 	output.vTexMetadata = input.aVertexTexMetadata;
-	output.color = float4(0,0,0,1);
 	return output;
 }
 
@@ -59,7 +58,7 @@ VSOutput SpriteVertexShader(VSInputT input)
 float4 SpritePixelShader(VSOutput input) : SV_Target0
 {
 	float4 c = SAMPLE_TEXTURE(Palette,input.vTexMetadata);
-	return SAMPLE_TEXTURE(DiffuseTexture, input.vTexCoord)*input.color;
+	return SAMPLE_TEXTURE(DiffuseTexture, input.vTexCoord)*c;
 }
 
 TECHNIQUE( SpriteBatch, SpriteVertexShader, SpritePixelShader );

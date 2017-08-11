@@ -40,18 +40,18 @@ namespace EW.Graphics
 
         public void SetPalette(Texture palette)
         {
-            //effect.Parameters["Palette"].SetValue(palette);
+            effect.Parameters["Palette"].SetValue(palette);
         }
 
         public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,EW.Xna.Platforms.Point scroll)
         {
-            //effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
-            //effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));
-            //effect.Parameters["r2"].SetValue(new Vector3(-1,1,1-depthOffset));
+            effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
+            effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));
+            effect.Parameters["r2"].SetValue(new Vector3(-1, 1, 1 - depthOffset));
 
             //Texture index is sampled as a float,so convert to pixels then scale.
             //纹理索引被采样为浮点数，因此转换为像素然后缩放
-            //effect.Parameters["DepthTextureScale"].SetValue(128 * depthScale * zoom / screen.Height);
+            effect.Parameters["DepthTextureScale"].SetValue(128 * depthScale * zoom / screen.Height);
         }
 
         public void SetDepthPreviewEnabled(bool enabled)

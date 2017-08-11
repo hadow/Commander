@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using EW.Xna.Platforms;
-
+using EW.Primitives;
 
 namespace EW.Graphics
 {
@@ -12,7 +12,7 @@ namespace EW.Graphics
     public class GameViewPort:GameComponent
     {
 
-        Point viewportSize;
+        Int2 viewportSize;
         readonly float[] availableZoomSteps = new[] { 2f, 1f, 0.5f, 0.25f };
 
         public float[] AvailableZoomSteps
@@ -30,14 +30,14 @@ namespace EW.Graphics
 
 
         //Viewport geometry (world-px)
-        public Point CenterLocation { get; private set; }
+        public Int2 CenterLocation { get; private set; }
 
         public WPos CenterPosition { get { return worldRenderer.ProjectedPosition(CenterLocation); } }
         //视窗左上角
-        public Point TopLeft { get { return CenterLocation - viewportSize / 2; } }
+        public Int2 TopLeft { get { return CenterLocation - viewportSize / 2; } }
 
         //视窗右下角
-        public Point BottomRight { get { return CenterLocation + viewportSize / 2; } }
+        public Int2 BottomRight { get { return CenterLocation + viewportSize / 2; } }
 
         float zoom = 1f;
 
@@ -62,7 +62,7 @@ namespace EW.Graphics
             {
                 var newValue = ClosestTo(AvailableZoomSteps, value);
                 zoom = newValue;
-                viewportSize = ((1f / zoom) * new Vector2(this.Game.GraphicsDevice.DisplayMode.Width, this.Game.GraphicsDevice.DisplayMode.Height)).ToPoint();
+                viewportSize = ((1f / zoom) * new Vector2(this.Game.GraphicsDevice.DisplayMode.Width, this.Game.GraphicsDevice.DisplayMode.Height)).ToInt2();
                 allCellsDirty = true;
                 cellsDirty = true;
             }
@@ -199,7 +199,7 @@ namespace EW.Graphics
         /// <param name="ignoreBorders"></param>
         public void Scroll(Vector2 delta,bool ignoreBorders)
         {
-            CenterLocation += (1f / Zoom * delta).ToPoint();
+            CenterLocation += (1f / Zoom * delta).ToInt2();
             cellsDirty = true;
             allCellsDirty = true;
 
@@ -210,9 +210,9 @@ namespace EW.Graphics
         /// </summary>
         /// <param name="world"></param>
         /// <returns></returns>
-        public Point WorldToViewPx(Point world)
+        public Int2 WorldToViewPx(Int2 world)
         {
-            return (Zoom * (world - TopLeft).ToVector2()).ToPoint();
+            return (Zoom * (world - TopLeft).ToVector2()).ToInt2();
         }
 
         /// <summary>
@@ -220,9 +220,9 @@ namespace EW.Graphics
         /// </summary>
         /// <param name="view"></param>
         /// <returns></returns>
-        public Point ViewToWorldPx(Point view)
+        public Int2 ViewToWorldPx(Int2 view)
         {
-            return (1f / Zoom * view.ToVector2()).ToPoint() + TopLeft;
+            return (1f / Zoom * view.ToVector2()).ToInt2() + TopLeft;
         }
 
         /// <summary>

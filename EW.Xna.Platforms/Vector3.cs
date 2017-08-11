@@ -109,9 +109,6 @@ namespace EW.Xna.Platforms
         {
             return new Vector3(value1.X * scaleFactor, value1.Y * scaleFactor, value1.Z * scaleFactor);
         }
-            
-
-        public static implicit operator Vector3(Vector2 src) { return new Vector3(src.X, src.Y, 0); }
 
         public static Vector3 Zero { get { return zero; } }
 
@@ -131,6 +128,12 @@ namespace EW.Xna.Platforms
         {
             return (int)(this.X + this.Y + this.Z);
         }
+
+        public Vector2 XY { get { return new Vector2(X, Y); } }
+
+        public static implicit operator Vector3(Int2 src) { return new Vector3(src.X, src.Y, 0); }
+
+        public static implicit operator Vector3(Vector2 src) { return new Vector3(src.X, src.Y, 0); }
 
     }
 }

@@ -48,7 +48,7 @@ namespace EW.Traits
             worldRenderer = wr;
         }
 
-        public IEnumerable<Actor> ActorsInBox(Point a,Point b)
+        public IEnumerable<Actor> ActorsInBox(Int2 a,Int2 b)
         {
             return ActorsInBox(RectWithCorners(a, b));
         }
@@ -69,12 +69,12 @@ namespace EW.Traits
         {
             return partitionedActors.InBox(r).Where(actorIsInWorld);
         }
-        static Rectangle RectWithCorners(Point a,Point b)
+        static Rectangle RectWithCorners(Int2 a,Int2 b)
         {
             return Rectangle.FromLTRB(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y), Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
         }
 
-        public IEnumerable<FrozenActor> FrozenActorsInBox(Player p,Point a,Point b)
+        public IEnumerable<FrozenActor> FrozenActorsInBox(Player p,Int2 a,Int2 b)
         {
             return FrozenActorsInBox(p, RectWithCorners(a, b));
         }

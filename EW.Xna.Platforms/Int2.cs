@@ -1,5 +1,5 @@
 ﻿using System;
-namespace EW.Primitives
+namespace EW.Xna.Platforms
 {
     public struct Int2:IEquatable<Int2>
     {
@@ -17,6 +17,8 @@ namespace EW.Primitives
         public static bool operator ==(Int2 a,Int2 b) { return a.X == b.X && a.Y == b.Y; }
 
         public static bool operator !=(Int2 a ,Int2 b) { return !(a == b); }
+
+        public static Int2 operator /(Int2 a,int b) { return new Int2(a.X / b, a.Y / b); }
         #endregion
 
         public bool Equals(Int2 other) { return this == other; }
@@ -30,5 +32,12 @@ namespace EW.Primitives
         {
             return (obj is Int2) && Equals((Int2)obj);
         }
+
+        public Int2 Clamp(Rectangle r)
+        {
+            return new Int2(Math.Min(r.Right, Math.Max(X, r.Left)), Math.Min(r.Bottom, Math.Max(Y, r.Top)));
+        }
+
+        public Vector2 ToVector2() { return new Vector2(X, Y); }
     }
 }

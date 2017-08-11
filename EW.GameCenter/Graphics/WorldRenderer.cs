@@ -5,6 +5,7 @@ using System.Linq;
 using EW.Xna.Platforms;
 using EW.Traits;
 using EW.Xna.Platforms.Graphics;
+using EW.Primitives;
 namespace EW.Graphics
 {
     /// <summary>
@@ -17,6 +18,8 @@ namespace EW.Graphics
         public GameViewPort ViewPort { get; private set; }
 
         public readonly Size TileSize;
+
+        public readonly int TileScale;
 
         public readonly World World;
 
@@ -40,6 +43,7 @@ namespace EW.Graphics
         {
             World = world;
             TileSize = World.Map.Grid.TileSize;
+            TileScale = world.Map.Grid.Type == MapGridT.RectangularIsometric ? 1448 : 1024;
             ViewPort = new GameViewPort(game,this, world.Map);
             palette = new HardwarePalette(game);
             createPaletteReference = CreatePaletteReference;
@@ -173,7 +177,7 @@ namespace EW.Graphics
         /// </summary>
         /// <param name="screenPx"></param>
         /// <returns></returns>
-        public WPos ProjectedPosition(EW.Xna.Platforms.Point screenPx)
+        public WPos ProjectedPosition(Int2 screenPx)
         {
             return new WPos(1024 * screenPx.X / TileSize.Width, 1024 * screenPx.Y / TileSize.Height, 0);
         }
@@ -200,11 +204,34 @@ namespace EW.Graphics
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>
-        public EW.Xna.Platforms.Point ScreenPxPosition(WPos pos)
+        public Int2 ScreenPxPosition(WPos pos)
         {
             //Round to nearest pixel(四舍五入到最近的象素点)
             var px = ScreenPosition(pos);
-            return new Xna.Platforms.Point((int)Math.Round(px.X), (int)Math.Round(px.Y));
+            return new Int2((int)Math.Round(px.X), (int)Math.Round(px.Y));
+        }
+
+        public Int2 ScreenPxOffset(WVec vec)
+        {
+            var xyz = ScreenVectorComponents(vec);
+            return new Int2((int)Math.Round(xyz.X), (int)Math.Round(xyz.Y));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public Vector3 ScreenVectorComponents(WVec vec)
+        {
+            return new Vector3((float)TileSize.Width * vec.X / TileScale,
+                                (float)TileSize.Height * (vec.Y - vec.Z) / TileScale,
+                                (float)TileSize.Height * vec.Z / TileScale);
+        }
+
+        public float ScreenZPosition(WPos pos,int offset)
+        {
+            return ZPosition(pos, offset) * (float)TileSize.Height / TileScale;
         }
 
         /// <summary>

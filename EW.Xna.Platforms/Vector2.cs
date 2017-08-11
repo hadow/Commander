@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization;
 namespace EW.Xna.Platforms
 {
     /// <summary>
@@ -133,9 +132,9 @@ namespace EW.Xna.Platforms
             return "{X:" + X + " Y:" + Y + "}";
         }
 
-        public Point ToPoint()
+        public Int2 ToInt2()
         {
-            return new Point((int)X, (int)Y);
+            return new Int2((int)X, (int)Y);
         }
 
 
