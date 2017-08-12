@@ -32,7 +32,7 @@ namespace EW
 
         internal int SheetSize { get; private set; }
         Size? lastResolution;
-        EW.Xna.Platforms.Point? lastScroll;
+        Int2? lastScroll;
         float? lastZoom;
 
         public Texture2D currentPaletteTexture;
@@ -49,10 +49,10 @@ namespace EW
             TempBufferSize = graphicSettings.BatchSize;
             SheetSize = graphicSettings.SheetSize;
 
-            //WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            //SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            WorldSpriteRenderer = new SpriteRenderer(this, new Effect(this.GraphicsDevice,SpriteEffects);
+            WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
             SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
+
             //WorldVoxelRenderer = new VoxelRenderer(this, this.Game.Content.Load<Effect>("glsl/vxl"));
         }
 
@@ -66,7 +66,7 @@ namespace EW
             this.depthOffset = this.depthScale / 2;
         }
 
-        public void BeginFrame(EW.Xna.Platforms.Point scroll,float zoom)
+        public void BeginFrame(Int2 scroll,float zoom)
         {
             GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
             SetViewportParams(scroll, zoom);
@@ -81,7 +81,7 @@ namespace EW
         /// </summary>
         /// <param name="scroll"></param>
         /// <param name="zoom"></param>
-        public void SetViewportParams(EW.Xna.Platforms.Point scroll,float zoom)
+        public void SetViewportParams(Int2 scroll,float zoom)
         {
             if(lastScroll != scroll || lastZoom != zoom)
             {
@@ -89,6 +89,7 @@ namespace EW
                 lastZoom = zoom;
 
                 WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
+                WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
             }
         }
 
@@ -104,7 +105,7 @@ namespace EW
             currentPaletteTexture = palette.Texture;
 
             WorldSpriteRenderer.SetPalette(currentPaletteTexture);
-
+            WorldModelRenderer.SetPalette(currentPaletteTexture);
         }
 
 
@@ -134,6 +135,12 @@ namespace EW
         public void DrawBatch(Vertex[] vertices,int numVertices,PrimitiveType type)
         {
 
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            WorldModelRenderer.Dispose();
         }
     }
 }

@@ -28,6 +28,13 @@ namespace EW.Graphics
             Size = size;
         }
 
+        public Sheet(Game game,SheetT type,Texture2D texture):base(game)
+        {
+            Type = type;
+            this.texture = texture;
+            Size = new Size(texture.Width, texture.Height);
+        }
+
         public bool Buffered { get { return data != null || texture == null; } }
 
         /// <summary>

@@ -3,3 +3,11 @@
 ################################################################################
 
 /EW.GameCenter/Content/mods/common/EW.GameCenter.dll.mdb
+/EW.GameCenter/obj/Debug
+/EW.Mods.Cnc/obj/Debug
+/EW.Mods.Common/obj/Debug
+/EW.Mods.Common/bin/Debug
+/EW.Xna.Platforms/bin/Debug
+/EW.GameCenter/bin/Debug
+/EW.Xna.Platforms/obj/Debug
+/obj

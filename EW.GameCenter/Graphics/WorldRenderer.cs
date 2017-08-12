@@ -86,10 +86,15 @@ namespace EW.Graphics
 
             if (enableDepthBuffer)
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-            //var renderables = GenerateRenderables();
+
+            var renderables = GenerateRenderables();
 
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             terrainRenderer.Draw(this, ViewPort);
+
+
+            for (var i = 0; i < renderables.Count; i++)
+                renderables[i].Render(this);
 
             if (enableDepthBuffer)
                 GraphicsDevice.DepthStencilState = DepthStencilState.None;
@@ -108,10 +113,17 @@ namespace EW.Graphics
 
             var worldRenderables = actors.SelectMany(a => a.Render(this));
 
-            worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
-            WarGame.Renderer.WorldModelRenderer.BeginFrame();
+            if (World.OrderGenerator != null)
+                worldRenderables = worldRenderables.Concat(World.OrderGenerator.Render(this, World));
 
-            return null;
+            worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+            worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
+            
+            WarGame.Renderer.WorldModelRenderer.BeginFrame();
+            var renderables = worldRenderables.Select(r => r.PrepareRender(this)).ToList();
+
+
+            return renderables;
         }
 
         /// <summary>

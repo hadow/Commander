@@ -558,6 +558,16 @@ namespace EW.Xna.Platforms.Graphics
             var depth = 0;
             var stencil = 0;
 
+            if(preferredMultiSampleCount>0 && this.framebufferHelper.SupportsBlitFramebuffer)
+            {
+                this.framebufferHelper.GenRenderbuffer(out color);
+                this.framebufferHelper.BindRenderbuffer(color);
+#if GLES
+                this.framebufferHelper.RenderbufferStorageMultisample(preferredMultiSampleCount, (int)RenderbufferStorage.Rgba8Oes, width, height);
+
+#endif
+            }
+
             if(preferredDepthFormat != DepthFormat.None)
             {
                 var depthInternalFormat = RenderbufferStorage.DepthComponent16;
@@ -567,6 +577,29 @@ namespace EW.Xna.Platforms.Graphics
                     case DepthFormat.Depth16:
                         depthInternalFormat = RenderbufferStorage.DepthComponent16;
                         break;
+                    case DepthFormat.Depth24:
+                        if (GraphicsCapabilities.SupportsDepth24)
+                            depthInternalFormat = RenderbufferStorage.DepthComponent24Oes;
+                        else if (GraphicsCapabilities.SupportsDepthNonLinear)
+                            depthInternalFormat = (RenderbufferStorage)0x8E2C;
+                        else
+                            depthInternalFormat = RenderbufferStorage.DepthComponent16;
+                        break;
+                    case DepthFormat.Depth24Stencil8:
+                        if (GraphicsCapabilities.SupportsPackedDepthStencil)
+                            depthInternalFormat = RenderbufferStorage.Depth24Stencil8Oes;
+                        else
+                        {
+                            if (GraphicsCapabilities.SupportsDepth24)
+                                depthInternalFormat = RenderbufferStorage.DepthComponent24Oes;
+                            else if (GraphicsCapabilities.SupportsDepthNonLinear)
+                                depthInternalFormat = (RenderbufferStorage)0x8E2C;
+                            else
+                                depthInternalFormat = RenderbufferStorage.DepthComponent16;
+                            stencilInternalFormat = RenderbufferStorage.StencilIndex8;
+                            break;
+                        }
+                        break;
 
                 }
 
@@ -574,6 +607,18 @@ namespace EW.Xna.Platforms.Graphics
                 {
                     this.framebufferHelper.GenRenderbuffer(out depth);
                     this.framebufferHelper.BindRenderbuffer(depth);
+                    this.framebufferHelper.RenderbufferStorageMultisample(preferredMultiSampleCount, (int)depthInternalFormat, width, height);
+
+                    if(preferredDepthFormat == DepthFormat.Depth24Stencil8)
+                    {
+                        stencil = depth;
+                        if(stencilInternalFormat != 0)
+                        {
+                            this.framebufferHelper.GenRenderbuffer(out stencil);
+                            this.framebufferHelper.BindRenderbuffer(stencil);
+                            this.framebufferHelper.RenderbufferStorageMultisample(preferredMultiSampleCount, (int)stencilInternalFormat, width, height);
+                        }
+                    }
                 }
             }
 
@@ -616,6 +661,31 @@ namespace EW.Xna.Platforms.Graphics
                 {
                     this.framebufferHelper.BindFramebuffer(glResolveFramebuffer);
                 }
+
+                if (this._lastRasterizerState.ScissorTestEnable)
+                {
+                    GL.Disable(EnableCap.ScissorTest);
+                    GraphicsExtensions.CheckGLError();
+                }
+
+                var glFramebuffer = this.glFramebuffers[this._currentRenderTargetBindings];
+                this.framebufferHelper.BindReadFramebuffer(glFramebuffer);
+
+                for(var i = 0; i < this._currentRenderTargetCount; i++)
+                {
+                    renderTargetBinding = this._currentRenderTargetBindings[i];
+                    renderTarget = renderTargetBinding.RenderTarget as IRenderTarget;
+                    this.framebufferHelper.BlitFramebuffer(i, renderTarget.Width, renderTarget.Height);
+                }
+
+                if (renderTarget.RenderTargetUsage == RenderTargetUsage.DiscardContents && this.framebufferHelper.SupportsInvalidateFramebuffer)
+                    this.framebufferHelper.InvalidateReadFramebuffer();
+
+                if(this._lastRasterizerState.ScissorTestEnable)
+                {
+                    GL.Enable(EnableCap.ScissorTest);
+                    GraphicsExtensions.CheckGLError();
+                }
             }
 
             for(var i = 0; i < _currentRenderTargetCount; i++)
@@ -627,7 +697,7 @@ namespace EW.Xna.Platforms.Graphics
                 {
                     GL.BindTexture(renderTarget.GLTarget, renderTarget.GLTexture);
                     GraphicsExtensions.CheckGLError();
-
+                    this.framebufferHelper.GenerateMipmap((int)renderTarget.GLTarget);
                 }
             }
         }
@@ -641,17 +711,60 @@ namespace EW.Xna.Platforms.Graphics
             var glFramebuffer = 0;
             if(!this.glFramebuffers.TryGetValue(this._currentRenderTargetBindings,out glFramebuffer))
             {
+                this.framebufferHelper.GenFramebuffer(out glFramebuffer);
+                this.framebufferHelper.BindFramebuffer(glFramebuffer);
 
+                var renderTargetBinding = this._currentRenderTargetBindings[0];
+                var renderTarget = renderTargetBinding.RenderTarget as IRenderTarget;
+                this.framebufferHelper.FramebufferRenderbuffer((int)FramebufferAttachment.DepthAttachment, renderTarget.GLDepthBuffer, 0);
+                this.framebufferHelper.FramebufferRenderbuffer((int)FramebufferAttachment.StencilAttachment, renderTarget.GLStencilBuffer, 0);
+
+                for(var i = 0; i < this._currentRenderTargetCount; i++)
+                {
+                    renderTargetBinding = this._currentRenderTargetBindings[i];
+                    renderTarget = renderTargetBinding.RenderTarget as IRenderTarget;
+                    var attachement = (int)(FramebufferAttachment.ColorAttachment0 + i);
+                    if (renderTarget.GLColorBuffer != renderTarget.GLTexture)
+                        this.framebufferHelper.FramebufferRenderbuffer(attachement, renderTarget.GLColorBuffer, 0);
+                    else
+                        this.framebufferHelper.FramebufferTexture2D(attachement, (int)renderTarget.GetFramebufferTarget(renderTargetBinding), renderTarget.GLTexture, 0, renderTarget.MultiSampleCount);
+                }
+
+#if DEBUG
+
+#endif
+                this.glFramebuffers.Add((RenderTargetBinding[])_currentRenderTargetBindings.Clone(), glFramebuffer);
             }
             else
             {
                 this.framebufferHelper.BindFramebuffer(glFramebuffer);
             }
+
+            //Reset the raster state because we flip vertices
+            //When redering offscreen and hence the cull direction.
             _rasterizerStateDirty = true;
 
+            //Textures will need to be rebound to render correctly in the new render target.
             Textures.Dirty();
 
             return _currentRenderTargetBindings[0].RenderTarget as IRenderTarget;
+        }
+
+
+
+        internal void PlatformDeleteRenderTarget(IRenderTarget renderTarget)
+        {
+            var color = 0;
+            var depth = 0;
+            var stencil = 0;
+            var colorIsRenderbuffer = false;
+
+            color = renderTarget.GLColorBuffer;
+            depth = renderTarget.GLDepthBuffer;
+            stencil = renderTarget.GLStencilBuffer;
+            colorIsRenderbuffer = color != renderTarget.GLTexture;
+
+
         }
 
         private void PlatformDispose()

@@ -38,6 +38,12 @@ namespace EW.Xna.Platforms.Graphics
         /// </summary>
 		internal bool SupportsTextureFilterAnisotropic { get; private set; }
 
+
+        internal bool SupportsDepth24 { get; private set; }
+
+        internal bool SupportsDepthNonLinear { get; private set; }
+
+        internal bool SupportsPackedDepthStencil { get; private set; }
         /// <summary>
         /// 
         /// </summary>

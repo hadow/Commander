@@ -39,6 +39,7 @@ namespace EW.Xna.Platforms.Graphics
             {
                 Threading.BlockOnUIThread(() =>
                 {
+                    this.GraphicsDevice.PlatformDeleteRenderTarget(this);
                 });
             }
             base.Dispose(disposing);

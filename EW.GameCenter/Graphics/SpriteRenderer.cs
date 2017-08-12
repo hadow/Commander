@@ -43,7 +43,7 @@ namespace EW.Graphics
             effect.Parameters["Palette"].SetValue(palette);
         }
 
-        public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,EW.Xna.Platforms.Point scroll)
+        public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,Int2 scroll)
         {
             effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
             effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));

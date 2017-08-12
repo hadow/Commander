@@ -144,6 +144,7 @@
     <Compile Include="NetWork\SyncReport.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="MyActivity.cs" />
+    <Compile Include="Orders\IOrderGenerator.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Primitives\Cache.cs" />

@@ -6,6 +6,7 @@ using EW.NetWork;
 using EW.Primitives;
 using EW.Support;
 using EW.Graphics;
+using EW.Effects;
 namespace EW
 {
     public enum WorldT
@@ -27,7 +28,9 @@ namespace EW
 
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
-        
+
+        readonly List<IEffect> effects = new List<IEffect>();
+
         public readonly MersenneTwister SharedRandom;
         public int Timestep;
 
@@ -54,6 +57,21 @@ namespace EW
                 renderPlayer = value;
             }
         }
+
+        IOrderGenerator orderGenerator;
+
+        public IOrderGenerator OrderGenerator
+        {
+            get { return orderGenerator; }
+            set
+            {
+                orderGenerator = value;
+            }
+        }
+
+        public IEnumerable<Actor> Actors { get { return actors.Values; } }
+
+        public IEnumerable<IEffect> Effects { get { return effects; } }
 
         public bool FogObscures(CPos p) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(p); }
 

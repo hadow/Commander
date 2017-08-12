@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Primitives;
@@ -21,8 +22,10 @@ namespace EW.Graphics
         }
     }
 
-
-    public sealed class ModelRenderer
+    /// <summary>
+    /// 模型渲染
+    /// </summary>
+    public sealed class ModelRenderer:IDisposable
     {
         static readonly float[] ShadowDiffuse = new float[] { 0, 0, 0 };
         static readonly float[] ShadowAmbient = new float[] { 1, 1, 1 };
@@ -34,6 +37,10 @@ namespace EW.Graphics
         readonly Renderer renderer;
 
         readonly Effect shader;
+
+        readonly Dictionary<Sheet, RenderTarget2D> mappedBuffers = new Dictionary<Sheet, RenderTarget2D>();
+
+        readonly Stack<KeyValuePair<Sheet, RenderTarget2D>> unmappedBuffers = new Stack<KeyValuePair<Sheet, RenderTarget2D>>();
 
         SheetBuilder sheetBuilder;
 
@@ -48,7 +55,7 @@ namespace EW.Graphics
             shader.Parameters["Palette"].SetValue(palette);
         }
 
-        public void SetViewportParams(float zoom,Point scroll)
+        public void SetViewportParams(Size screen,float zoom,Int2 scroll)
         {
             var a = 2f / renderer.SheetSize;
             var view = new Matrix(
@@ -93,6 +100,29 @@ namespace EW.Graphics
 
 
         public void BeginFrame()
+        {
+            sheetBuilder = new SheetBuilder(this.renderer.Game,SheetT.BGRA, AllocateSheet);
+                
+        }
+
+        public Sheet AllocateSheet()
+        {
+            if (unmappedBuffers.Count > 0)
+            {
+                var kv = unmappedBuffers.Pop();
+                mappedBuffers.Add(kv.Key, kv.Value);
+                return kv.Key;
+                    
+            }
+
+            var size = new Size(renderer.SheetSize, renderer.SheetSize);
+            var frameBuffer = new RenderTarget2D(this.renderer.GraphicsDevice, size.Width, size.Height);
+            var sheet = new Sheet(this.renderer.Game, SheetT.BGRA, frameBuffer);
+            return sheet;
+        }
+
+
+        public void Dispose()
         {
 
         }

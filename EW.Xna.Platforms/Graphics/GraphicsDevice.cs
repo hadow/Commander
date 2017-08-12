@@ -87,8 +87,14 @@ namespace EW.Xna.Platforms.Graphics
 
         private int _currentRenderTargetCount;  //当前正待渲染目标数量
         private readonly RenderTargetBinding[] _currentRenderTargetBindings = new RenderTargetBinding[4];
-
+        private readonly RenderTargetBinding[] _tempRenderTargetBinding = new RenderTargetBinding[1];
         private static readonly Color DiscardColor = new Color(68, 34, 136, 255);
+
+
+        public int RenderTargetCount
+        {
+            get { return _currentRenderTargetCount; }
+        }
 
         internal bool IsRenderTargetBound
         {
@@ -271,6 +277,8 @@ namespace EW.Xna.Platforms.Graphics
             get;private set;
         }
 
+        
+
         internal GraphicsDevice()
         {
             PresentationParameters = new PresentationParameters();
@@ -389,6 +397,64 @@ namespace EW.Xna.Platforms.Graphics
             RasterizerState = RasterizerState.CullCounterClockwise;
 
             EffectCache = new Dictionary<int, Effect>();
+        }
+
+
+
+        public void SetRenderTarget(RenderTarget2D renderTarget)
+        {
+            if(renderTarget == null)
+            {
+                SetRenderTargets(null);
+            }
+            else
+            {
+                _tempRenderTargetBinding[0] = new RenderTargetBinding(renderTarget);
+                SetRenderTargets(_tempRenderTargetBinding);
+            }
+        }
+
+        public void SetRenderTargets(params RenderTargetBinding[] renderTargets)
+        {
+            var renderTargetCount = 0;
+            if (renderTargets != null)
+            {
+                renderTargetCount = renderTargets.Length;
+                if (renderTargetCount == 0)
+                    renderTargets = null;
+            }
+
+            if(_currentRenderTargetCount == renderTargetCount)
+            {
+                var isEqual = true;
+                for(var i = 0; i < _currentRenderTargetCount; i++)
+                {
+                    if(_currentRenderTargetBindings[i].RenderTarget != renderTargets[i].RenderTarget || _currentRenderTargetBindings[i].ArraySlic != renderTargets[i].ArraySlic)
+                    {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                if (isEqual)
+                    return;
+            }
+
+            ApplyRenderTargets(renderTargets);
+
+            if(renderTargetCount == 0)
+            {
+                unchecked
+                {
+                    _graphicsMetrics._targetCount++;
+                }
+            }
+            else
+            {
+                unchecked
+                {
+                    _graphicsMetrics._targetCount += renderTargetCount;
+                }
+            }
         }
 
         public void SetVertexBuffer(VertexBuffer vertexBuffer)
@@ -688,6 +754,7 @@ namespace EW.Xna.Platforms.Graphics
 
             PlatformResolveRenderTargets();
 
+            //Clear the current bindings.
             Array.Clear(_currentRenderTargetBindings, 0, _currentRenderTargetBindings.Length);
 
 
@@ -706,12 +773,13 @@ namespace EW.Xna.Platforms.Graphics
             }
             else
             {
+                //Copy the new bindings
                 Array.Copy(renderTargets, _currentRenderTargetBindings, renderTargets.Length);
                 _currentRenderTargetCount = renderTargets.Length;
 
                 var renderTarget = PlatformApplyRenderTargets();
 
-
+                //We clear the render target if asked.
                 clearTarget = renderTarget.RenderTargetUsage == RenderTargetUsage.DiscardContents;
                 renderTargetWidth = renderTarget.Width;
                 renderTargetHeight = renderTarget.Height;

@@ -137,6 +137,7 @@ namespace EW.Xna.Platforms
             return new Int2((int)X, (int)Y);
         }
 
+        public static implicit operator Vector2(Int2 src) { return new Vector2(src.X, src.Y); }
 
     }
 }

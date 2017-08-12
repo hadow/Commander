@@ -80,6 +80,8 @@ namespace EW.Graphics
         public Rectangle ScreenBounds(WorldRenderer wr)
         {
             var screenOffset = ScreenPosition(wr);
+
+            return new Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
         }
 
         Vector3 ScreenPosition(WorldRenderer wr)
