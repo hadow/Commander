@@ -51,6 +51,7 @@ namespace EW.Xna.Platforms.Graphics
 
         internal int glMajorVersion = 0;
         internal int glMinorVersion = 0;
+
         internal int glFramebuffer = 0;
 
         /// <summary>
@@ -534,6 +535,7 @@ namespace EW.Xna.Platforms.Graphics
         {
             this.framebufferHelper.BindFramebuffer(this.glFramebuffer);
 
+            //Reset the raster state beacuse we flip vertices when rendering offscreen and hence the cull direction;
             _rasterizerStateDirty = true;
 
             //Textures will need to be reound to render correctly in the new render target
