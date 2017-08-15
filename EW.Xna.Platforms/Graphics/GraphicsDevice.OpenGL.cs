@@ -733,7 +733,7 @@ namespace EW.Xna.Platforms.Graphics
                 }
 
 #if DEBUG
-
+                this.framebufferHelper.CheckFramebufferStatus();
 #endif
                 this.glFramebuffers.Add((RenderTargetBinding[])_currentRenderTargetBindings.Clone(), glFramebuffer);
             }

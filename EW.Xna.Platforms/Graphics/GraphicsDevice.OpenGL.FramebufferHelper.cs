@@ -52,24 +52,32 @@ namespace EW.Xna.Platforms.Graphics
 
             internal All AllReadFramebuffer = All.Framebuffer;
             internal All AllDrawFramebuffer = All.Framebuffer;
+
+            internal const All AllReadFramebufferNV = (All)0x8CA8;
+            internal const All AllDrawFramebufferNV = (All)0x8CA9;
             internal FramebufferHelper(GraphicsDevice graphicsDevice)
             {
 #if IOS
 
 
 #elif ANDROID
+                //eglGetProcAddress doesn't guarantied returning NULL if the entry point doesn't exist.
                 var invalidFuncPtr = EGLGetProcAddress("InvalidFunctionName");
 
                 if (graphicsDevice._extensions.Contains("GL_EXT_discard_framebuffer"))
                 {
+                    var glDiscardFramebufferEXTPtr = EGLGetProcAddress("glDiscardFramebufferEXT");
+                    if(glDiscardFramebufferEXTPtr != invalidFuncPtr)
+                    {
+                        this.GLInvalidateFramebuffer = Marshal.GetDelegateForFunctionPointer<GLInvalidateFramebufferDelegate>(glDiscardFramebufferEXTPtr);
+                        this.SupportsInvalidateFramebuffer = true;
+                    }
                     Log.Debug("extensions","GL_EXT_discard_framebuffer");
                 }
 
                 if (graphicsDevice._extensions.Contains("GL_EXT_multisampled_render_to_texture"))
                 {
-
-
-
+                    
                     Log.Debug("extensions", "GL_EXT_multisampled_render_to_texture");
                 }
                 else if (graphicsDevice._extensions.Contains("GL_IMG_multisampled_render_to_texture"))
@@ -78,6 +86,16 @@ namespace EW.Xna.Platforms.Graphics
                 }
                 else if (graphicsDevice._extensions.Contains("GL_NV_framebuffer_multisample"))
                 {
+                    var glRenderbufferStorageMultisampleNVPtr = EGLGetProcAddress("glRenderbufferStorageMultisampleNV");
+                    var glBlitFramebufferNVPtr = EGLGetProcAddress("glBlitFramebufferNV");
+                    if(glRenderbufferStorageMultisampleNVPtr != invalidFuncPtr && glBlitFramebufferNVPtr != invalidFuncPtr)
+                    {
+                        this.GLRenderbufferStorageMultisample = Marshal.GetDelegateForFunctionPointer<GLRenderbufferStorageMultisampleDelegate>(glRenderbufferStorageMultisampleNVPtr);
+                        this.GLBlitFramebuffer = Marshal.GetDelegateForFunctionPointer<GLBlitFramebufferDelegate>(glBlitFramebufferNVPtr);
+                        this.AllReadFramebuffer = AllReadFramebufferNV;
+                        this.AllDrawFramebuffer = AllDrawFramebufferNV;
+
+                    }
                     Log.Debug("extensions", "GL_NV_framebuffer_multisample");
                 }
 
@@ -201,6 +219,32 @@ namespace EW.Xna.Platforms.Graphics
             {
                 GL.GenerateMipmap((TextureTarget)target);
                 GraphicsExtensions.CheckGLError();
+            }
+
+            internal virtual void CheckFramebufferStatus()
+            {
+                var status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
+
+                if(status != FramebufferErrorCode.FramebufferComplete)
+                {
+                    string message = "Framebuffer Incomplete";
+                    switch (status)
+                    {
+                        case FramebufferErrorCode.FramebufferIncompleteAttachment:
+                            message = "Not all framebuffer attachment points are framebuffer attachment complete.";
+                            break;
+                        case FramebufferErrorCode.FramebufferIncompleteDimensions:
+                            message = "Not all attached images have the same width and height.";
+                            break;
+                        case FramebufferErrorCode.FramebufferIncompleteMissingAttachment:
+                            message = "No images are attached to the framebuffer";
+                            break;
+                        case FramebufferErrorCode.FramebufferUnsupported:
+                            message = "The combination of internal formats of the attached images violates an implementation-dependent set of restrictions.";
+                            break;
+                    }
+                    throw new InvalidOperationException(message);
+                }
             }
         }
 #endif

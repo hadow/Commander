@@ -89,14 +89,71 @@ namespace EW.Graphics
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="wr"></param>
+        /// <param name="models"></param>
+        /// <param name="camera"></param>
+        /// <param name="scale"></param>
+        /// <param name="groundNormal"></param>
+        /// <param name="lightSource"></param>
+        /// <param name="lightAmbientColor"></param>
+        /// <param name="lightDiffuseColor"></param>
+        /// <param name="color"></param>
+        /// <param name="normals"></param>
+        /// <param name="shadowPalette"></param>
+        /// <returns></returns>
         public ModelRenderProxy RenderAsync(WorldRenderer wr,IEnumerable<ModelAnimation> models,WRot camera,float scale,
             float[] groundNormal,WRot lightSource,float[] lightAmbientColor,float[] lightDiffuseColor,PaletteReference color,PaletteReference normals,PaletteReference shadowPalette)
         {
+            //Sprite rectangle
+            var tl = new Vector2(float.MaxValue, float.MaxValue);
+            var br = new Vector2(float.MinValue, float.MinValue);
 
-            throw new NotImplementedException();
+            //Shadow sprite rectangle
+
+            var stl = new Vector2(float.MaxValue, float.MaxValue);
+            var sbr = new Vector2(float.MinValue, float.MinValue);
+
+
+            var screenCorners = new Vector3[4];
+
+
+            Size spriteSize, shadowSpriteSize;
+            Int2 spriteOffset, shadowSpriteOffset;
+
+            CalculateSpriteGeometry(tl, br, 1, out spriteSize, out spriteOffset);
+            CalculateSpriteGeometry(stl, sbr, 2, out shadowSpriteSize, out shadowSpriteOffset);
+
+            var sprite = sheetBuilder.Allocate(spriteSize, 0, spriteOffset);
+            var shadowSprite = sheetBuilder.Allocate(shadowSpriteSize, 0, shadowSpriteOffset);
+            return new ModelRenderProxy(sprite,shadowSprite,screenCorners,);
         }
 
+        /// <summary>
+        /// 计算精灵的几何形体
+        /// </summary>
+        /// <param name="tl"></param>
+        /// <param name="br"></param>
+        /// <param name="scale"></param>
+        /// <param name="size"></param>
+        /// <param name="offset"></param>
+        static void CalculateSpriteGeometry(Vector2 tl,Vector2 br,float scale,out Size size,out Int2 offset)
+        {
+            var width = (int)(scale * (br.X - tl.X));
+            var height = (int)(scale * (br.Y - tl.Y));
+            offset = (0.5f * scale * (br + tl)).ToInt2();
 
+            // width and height must be even to avoid rendering glitches
+            if ((width & 1) == 1)
+                width += 1;
+            if ((height & 1) == 1)
+                height += 1;
+            size = new Size(width, height);
+
+
+        }
 
 
         public void BeginFrame()

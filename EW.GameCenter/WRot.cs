@@ -2,6 +2,9 @@
 
 namespace EW
 {
+    /// <summary>
+    /// 3D World rotation.
+    /// </summary>
     public struct WRot:IEquatable<WRot>
     {
 

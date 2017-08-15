@@ -44,8 +44,12 @@ namespace EW.Xna.Platforms.Graphics
             SupportsTextureFilterAnisotropic = device._extensions.Contains("GL_EXT_texture_filter_anisotropic");
 
             //Framebuffer objects
-            SupportsFramebufferObjectARB = true;
+#if GLES
+            SupportsFramebufferObjectARB = true;    //always supported on GLES 2.0+
             SupportsFramebufferObjectEXT = false;
+#else
+
+#endif
         }
 
         bool GetNonPowerOfTwo(GraphicsDevice device)
