@@ -19,10 +19,17 @@ namespace EW
             }
         }
 
+        #region Operator
+
+        public static WAngle operator +(WAngle a,WAngle b) { return new WAngle(a.Angle + b.Angle); }
+        public static WAngle operator -(WAngle a,WAngle b) { return new WAngle(a.Angle - b.Angle); }
 
         public static bool operator ==(WAngle me, WAngle other) { return me.Angle == other.Angle; }
 
         public static bool operator !=(WAngle me, WAngle other) { return me.Angle != other.Angle; }
+
+
+        #endregion
 
         public bool Equals(WAngle other) { return this == other; }
 

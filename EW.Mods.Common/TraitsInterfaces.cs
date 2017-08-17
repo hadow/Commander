@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Primitives;
+using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
 
@@ -35,5 +36,9 @@ namespace EW.Mods.Common.Traits
 
     public interface IAcceptResourcesInfo : ITraitInfo { }
 
+    public interface IQuantizeBodyOrientationInfo : ITraitInfo
+    {
+        int QuantizedBodyFacings(ActorInfo ai, SequenceProvider sequenceProvider, string race);
+    }
 
 }

@@ -77,6 +77,7 @@
     <Compile Include="FileFormats\RLEZerosCompression.cs" />
     <Compile Include="FileFormats\XORDeltaCompression.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
+    <Compile Include="Graphics\ModelRenderable.cs" />
     <Compile Include="Graphics\RangeCircleRenderable.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="HitShapes\CircleShape.cs" />
@@ -254,6 +255,7 @@
     <Compile Include="Traits\Render\RenderDetectionCircle.cs" />
     <Compile Include="Traits\Render\RenderRangeCircle.cs" />
     <Compile Include="Traits\Render\RenderSprites.cs" />
+    <Compile Include="Traits\Render\RenderVoxels.cs" />
     <Compile Include="Traits\Render\SelectionDecorations.cs" />
     <Compile Include="Traits\Render\SupportPowerChargeBar.cs" />
     <Compile Include="Traits\Render\WithBuildingExplosion.cs" />

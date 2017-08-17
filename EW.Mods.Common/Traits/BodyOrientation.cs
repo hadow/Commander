@@ -2,8 +2,6 @@
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-
-
     public class BodyOrientationInfo:ITraitInfo
     {
 
@@ -16,8 +14,10 @@ namespace EW.Mods.Common.Traits
         public readonly bool UseClassicFacingFudge = false;
 
         public WVec LocalToWorld(WVec vec){
+
             if (!UseClassicPerspectiveFudge)
                 return new WVec(vec.Y, -vec.X, vec.Z);
+
             return new WVec(vec.Y, -CameraPitch.Sin() * vec.X / 1024, vec.Z);
         }
 
@@ -31,11 +31,17 @@ namespace EW.Mods.Common.Traits
 
         readonly BodyOrientationInfo info;
         readonly Lazy<int> quantizedFacings;
+
+        [Sync]
+        public int QuantizedFacings { get { return quantizedFacings.Value; } }
         public BodyOrientation(ActorInitializer init, BodyOrientationInfo info)
         {
 
             this.info = info;
-
+            var self = init.Self;
+            var faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : self.Owner.Faction.InternalName;
         }
+
+        public WAngle CameraPitch { get { return info.CameraPitch; } }
     }
 }

@@ -129,6 +129,11 @@ namespace EW.Graphics
             return new ReadOnlyDictionary<string, UnitSequences>(items);
         }
 
+        public bool HasSequence(string unitName)
+        {
+            return sequences.Value.ContainsKey(unitName);
+        }
+
         /// <summary>
         /// ‘§º”‘ÿ
         /// </summary>

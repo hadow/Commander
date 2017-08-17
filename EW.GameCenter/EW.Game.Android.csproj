@@ -178,6 +178,7 @@
     <Compile Include="Support\PerfItem.cs" />
     <Compile Include="Support\PerfSample.cs" />
     <Compile Include="Support\PerfTimer.cs" />
+    <Compile Include="Support\VariableExpression.cs" />
     <Compile Include="Sync.cs" />
     <Compile Include="TraitDictionary.cs" />
     <Compile Include="Traits\ActivityUtils.cs" />

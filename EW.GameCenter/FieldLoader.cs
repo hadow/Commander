@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Reflection;
 using System.Drawing;
 using System.Runtime.Serialization;
@@ -8,6 +9,7 @@ using System.Globalization;
 using EW.Primitives;
 using EW.Xna.Platforms;
 using EW.Graphics;
+using EW.Support;
 namespace EW
 {
     /// <summary>
@@ -385,6 +387,21 @@ namespace EW
                             (byte)Exts.ParseIntegerInvariant(parts[2]).Clamp(0,255));
                 }
 
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(BooleanExpression))
+            {
+                if(value != null)
+                {
+                    try
+                    {
+                        return new BooleanExpression(value);
+                    }
+                    catch(InvalidDataException e)
+                    {
+                        throw new YamlException(e.Message);
+                    }
+                }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
             return null;

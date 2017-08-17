@@ -128,7 +128,7 @@ namespace EW.Graphics
 
             var sprite = sheetBuilder.Allocate(spriteSize, 0, spriteOffset);
             var shadowSprite = sheetBuilder.Allocate(shadowSpriteSize, 0, shadowSpriteOffset);
-            return new ModelRenderProxy(sprite,shadowSprite,screenCorners,);
+            return new ModelRenderProxy(sprite,shadowSprite,screenCorners,0);
         }
 
         /// <summary>

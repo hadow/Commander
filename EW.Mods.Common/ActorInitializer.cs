@@ -43,4 +43,16 @@ namespace EW.Mods.Common
 
     //    public CPos Value(World world) { return value; }
     //}
+
+    public class FactionInit : IActorInit<string>
+    {
+        [FieldFromYamlKey]
+        public readonly string Faction;
+
+        public FactionInit() { }
+
+        public FactionInit(string faction) { Faction = faction; }
+
+        public string Value(World world) { return Faction; }
+    }
 }

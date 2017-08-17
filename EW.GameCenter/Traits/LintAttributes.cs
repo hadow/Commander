@@ -57,4 +57,10 @@ namespace EW.Traits
             PlayerPaletteReferenceSwitch = playerPaletteReferenceSwitch;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
+    public sealed class ConsumedConditionReferenceAttribute : Attribute
+    {
+
+    }
 }
