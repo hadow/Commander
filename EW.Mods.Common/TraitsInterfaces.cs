@@ -41,4 +41,20 @@ namespace EW.Mods.Common.Traits
         int QuantizedBodyFacings(ActorInfo ai, SequenceProvider sequenceProvider, string race);
     }
 
+
+    public delegate void VariableObserverNotifier(Actor self, IReadOnlyDictionary<string, int> variables);
+
+    public struct VariableObserver
+    {
+        public VariableObserverNotifier Notifier;
+
+        public IEnumerable<string> Variables;
+
+        public VariableObserver(VariableObserverNotifier notifier,IEnumerable<string> variables)
+        {
+            Notifier = notifier;
+            Variables = variables;
+        }
+    }
+
 }

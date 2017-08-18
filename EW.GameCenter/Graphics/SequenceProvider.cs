@@ -29,6 +29,8 @@ namespace EW.Graphics
 
         int ShadowStart { get; }
 
+        int ShadowZOffset { get; }
+
         int[] Frames { get; }
 
         Sprite GetSprite(int frame);
@@ -132,6 +134,15 @@ namespace EW.Graphics
         public bool HasSequence(string unitName)
         {
             return sequences.Value.ContainsKey(unitName);
+        }
+
+        public bool HasSequence(string unitName,string sequenceName)
+        {
+            UnitSequences unitSeq;
+            if (!sequences.Value.TryGetValue(unitName, out unitSeq))
+                throw new InvalidOperationException("Unit '{0}' does not have any sequences defined.".F(unitName));
+
+            return unitSeq.Value.ContainsKey(sequenceName);
         }
 
         /// <summary>

@@ -8,6 +8,9 @@ namespace EW
 {
     public static class Enum<T>
     {
+
+        public static T[] GetValues() { return (T[])Enum.GetValues(typeof(T)); }
+
         public static T Parse(string s) { return (T)Enum.Parse(typeof(T), s); }
 
         public static bool TryParse(string s,bool ignoreCase,out T value)

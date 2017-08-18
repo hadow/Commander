@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.Primitives;
+using EW.Traits;
+using EW.Mods.Common.Traits;
 namespace EW.Mods.Common.Graphics
 {
 
@@ -11,8 +13,14 @@ namespace EW.Mods.Common.Graphics
         IEnumerable<IRenderable> Render(WorldRenderer wr, WPos pos);
     }
 
-    public class ActorPreviewInitializer:IActorInitializer{
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ActorPreviewInitializer:IActorInitializer
+    {
+
         public readonly ActorInfo Actor;
+
         public readonly WorldRenderer WorldRenderer;
         public World World { get { return WorldRenderer.World; }}
 
@@ -30,7 +38,27 @@ namespace EW.Mods.Common.Graphics
 
         public bool Contains<T>() where T : IActorInit { return dict.Contains<T> (); }
 
-        
+        public DamageState GetDamageState()
+        {
+            var health = dict.GetOrDefault<HealthInit>();
+            if (health == null)
+                return DamageState.Undamaged;
+
+            var hf = health.Value(null);
+            if (hf <= 0)
+                return DamageState.Dead;
+            if (hf < 0.25f)
+                return DamageState.Critical;
+            if (hf < 0.5f)
+                return DamageState.Heavy;
+
+            if (hf < 0.75f)
+                return DamageState.Medium;
+
+            if (hf < 1.0f)
+                return DamageState.Light;
+            return DamageState.Undamaged;
+        }
     }
 
 }

@@ -39,14 +39,38 @@ namespace EW.Mods.Common.Traits
 
         public virtual IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init,RenderSpritesInfo rs,string image,int facings,PaletteReference p)
         {
+            if (!EnabledByDefault)
+                yield break;
 
+            var anim = new Animation(init.World, image);
+            anim.PlayRepeating(RenderSprites.NormalizeSequence(anim, init.GetDamageState(), Sequence));
+
+            yield return new SpriteActorPreview(anim, () => WVec.Zero, () => 0, p, rs.Scale);
         }
     }
 
-    public class WithSpriteBody:UpgradableTrait<WithSpriteBodyInfo>
+    public class WithSpriteBody:ConditionalTrait<WithSpriteBodyInfo>
     {
+
+        public readonly Animation DefaultAnimation;
+
         public WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info) : this(init, info, () => 0) { }
 
-        protected WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info,Func<int> baseFacing) : base(info) { }
+        protected WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info,Func<int> baseFacing) : base(info)
+        {
+            var rs = init.Self.Trait<RenderSprites>();
+
+            Func<bool> paused = null;
+            if (info.PauseAnimationWhenDisabled)
+                paused = () => init.Self.IsDisabled() && DefaultAnimation.CurrentSequence.Name == NormalizeSequence(init.Self, Info.Sequence);
+
+            DefaultAnimation = new Animation(init.World, rs.GetImage(init.Self), baseFacing, paused);
+
+        }
+
+        public string NormalizeSequence(Actor self,string sequence)
+        {
+            return RenderSprites.NormalizeSequence(DefaultAnimation, self.GetDamageState(), sequence);
+        }
     }
 }

@@ -24,10 +24,54 @@ namespace EW.Mods.Common.Traits
         public abstract object Create(ActorInitializer init);
     }
 
+    /// <summary>
+    /// Abstract base for enabling and disabling trait using conditions.
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class ConditionalTrait<T>:ISync where T:ConditionalTraitInfo
     {
+        public readonly T Info;
+
+        [Sync]
+        public bool IsTraitDisabled { get; private set; }
+
         public ConditionalTrait(T info)
         {
+            Info = info;
+
+            IsTraitDisabled = info.RequiresCondition != null;
         }
+
+        public virtual IEnumerable<VariableObserver> GetVariableObservers()
+        {
+            if (Info.RequiresCondition != null)
+                yield return new VariableObserver(RequiredConditionsChanged, Info.RequiresCondition.Variables);
+        }
+
+
+        void RequiredConditionsChanged(Actor self,IReadOnlyDictionary<string,int> conditions)
+        {
+            if (Info.RequiresCondition == null)
+                return;
+
+            var wasDisabled = IsTraitDisabled;
+            IsTraitDisabled = !Info.RequiresCondition.Evaluate(conditions);
+
+            if(IsTraitDisabled != wasDisabled)
+            {
+                if (wasDisabled)
+                    TraitEnabled(self);
+                else
+                    TraitDisabled(self);
+            }
+        }
+
+
+
+        protected virtual void TraitEnabled(Actor self) { }
+
+        protected virtual void TraitDisabled(Actor self) { }
+
     }
 }

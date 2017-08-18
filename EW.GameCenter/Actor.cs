@@ -184,6 +184,13 @@ namespace EW
             return false;
         }
 
+        public DamageState GetDamageState()
+        {
+            if (Disposed)
+                return DamageState.Dead;
+            return (health == null) ? DamageState.Undamaged : health.DamageState;
+        }
+
         #region Trait
 
         /// <summary>

@@ -93,6 +93,8 @@
     <Compile Include="GameRules\SoundInfo.cs" />
     <Compile Include="GameRules\WeaponInfo.cs" />
     <Compile Include="GameSpeeds.cs" />
+    <Compile Include="Graphics\Animation.cs" />
+    <Compile Include="Graphics\AnimationWithOffset.cs" />
     <Compile Include="Graphics\GameViewPort.cs" />
     <Compile Include="Graphics\HardwarePalette.cs" />
     <Compile Include="Graphics\HSLColor.cs" />

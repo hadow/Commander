@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Graphics;
+using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
 
@@ -81,6 +82,15 @@ namespace EW.Mods.Common.Traits
     public class RenderSprites:ITick,IRender,INotifyOwnerChanged,IActorPreviewInitModifier
     {
 
+        static readonly Pair<DamageState, string>[] DamagePrefixes =
+        {
+            Pair.New(DamageState.Critical,"critical-"),
+            Pair.New(DamageState.Heavy,"damaged-"),
+            Pair.New(DamageState.Medium,"scratched-"),
+            Pair.New(DamageState.Light,"scuffed-")
+
+        };
+
         class AnimationWrapper
         {
             public readonly string Palette;
@@ -90,8 +100,52 @@ namespace EW.Mods.Common.Traits
 
 
         }
-        public RenderSprites(ActorInitializer init, RenderSpritesInfo info){}
+
+        string cachedImage;
+        readonly RenderSpritesInfo info;
+        readonly string faction;
+
+        public RenderSprites(ActorInitializer init, RenderSpritesInfo info)
+        {
+            this.info = info;
+            faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : init.Self.Owner.Faction.InternalName;
+        }
         public virtual void Tick(Actor self){}
 
+
+        public string GetImage(Actor self)
+        {
+            if (cachedImage != null)
+                return cachedImage;
+
+            return cachedImage = info.GetImage(self.Info, self.World.Map.Rules.Sequences, faction);
+        }
+
+
+
+        public static string NormalizeSequence(Animation anim,DamageState state,string sequence)
+        {
+            sequence = UnnormalizeSequence(sequence);
+
+            foreach(var s in DamagePrefixes)
+            {
+                if (state >= s.First && anim.HasSequence(s.Second + sequence))
+                    return s.Second + sequence;
+            }
+            return sequence;
+        }
+
+        public static string UnnormalizeSequence(string sequence)
+        {
+            foreach(var s in DamagePrefixes)
+            {
+                if (sequence.StartsWith(s.Second, StringComparison.Ordinal))
+                {
+                    sequence = sequence.Substring(s.Second.Length);
+                    break;
+                }
+            }
+            return sequence;
+        }
     }
 }
