@@ -21,6 +21,17 @@ namespace EW.Graphics
             ZOffset = zOffset;
         }
 
+        public IEnumerable<IRenderable> Render(Actor self,WorldRenderer wr,PaletteReference pal,float scale)
+        {
+            var center = self.CenterPosition;
+            var offset = OffsetFunc != null ? OffsetFunc() : WVec.Zero;
+
+            var z = (ZOffset != null) ? ZOffset(center + offset) : 0;
+            return Animation.Render(center, offset, z, pal, scale);
+        }
+
+
+
         public static implicit operator AnimationWithOffset(Animation a)
         {
             return new AnimationWithOffset(a,null,null,null);

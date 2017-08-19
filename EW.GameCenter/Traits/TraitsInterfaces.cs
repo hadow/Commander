@@ -351,4 +351,11 @@ namespace EW.Traits
     {
         void CreatePlayers(World w);
     }
+
+    public interface IEffectiveOwner
+    {
+        bool Disguised { get; }
+
+        Player Owner { get; }
+    }
 }

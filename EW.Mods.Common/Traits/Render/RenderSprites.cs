@@ -93,18 +93,47 @@ namespace EW.Mods.Common.Traits
 
         class AnimationWrapper
         {
+            public readonly AnimationWithOffset Animation;
             public readonly string Palette;
             public readonly bool IsPlayerPalette;
 
             public PaletteReference PaletteReference { get; private set; }
 
 
+            public AnimationWrapper(AnimationWithOffset animation,string palette,bool isPlayerPalette)
+            {
+                Animation = animation;
+                Palette = palette;
+                IsPlayerPalette = isPlayerPalette;
+            }
+
+
+            public bool IsVisible
+            {
+                get
+                {
+                    return Animation.DisableFunc == null || !Animation.DisableFunc();
+                }
+            }
+
+            public void CachePalette(WorldRenderer wr,Player owner)
+            {
+                PaletteReference = wr.Palette(IsPlayerPalette ? Palette + owner.InternalName : Palette);
+            }
+
+            public void OwnerChanged()
+            {
+                //Update the palette reference next time we draw
+                if (IsPlayerPalette)
+                    PaletteReference = null;
+            }
+
         }
 
         string cachedImage;
         readonly RenderSpritesInfo info;
         readonly string faction;
-
+        readonly List<AnimationWrapper> anims = new List<AnimationWrapper>();
         public RenderSprites(ActorInitializer init, RenderSpritesInfo info)
         {
             this.info = info;
@@ -121,6 +150,41 @@ namespace EW.Mods.Common.Traits
             return cachedImage = info.GetImage(self.Info, self.World.Map.Rules.Sequences, faction);
         }
 
+        public virtual IEnumerable<IRenderable> Render(Actor self,WorldRenderer wr)
+        {
+            foreach(var a in anims)
+            {
+                if (!a.IsVisible)
+                    continue;
+
+                if(a.PaletteReference == null)
+                {
+                    var owner = self.EffectiveOwner != null && self.EffectiveOwner.Disguised ? self.EffectiveOwner.Owner : self.Owner;
+                    a.CachePalette(wr, owner);
+
+                }
+
+                foreach (var r in a.Animation.Render(self, wr, a.PaletteReference, info.Scale))
+                    yield return r;
+            }
+        }
+
+        public virtual void OnOwnerChanged(Actor self,Player oldOwner,Player newOwner)
+        {
+            UpdatePalette();
+        }
+
+        public void UpdatePalette()
+        {
+            foreach (var anim in anims)
+                anim.OwnerChanged();
+        }
+
+        void IActorPreviewInitModifier.ModifyActorPreviewInit(Actor self, TypeDictionary inits)
+        {
+            if (!inits.Contains<FactionInit>())
+                inits.Add(new FactionInit(faction));
+        }
 
 
         public static string NormalizeSequence(Animation anim,DamageState state,string sequence)

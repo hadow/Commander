@@ -49,10 +49,12 @@ namespace EW
         public bool IsDead { get { return Disposed || (health != null && health.IsDead); } }
 
         public bool Disposed { get; private set; }
+
+        public IEffectiveOwner EffectiveOwner { get; private set; }
         Activity currentActivity;
 
         readonly IHealth health;
-
+        readonly IFacing facing;
         readonly IDisable[] disables;
         readonly IRender[] renders;
         readonly IRenderModifier[] renderModifiers;
@@ -96,6 +98,10 @@ namespace EW
                 }
             }
 
+            EffectiveOwner = TraitOrDefault<IEffectiveOwner>();
+
+            facing = TraitOrDefault<IFacing>();
+            health = TraitOrDefault<IHealth>();
             disables = TraitsImplementing<IDisable>().ToArray();
             renders = TraitsImplementing<IRender>().ToArray();
             renderModifiers = TraitsImplementing<IRenderModifier>().ToArray();
