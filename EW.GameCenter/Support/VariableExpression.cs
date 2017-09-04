@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Expressions =  System.Linq.Expressions;
-
+using System.IO;
 namespace EW.Support
 {
     public abstract class VariableExpression
@@ -22,6 +23,28 @@ namespace EW.Support
             Bool
         }
 
+        /// <summary>
+        /// 结合性
+        /// </summary>
+        enum Associativity { Left,Right}
+        enum Grouping { None,Parens}
+
+        enum Sides
+        {
+            //Value type
+            None =0,
+
+
+            Left =-1,
+
+            Right =2,
+
+            //Binary+ Operator
+            Both = Left | Right,
+        }
+        /// <summary>
+        /// 
+        /// </summary>
         enum TokenType
         {
             //fixed values
@@ -30,11 +53,68 @@ namespace EW.Support
 
             //operators
             OpenParen,
+            CloseParen,
+            Not,
+
             And,
             Or,
             Equals,
             NotEquals,
             LessThan,
+            LessThanOrEqual,
+            GreaterThan,
+            GreaterThanOrEqual,
+            Add,
+            Subtract,
+            Multiply,
+
+            Invalid,
+        }
+
+        enum Precedence
+        {
+            Unary = 16, //一元的
+            Multiplication = 12,
+            Addition = 11,
+            Relation = 9,
+            Equality = 8,
+            And = 4,
+            Or = 3,
+            Binary = 0,
+            Value =0,
+            Parens = -1,//括弧
+            Invalid=~0,
+
+        }
+
+        struct TokenTypeInfo
+        {
+            public readonly string Symbol;
+
+            public readonly Precedence Precedence;
+
+            public readonly Sides OperandSides;
+            public readonly Sides WhitespaceSides;
+
+            public readonly Associativity Associativity;
+
+            public readonly Grouping Opens;
+            public readonly Grouping Closes;
+
+            public TokenTypeInfo(string symbol,Precedence precedence,Sides operandSides = Sides.None,
+                Associativity associativity = Associativity.Left,Grouping opens = Grouping.None,Grouping closes = Grouping.None)
+            {
+                Symbol = symbol;
+                Precedence = precedence;
+                OperandSides = operandSides;
+                WhitespaceSides = Sides.None;
+                Associativity = associativity;
+
+                Opens = opens;
+                Closes = closes;
+            }
+
+
 
         }
         public readonly string Expression;
@@ -49,10 +129,37 @@ namespace EW.Support
         static readonly ConstantExpression False = Expressions.Expression.Constant(false);
         static readonly ConstantExpression True = Expressions.Expression.Constant(true);
 
+        static readonly TokenTypeInfo[] TokenTypeInfos = CreateTokenTypeInfoEnumeration().ToArray();
+
         public VariableExpression(string expression)
         {
             Expression = expression;
         }
+
+        static IEnumerable<TokenTypeInfo> CreateTokenTypeInfoEnumeration()
+        {
+            for(var i = 0; i <= (int)TokenType.Invalid; i++)
+            {
+                switch ((TokenType)i)
+                {
+                    case TokenType.Invalid:
+                        yield return new TokenTypeInfo("(<INVALID>)", Precedence.Invalid);
+                        continue;
+                    case TokenType.False:
+                        yield return new TokenTypeInfo("false", Precedence.Value);
+                        continue;
+                    case TokenType.True:
+                        yield return new TokenTypeInfo("true", Precedence.Value);
+                        continue;
+
+
+                }
+
+                throw new InvalidProgramException("CreateTokenTypeInfoEnumeration is missing a TokenTypeInfo entry for TokenType.{0}".F(Enum<TokenType>.GetValues()[i]));
+            }
+        }
+
+
         static CharClass CharClassOf(char c)
         {
             switch (c)
@@ -107,9 +214,72 @@ namespace EW.Support
         }
 
 
+        /// <summary>
+        /// 
+        /// </summary>
         class Token
         {
 
+            public readonly TokenType Type;
+            public readonly int Index;
+            
+            public virtual string Symbol { get { return TokenTypeInfos[(int)Type].Symbol; } }
+
+            public Token(TokenType type,int index)
+            {
+                Type = type;
+                Index = index;
+            }
+
+            public static TokenType GetNextType(string expression,ref int i,TokenType lastType = TokenType.Invalid)
+            {
+                var start = i;
+
+                switch (expression[i])
+                {
+                    case '!':
+                        return TokenType.Not;
+                    case '<':
+                        return TokenType.LessThan;
+                    case '>':
+                        return TokenType.GreaterThan;
+                    case '=':
+                        return TokenType.Equals;
+                    case '&':
+                        throw new InvalidDataException("Unexpected character '&' at index {0} - should it b '&&' ?".F(start));
+                    case '|':
+                        throw new InvalidDataException("Unexpected character '|' at index {0} - should it b '||' ?".F(start));
+                    case '(':
+                        return TokenType.OpenParen;
+                    case ')':
+                        return TokenType.CloseParen;
+
+                }
+            }
+
+            public static Token GetNext(string expression,ref int i,TokenType lastType = TokenType.Invalid)
+            {
+                if (i == expression.Length)
+                    return null;
+
+                var whitespaceBefore = false;
+                if (CharClassOf(expression[i]) == CharClass.Whitespace)
+                {
+                    whitespaceBefore = true;
+                    while (CharClassOf(expression[i]) == CharClass.Whitespace)
+                    {
+                        if (++i == expression.Length)
+                            return null;
+                    }
+                }
+                else if (lastType == TokenType.Invalid)
+                    whitespaceBefore = true;
+
+
+                var start = i;
+
+                var type = 
+            }
         }
 
         class Compiler
@@ -166,6 +336,9 @@ namespace EW.Support
         
     }
 
+    /// <summary>
+    /// bool 类型表达式
+    /// </summary>
     public class BooleanExpression : VariableExpression
     {
         readonly Func<IReadOnlyDictionary<string, int>, bool> asFunction;
