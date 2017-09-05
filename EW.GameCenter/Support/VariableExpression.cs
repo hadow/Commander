@@ -51,10 +51,16 @@ namespace EW.Support
             False,
             True,
 
+            // varying values
+            Number,
+            Variable,
+
             //operators
             OpenParen,
             CloseParen,
             Not,
+            Negate,
+            OnesComplement,//二进制反码
 
             And,
             Or,
@@ -253,9 +259,30 @@ namespace EW.Support
                         return TokenType.OpenParen;
                     case ')':
                         return TokenType.CloseParen;
+                    case '~':
+                        i++;
+                        return TokenType.OnesComplement;
+                    case '+':
+                        i++;
+                        return TokenType.Add;
 
                 }
             }
+
+            static TokenType VariableOrKeyword(string expression,int start,ref int i)
+            {
+                if (CharClassOf(expression[i - 1]) == CharClass.Mixed)
+                    throw new InvalidDataException("Invalid identifier end character at index {0} for '{1}'".F(i - 1, expression.Substring(start, i - start)));
+
+                return VariableOrKeyword(expression, start, i - start);
+            }
+
+            static TokenType VariableOrKeyword(string expression,int start,int length)
+            {
+
+                return TokenType.Variable;
+            }
+
 
             public static Token GetNext(string expression,ref int i,TokenType lastType = TokenType.Invalid)
             {
