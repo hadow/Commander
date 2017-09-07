@@ -8,6 +8,9 @@ namespace EW.Support
 {
     public abstract class VariableExpression
     {
+        /// <summary>
+        /// 字符类别
+        /// </summary>
         enum CharClass
         {
             Whitespace,
@@ -73,6 +76,8 @@ namespace EW.Support
             Add,
             Subtract,
             Multiply,
+            Divide,
+            Modulo, //取模计算
 
             Invalid,
         }
@@ -142,6 +147,10 @@ namespace EW.Support
             Expression = expression;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         static IEnumerable<TokenTypeInfo> CreateTokenTypeInfoEnumeration()
         {
             for(var i = 0; i <= (int)TokenType.Invalid; i++)
@@ -215,6 +224,43 @@ namespace EW.Support
             var currentOpeners = new Stack<Token>();
             Token lastToken = null;
 
+            for (var i = 0; ;)
+            {
+                var token = Token.GetNext(Expression, ref i, lastToken != null ? lastToken.Type : TokenType.Invalid);
+                if(token == null)
+                {
+                    if (lastToken == null)
+                        throw new InvalidDataException("Empty expression");
+
+                    if (lastToken.RightOperand)
+                        throw new InvalidDataException("Missing value or sub-expression at end for '{0}' operator".F(lastToken.Symbol));
+                    break;
+                }
+
+                if(token.Closes != Grouping.None)
+                {
+                    if (currentOpeners.Count == 0)
+                        throw new InvalidDataException("Unmatched closing parenthesis at index  {0}".F(token.Index));
+
+                    currentOpeners.Pop();
+                }
+
+                if (token.Opens != Grouping.None)
+                    currentOpeners.Push(token);
+
+                if(lastToken  == null)
+                {
+                    if (token.LeftOperand)
+                    {
+
+                    }
+                }
+                else
+                {
+
+                }
+
+            }
 
             return new Compiler().Build(null, resultType);
         }
@@ -231,10 +277,56 @@ namespace EW.Support
             
             public virtual string Symbol { get { return TokenTypeInfos[(int)Type].Symbol; } }
 
+
+            public Grouping Opens { get { return TokenTypeInfos[(int)Type].Opens; } }
+
+            public Grouping Closes { get { return TokenTypeInfos[(int)Type].Closes; } }
+
+            public bool RightOperand
+            {
+                get
+                {
+                    return ((int)TokenTypeInfos[(int)Type].OperandSides & (int)Sides.Right) != 0;
+                }
+            }
+
+            public bool LeftOperand
+            {
+                get
+                {
+                    return ((int)TokenTypeInfos[(int)Type].OperandSides & (int)Sides.Left) != 0;
+                }
+            }
+
+
+
             public Token(TokenType type,int index)
             {
                 Type = type;
                 Index = index;
+            }
+
+            static bool ScanIsNumber(string expression,int start,ref int i)
+            {
+                var cc = CharClassOf(expression[i]);
+
+                if(cc == CharClass.Digit)
+                {
+                    i++;
+                    for (; i < expression.Length; i++)
+                    {
+                        cc = CharClassOf(expression[i]);
+                        if(cc!= CharClass.Digit)
+                        {
+                            if (cc != CharClass.Whitespace && cc != CharClass.Operator && cc != CharClass.Mixed)
+                                throw new InvalidDataException("Number {0} and variable merged at index {1}".F(int.Parse(expression.Substring(start, i - start)), start));
+
+                            return true;
+                        }
+                    }
+                    return true;
+                }
+                return false;
             }
 
             public static TokenType GetNextType(string expression,ref int i,TokenType lastType = TokenType.Invalid)
@@ -246,11 +338,30 @@ namespace EW.Support
                     case '!':
                         return TokenType.Not;
                     case '<':
+                        i++;
+                        if (i < expression.Length && expression[i] == '=')
+                        {
+                            i++;
+                            return TokenType.LessThanOrEqual;
+                        }
                         return TokenType.LessThan;
                     case '>':
+                        i++;
+                        if (i < expression.Length && expression[i] == '=')
+                        {
+                            i++;
+                            return TokenType.GreaterThanOrEqual;
+                        }
+                        
                         return TokenType.GreaterThan;
                     case '=':
-                        return TokenType.Equals;
+                        i++;
+                        if (i < expression.Length && expression[i] == '=')
+                        {
+                            i++;
+                            return TokenType.Equals;
+                        }
+                        throw new InvalidDataException("Unexpected character '=' at index {0} - should it b '==' ?".F(start));
                     case '&':
                         throw new InvalidDataException("Unexpected character '&' at index {0} - should it b '&&' ?".F(start));
                     case '|':
@@ -265,8 +376,34 @@ namespace EW.Support
                     case '+':
                         i++;
                         return TokenType.Add;
-
+                    case '*':
+                        i++;
+                        return TokenType.Multiply;
+                    case '/':
+                        i++;
+                        return TokenType.Divide;
+                    case '%':
+                        i++;
+                        return TokenType.Modulo;
                 }
+
+                if (ScanIsNumber(expression, start, ref i))
+                    return TokenType.Number;
+
+                var cc = CharClassOf(expression[start]);
+
+                if (cc != CharClass.Id)
+                    throw new InvalidDataException("Invalid character '{0}' at index {1}".F(expression[i], start));
+
+                for(i = start; i < expression.Length; i++)
+                {
+                    cc = CharClassOf(expression[i]);
+                    if (cc == CharClass.Whitespace || cc == CharClass.Operator)
+                        return VariableOrKeyword(expression, start, ref i);
+                }
+
+                return VariableOrKeyword(expression, start, ref i);
+
             }
 
             static TokenType VariableOrKeyword(string expression,int start,ref int i)
@@ -279,6 +416,11 @@ namespace EW.Support
 
             static TokenType VariableOrKeyword(string expression,int start,int length)
             {
+                var i = start;
+                if (length == 4 && expression[i++] == 't' && expression[i++] == 'r' && expression[i++] == 'u' && expression[i++] == 'e')
+                    return TokenType.True;
+                if (length == 5 && expression[i++] == 'f' && expression[i++] == 'a' && expression[i++] == 'l' && expression[i++] == 's' && expression[i++] == 'e')
+                    return TokenType.False;
 
                 return TokenType.Variable;
             }
@@ -305,8 +447,55 @@ namespace EW.Support
 
                 var start = i;
 
-                var type = 
+                var type = GetNextType(expression, ref i, lastType);
+
+                if (!whitespaceBefore && RequiresWhitespaceBefore(type))
+                    throw new InvalidDataException("Missing whitespace at index {0}, before '{1}' operator.".F(i, GetTokenSymbol(type)));
+
+                switch (type)
+                {
+                    case TokenType.Number:
+                        return new NumberToken(start, expression.Substring(start, i - start));
+                    case TokenType.Variable:
+                        return new VariableToken(start, expression.Substring(start, i - start));
+                    default:
+                        return new Token(type, start);
+                }
             }
+
+
+            static bool RequiresWhitespaceBefore(TokenType type)
+            {
+                return ((int)TokenTypeInfos[(int)type].WhitespaceSides & (int)Sides.Left) != 0;
+            }
+
+            static string GetTokenSymbol(TokenType type)
+            {
+                return TokenTypeInfos[(int)type].Symbol;
+            }
+        }
+        
+        class NumberToken : Token
+        {
+            public readonly int Value;
+            readonly string symbol;
+
+            public override string Symbol { get { return symbol; } }
+
+            public NumberToken(int index,string symbol) : base(TokenType.Number, index)
+            {
+                Value = int.Parse(symbol);
+                this.symbol = symbol;
+            }
+
+        }
+
+        class VariableToken : Token
+        {
+            public readonly string Name;
+            public override string Symbol { get { return Name; } }
+
+            public VariableToken(int index,string symbol) : base(TokenType.Variable, index) { Name = symbol; }
         }
 
         class Compiler
@@ -323,6 +512,10 @@ namespace EW.Support
         {
             return Expressions.Expression.Condition(test, ifTrue, ifFalse);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         class AstStack
         {
             readonly List<Expression> expressions = new List<Expressions.Expression>();
