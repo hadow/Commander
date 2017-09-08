@@ -252,19 +252,72 @@ namespace EW.Support
                 {
                     if (token.LeftOperand)
                     {
-
+                        throw new InvalidDataException("Missing value or sub-expression at beginning for '{0}' operator".F(token.Symbol));
                     }
                 }
                 else
                 {
+                    if(lastToken.Opens != Grouping.None && token.Closes != Grouping.None)
+                    {
+                        throw new InvalidDataException("Empty parenthesis at index {0}".F(lastToken.Index));
+                    }
 
+                    if(lastToken.RightOperand == token.LeftOperand)
+                    {
+                        if (lastToken.RightOperand)
+                            throw new InvalidDataException("Missing value or sub-expression or there is an extra operator '{0}' at index {1} or '{2}' at  index {3}".F(
+                                lastToken.Symbol,lastToken.Index,token.Symbol,token.Index
+                                ));
+                        throw new InvalidDataException("Missing binary operation before '{0}' at index {1}".F(token.Symbol, token.Index));
+
+                    }
                 }
+                if (token.Type == TokenType.Variable)
+                    variables.Add(token.Symbol);
+
+                tokens.Add(token);
+                lastToken = token;
+
 
             }
 
-            return new Compiler().Build(null, resultType);
+            if (currentOpeners.Count > 0)
+                throw new InvalidDataException("Unclosed opening parenthesis at index {0}".F(currentOpeners.Peek().Index));
+
+            return new Compiler().Build(ToPostfix(tokens).ToArray(), resultType);
         }
 
+
+        static IEnumerable<Token> ToPostfix(IEnumerable<Token> tokens)
+        {
+            var s = new Stack<Token>();
+            foreach(var t in tokens)
+            {
+                if (t.Opens != Grouping.None)
+                    s.Push(t);
+                else if (t.Closes != Grouping.None)
+                {
+                    Token temp;
+                    while (!((temp = s.Pop()).Opens != Grouping.None))
+                        yield return temp;
+
+                }
+                else if (t.OperandSides == Sides.None)
+                    yield return t;
+                else
+                {
+                    while(s.Count>0 && ((t.Associativity == Associativity.Right && t.Precedence < s.Peek().Precedence) || (t.Associativity == Associativity.Left && t.Precedence <= s.Peek().Precedence)))
+                    {
+                        yield return s.Pop();
+                    }
+
+                    s.Push(t);
+                }
+
+            }
+            while (s.Count > 0)
+                yield return s.Pop();
+        }
 
         /// <summary>
         /// 
@@ -277,6 +330,10 @@ namespace EW.Support
             
             public virtual string Symbol { get { return TokenTypeInfos[(int)Type].Symbol; } }
 
+            public int Precedence { get { return (int)TokenTypeInfos[(int)Type].Precedence; } }
+            public Sides OperandSides { get { return TokenTypeInfos[(int)Type].OperandSides; } }
+
+            public Associativity Associativity { get { return TokenTypeInfos[(int)Type].Associativity; } }
 
             public Grouping Opens { get { return TokenTypeInfos[(int)Type].Opens; } }
 
@@ -569,6 +626,21 @@ namespace EW.Support
         }
 
         public bool Evaluate(IReadOnlyDictionary<string,int> symbols)
+        {
+            return asFunction(symbols);
+        }
+    }
+
+    public class IntegerExpression : VariableExpression
+    {
+        readonly Func<IReadOnlyDictionary<string, int>, int> asFunction;
+
+        public IntegerExpression(string expression) : base(expression)
+        {
+            asFunction = Compile<int>();
+        }
+
+        public int Evaluate(IReadOnlyDictionary<string,int> symbols)
         {
             return asFunction(symbols);
         }

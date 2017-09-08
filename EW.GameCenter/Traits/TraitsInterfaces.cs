@@ -358,4 +358,20 @@ namespace EW.Traits
 
         Player Owner { get; }
     }
+
+    public interface ILintRulesPass
+    {
+        void Run(Action<string> emitError, Action<string> emitWarning, Ruleset rules);
+    }
+
+    public interface ILintMapPass
+    {
+        void Run(Action<string> emitError, Action<string> emitWarning, Map map);
+        
+    }
+
+    public interface ILintPass
+    {
+        void Run(Action<string> emitError, Action<string> emitWarning, ModData modData);
+    }
 }

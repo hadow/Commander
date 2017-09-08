@@ -84,6 +84,8 @@
     <Compile Include="HitShapes\CircleShape.cs" />
     <Compile Include="HitShapes\IHitShape.cs" />
     <Compile Include="HitShapes\Rectangle.cs" />
+    <Compile Include="Lint\CheckConditions.cs" />
+    <Compile Include="Lint\LintExts.cs" />
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
     <Compile Include="Orders\DeployOrderTargeter.cs" />
