@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 namespace EW.Mods.Common.AI
 {
@@ -12,7 +13,9 @@ namespace EW.Mods.Common.AI
 
     public sealed class HackyAI:ITick
     {
+        readonly Func<Actor, bool> isEnemyUnit;
 
+        public readonly World World;
         public HackyAI(HackyAIInfo info,ActorInitializer init)
         {
 
@@ -23,5 +26,9 @@ namespace EW.Mods.Common.AI
 
         }
 
+        internal Actor FindClosestEnemy(WPos pos)
+        {
+            return World.Actors.Where(isEnemyUnit).ClosestTo(pos);
+        }
     }
 }

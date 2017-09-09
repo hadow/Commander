@@ -7,6 +7,10 @@ using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
 
+    public interface IObservesVariables
+    {
+        IEnumerable<VariableObserver> GetVariableObservers();
+    }
     public interface IObservesVariablesInfo : ITraitInfo
     {
 
@@ -44,6 +48,9 @@ namespace EW.Mods.Common.Traits
 
     public delegate void VariableObserverNotifier(Actor self, IReadOnlyDictionary<string, int> variables);
 
+    /// <summary>
+    /// 观察变量
+    /// </summary>
     public struct VariableObserver
     {
         public VariableObserverNotifier Notifier;

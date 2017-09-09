@@ -247,6 +247,43 @@ namespace EW
                 throw new InvalidOperationException("ToBits only accepts up to 32 values.");
             return result;
         }
+
+        public static T MinByOrDefault<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
+        {
+            return ts.CompareBy(selector, 1, false);
+        }
+
+        static T CompareBy<T,U>(this IEnumerable<T> ts,Func<T,U> selector,int modifier,bool throws)
+        {
+            var comparer = Comparer<U>.Default;
+            T t;
+            U u;
+            using(var e = ts.GetEnumerator())
+            {
+                if (!e.MoveNext())
+                {
+                    if (throws)
+                        throw new ArgumentException("Collection must not be empty.", "ts");
+                    else
+                        return default(T);
+                    
+                }
+                t = e.Current;
+                u = selector(t);
+                while (e.MoveNext())
+                {
+                    var nextT = e.Current;
+                    var nextU = selector(nextT);
+                    if (comparer.Compare(nextU, u) * modifier < 0)
+                    {
+                        t = nextT;
+                        u = nextU;
+
+                    }
+                }
+                return t;
+            }
+        }
     }
     
 }

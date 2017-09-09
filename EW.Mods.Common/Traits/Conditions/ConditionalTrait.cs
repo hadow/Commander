@@ -19,7 +19,7 @@ namespace EW.Mods.Common.Traits
 
         public virtual void RulesetLoaded(Ruleset rules,ActorInfo ai)
         {
-
+            EnabledByDefault = RequiresCondition == null || RequiresCondition.Evaluate(VariableExpression.NoVariables);
         }
         public abstract object Create(ActorInitializer init);
     }
@@ -29,7 +29,7 @@ namespace EW.Mods.Common.Traits
     /// 
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class ConditionalTrait<T>:ISync where T:ConditionalTraitInfo
+    public abstract class ConditionalTrait<T>:ISync,IObservesVariables,IDisabledTrait,INotifyCreated where T:ConditionalTraitInfo
     {
         public readonly T Info;
 
@@ -65,6 +65,17 @@ namespace EW.Mods.Common.Traits
                 else
                     TraitDisabled(self);
             }
+        }
+
+        void INotifyCreated.Created(Actor self)
+        {
+            Created(self);
+        }
+
+        protected virtual void Created(Actor self)
+        {
+            if (Info.RequiresCondition == null)
+                TraitEnabled(self);
         }
 
 

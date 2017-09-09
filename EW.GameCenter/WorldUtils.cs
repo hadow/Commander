@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using EW.Support;
 namespace EW
 {
@@ -30,6 +31,24 @@ namespace EW
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="world"></param>
+        /// <param name="origin"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        public static IEnumerable<Actor> FindActorsInCircle(this World world,WPos origin,WDist r)
+        {
+            var vec = new WVec(r, r, WDist.Zero);
+            return world.ActorMap.ActorsInBox(origin - vec, origin + vec).Where(a => (a.CenterPosition - origin).HorizontalLengthSquared <= r.LengthSquared);
+        }
+
+        public static Actor ClosestTo(this IEnumerable<Actor> actors,WPos pos)
+        {
+            return actors.MinByOrDefault(a => (a.CenterPosition - pos).LengthSquared);
         }
     }
 }
