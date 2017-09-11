@@ -35,6 +35,13 @@ namespace EW
         public float SoundVolume = 0.5f;
         public float MusicVolume = 0.5f;
         public float VideoVolume = 0.5f;
+
+        public bool Mute = false;
+        public bool CashTicks = true;
+
+        public bool Repeat = false;
+
+        public bool Shuffle = false;
     }
     
     public class Settings

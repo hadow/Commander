@@ -65,6 +65,7 @@
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateBase.cs" />
     <Compile Include="AI\StateMachine.cs" />
+    <Compile Include="AudioLoaders\WavLoader.cs" />
     <Compile Include="ColorValidator.cs" />
     <Compile Include="Commands\ChatCommands.cs" />
     <Compile Include="Commands\DevCommands.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="FileFormats\LZOCompression.cs" />
     <Compile Include="FileFormats\MSCabCompression.cs" />
     <Compile Include="FileFormats\RLEZerosCompression.cs" />
+    <Compile Include="FileFormats\WavReader.cs" />
     <Compile Include="FileFormats\XORDeltaCompression.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\ModelRenderable.cs" />
@@ -198,6 +200,7 @@
     <Compile Include="Traits\Guardable.cs" />
     <Compile Include="Traits\Harvester.cs" />
     <Compile Include="Traits\Health.cs" />
+    <Compile Include="Traits\HitShape.cs" />
     <Compile Include="Traits\Huntable.cs" />
     <Compile Include="Traits\Husk.cs" />
     <Compile Include="Traits\ICommonTraits.cs" />

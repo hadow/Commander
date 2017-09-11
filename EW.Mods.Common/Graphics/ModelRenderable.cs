@@ -86,6 +86,10 @@ namespace EW.Mods.Common.Graphics
         {
             return new FinalizedModelRenderable(wr, this);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         struct FinalizedModelRenderable : IFinalizedRenderable
         {
             readonly ModelRenderable model;

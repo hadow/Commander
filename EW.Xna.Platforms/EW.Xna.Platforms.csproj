@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Android\AndroidCompatibility.cs" />
     <Compile Include="Android\ResumeManager.cs" />
+    <Compile Include="Audio\AudioLoader.cs" />
     <Compile Include="Audio\NoAudioHardwareException.cs" />
     <Compile Include="Audio\OALSoundBuffer.cs" />
     <Compile Include="Audio\OpenAlSoundController.cs" />

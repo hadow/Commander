@@ -41,6 +41,20 @@ namespace EW.GameRules
             this.clips = clips;
         }
 
+        public string GetNext()
+        {
+            if (liveclips.Count == 0)
+                liveclips.AddRange(clips);
+
+            if (liveclips.Count == 0)
+                return null;
+
+            var i = WarGame.CosmeticRandom.Next(liveclips.Count);
+            var s = liveclips[i];
+            liveclips.RemoveAt(i);
+            return s;
+        }
+
 
     }
 }

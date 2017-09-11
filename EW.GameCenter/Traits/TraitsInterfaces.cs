@@ -374,4 +374,9 @@ namespace EW.Traits
     {
         void Run(Action<string> emitError, Action<string> emitWarning, ModData modData);
     }
+
+    public interface ITargetableCells
+    {
+        IEnumerable<Pair<CPos, SubCell>> TargetableCells();
+    }
 }

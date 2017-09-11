@@ -17,6 +17,21 @@ namespace EW.Xna.Platforms.Audio
         private float _volume;
         private float _pitch;
 
+        internal SoundEffectInstance(byte[] buffer,int sampleRate,int channels):this()
+        {
+            PlatformInitialize(buffer, sampleRate, channels);
+        }
+
+        internal SoundEffectInstance()
+        {
+            _pan = 0.0f;
+            _volume = 1.0f;
+            _pitch = 0.0f;
+        }
+        ~SoundEffectInstance()
+        {
+            Dispose(false);
+        }
 
         public virtual bool IsLooped
         {
@@ -31,7 +46,15 @@ namespace EW.Xna.Platforms.Audio
 
         public void Dispose()
         {
+            
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_isDisposed)
+            {
+                _isDisposed = true;
+            }
         }
     }
 }

@@ -13,7 +13,8 @@ namespace EW.Mods.Common.Traits
 
         public readonly bool UseClassicFacingFudge = false;
 
-        public WVec LocalToWorld(WVec vec){
+        public WVec LocalToWorld(WVec vec)
+        {
 
             if (!UseClassicPerspectiveFudge)
                 return new WVec(vec.Y, -vec.X, vec.Z);
