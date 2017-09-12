@@ -53,6 +53,10 @@ namespace EW
             return BitConverter.ToInt32(s.ReadBytes(4), 0);
         }
 
+        public static short ReadInt16(this Stream s)
+        {
+            return BitConverter.ToInt16(s.ReadBytes(2), 0);
+        }
 
         /// <summary>
         /// 
