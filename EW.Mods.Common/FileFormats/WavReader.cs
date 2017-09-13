@@ -76,9 +76,24 @@ namespace EW.Mods.Common.FileFormats
                         s.ReadBytes(FmtChunkSize - 16);
                         break;
                     case "fact":
-
+                        var chunkSize = s.ReadInt32();
+                        UncompressedSize = s.ReadInt32();
+                        s.ReadBytes(chunkSize - 4);
+                        break;
+                    case "data":
+                        DataSize = s.ReadInt32();
+                        RawOutput = s.ReadBytes(DataSize);
+                        break;
+                    default:
+                        var unknownChunkSize = s.ReadInt32();
+                        s.ReadBytes(unknownChunkSize);
                         break;
                 }
+            }
+
+            if(Type == WaveT.ImaAdpcm)
+            {
+                
             }
             return true;
         }

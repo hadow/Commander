@@ -7,6 +7,8 @@ using EW.GameRules;
 using EW.Xna.Platforms.Audio;
 namespace EW
 {
+
+    public interface ISoundSource:IDisposable { }
     public interface ISoundLoader
     {
         bool TryParseSound(Stream stream, out ISoundForamt sound);
@@ -20,7 +22,7 @@ namespace EW
 
         int SampleRate { get; }
 
-        float LengthISeconds { get; }
+        float LengthInSeconds { get; }
 
         Stream GetPCMInputStream();
 
@@ -29,6 +31,8 @@ namespace EW
     {
         readonly SoundEffectInstance soundEffectInstance;
         ISoundLoader[] loaders;
+
+        Cache<string, ISoundSource> sounds;
 
         IReadOnlyFileSystem fileSystem;
 
@@ -82,11 +86,23 @@ namespace EW
             throw new InvalidDataException(filename + " is not a valid sound file!");
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="loaders"></param>
+        /// <param name="fileSystem"></param>
         public void Initialize(ISoundLoader[] loaders,IReadOnlyFileSystem fileSystem)
         {
 
+            if (sounds != null)
+                foreach (var soundSource in sounds.Values)
+                    if (soundSource != null)
+                        soundSource.Dispose();
+
             this.loaders = loaders;
             this.fileSystem = fileSystem;
+            Func<ISoundForamt, ISoundSource> loadIntoMemory = null;
+            sounds = new Cache<string, ISoundSource>(filename => LoadSound(filename,loadIntoMemory));
         }
 
         /// <summary>
@@ -118,6 +134,11 @@ namespace EW
         /// 
         /// </summary>
         public void UnmuteAudio()
+        {
+
+        }
+
+        public void Dispose()
         {
 
         }
