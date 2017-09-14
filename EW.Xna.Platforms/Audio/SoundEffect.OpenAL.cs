@@ -8,20 +8,33 @@ namespace EW.Xna.Platforms.Audio
 
         internal OALSoundBuffer SoundBuffer;
 
-        private void PlatformLoadAudioStream(Stream s,out TimeSpan duration)
+//        private void PlatformLoadAudioStream(Stream s,out TimeSpan duration)
+//        {
+//            byte[] buffer;
+//#if OPENAL && !(IOS)
+
+//            ALFormat format;
+//            int size;
+//            int freq;
+
+//            var stream = s;
+
+
+
+//#endif
+//        }
+
+         internal ALFormat Format { get; set; }
+
+        internal int Size { get; set; }
+
+        internal float Rate { get; set; }
+
+        private void PlatformLoadAudioStream(byte[] data,int channels,int sampleBits,int sampleRate)
         {
-            byte[] buffer;
-#if OPENAL && !(IOS)
 
-            ALFormat format;
-            int size;
-            int freq;
-
-            var stream = s;
-
-
-
-#endif
+            SoundBuffer = new OALSoundBuffer();
+            SoundBuffer.BindDataBuffer(data, Format, Size, (int)Rate);
         }
     }
 }
