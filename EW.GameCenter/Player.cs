@@ -112,7 +112,10 @@ namespace EW
             return factions.FirstOrDefault(f => f.InternalName == factionName) ?? factions.First();
         }
 
-
+        public bool IsAlliedWith(Player p)
+        {
+            return p == null || Stances[p] == Stance.Ally || (p.Spectating && !NonCombatant);
+        }
 
         #region Scripting interface
 
