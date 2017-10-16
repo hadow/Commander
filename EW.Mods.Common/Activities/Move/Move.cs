@@ -9,15 +9,20 @@ using EW.Primitives;
 namespace EW.Mods.Common.Activities
 {
     /// <summary>
-    /// 前进
+    /// 
     /// </summary>
     public class Move:Activity
     {
+        static readonly List<CPos> NoPath = new List<CPos>();
         readonly Actor ignoredActor;
         readonly Func<List<CPos>> getPath;
 
         readonly WDist nearEnough;
 
+        //For dealing with blockers
+        bool hasWaited;
+        bool hasNotifiedBlocker;
+        int waitTicksRemaining;
 
         readonly Mobile mobile;
         List<CPos> path;
@@ -56,9 +61,9 @@ namespace EW.Mods.Common.Activities
 
         }
 
-        public override void Cancel(Actor self)
+        public override bool Cancel(Actor self,bool keepQueue)
         {
-            base.Cancel(self);
+            return base.Cancel(self,keepQueue);
         }
 
         public override void Queue(Activity activity)
@@ -151,5 +156,37 @@ namespace EW.Mods.Common.Activities
                 hash += n++ * x.GetHashCode();
             return hash;
         }
+
+
+        abstract class MovePart : Activity
+        {
+            protected readonly Move Move;
+            protected readonly WPos From, To;
+            protected readonly int FromFacing, ToFacing;
+
+            protected readonly int MoveFractionTotal;
+
+            protected int moveFraction;
+
+            public MovePart(Move move,WPos from,WPos to,int fromFacing,int toFacing,int startingFraction)
+            {
+                Move = move;
+                From = from;
+                To = to;
+                FromFacing = fromFacing;
+                ToFacing = toFacing;
+            }
+        }
+
+        class MoveFirstHalf : MovePart
+        {
+
+        }
+
+        class MoveSecondHalf : MovePart
+        {
+
+        }
+
     }
 }

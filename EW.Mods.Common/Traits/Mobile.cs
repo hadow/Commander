@@ -21,6 +21,7 @@ namespace EW.Mods.Common.Traits
     {
         public static bool HasCellCondition(this CellConditions c,CellConditions cellCondition)
         {
+            //PERF:Enum.HasFlag is slower and requires allocations.
             return (c & cellCondition) == cellCondition;
         }
     }
@@ -164,10 +165,45 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         bool IsBlockedBy(Actor self,Actor otherActor,Actor ignoreActor,CellConditions check)
         {
+            // We are not blocked by the actor we are ignoring;
+            if (otherActor == ignoreActor)
+                return false;
+
+            if (self == null)
+                return true;
+            if (!check.HasCellCondition(CellConditions.BlockedByMovers) &&
+                self.Owner.Stances[otherActor.Owner] == Stance.Ally &&
+                IsMovingInMyDirection(self,otherActor))
+                return false;
+
+            var temporaryBlocker = otherActor.TraitOrDefault<ITemporaryBlocker>();
+            if (temporaryBlocker != null && temporaryBlocker.CanRemoveBlockage(otherActor, self))
+                return false;
+
+            //If we cannot crush the other actor in our way,we are blocked.
+            if (Crushes == null || Crushes.Count == 0)
+                return true;
+
+            var crushables = otherActor.TraitsImplementing<ICrushable>();
+            var lacksCrushability = true;
+
+            foreach(var crushable in crushables)
+            {
+                lacksCrushability = false;
+                if (!crushable.CrushableBy(otherActor, self, Crushes))
+                    return true;
+            }
+
+            if (lacksCrushability)
+                return true;
             //We are not blocked by the other actor.
             return false;
         }
 
+        static bool IsMovingInMyDirection(Actor self,Actor other)
+        {
+            return false;
+        }
 
         /// <summary>
         /// 

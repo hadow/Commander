@@ -6,7 +6,10 @@ using EW.Primitives;
 using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
-
+    public interface ICrushable
+    {
+        bool CrushableBy(Actor self, Actor crusher, HashSet<string> crushClasses);
+    }
     public interface IObservesVariables
     {
         IEnumerable<VariableObserver> GetVariableObservers();

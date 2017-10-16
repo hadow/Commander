@@ -51,7 +51,7 @@ namespace EW
         public bool Disposed { get; private set; }
 
         public IEffectiveOwner EffectiveOwner { get; private set; }
-        Activity currentActivity;
+        public Activity CurrentActivity { get; private set; }
 
         readonly IHealth health;
         readonly IFacing facing;

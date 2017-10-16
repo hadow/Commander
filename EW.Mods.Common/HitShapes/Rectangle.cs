@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Graphics;
+using EW.Primitives;
 namespace EW.Mods.Common.HitShapes
 {
     public class RectangleShape:IHitShape
@@ -8,6 +9,8 @@ namespace EW.Mods.Common.HitShapes
 
         public WDist OuterRadius { get; private set; }
 
+
+        
         public WDist DistanceFromEdge(WVec v)
         {
             return WDist.Zero;

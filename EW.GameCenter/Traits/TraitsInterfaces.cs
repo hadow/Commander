@@ -204,6 +204,12 @@ namespace EW.Traits
 
         void SetVisualPosition(Actor self, WPos wPos);
     }
+    
+    public interface ITemporaryBlocker
+    {
+        bool CanRemoveBlockage(Actor self, Actor blocking);
+        bool IsBlocking(Actor self, CPos cell);
+    }
     #region Order Interface
         public interface IOrderTargeter
         {
