@@ -24,17 +24,24 @@ namespace EW.Mods.Common.Activities
 
         public override Activity Tick(Actor self)
         {
-            throw new NotImplementedException();
+            if(autoTarget != null && --scanTicks <= 0)
+            {
+                autoTarget
+            }
         }
 
-        public override void Cancel(Actor self)
+        public override bool Cancel(Actor self,bool keepQueue = false)
         {
-            base.Cancel(self);
+            if (!IsCanceled && inner != null && inner.Cancel(self))
+                return false;
+            return base.Cancel(self,keepQueue);
         }
 
         public override IEnumerable<Target> GetTargets(Actor self)
         {
-            return base.GetTargets(self);
+            if (inner != null)
+                return inner.GetTargets(self);
+            return Target.None;
         }
 
 

@@ -16,9 +16,13 @@ namespace EW.Traits
         /// <returns></returns>
         public static Activity RunActivity(Actor self,Activity act)
         {
+            //PERF:If there are no activities we can bail straight away and save ourselves a call to Stopwatch.GetTimestamp.
             if (act == null)
                 return act;
 
+            //PERF: This is a hot path and must run with minimal added overhead.
+            //Calling Stopwatch.GetTimestamp is a bit expensive, so we enumerate manually to allow us to call it only
+            //once per iteration in the normal case.
             var longTickThresholdInStopwatchTicks = PerfTimer.LongTickThresholdInStopwatchTicks;
             var start = Stopwatch.GetTimestamp();
 
@@ -33,7 +37,7 @@ namespace EW.Traits
                 }
                 else
                     start = current;
-                if (prev == act)
+                if (prev == act || act == prev.ParentActivity)
                     break;
             }
             return act;

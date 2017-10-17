@@ -174,6 +174,34 @@ namespace EW.Mods.Common.Traits
             return false;
         }
 
+        public Stance UnforcedAttackTargetStances()
+        {
+            //PERF: Avoid LINQ
+            var stance = Stance.None;
+            foreach(var armament in Armaments)
+            {
+                if (!armament.IsTraitDisabled)
+                    stance |= armament.Info.TargetStances;
+            }
+            return stance;
+        }
+
+        public WDist GetMaximumRange()
+        {
+            if (!IsTraitDisabled)
+                return WDist.Zero;
+
+            //PERF: Avoid LINQ;
+            var max = WDist.Zero;
+            foreach(var armament in Armaments)
+            {
+                if (armament.IsTraitDisabled)
+                    continue;
+
+                if(armament.outf)
+            }
+        }
+
         /// <summary>
         /// 攻击指令锁定目标
         /// </summary>

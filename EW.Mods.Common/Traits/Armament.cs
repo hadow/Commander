@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
@@ -9,6 +10,9 @@ namespace EW.Mods.Common.Traits
         public WVec Offset;
         public WAngle Yaw;
     }
+    /// <summary>
+    /// Œ‰∆˜–≈œ¢
+    /// </summary>
     public class ArmamentInfo : UpgradableTraitInfo, IRulesetLoaded, Requires<AttackBaseInfo>
     {
 
@@ -54,26 +58,39 @@ namespace EW.Mods.Common.Traits
             return new Armament(init.Self, this);
         }
     }
-    public class Armament:UpgradableTrait<ArmamentInfo>,INotifyCreated,ITick,IExplodeModifier
+    public class Armament:ConditionalTrait<ArmamentInfo>,ITick,IExplodeModifier
     {
         public readonly WeaponInfo Weapon;
         public readonly Barrel[] Barrels;
+        readonly Actor self;
+        AmmoPool ammoPool;
 
         public Armament(Actor self,ArmamentInfo info):base(info)
         {
-
+            
         }
 
 
-        readonly Actor self;
 
         public void Tick(Actor self) { }
 
-        public void Created(Actor self) { }
+        protected override  void Created(Actor self)
+        {
+            ammoPool = self.TraitsImplementing<AmmoPool>().FirstOrDefault(la => la.Info.Name == info.AmmoPoolName);
+        }
 
         public bool ShouldExplode(Actor self) { return false; }
 
         public int FireDelay { get; private set; }
-        public bool IsReloading { get { return FireDelay > 0 || IsTraitDisabled; } }
+        public virtual bool IsReloading { get { return FireDelay > 0 || IsTraitDisabled; } }
+
+        public virtual bool OutOfAmo
+        {
+            get
+            {
+                return ammoPool != null && !ammoPool.Info.SelfReloads;
+            }
+        }
+       
     }
 }

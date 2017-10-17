@@ -138,7 +138,7 @@ namespace EW
 
         public void Tick()
         {
-            currentActivity = ActivityUtils.RunActivity(this, currentActivity);
+            CurrentActivity = ActivityUtils.RunActivity(this, CurrentActivity);
         }
 
         /// <summary>

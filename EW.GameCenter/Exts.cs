@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Globalization;
 using EW.Support;
+using EW.Traits;
 namespace EW
 {
     public static class Enum<T>
@@ -283,6 +284,25 @@ namespace EW
                 }
                 return t;
             }
+        }
+
+        public static IEnumerable<T> Iterate<T>(this T t,Func<T,T> f)
+        {
+            for(; ; )
+            {
+                yield return t;
+                t = f(t);
+            }
+        }
+
+        public static bool IsTraitEnabled(this object trait)
+        {
+            return trait as IDisabledTrait == null || !(trait as IDisabledTrait).IsTraitDisabled;
+        }
+        
+        public static bool IsTraitEnabled<T>(T t)
+        {
+            return IsTraitEnabled(t as object);
         }
     }
     

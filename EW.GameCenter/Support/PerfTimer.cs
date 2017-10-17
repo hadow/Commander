@@ -27,7 +27,7 @@ namespace EW.Support
             parent = parentThreadLocal.Value;
             depth = parent == null ? (byte)0 : (byte)(parent.depth + 1);
             parentThreadLocal.Value = this;
-            ticks = Stopwatch.GetTimestamp();//获取机时器机制中的当前刻度数
+            ticks = Stopwatch.GetTimestamp();//获取计时器机制中的当前刻度数
         }
 
         public static long LongTickThresholdInStopwatchTicks

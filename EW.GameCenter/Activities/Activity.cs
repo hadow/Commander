@@ -15,6 +15,15 @@ namespace EW.Activities
 
         public ActivityState State { get; private set; }
 
+        public bool IsInterruptible { get; protected set; }
+
+        public bool IsCanceled
+        {
+            get
+            {
+                return State == ActivityState.Canceled;
+            }
+        }
 
         public Activity RootActivity
         {
@@ -96,15 +105,7 @@ namespace EW.Activities
             }
         }
 
-        public bool IsInterruptible { get; protected set; }
-
-        public bool IsCanceled
-        {
-            get
-            {
-                return State == ActivityState.Canceled;
-            }
-        }
+        
 
         public Activity()
         {
@@ -185,7 +186,7 @@ namespace EW.Activities
     {
         public static IEnumerable<Target> GetTargetQueue(this Actor self)
         {
-            return self.CurrentActivity
+            return self.CurrentActivity.Iterate(u => u.NextActivity).TakeWhile(u => u != null).SelectMany(u => u.GetTargets(self));
         }
     }
 
