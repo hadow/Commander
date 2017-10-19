@@ -25,6 +25,14 @@ namespace EW.Traits
         Ally = 4,       //Í¬ÃË¹ú
     }
 
+    public static class StancExts
+    {
+        public static bool HasStance(this Stance s ,Stance stance)
+        {
+            return (s & stance) == stance;
+        }
+    }
+
     public enum TargetModifiers
     {
         None = 0,
@@ -384,5 +392,19 @@ namespace EW.Traits
     public interface ITargetableCells
     {
         IEnumerable<Pair<CPos, SubCell>> TargetableCells();
+    }
+
+    public interface ITargetable
+    {
+        HashSet<string> TargetTypes { get; }
+
+        bool TargetableBy(Actor self, Actor byActor);
+
+        bool RequiresForceFire { get; }
+    }
+
+    public interface ITargetablePositions
+    {
+        IEnumerable<WPos> TargetablePositions(Actor self);
     }
 }

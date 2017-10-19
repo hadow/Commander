@@ -42,9 +42,10 @@ namespace EW
 
         public Rectangle VisualBounds { get; private set; }
 
+        public ITargetable[] Targetables { get; private set; }
         public bool IsInWorld { get; internal set; }
 
-        public bool IsIdle { get { return currentActivity == null; } }
+        public bool IsIdle { get { return CurrentActivity == null; } }
 
         public bool IsDead { get { return Disposed || (health != null && health.IsDead); } }
 
@@ -107,6 +108,7 @@ namespace EW
             renderModifiers = TraitsImplementing<IRenderModifier>().ToArray();
             visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
             defaultVisibility = Trait<IDefaultVisibility>();
+            Targetables = TraitsImplementing<ITargetable>().ToArray();
             Bounds = DetermineBounds();
 
             SyncHashes = TraitsImplementing<ISync>()
@@ -174,12 +176,35 @@ namespace EW
             return ActorID == other.ActorID;
         }
 
+        /// <summary>
+        /// ©ийспт
+        /// </summary>
+        /// <param name="player"></param>
+        /// <returns></returns>
         public bool CanBeViewedByPlayer(Player player)
         {
             foreach (var visibilityModifier in visibilityModifiers)
                 if (!visibilityModifier.IsVisible(this, player))
                     return false;
             return defaultVisibility.IsVisible(this, player);
+        }
+
+        public IEnumerable<string> GetAllTargetTypes()
+        {
+            //PERF:Avoid LINQ;
+
+            foreach (var targetable in Targetables)
+                foreach (var targetType in targetable.TargetTypes)
+                    yield return targetType;
+        }
+
+        public IEnumerable<string> GetEnabledTargetTypes()
+        {
+            //PERF:Avoid LINQ;
+            foreach (var targetable in Targetables)
+                if (targetable.IsTraitEnabled())
+                    foreach (var targetType in targetable.TargetTypes)
+                        yield return targetType;
         }
 
         public bool IsDisabled()

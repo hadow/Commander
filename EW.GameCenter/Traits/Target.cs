@@ -1,6 +1,6 @@
 using System;
-
-
+using System.Collections.Generic;
+using System.Linq;
 namespace EW.Traits
 {
     public enum TargetT
@@ -19,6 +19,19 @@ namespace EW.Traits
         public static Target FromCell(World w,CPos c,SubCell subCell= SubCell.FullCell)
         {
             return new Target { pos = w.Map.CenterOfSubCell(c, subCell), type = TargetT.Terrain };
+        }
+
+        public static Target FromActor(Actor a)
+        {
+            if (a == null)
+                return Invalid;
+
+            return new Target
+            {
+                actor = a,
+                type = TargetT.Actor,
+                generation = a.Generation,
+            };
         }
 
 
@@ -71,6 +84,45 @@ namespace EW.Traits
                         throw new InvalidOperationException("Attempting to query the position of an invalid Target");
                 }
             }
+        }
+
+        static readonly WPos[] NoPositions = { };
+
+        public IEnumerable<WPos> Positions
+        {
+            get
+            {
+                switch (Type)
+                {
+                    case TargetT.Actor:
+
+                        if (!actor.Targetables.Any(Exts.IsTraitEnabled))
+                            return new[] { actor.CenterPosition};
+
+                        var targetablePositions = actor.TraitsImplementing<ITargetablePositions>().Where(Exts.IsTraitEnabled);
+                        if (targetablePositions.Any())
+                        {
+                            var target = this;
+                            return targetablePositions.SelectMany(tp => tp.TargetablePositions(target.actor));
+                        }
+                        return new[] { actor.CenterPosition };
+                    case TargetT.FrozenActor:
+                        return new[] { frozen.CenterPosition };
+                    case TargetT.Terrain:
+                        return new[] { pos };
+                    default:
+                    case TargetT.Invalid:
+                        return NoPositions;
+                }
+            }
+        }
+
+        public bool IsInRange(WPos origin,WDist range)
+        {
+            if (Type == TargetT.Invalid)
+                return false;
+
+            return Positions.Any(t => (t - origin).HorizontalLengthSquared <= range.LengthSquared);
         }
     }
 }

@@ -39,11 +39,7 @@ namespace EW
 
         readonly IFogVisibilityModifier[] fogVisibilities; 
 
-
-        public bool CanViewActor(Actor a)
-        {
-            return a.CanBeViewedByPlayer(this);
-        }
+        
         public Dictionary<Player, Stance> Stances = new Dictionary<Player, Stance>();
 
 
@@ -76,6 +72,37 @@ namespace EW
             PlayerActor = world.CreateActor("Player", new TypeDictionary() { new OwnerInit(this)});
             Shroud = PlayerActor.Trait<Shroud>();
             fogVisibilities = PlayerActor.TraitsImplementing<IFogVisibilityModifier>().ToArray();
+        }
+
+
+        public bool CanTargetActor(Actor a)
+        {
+            //PERF:Avoid LINQ;
+
+            if (HasFogVisibility)
+                foreach (var fogVisibility in fogVisibilities)
+                    if (fogVisibility.IsVisible(a))
+                        return true;
+            return CanViewActor(a);
+        }
+
+        public bool CanViewActor(Actor a)
+        {
+            return a.CanBeViewedByPlayer(this);
+        }
+
+
+        public bool HasFogVisibility
+        {
+            get
+            {
+                foreach(var fogVisibility in fogVisibilities)
+                {
+                    if (fogVisibility.HasFogVisibility())
+                        return true;
+                }
+                return false;
+            }
         }
 
         /// <summary>

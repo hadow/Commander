@@ -24,6 +24,12 @@ namespace EW.Mods.Common
             return map.DistanceAboveTerrain(self.CenterPosition).Length == 0;
         }
 
+        /// <summary>
+        /// 友好双方
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="toActor"></param>
+        /// <returns></returns>
         public static bool AppearsFriendlyTo(this Actor self,Actor toActor)
         {
             var stance = toActor.Owner.Stances[self.Owner];
@@ -33,6 +39,21 @@ namespace EW.Mods.Common
             }
 
             return stance == Stance.Ally;
+        }
+
+        /// <summary>
+        /// 敌对双方
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="toActor"></param>
+        /// <returns></returns>
+        public static bool AppearsHostileTo(this Actor self,Actor toActor)
+        {
+            var stance = toActor.Owner.Stances[self.Owner];
+            if (stance == Stance.Ally)
+                return false;
+
+            return stance == Stance.Enemy;
         }
 
         /// <summary>

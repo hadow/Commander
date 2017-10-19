@@ -7,7 +7,7 @@ using EW.Mods.Common.Warheads;
 using EW.Xna.Platforms;
 namespace EW.Mods.Common.Traits
 {
-    public abstract class AttackBaseInfo:UpgradableTraitInfo
+    public abstract class AttackBaseInfo:ConditionalTraitInfo
     {
         public readonly string[] Armaments = { "primary", "secondary" };
 
@@ -33,8 +33,10 @@ namespace EW.Mods.Common.Traits
     }
 
 
-
-    public abstract class AttackBase:UpgradableTrait<AttackBaseInfo>,IIssueOrder,IResolveOrder,IOrderVoice
+    /// <summary>
+    /// 攻击
+    /// </summary>
+    public abstract class AttackBase:ConditionalTrait<AttackBaseInfo>,IIssueOrder,IResolveOrder,IOrderVoice
     {
         readonly string attackOrderName = "Attack";
         readonly string forceAttackOrderName = "ForceAttack";
@@ -200,6 +202,34 @@ namespace EW.Mods.Common.Traits
 
                 if(armament.outf)
             }
+        }
+
+        /// <summary>
+        /// 为目标挑选武器
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="forceAttack"></param>
+        /// <returns></returns>
+        public IEnumerable<Armament> ChooseArmamentsForTarget(Target t,bool forceAttack)
+        {
+            if ((!forceAttack) && (t.Type == TargetT.Terrain || t.Type == TargetT.Invalid))
+                return Enumerable.Empty<Armament>();
+
+            Player owner = null;
+
+            if(t.Type == TargetT.FrozenActor)
+            {
+                owner = t.FrozenActor.Owner;
+            }
+            else if(t.Type == TargetT.Actor)
+            {
+
+            }
+
+            return Armaments.Where(a => 
+                !a.IsTraitDisabled 
+                &&(owner == null || (forceAttack ? a.Info.ForceTargetsStance:a.Info.TargetStances).HasStance(self.Owner.Stances[owner]))
+                && a.Weapon.IsValidAgainst(t,self.World,self));
         }
 
         /// <summary>

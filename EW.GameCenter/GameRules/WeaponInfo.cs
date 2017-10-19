@@ -122,6 +122,69 @@ namespace EW
 
         }
 
+        /// <summary>
+        /// 目标类型是否通过验证
+        /// </summary>
+        /// <param name="targetTypes"></param>
+        /// <returns></returns>
+        public bool IsValidTarget(IEnumerable<string> targetTypes)
+        {
+            return ValidTargets.Overlaps(targetTypes) && !InvalidTargets.Overlaps(targetTypes);
+        }
+
+        public bool IsValidAgainst(Target target,World world,Actor firedBy)
+        {
+            if(target.Type == TargetT.Actor)
+            {
+                return IsValidAgainst(target.Actor, firedBy);
+            }
+
+            if(target.Type == TargetT.FrozenActor)
+            {
+                return IsValidAgainst(target.FrozenActor, firedBy);
+            }
+
+            if(target.Type == TargetT.Terrain)
+            {
+                var cell = world.Map.CellContaining(target.CenterPosition);
+                if (!world.Map.Contains(cell))
+                    return false;
+
+                var cellInfo = world.Map.GetTerrainInfo(cell);
+                if (!IsValidTarget(cellInfo.TargetTypes))
+                    return false;
+            }
+
+            return false;
+        }
+
+        public bool IsValidAgainst(Actor victim,Actor firedBy)
+        {
+            var targetTypes = victim.GetEnabledTargetTypes();
+
+            if (!IsValidTarget(targetTypes))
+                return false;
+
+            //PERF:Avoid LINQ;
+            foreach(var warhead in Warheads)
+            {
+                if (warhead.IsValidAgainst(victim, firedBy))
+                    return true;
+            }
+            return false;
+        }
+
+
+        public bool IsValidAgainst(FrozenActor victim,Actor firedBy)
+        {
+            if (!IsValidTarget(victim.TargetTypes))
+                return false;
+
+            if (!Warheads.Any(w => w.IsValidAgainst(victim, firedBy)))
+                return false;
+
+            return true;
+        }
 
     }
 }

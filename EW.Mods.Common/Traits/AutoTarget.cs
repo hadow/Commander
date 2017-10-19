@@ -6,7 +6,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class AutoTargetInfo : UpgradableTraitInfo,Requires<AttackBaseInfo>,UsesInit<StanceInit>
+    public class AutoTargetInfo : ConditionalTraitInfo,Requires<AttackBaseInfo>,UsesInit<StanceInit>
     {
         public readonly bool AllowMovement = true;
 
@@ -32,7 +32,9 @@ namespace EW.Mods.Common.Traits
             return new AutoTarget(init, this);
         }
     }
-    public class AutoTarget:UpgradableTrait<AutoTargetInfo>,ITick,ISync
+
+
+    public class AutoTarget:ConditionalTrait<AutoTargetInfo>,ITick,ISync
     {
         //readonly AttackBase[] attackBases;
         readonly IEnumerable<AttackBase> activeAttackBases;
@@ -42,14 +44,18 @@ namespace EW.Mods.Common.Traits
         int nextScanTime = 0;
 
         [Sync]
-        public Actor Aggressor;
+        public Actor Aggressor; //侵略者
 
         [Sync]
         public Actor TargetedActor;
 
         public UnitStance Stance;
 
+        ConditionManager conditionManager;
 
+        AutoTargetPriority[] targetPriorities;
+
+        int conditionToken = ConditionManager.InvalidConditionToken;
 
 
         public AutoTarget(ActorInitializer init,AutoTargetInfo info) : base(info)
@@ -83,6 +89,60 @@ namespace EW.Mods.Common.Traits
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="ab"></param>
+        /// <param name="attackStances"></param>
+        /// <param name="scanRange"></param>
+        /// <param name="allowMove"></param>
+        /// <returns></returns>
+        Actor ChooseTarget(Actor self,AttackBase ab,Stance attackStances,WDist scanRange,bool allowMove)
+        {
+            Actor chosenTarget = null;
+            var chosenTargetPriority = int.MinValue;
+            int chosenTargetRange = 0;
+
+            var activePriorities = targetPriorities.Where(Exts.IsTraitEnabled).Select(at => at.Info).OrderByDescending(ati => ati.Priority).ToList();
+
+            if (!activePriorities.Any())
+                return null;
+
+            var actorsInRange = self.World.FindActorsInCircle(self.CenterPosition, scanRange);
+            foreach(var actor in actorsInRange)
+            {
+                if (attackStances == EW.Traits.Stance.Enemy && !actor.AppearsHostileTo(self))
+                    continue;
+
+                var targetTypes = actor.TraitsImplementing<ITargetable>().Where(Exts.IsTraitEnabled).SelectMany(t => t.TargetTypes).ToHashSet();
+
+                var target = Target.FromActor(actor);
+                var validPriorities = activePriorities.Where(ati =>
+                {
+                    if (ati.Priority < chosenTargetPriority)
+                        return false;
+
+                    //Incompatible target types.
+                    if (!targetTypes.Overlaps(ati.ValidTargets) || targetTypes.Overlaps(ati.InvalidTargets))
+                        return false;
+                    return true;
+
+                }).ToList();
+
+                if (!validPriorities.Any() ||!self.Owner.CanTargetActor(actor))
+                    continue;
+                //
+                var armaments = ab.ChooseArmamentsForTarget(target,false);
+
+                if(!allowMove)
+                    armaments = armaments.Where(arm=> target.)
+            }
+
+            return chosenTarget;
+
         }
     }
 
