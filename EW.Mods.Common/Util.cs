@@ -20,5 +20,12 @@ namespace EW.Mods.Common
                 return (facing - rot) & 0xFF;
         }
 
+        public static int ApplyPercentageModifiers(int number,IEnumerable<int> percentages)
+        {
+            var a = (decimal)number;
+            foreach (var p in percentages)
+                a *= p / 100m;
+            return (int)a;
+        }
     }
 }

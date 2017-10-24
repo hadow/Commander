@@ -36,6 +36,9 @@ namespace EW.Mods.Common.Traits
         //    }
         //}
 
+        /// <summary>
+        ///  条件状态
+        /// </summary>
         class ConditionState
         {
             public readonly List<VariableObserverNotifier> Notifiers = new List<VariableObserverNotifier>();
@@ -73,7 +76,7 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 
+        /// 撤销
         /// </summary>
         /// <param name="self"></param>
         /// <param name="token"></param>

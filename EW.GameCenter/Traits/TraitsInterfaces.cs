@@ -106,6 +106,7 @@ namespace EW.Traits
 
     public interface INotifyIdle { void TickIdle(Actor self); }
 
+    public interface INotifyDamage { }
 
     
     public interface INotifyCreated { void Created(Actor self); }

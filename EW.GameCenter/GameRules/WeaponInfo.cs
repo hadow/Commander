@@ -77,6 +77,10 @@ namespace EW
         [FieldLoader.LoadUsing("LoadWarheads")]
         public readonly List<IWarHead> Warheads = new List<IWarHead>();
 
+        /// <summary>
+        /// Does the weapon aim at the target's center regardless of other targetable offsets?
+        /// </summary>
+        public readonly bool TargetActorCenter = false;
         public WeaponInfo(string name, MiniYaml content)
         {
             FieldLoader.Load(this, content);

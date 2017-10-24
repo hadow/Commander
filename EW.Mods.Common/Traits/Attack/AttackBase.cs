@@ -44,11 +44,11 @@ namespace EW.Mods.Common.Traits
         [Sync]
         public bool IsAttacking { get; internal set; }
 
-        protected Lazy<IFacing> facing;
+        protected IFacing facing;
 
-        protected Lazy<Building> building;
+        protected Building building;
 
-        protected Lazy<IPositionable> positionable;
+        protected IPositionable positionable;
 
         protected Func<IEnumerable<Armament>> getArmaments;//获取武器装备
 
@@ -58,14 +58,24 @@ namespace EW.Mods.Common.Traits
         public AttackBase(Actor self,AttackBaseInfo info) : base(info)
         {
             this.self = self;
+            
+        }
 
-            var armaments = Exts.Lazy(() => self.TraitsImplementing<Armament>().Where(a => info.Armaments.Contains(a.Info.Name)).ToArray());
+        protected override void Created(Actor self)
+        {
+            facing = self.TraitOrDefault<IFacing>();
+            building = self.TraitOrDefault<Building>();
+            positionable = self.TraitOrDefault<IPositionable>();
 
-            getArmaments = () => armaments.Value;
+            getArmaments = InitializeGetArmaments(self);
 
-            facing = Exts.Lazy(() => self.TraitOrDefault<IFacing>());
-            building = Exts.Lazy(() => self.TraitOrDefault<Building>());
-            positionable = Exts.Lazy(() => self.TraitOrDefault<IPositionable>());
+            base.Created(self);
+        }
+
+        protected virtual Func<IEnumerable<Armament>> InitializeGetArmaments(Actor self)
+        {
+            var armaments = self.TraitsImplementing<Armament>().Where(a => Info.Armaments.Contains(a.Info.Name)).ToArray();
+            return () => armaments;
         }
 
         /// <summary>
@@ -85,13 +95,55 @@ namespace EW.Mods.Common.Traits
             if (!HasAnyValidWeapons(target))
                 return false;
 
-            if (building.Value != null && !building.Value.BuildComplete)
+            if (building != null && !building.BuildComplete)
                 return false;
 
             if (Armaments.All(a => a.IsReloading))
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="allowMove"></param>
+        /// <returns></returns>
+        public bool IsReachableTarget(Target target,bool allowMove)
+        {
+            return HasAnyValidWeapons(target) && (target.IsInRange(self.CenterPosition, GetMaximumRangeVersusTarget(target)) || (allowMove && self.Info.HasTraitInfo<IMoveInfo>()));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public WDist GetMaximumRangeVersusTarget(Target target)
+        {
+            if (IsTraitDisabled)
+                return WDist.Zero;
+
+            //PERF:Avoid LINQ
+            var max = WDist.Zero;
+            foreach(var armament in Armaments)
+            {
+                if (armament.IsTraitDisabled)
+                    continue;
+
+                if (armament.OutOfAmo)
+                    continue;
+
+                if (!armament.Weapon.IsValidAgainst(target, self.World, self))
+                    continue;
+
+                var range = armament.MaxRange();
+                if (max < range)
+                    max = range;
+            }
+
+            return max;
         }
 
         public IEnumerable<IOrderTargeter> Orders
@@ -171,8 +223,27 @@ namespace EW.Mods.Common.Traits
         {
             return order.OrderString == attackOrderName || order.OrderString == forceAttackOrderName ? Info.Voice : null;
         }
-        public bool HasAnyValidWeapons(Target t)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="checkForCenterTargetingWeapons"></param>
+        /// <returns></returns>
+        public bool HasAnyValidWeapons(Target t,bool checkForCenterTargetingWeapons = false)
         {
+            if (IsTraitDisabled)
+                return false;
+            if (Info.AttackRequiresEnteringCell && (positionable == null || !positionable.CanEnterCell(t.Actor.Location, null, false)))
+                return false;
+
+            //PERF: Avoid LINQ
+            foreach(var armament in Armaments)
+            {
+                var checkIsValid = checkForCenterTargetingWeapons ? armament.Weapon.TargetActorCenter : !armament.OutOfAmo;
+                if (checkIsValid && !armament.IsTraitDisabled && armament.Weapon.IsValidAgainst(t, self.World, self))
+                    return true;
+            }
             return false;
         }
 
@@ -200,8 +271,38 @@ namespace EW.Mods.Common.Traits
                 if (armament.IsTraitDisabled)
                     continue;
 
-                if(armament.outf)
+                if (armament.OutOfAmo)
+                    continue;
+
+                var range = armament.MaxRange();
+                if (max < range)
+                    max = range;
             }
+
+            return max;
+        }
+
+        public WDist GetMinimumRange()
+        {
+            if (IsTraitDisabled)
+                return WDist.Zero;
+
+            //PERF:Avoid LINQ;
+            var min = WDist.MaxValue;
+            foreach(var armament in Armaments)
+            {
+                if (armament.IsTraitDisabled)
+                    continue;
+                if (armament.OutOfAmo)
+                    continue;
+
+                var range = armament.Weapon.MinRange;
+                if (min > range)
+                    min = range;
+
+            }
+
+            return min != WDist.MaxValue ? min : WDist.Zero;
         }
 
         /// <summary>

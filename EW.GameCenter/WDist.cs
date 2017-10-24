@@ -9,6 +9,7 @@ namespace EW
     public struct WDist:IEquatable<WDist>,IComparable,IComparable<WDist>
     {
         public static readonly WDist Zero = new WDist(0);
+        public static readonly WDist MaxValue = new WDist(int.MaxValue);
         public readonly int Length;
 
         public long LengthSquared { get { return (long)Length * Length; } }
@@ -42,6 +43,14 @@ namespace EW
         {
             return !(a == b);
         }
+        public static bool operator <(WDist a,WDist b) { return a.Length < b.Length; }
+
+        public static bool operator >(WDist a,WDist b) { return a.Length > b.Length; }
+
+        public static bool operator >=(WDist a,WDist b) { return a.Length >= b.Length; }
+
+        public static bool operator <=(WDist a,WDist b) { return a.Length <= b.Length; }
+
 
         #endregion
 

@@ -17,7 +17,7 @@ namespace EW.Mods.Common.Traits
 
         public bool EnabledByDefault { get; private set; }
 
-        public virtual void RulesetLoaded(Ruleset rules,ActorInfo ai)
+        public virtual void RulesetLoaded(Ruleset rules,ActorInfo info)
         {
             EnabledByDefault = RequiresCondition == null || RequiresCondition.Evaluate(VariableExpression.NoVariables);
         }

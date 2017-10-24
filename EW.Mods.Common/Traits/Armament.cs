@@ -11,9 +11,9 @@ namespace EW.Mods.Common.Traits
         public WAngle Yaw;
     }
     /// <summary>
-    /// Œ‰∆˜–≈œ¢
+    /// Allows you to attach weapons to the unit
     /// </summary>
-    public class ArmamentInfo : UpgradableTraitInfo, IRulesetLoaded, Requires<AttackBaseInfo>
+    public class ArmamentInfo : ConditionalTraitInfo, IRulesetLoaded, Requires<AttackBaseInfo>
     {
 
         public readonly string Name = "primary";
@@ -48,7 +48,7 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         /// <param name="rules"></param>
         /// <param name="ai"></param>
-        public void RulesetLoaded(Ruleset rules,ActorInfo ai)
+        public override void RulesetLoaded(Ruleset rules,ActorInfo ai)
         {
 
         }
@@ -65,9 +65,17 @@ namespace EW.Mods.Common.Traits
         readonly Actor self;
         AmmoPool ammoPool;
 
+
+        IEnumerable<int> rangeModifiers;
+        IEnumerable<int> reloadModifiers;
+        IEnumerable<int> damageModifiers;
+        IEnumerable<int> inaccuracyModifiers;
+
         public Armament(Actor self,ArmamentInfo info):base(info)
         {
-            
+            this.self = self;
+
+            Weapon = info.WeaponInfo;
         }
 
 
@@ -76,7 +84,8 @@ namespace EW.Mods.Common.Traits
 
         protected override  void Created(Actor self)
         {
-            ammoPool = self.TraitsImplementing<AmmoPool>().FirstOrDefault(la => la.Info.Name == info.AmmoPoolName);
+            ammoPool = self.TraitsImplementing<AmmoPool>().FirstOrDefault(la => la.Info.Name == Info.AmmoPoolName);
+            
         }
 
         public bool ShouldExplode(Actor self) { return false; }
@@ -90,6 +99,11 @@ namespace EW.Mods.Common.Traits
             {
                 return ammoPool != null && !ammoPool.Info.SelfReloads;
             }
+        }
+
+        public virtual WDist MaxRange()
+        {
+            return new WDist(Util.ApplyPercentageModifiers(Weapon.Range.Length, rangeModifiers.ToArray()));
         }
        
     }

@@ -4,7 +4,9 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Traits
 {
-
+    /// <summary>
+    /// Actor will follow units until in range to attack them.
+    /// </summary>
     public class AttackFollowInfo : AttackBaseInfo
     {
         public override object Create(ActorInitializer init)
