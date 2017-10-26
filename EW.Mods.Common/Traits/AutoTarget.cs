@@ -14,7 +14,7 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         public readonly bool AllowMovement = true;
 
-        public readonly int ScanRadius = -1;        //set to a value>1 to override weapons maimum range for this.
+        public readonly int ScanRadius = -1;        //set to a value>1 to override weapons maximum range for this.
 
         public readonly UnitStance InitialStanceAI = UnitStance.AttackAnything;
 
@@ -156,6 +156,25 @@ namespace EW.Mods.Common.Traits
             ApplyStanceCondition(self);
         }
 
+        void IResolveOrder.ResolveOrder(Actor self, Order order)
+        {
+            if (order.OrderString == "SetUnitStance" && Info.EnableStance)
+                SetStance(self, (UnitStance)order.ExtraData);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="value"></param>
+        public void SetStance(Actor self,UnitStance value)
+        {
+            if (stance == value)
+                return;
+
+            stance = value;
+            ApplyStanceCondition(self);
+        }
 
         void ApplyStanceCondition(Actor self)
         {

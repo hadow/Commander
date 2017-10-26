@@ -26,8 +26,16 @@ namespace EW.Mods.Common.Activities
         {
             if(autoTarget != null && --scanTicks <= 0)
             {
-                autoTarget
+                autoTarget.ScanAndAttack(self, true);
+                scanTicks = ScanInterval;
             }
+
+            if (inner == null)
+                return NextActivity;
+            
+            inner = ActivityUtils.RunActivity(self, inner);
+
+            return this;
         }
 
         public override bool Cancel(Actor self,bool keepQueue = false)

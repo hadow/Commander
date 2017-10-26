@@ -30,6 +30,7 @@ namespace EW
         internal readonly OrderManager OrderManager;
 
         readonly List<IEffect> effects = new List<IEffect>();
+        readonly List<ISync> syncedEffects = new List<ISync>();
 
         public readonly MersenneTwister SharedRandom;
         public int Timestep;
@@ -322,6 +323,15 @@ namespace EW
             {
                 t.AddedToWorld(a);
             }
+        }
+
+        public void Add(IEffect e)
+        {
+            effects.Add(e);
+
+            var se = e as ISync;
+            if (se != null)
+                syncedEffects.Add(se);
         }
 
         /// <summary>

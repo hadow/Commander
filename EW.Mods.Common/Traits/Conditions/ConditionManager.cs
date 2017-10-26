@@ -41,8 +41,14 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         class ConditionState
         {
+            /// <summary>
+            /// Delegates that have registered to be notified when this condition changes.
+            /// </summary>
             public readonly List<VariableObserverNotifier> Notifiers = new List<VariableObserverNotifier>();
 
+            /// <summary>
+            /// Unique integers identifying granted instances of the condition.
+            /// </summary>
             public readonly HashSet<int> Tokens = new HashSet<int>();
 
             /// <summary>
@@ -56,12 +62,21 @@ namespace EW.Mods.Common.Traits
 
         Dictionary<string, ConditionState> state;
 
+        /// <summary>
+        /// Each granted condition receives a unique token that is used when revoking.
+        /// </summary>
         Dictionary<int, string> tokens = new Dictionary<int, string>();
 
         int nextToken = 1;
 
+        /// <summary>
+        /// Cach of condition -> enabled state for quick evaluation of token counter conditions.
+        /// </summary>
         readonly Dictionary<string, int> conditionCache = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Read-only version of conditionCache that is passed to IConditionConsumers.
+        /// </summary>
         IReadOnlyDictionary<string, int> readOnlyConditionCache;
 
         public int GrantCondition(Actor self,string condition)
@@ -76,10 +91,10 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 撤销
+        /// Revokes previously granted condition
         /// </summary>
         /// <param name="self"></param>
-        /// <param name="token"></param>
+        /// <param name="token">The token ID returned by GrantedCondtion</param>
         /// <returns></returns>
         public int RevokeCondition(Actor self,int token)
         {
@@ -89,6 +104,7 @@ namespace EW.Mods.Common.Traits
 
             tokens.Remove(token);
 
+            //Conditions may be granted and revoked before the state is initialized.
             if (state != null)
                 UpdateConditionState(self, condition, token, true);
 

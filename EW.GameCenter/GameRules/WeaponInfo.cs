@@ -58,12 +58,12 @@ namespace EW
         public readonly int ReloadDelay = 1;
 
         /// <summary>
-        /// 
+        /// What types of targets are affected.
         /// </summary>
         public readonly HashSet<string> ValidTargets = new HashSet<string> { "Gound", "Water" };
 
         /// <summary>
-        /// 
+        /// What types of targets are unaffected.
         /// </summary>
         public readonly HashSet<string> InvalidTargets = new HashSet<string>();
 
@@ -121,9 +121,23 @@ namespace EW
             return retList;
         }
 
+        /// <summary>
+        /// Applies all the weapon's warheads to the target.
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="firedBy"></param>
+        /// <param name="damageModifiers"></param>
         public void Impact(Target target,Actor firedBy,IEnumerable<int> damageModifiers)
         {
+            foreach(var warhead in Warheads)
+            {
+                var wh = warhead;//force the closure to bind to the current warhead.
 
+                if (wh.Delay > 0)
+                    firedBy.World.AddFrameEndTask(w => w.Add(new DelayedImpact(wh.Delay, wh, target, firedBy, damageModifiers)));
+                else
+                    wh.DoImpact(target, firedBy, damageModifiers);
+            }
         }
 
         /// <summary>
