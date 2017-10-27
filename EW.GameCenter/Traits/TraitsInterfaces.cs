@@ -422,4 +422,9 @@ namespace EW.Traits
 
         IBotInfo Info { get; }
     }
+
+    public interface ITargetableInfo : ITraitInfoInterface
+    {
+        HashSet<string> GetTargetTypes();
+    }
 }

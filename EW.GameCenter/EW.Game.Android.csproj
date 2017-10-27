@@ -14,7 +14,7 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
@@ -73,6 +73,7 @@
     <Compile Include="CryptoUtil.cs" />
     <Compile Include="CVec.cs" />
     <Compile Include="Download.cs" />
+    <Compile Include="Effects\DelayedImpact.cs" />
     <Compile Include="Effects\IEffect.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
@@ -729,8 +730,10 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Content\mods\common\" />
+    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

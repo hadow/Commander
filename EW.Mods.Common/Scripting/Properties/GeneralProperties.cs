@@ -150,7 +150,7 @@ namespace EW.Mods.Common.Scripting
                 if (!Enum<UnitStance>.TryParse(value, true, out stance))
                     throw new LuaException("Unknown stance type '{0}'".F(value));
 
-                autotarget.Stance = stance;
+                autotarget.SetStance(Self, stance);
             }
         }
     }

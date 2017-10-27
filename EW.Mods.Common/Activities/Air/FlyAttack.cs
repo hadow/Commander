@@ -17,12 +17,6 @@ namespace EW.Mods.Common.Activities
             throw new NotImplementedException();
         }
 
-        public override void Cancel(Actor self)
-        {
-            base.Cancel(self);
-        }
-
-
 
 
     }

@@ -36,10 +36,14 @@ namespace EW.Mods.Common.Activities
             return NextActivity;
         }
 
-        public override void Cancel(Actor self)
+
+        public override bool Cancel(Actor self, bool keepQueue = false)
         {
+            if (!base.Cancel(self, keepQueue))
+                return false;
+
             Dispose();
-            base.Cancel(self);
+            return true;
         }
 
         public void Dispose()

@@ -123,7 +123,8 @@ namespace EW.Mods.Common.AI
 
         static object LoadBuildingCategories(MiniYaml yaml)
         {
-
+            var categories = yaml.Nodes.First(n => n.Key == "BuildingCommonNames");
+            return FieldLoader.Load<BuildingCategories>(categories.Value);
         }
     }
 
@@ -134,6 +135,8 @@ namespace EW.Mods.Common.AI
         public readonly World World;
 
         public Map Map { get { return World.Map; } }
+
+        IBotInfo IBot.Info { get { return Info; } }
 
         public readonly HackyAIInfo Info;
 
@@ -177,7 +180,10 @@ namespace EW.Mods.Common.AI
 
         public void Tick(Actor self)
         {
+            if (!IsEnabled)
+                return;
 
+            
         }
 
         internal Actor FindClosestEnemy(WPos pos)

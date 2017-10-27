@@ -176,16 +176,24 @@ namespace EW.Mods.Common.Activities
                 FromFacing = fromFacing;
                 ToFacing = toFacing;
             }
+
+
+            public override Activity Tick(Actor self)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         class MoveFirstHalf : MovePart
         {
 
+
+            public MoveFirstHalf(Move move,WPos from,WPos to,int fromFacing,int toFacing,int startingFraction) : base(move, from, to, fromFacing, toFacing, startingFraction) { }
         }
 
         class MoveSecondHalf : MovePart
         {
-
+            public MoveSecondHalf(Move move,WPos from,WPos to,int fromFacing,int toFacing,int startingFraction) : base(move, from, to, fromFacing, toFacing, startingFraction) { }
         }
 
     }

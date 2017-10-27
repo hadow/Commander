@@ -13,7 +13,7 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
   </PropertyGroup>
@@ -146,6 +146,7 @@
     <Compile Include="Traits\Attack\AttackTurrete.cs" />
     <Compile Include="Traits\Attack\AttackWander.cs" />
     <Compile Include="Traits\AutoTarget.cs" />
+    <Compile Include="Traits\AutoTargetPriority.cs" />
     <Compile Include="Traits\BlocksProjectiles.cs" />
     <Compile Include="Traits\Buildable.cs" />
     <Compile Include="Traits\Buildings\BaseBuilding.cs" />

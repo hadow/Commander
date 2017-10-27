@@ -309,22 +309,25 @@ namespace EW
 
         public void QueueActivity(Activity nextActivity)
         {
-            if (currentActivity == null)
-                currentActivity = nextActivity;
+            if (CurrentActivity == null)
+                CurrentActivity = nextActivity;
             else
-                currentActivity.Queue(nextActivity);
+                CurrentActivity.Queue(nextActivity);
+
+
+
         }
 
 
-        public void CancelActivity()
+        public bool CancelActivity()
         {
-            if (currentActivity != null)
-                currentActivity.Cancel(this);
-        }
+            //if (currentActivity != null)
+            //    currentActivity.Cancel(this);
 
-        public Activity GetCurrentActivity()
-        {
-            return currentActivity;
+            if (CurrentActivity != null)
+                return CurrentActivity.RootActivity.Cancel(this);
+
+            return true;
         }
 
         #endregion

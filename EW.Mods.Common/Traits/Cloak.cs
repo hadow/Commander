@@ -22,6 +22,7 @@ namespace EW.Mods.Common.Traits
 
     /// <summary>
     /// This unit can be cloak and uncloak in specific situations.
+    /// 隱蔽
     /// </summary>
     public class CloakInfo : ConditionalTraitInfo
     {
@@ -95,6 +96,7 @@ namespace EW.Mods.Common.Traits
         {
             Uncloak(Info.CloakDelay);
         }
+
         public void Uncloak(int time)
         {
             remainingTime = Math.Max(remainingTime, time);
@@ -107,7 +109,12 @@ namespace EW.Mods.Common.Traits
 
             if(Cloaked && IsVisible(self, self.World.RenderPlayer))
             {
-                var palette = string.IsNullOrEmpty(Info.pa)
+                var palette = string.IsNullOrEmpty(Info.Palette) ? null : Info.IsPlayerPalette ? wr.Palette(Info.Palette + self.Owner.InternalName) : wr.Palette(Info.Palette);
+
+                if (palette == null)
+                    return r;
+                else
+                    return r.Select(a => a.IsDecoration ? a : a.WithPalette(palette));
             }
             else
             {
@@ -126,6 +133,12 @@ namespace EW.Mods.Common.Traits
             && a.Actor.Owner.IsAlliedWith(viewer)
             && Info.CloakTypes.Overlaps(a.Trait.Info.CloakTypes)
             && (self.CenterPosition - a.Actor.CenterPosition).LengthSquared <= a.Trait.Info.Range.LengthSquared);
+        }
+
+        void INotifyAttack.Attacking(Actor self, Target target, Armament a, Barrel barrel)
+        {
+            if (Info.UncloakOn.HasFlag(UncloakType.Attack))
+                Uncloak();
         }
     }
 }
