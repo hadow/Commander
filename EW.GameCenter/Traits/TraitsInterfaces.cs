@@ -408,4 +408,18 @@ namespace EW.Traits
     {
         IEnumerable<WPos> TargetablePositions(Actor self);
     }
+
+    public interface IBotInfo : ITraitInfoInterface
+    {
+        string Type { get; }
+        string Name { get; }
+
+    }
+
+    public interface IBot
+    {
+        void Activate(Player p);
+
+        IBotInfo Info { get; }
+    }
 }
