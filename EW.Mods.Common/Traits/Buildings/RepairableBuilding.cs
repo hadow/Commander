@@ -4,7 +4,10 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class RepairableBuildingInfo : UpgradableTraitInfo
+    /// <summary>
+    /// Building can be repaired by the repair button
+    /// </summary>
+    public class RepairableBuildingInfo : ConditionalTraitInfo
     {
         public override object Create(ActorInitializer init)
         {
@@ -12,8 +15,14 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class RepairableBuilding:UpgradableTrait<RepairableBuildingInfo>
+    public class RepairableBuilding:ConditionalTrait<RepairableBuildingInfo>,ITick
     {
         public RepairableBuilding(Actor self,RepairableBuildingInfo info) : base(info) { }
+
+
+
+        public void Tick(Actor self){
+            
+        }
     }
 }

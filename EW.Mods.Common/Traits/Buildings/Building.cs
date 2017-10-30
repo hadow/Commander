@@ -24,7 +24,27 @@ namespace EW.Mods.Common.Traits
 
     public class BuildingInfo : ITraitInfo,IOccupySpaceInfo
     {
+
+        /// <summary>
+        /// Where you are allowed to place the building (water.clear....).
+        /// </summary>
         public readonly HashSet<string> TerrainTypes = new HashSet<string>();
+
+        /// <summary>
+        /// The range to the next building it can be constructed.Set it higher for walls.
+        /// </summary>
+        public readonly int Adjacent = 2;
+
+
+        public readonly bool RequiresBaseProvider = false;
+
+        public readonly bool AllowInvalidPlacement = false;
+
+        public readonly string[] BuildSounds = { };
+
+        public readonly string[] UndeploySounds = { };
+
+
 
         [FieldLoader.LoadUsing("LoadFootprint")]
         public readonly Dictionary<CVec, FootprintCellType> Footprint;
@@ -83,6 +103,9 @@ namespace EW.Mods.Common.Traits
             return new Building(init,this);
         }
     }
+
+
+
     public class Building:IOccupySpace,ISync,INotifyAddToWorld,INotifyRemovedFromWorld
     {
         public readonly BuildingInfo Info;
@@ -94,6 +117,14 @@ namespace EW.Mods.Common.Traits
         public CPos TopLeft { get { return topLeft; } }
 
         public WPos CenterPosition { get; private set; }
+
+
+        /// <summary>
+        /// Shared activity lock:undeploy,sell,capture,etc.
+        /// </summary>
+        [Sync]
+        public bool Locked = true;
+
 
         Pair<CPos, SubCell>[] occupiedCells;
         Pair<CPos, SubCell>[] targetableCells;

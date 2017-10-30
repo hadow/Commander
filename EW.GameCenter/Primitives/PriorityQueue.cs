@@ -13,6 +13,9 @@ namespace EW.Primitives
 
         T Pop();
     }
+
+
+
     public class PriorityQueue<T>:IPriorityQueue<T>
     {
 
@@ -33,8 +36,23 @@ namespace EW.Primitives
         {
             return items[level][index];
         }
+
+        T Above(int level,int index){
+            return items[level - 1][index >> 1];
+        }
+
+
+
+
         public void Add(T item)
         {
+            var addLevel = level;
+            var addIndex = index;
+
+            while(addLevel>=1 && comparer.Compare(Above(addLevel,addIndex),item)>0)
+            {
+                items[addLevel][addIndex] = Above(addLevel, addIndex);
+            }
 
         }
 
@@ -47,7 +65,58 @@ namespace EW.Primitives
 
         public T Pop()
         {
-            throw new NotImplementedException();
+
+            var ret = Peek();
+            BubbleInto(0,0,Last());
+
+            if (--index < 0)
+                index = (1 << --index) - 1;
+            
+            return ret;
+        }
+
+        /// <summary>
+        /// Last this instance.
+        /// </summary>
+        /// <returns>The last.</returns>
+        T Last(){
+
+            var lastLevel = level;
+            var lastIndex = index;
+
+            if (--lastIndex < 0)
+                lastIndex = (1 << --lastIndex) - 1;
+
+            return At(lastLevel, lastIndex);
+        }
+
+
+
+        void BubbleInto(int intoLevel,int intoIndex,T val){
+
+            var downLevel = intoLevel + 1;
+            var downIndex = intoIndex << 1;
+
+            if (downLevel > level || (downLevel == level && downIndex >= index)){
+
+                items[intoLevel][intoIndex] = val;
+                return;
+            }
+
+            if(downLevel <= level && downIndex < index-1 && comparer.Compare(At(downLevel,downIndex),At(downLevel,downIndex+1))>=0)
+            {
+                downIndex++;
+            }
+
+
+            if(comparer.Compare(val,At(downLevel,downIndex))<=0)
+            {
+                items[intoLevel][intoIndex] = val;
+                return;
+            }
+
+            items[intoLevel][intoIndex] = At(downLevel, downIndex);
+            BubbleInto(downLevel,downIndex,val);
         }
 
         public bool Empty { get { return level == 0; } }

@@ -39,7 +39,9 @@ namespace EW
     /// </summary>
     class TraitDictionary
     {
-
+        /// <summary>
+        /// Trait container interface.
+        /// </summary>
         interface ITraitContainer
         {
             void Add(Actor actor, object trait);
@@ -76,7 +78,7 @@ namespace EW
             {
                 Queries++;
 
-                var index = actors.BinarySearchMany(actor);
+                var index = actors.BinarySearchMany(actor);//¶þ·Ö²éÕÒ
                 if (index >= actors.Count || actors[index].ActorID != actor)
                     return default(T);
                 else if (index + 1 < actors.Count && actors[index + 1].ActorID == actor)

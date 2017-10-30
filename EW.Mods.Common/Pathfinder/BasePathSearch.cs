@@ -6,8 +6,19 @@ namespace EW.Mods.Common.Pathfinder
 {
     public interface IPathSearch : IDisposable
     {
+
+
+        /// <summary>
+        /// The graph used by the A*
+        /// </summary>
+        /// <value>The graph.</value>
         IGraph<CellInfo> Graph { get; }
 
+
+        /// <summary>
+        /// Stores the analyzed nodes by the expand function
+        /// </summary>
+        /// <value>The considered.</value>
         IEnumerable<Pair<CPos,int>> Considered { get; }
 
         Player Owner { get; }
@@ -26,12 +37,23 @@ namespace EW.Mods.Common.Pathfinder
 
         IPathSearch FromPoint(CPos from);
 
+
+        /// <summary>
+        /// Decides whether a location is a target based on its estimate
+        /// (An estimate  of 0 means that the location  and the unit's goal are the same.
+        /// There could be multiple goals.
+        /// </summary>
+        /// <returns><c>true</c>, if target was ised, <c>false</c> otherwise.</returns>
+        /// <param name="location">Location.</param>
         bool IsTarget(CPos location);
 
         bool CanExpand { get; }
 
         CPos Expand();
     }
+
+
+
     public abstract class BasePathSearch:IPathSearch
     {
         public IGraph<CellInfo> Graph { get; set; }
@@ -40,6 +62,11 @@ namespace EW.Mods.Common.Pathfinder
 
         protected IPriorityQueue<GraphConnection> OpenQueue { get; private set; }
 
+        /// <summary>
+        /// This member is used to compute the Id of PathSearch
+        /// Essentially,it represents a collection of initial points considered and their Heuristics to reach the target.
+        /// It pretty match identifies,in conjunction(结合) of the Actor,
+        /// </summary>
         protected readonly IPriorityQueue<GraphConnection> StartPoints;
 
         public Player Owner { get { return Graph.Actor.Owner; } }

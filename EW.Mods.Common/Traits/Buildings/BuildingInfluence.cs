@@ -4,7 +4,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
     /// <summary>
-    /// a dictionary of buildings placed on the map.
+    /// a dictionary of buildings placed on the map.Attach this to the world actor.
     /// </summary>
     public class BuildingInfluenceInfo : ITraitInfo
     {
