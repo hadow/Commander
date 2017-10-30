@@ -8,11 +8,19 @@ namespace EW.Mods.Common.Traits
     /// </summary>
     public class AutoTargetPriorityInfo : ConditionalTraitInfo, Requires<AutoTargetInfo>
     {
-
+        /// <summary>
+        /// Target types that can be AutoTargeted
+        /// </summary>
         public readonly HashSet<string> ValidTargets = new HashSet<string> { "Ground", "Water", "Air" };
 
+        /// <summary>
+        /// Target types that can't be AutoTargeted
+        /// </summary>
         public readonly HashSet<string> InvalidTargets = new HashSet<string>();
 
+        /// <summary>
+        /// ValidTargets with larger priorities will be AutoTargeted before lower priorities
+        /// </summary>
         public readonly int Priority = 1;
         
         public override object Create(ActorInitializer init)
