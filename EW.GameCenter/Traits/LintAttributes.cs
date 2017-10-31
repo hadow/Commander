@@ -3,6 +3,8 @@ using System;
 
 namespace EW.Traits
 {
+    [AttributeUsage(AttributeTargets.Field|AttributeTargets.Property)]
+    public sealed class GrantedConditionReferenceAttribute : Attribute { }
     [AttributeUsage(AttributeTargets.Field)]
     public sealed class UpgradeGrantedReferenceAttribute : Attribute { }
 
@@ -63,7 +65,4 @@ namespace EW.Traits
     {
 
     }
-
-    [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
-    public sealed class GrantedConditionReferenceAttribute : Attribute { }
 }

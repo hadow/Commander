@@ -4,11 +4,13 @@ MCV:
 		Cost: 4000
 	Tooltip:
 		Name: Mobile Construction Vehicle
-		Description: Deploys into another Construction Yard.\n  Unarmed
 	Buildable:
 		BuildPaletteOrder: 100
 		Prerequisites: anyhq, ~techlevel.medium, fix
 		Queue: Vehicle.GDI, Vehicle.Nod
+		BuildDuration: 3750
+		BuildDurationModifier: 40
+		Description: Deploys into another Construction Yard.\n  Unarmed
 	Selectable:
 		Priority: 4
 	Mobile:
@@ -31,23 +33,24 @@ MCV:
 	BaseBuilding:
 	SpawnActorOnDeath:
 		Actor: MCV.Husk
-	-GainsExperience:
-	-Cloak:
 	SelectionDecorations:
 		VisualBounds: 36,36
 
 HARV:
 	Inherits: ^Tank
+	Inherits@CLOAK: ^AcceptsCloakCrate
 	Valued:
 		Cost: 1000
 	Tooltip:
 		Name: Harvester
 		GenericName: Harvester
-		Description: Collects Tiberium for processing.\n  Unarmed
 	Buildable:
 		BuildPaletteOrder: 10
 		Prerequisites: proc
 		Queue: Vehicle.GDI, Vehicle.Nod
+		BuildDuration: 1680
+		BuildDurationModifier: 40
+		Description: Collects Tiberium for processing.\n  Unarmed
 	Selectable:
 		Priority: 7
 	Harvester:
@@ -61,14 +64,13 @@ HARV:
 	Mobile:
 		Speed: 85
 	Health:
-		HP: 600
+		HP: 625
 	Armor:
 		Type: Heavy
 	RevealsShroud:
 		Range: 4c0
 	SpawnActorOnDeath:
 		Actor: HARV.Husk
-	-GainsExperience:
 	WithHarvestAnimation:
 	WithDockingAnimation:
 	Explodes:
@@ -78,22 +80,24 @@ HARV:
 
 APC:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetAllAssaultMove
 	Valued:
-		Cost: 600
+		Cost: 550
 	Tooltip:
 		Name: APC
-		Description: Armed infantry transport.\nCan attack Aircraft.\n  Strong vs Vehicles\n  Weak vs Infantry
 	Buildable:
 		BuildPaletteOrder: 30
 		Prerequisites: pyle
 		Queue: Vehicle.GDI
+		Description: Armed infantry transport.\nCan attack Aircraft.\n  Strong vs Vehicles\n  Weak vs Infantry
 	Mobile:
-		UpgradeTypes: notmobile
-		UpgradeMaxEnabledLevel: 0
 		TurnSpeed: 8
-		Speed: 128
+		Speed: 132
+		RequiresCondition: !notmobile
 	Health:
-		HP: 210
+		HP: 215
 	Armor:
 		Type: Heavy
 	RevealsShroud:
@@ -116,26 +120,28 @@ APC:
 	AttackTurreted:
 	WithMuzzleOverlay:
 	WithSpriteTurret:
-	AutoTarget:
 	Cargo:
 		Types: Infantry
 		MaxWeight: 5
 		PipCount: 5
-		LoadingUpgrades: notmobile
+		LoadingCondition: notmobile
 	SpawnActorOnDeath:
 		Actor: APC.Husk
 
 ARTY:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 600
 	Tooltip:
 		Name: Artillery
-		Description: Long-range artillery.\n  Strong vs Infantry, Vehicles and Buildings
 	Buildable:
 		BuildPaletteOrder: 60
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.Nod
+		Description: Long-range artillery.\n  Strong vs Infantry, Vehicles and Buildings
 	Mobile:
 		TurnSpeed: 4
 		Speed: 85
@@ -144,7 +150,7 @@ ARTY:
 	Armor:
 		Type: Light
 	RevealsShroud:
-		Range: 8c0
+		Range: 5c0
 	Armament:
 		Weapon: ArtilleryShell
 		LocalOffset: 624,0,208
@@ -162,15 +168,18 @@ ARTY:
 
 FTNK:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 600
 	Tooltip:
 		Name: Flame Tank
-		Description: Heavily armored flame-throwing vehicle.\n  Strong vs Infantry, Buildings and Vehicles\n  Weak vs Tanks
 	Buildable:
 		BuildPaletteOrder: 50
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.Nod
+		Description: Heavily armored flame-throwing vehicle.\n  Strong vs Infantry, Buildings and Vehicles\n  Weak vs Tanks
 	Mobile:
 		TurnSpeed: 7
 		Speed: 99
@@ -185,7 +194,6 @@ FTNK:
 		LocalOffset: 512,128,42, 512,-128,42
 		MuzzleSequence: muzzle
 	AttackFrontal:
-	AutoTarget:
 	WithMuzzleOverlay:
 	Explodes:
 		Weapon: FlametankExplode
@@ -195,15 +203,18 @@ FTNK:
 
 BGGY:
 	Inherits: ^Vehicle
+	Inherits@@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 300
 	Tooltip:
 		Name: Nod Buggy
-		Description: Fast scout and anti-infantry vehicle.\n  Strong vs Infantry\n  Weak vs Tanks
 	Buildable:
 		BuildPaletteOrder: 20
 		Prerequisites: afld
 		Queue: Vehicle.Nod
+		Description: Fast scout and anti-infantry vehicle.\n  Strong vs Infantry\n  Weak vs Tanks
 	Mobile:
 		TurnSpeed: 10
 		Speed: 170
@@ -223,21 +234,23 @@ BGGY:
 	AttackTurreted:
 	WithMuzzleOverlay:
 	WithSpriteTurret:
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: BGGY.Husk
 
 BIKE:
 	Inherits: ^Vehicle
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetAllAssaultMove
 	Valued:
 		Cost: 500
 	Tooltip:
 		Name: Recon Bike
-		Description: Fast scout vehicle, armed with\nrockets.\nCan attack Aircraft.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry
 	Buildable:
 		BuildPaletteOrder: 30
 		Prerequisites: afld
 		Queue: Vehicle.Nod
+		Description: Fast scout vehicle, armed with\nrockets.\nCan attack Aircraft.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry
 	Mobile:
 		TurnSpeed: 10
 		Speed: 213
@@ -249,7 +262,7 @@ BIKE:
 			BlueTiberium: 35
 			Beach: 35
 	Health:
-		HP: 120
+		HP: 110
 	Armor:
 		Type: Light
 	RevealsShroud:
@@ -259,21 +272,23 @@ BIKE:
 		LocalOffset: -128, -170, 170, -128, 170, 170
 		LocalYaw: 100, -100
 	AttackFrontal:
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: BIKE.Husk
 
 JEEP:
 	Inherits: ^Vehicle
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 400
 	Tooltip:
 		Name: Hum-Vee
-		Description: Fast scout and anti-infantry vehicle.\n  Strong vs Infantry\n  Weak vs Tanks
 	Buildable:
 		BuildPaletteOrder: 20
 		Prerequisites: weap
 		Queue: Vehicle.GDI
+		Description: Fast scout and anti-infantry vehicle.\n  Strong vs Infantry\n  Weak vs Tanks
 	Mobile:
 		TurnSpeed: 10
 		Speed: 156
@@ -287,27 +302,31 @@ JEEP:
 		TurnSpeed: 10
 		Offset: -85,0,128
 	Armament:
-		Weapon: MachineGun
+		Weapon: MachineGunH
 		LocalOffset: 171,0,85
 		MuzzleSequence: muzzle
 	AttackTurreted:
 	WithMuzzleOverlay:
 	WithSpriteTurret:
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: JEEP.Husk
 
 LTNK:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
-		Cost: 700
+		Cost: 650
 	Tooltip:
 		Name: Light Tank
-		Description: Fast, light tank.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry
 	Buildable:
 		BuildPaletteOrder: 40
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.Nod
+		BuildDuration: 1020
+		BuildDurationModifier: 40
+		Description: Fast, light tank.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry
 	Mobile:
 		TurnSpeed: 7
 		Speed: 110
@@ -328,21 +347,23 @@ LTNK:
 	AttackTurreted:
 	WithMuzzleOverlay:
 	WithSpriteTurret:
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: LTNK.Husk
 
 MTNK:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 800
 	Tooltip:
 		Name: Medium Tank
-		Description: General-Purpose GDI Tank.\n  Strong vs Tanks, Vehicles\n  Weak vs Infantry
 	Buildable:
 		BuildPaletteOrder: 40
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.GDI
+		Description: General-Purpose GDI Tank.\n  Strong vs Tanks, Vehicles\n  Weak vs Infantry
 	Mobile:
 		Speed: 85
 	Health:
@@ -362,7 +383,6 @@ MTNK:
 	AttackTurreted:
 	WithMuzzleOverlay:
 	WithSpriteTurret:
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: MTNK.Husk
 	SelectionDecorations:
@@ -370,21 +390,24 @@ MTNK:
 
 HTNK:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetAllAssaultMove
 	Valued:
 		Cost: 1500
 	Tooltip:
 		Name: Mammoth Tank
-		Description: Heavily armored GDI Tank.\nCan attack Aircraft.\n  Strong vs Everything
 	Buildable:
 		BuildPaletteOrder: 60
 		Prerequisites: eye, ~techlevel.high
 		Queue: Vehicle.GDI
+		Description: Heavily armored GDI Tank.\nCan attack Aircraft.\n  Strong vs Everything
 	Mobile:
 		Crushes: wall, heavywall, crate, infantry
 		Speed: 56
 		TurnSpeed: 3
 	Health:
-		HP: 800
+		HP: 870
 	Armor:
 		Type: Heavy
 	RevealsShroud:
@@ -407,7 +430,6 @@ HTNK:
 		MuzzleSequence: muzzle
 	AttackTurreted:
 	WithMuzzleOverlay:
-	AutoTarget:
 	SelfHealing:
 		Delay: 10
 		HealIfBelow: 50
@@ -419,15 +441,18 @@ HTNK:
 
 MSAM:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetGroundAssaultMove
 	Valued:
 		Cost: 1000
 	Tooltip:
 		Name: Rocket Launcher
-		Description: Long range rocket artillery.\n  Strong vs all Ground units.
 	Buildable:
 		BuildPaletteOrder: 50
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.GDI
+		Description: Long range rocket artillery.\n  Strong vs all Ground units.
 	Mobile:
 		Speed: 85
 		TurnSpeed: 4
@@ -436,7 +461,7 @@ MSAM:
 	Armor:
 		Type: Light
 	RevealsShroud:
-		Range: 8c0
+		Range: 5c0
 	Turreted:
 		TurnSpeed: 255
 		Offset: -256,0,128
@@ -449,26 +474,28 @@ MSAM:
 	AttackFrontal:
 	WithSpriteTurret:
 		AimSequence: aim
-	AutoTarget:
 	SpawnActorOnDeath:
 		Actor: MSAM.Husk
 
 MLRS:
 	Inherits: ^Tank
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@CLOAK: ^AcceptsCloakCrate
+	Inherits@AUTOTARGET: ^AutoTargetAir
 	Valued:
 		Cost: 600
 	Tooltip:
 		Name: Mobile S.A.M.
-		Description: Powerful anti-air unit.\nCannot attack Ground units.
 	Buildable:
 		BuildPaletteOrder: 70
 		Prerequisites: anyhq, ~techlevel.medium
 		Queue: Vehicle.Nod
+		Description: Powerful anti-air unit.\nCannot attack Ground units.
 	Mobile:
 		Speed: 99
 		TurnSpeed: 7
 	Health:
-		HP: 120
+		HP: 180
 	Armor:
 		Type: Light
 	RevealsShroud:
@@ -497,15 +524,17 @@ MLRS:
 
 STNK:
 	Inherits: ^Vehicle
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@AUTOTARGET: ^AutoTargetAllAssaultMove
 	Valued:
 		Cost: 900
 	Tooltip:
 		Name: Stealth Tank
-		Description: Long-range missile tank that can cloak.\nCan attack Aircraft.\nHas weak armor. Can be spotted by infantry and defense structures.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry.
 	Buildable:
 		BuildPaletteOrder: 90
 		Prerequisites: tmpl, ~techlevel.high
 		Queue: Vehicle.Nod
+		Description: Long-range missile tank that can cloak.\nCan attack Aircraft.\nHas weak armor. Can be spotted by infantry and defense structures.\n  Strong vs Vehicles, Tanks\n  Weak vs Infantry.
 	Mobile:
 		TurnSpeed: 10
 		Speed: 142
@@ -517,11 +546,14 @@ STNK:
 	RevealsShroud:
 		Range: 7c0
 	Cloak:
-		-UpgradeTypes:
 		InitialDelay: 90
 		CloakDelay: 90
 		CloakSound: trans1.aud
 		UncloakSound: trans1.aud
+		RequiresCondition: !cloak-force-disabled
+	GrantConditionOnDamageState@UNCLOAK:
+		Condition: cloak-force-disabled
+		ValidDamageStates: Critical
 	Armament:
 		Weapon: 227mm.stnk
 		LocalOffset: 213,43,128, 213,-43,128
@@ -540,7 +572,6 @@ MHQ:
 		Cost: 1000
 	Tooltip:
 		Name: Mobile HQ
-		Description: Mobile base of operations
 	Health:
 		HP: 200
 	Armor:
@@ -552,3 +583,32 @@ MHQ:
 	WithIdleOverlay@SPINNER:
 		Sequence: spinner
 		Offset: -256,0,256
+	Buildable:
+		Description: Mobile base of operations
+
+TRUCK:
+	Inherits: ^Vehicle
+	Buildable:
+		Queue: Vehicle.GDI, Vehicle.Nod
+		BuildPaletteOrder: 35
+		Prerequisites: vehicleproduction
+		Description: Transports cash to other players.\n  Unarmed
+	Valued:
+		Cost: 500
+	Tooltip:
+		Name: Supply Truck
+	Selectable:
+		Priority: 6
+	Health:
+		HP: 110
+	Armor:
+		Type: Light
+	Mobile:
+		Speed: 128
+	RevealsShroud:
+		Range: 4c0
+	DeliversCash:
+		Payload: 500
+		PlayerExperience: 50
+	SpawnActorOnDeath:
+		Actor: TRUCK.Husk

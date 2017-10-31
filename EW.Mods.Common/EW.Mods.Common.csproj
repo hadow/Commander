@@ -173,6 +173,7 @@
     <Compile Include="Traits\Cloak.cs" />
     <Compile Include="Traits\CombatDebugOverlay.cs" />
     <Compile Include="Traits\Conditions\ConditionManager.cs" />
+    <Compile Include="Traits\Conditions\GrantCondition.cs" />
     <Compile Include="Traits\Crates\Crate.cs" />
     <Compile Include="Traits\Crates\CrateAction.cs" />
     <Compile Include="Traits\Crates\ExplodeCrateAction.cs" />

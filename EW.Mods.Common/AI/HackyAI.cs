@@ -33,7 +33,7 @@ namespace EW.Mods.Common.AI
         /// internal id for this bot
         /// </summary>
         /// 
-        [FieldLoader.Require]
+        //[FieldLoader.Require]
         public readonly string Type = null;
 
         public readonly string Name = "Unnamed Bot";

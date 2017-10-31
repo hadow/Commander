@@ -32,6 +32,7 @@ namespace EW.Support
         enum Associativity { Left,Right}
         enum Grouping { None,Parens}
 
+        [Flags]
         enum Sides
         {
             //Value type
@@ -82,6 +83,9 @@ namespace EW.Support
             Invalid,
         }
 
+        /// <summary>
+        /// 优先级
+        /// </summary>
         enum Precedence
         {
             Unary = 16, //一元的
@@ -121,6 +125,36 @@ namespace EW.Support
                 WhitespaceSides = Sides.None;
                 Associativity = associativity;
 
+                Opens = opens;
+                Closes = closes;
+            }
+
+            public TokenTypeInfo(string symbol,Precedence precedence,Grouping opens,Grouping closes = Grouping.None,Associativity associativity = Associativity.Left)
+            {
+                Symbol = symbol;
+                Precedence = precedence;
+                WhitespaceSides = Sides.None;
+                OperandSides = opens == Grouping.None ? 
+                    (closes == Grouping.None ? Sides.None : Sides.Left) : 
+                    (closes == Grouping.None ? Sides.Right : Sides.Both);
+
+                Associativity = associativity;
+
+                Opens = opens;
+                Closes = closes;
+
+            }
+
+            public TokenTypeInfo(string symbol,Precedence precedence,Sides operandSides,
+                Sides whitespaceSides,
+                Associativity associativity = Associativity.Left,
+                Grouping opens = Grouping.None,Grouping closes = Grouping.None)
+            {
+                Symbol = symbol;
+                Precedence = precedence;
+                OperandSides = operandSides;
+                WhitespaceSides = whitespaceSides;
+                Associativity = associativity;
                 Opens = opens;
                 Closes = closes;
             }
@@ -169,7 +203,66 @@ namespace EW.Support
                     case TokenType.True:
                         yield return new TokenTypeInfo("true", Precedence.Value);
                         continue;
-
+                    case TokenType.Number:
+                        yield return new TokenTypeInfo("(<number>)", Precedence.Value);
+                        continue;
+                    case TokenType.Variable:
+                        yield return new TokenTypeInfo("(<variable>)", Precedence.Value);
+                        continue;
+                    case TokenType.OpenParen:
+                        yield return new TokenTypeInfo("(", Precedence.Parens, Grouping.Parens);
+                        continue;
+                    case TokenType.CloseParen:
+                        yield return new TokenTypeInfo(")", Precedence.Parens, Grouping.None, Grouping.Parens);
+                        continue;
+                    case TokenType.Not:
+                        yield return new TokenTypeInfo("!", Precedence.Unary, Sides.Right, Associativity.Right);
+                        continue;
+                    case TokenType.OnesComplement:
+                        yield return new TokenTypeInfo("~", Precedence.Unary, Sides.Right, Associativity.Right);
+                        continue;
+                    case TokenType.Negate:
+                        yield return new TokenTypeInfo("-", Precedence.Unary, Sides.Right, Associativity.Right);
+                        continue;
+                    case TokenType.And:
+                        yield return new TokenTypeInfo("&&", Precedence.And, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Or:
+                        yield return new TokenTypeInfo("||", Precedence.Or, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Equals:
+                        yield return new TokenTypeInfo("==", Precedence.Equality, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.NotEquals:
+                        yield return new TokenTypeInfo("!=", Precedence.Equality, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.LessThan:
+                        yield return new TokenTypeInfo("<", Precedence.Relation, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.LessThanOrEqual:
+                        yield return new TokenTypeInfo("<=", Precedence.Relation, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.GreaterThan:
+                        yield return new TokenTypeInfo(">", Precedence.Relation, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.GreaterThanOrEqual:
+                        yield return new TokenTypeInfo(">=", Precedence.Relation, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Add:
+                        yield return new TokenTypeInfo("+", Precedence.Addition, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Subtract:
+                        yield return new TokenTypeInfo("-", Precedence.Addition, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Multiply:
+                        yield return new TokenTypeInfo("*", Precedence.Multiplication, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Divide:
+                        yield return new TokenTypeInfo("/", Precedence.Multiplication, Sides.Both, Sides.Both);
+                        continue;
+                    case TokenType.Modulo:
+                        yield return new TokenTypeInfo("%", Precedence.Multiplication, Sides.Both, Sides.Both);
+                        continue;
 
                 }
 
