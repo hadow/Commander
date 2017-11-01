@@ -384,6 +384,13 @@ namespace EW.Support
         }
 
 
+        static int ParseSymbol(string symbol,IReadOnlyDictionary<string,int> symbols)
+        {
+            int value;
+            symbols.TryGetValue(symbol, out value);
+            return value;
+        }
+
         static IEnumerable<Token> ToPostfix(IEnumerable<Token> tokens)
         {
             var s = new Stack<Token>();
@@ -658,6 +665,59 @@ namespace EW.Support
 
             public Expression Build(Token[] postfix,ExpressionT resultType)
             {
+                foreach(var t in postfix)
+                {
+                    switch (t.Type)
+                    {
+                        case TokenType.Add:
+                            {
+                                var y = ast.Pop(ExpressionT.Bool);
+                                var x = ast.Pop(ExpressionT.Bool);
+                                ast.Push(Expressions.Expression.Add(x, y));
+                                continue;
+                            }
+                        case TokenType.GreaterThan:
+                            {
+                                var y = ast.Pop(ExpressionT.Int);
+                                var x = ast.Pop(ExpressionT.Int);
+                                ast.Push(Expressions.Expression.GreaterThan(x, y));
+                                continue;
+                            }
+                        case TokenType.GreaterThanOrEqual:
+                            {
+                                var y = ast.Pop(ExpressionT.Int);
+                                var x = ast.Pop(ExpressionT.Int);
+                                ast.Push(Expressions.Expression.GreaterThanOrEqual(x, y));
+                                continue;
+                            }
+                        case TokenType.False:
+                            {
+                                ast.Push(False);
+                                continue;
+                            }
+                        case TokenType.True:
+                            {
+                                ast.Push(True);
+                                continue;
+                            }
+                        case TokenType.Number:
+                            {
+                                ast.Push(Expressions.Expression.Constant(((NumberToken)t).Value));
+                                continue;
+                            }
+                        case TokenType.Variable:
+                            {
+                                var symbol = Expressions.Expression.Constant(((VariableToken)t).Symbol);
+                                Func<string, IReadOnlyDictionary<string, int>, int> parseSymbol = ParseSymbol;
+                                ast.Push(Expressions.Expression.Call(parseSymbol.Method, symbol, SymbolsParam));
+                                continue;
+                            }
+                            
+                        default:
+                            throw new InvalidProgramException("ConditionExpression.Compile() is missing an expression builder for TokenType.{0}".F(Enum<TokenType>.GetValues()[(int)t.Type]));
+
+                    }
+                }
                 return ast.Pop(resultType);
             }
         }
