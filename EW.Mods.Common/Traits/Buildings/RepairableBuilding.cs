@@ -17,6 +17,18 @@ namespace EW.Mods.Common.Traits
 
     public class RepairableBuilding:ConditionalTrait<RepairableBuildingInfo>,ITick
     {
+
+        public readonly List<Player> Repairers = new List<Player>();
+
+        [Sync]
+        public int RepairersHash{
+            get{
+                var hash = 0;
+                foreach (var player in Repairers)
+                    hash ^= Sync.HashPlayer(player);
+                return hash;
+            }
+        }
         public RepairableBuilding(Actor self,RepairableBuildingInfo info) : base(info) { }
 
 

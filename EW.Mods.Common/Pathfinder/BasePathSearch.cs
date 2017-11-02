@@ -66,12 +66,14 @@ namespace EW.Mods.Common.Pathfinder
         /// This member is used to compute the Id of PathSearch
         /// Essentially,it represents a collection of initial points considered and their Heuristics to reach the target.
         /// It pretty match identifies,in conjunction(结合) of the Actor,
+        /// a deterministic set of calculations.
         /// </summary>
         protected readonly IPriorityQueue<GraphConnection> StartPoints;
 
         public Player Owner { get { return Graph.Actor.Owner; } }
 
         public int MaxCost { get; private set; }
+
         protected BasePathSearch(IGraph<CellInfo> graph)
         {
             Graph = graph;

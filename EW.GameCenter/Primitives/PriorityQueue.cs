@@ -37,6 +37,14 @@ namespace EW.Primitives
             return items[level][index];
         }
 
+
+        /// <summary>
+        /// Above the specified level and index.
+        /// </summary>
+        /// <returns>The above.</returns>
+        /// <param name="level">Level.</param>
+        /// <param name="index">Index.</param>
+
         T Above(int level,int index){
             return items[level - 1][index >> 1];
         }
@@ -52,6 +60,22 @@ namespace EW.Primitives
             while(addLevel>=1 && comparer.Compare(Above(addLevel,addIndex),item)>0)
             {
                 items[addLevel][addIndex] = Above(addLevel, addIndex);
+                --addLevel;
+                addIndex >>= 1;
+
+            }
+
+            items[addLevel][addIndex] = item;
+
+            if(++index>=(1<<level))
+            {
+                index = 0;
+
+                if(items.Count <=++level)
+                {
+
+                    items.Add(new T[1<<level]);
+                }
             }
 
         }
