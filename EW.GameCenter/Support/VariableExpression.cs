@@ -39,7 +39,7 @@ namespace EW.Support
             None =0,
 
 
-            Left =-1,
+            Left =1,
 
             Right =2,
 
@@ -221,7 +221,7 @@ namespace EW.Support
                     case TokenType.OnesComplement:
                         yield return new TokenTypeInfo("~", Precedence.Unary, Sides.Right, Associativity.Right);
                         continue;
-                    case TokenType.Negate:
+                    case TokenType.Negate://取反
                         yield return new TokenTypeInfo("-", Precedence.Unary, Sides.Right, Associativity.Right);
                         continue;
                     case TokenType.And:
@@ -409,7 +409,8 @@ namespace EW.Support
                     yield return t;
                 else
                 {
-                    while(s.Count>0 && ((t.Associativity == Associativity.Right && t.Precedence < s.Peek().Precedence) || (t.Associativity == Associativity.Left && t.Precedence <= s.Peek().Precedence)))
+                    while(s.Count>0 && ((t.Associativity == Associativity.Right && t.Precedence < s.Peek().Precedence) 
+                        || (t.Associativity == Associativity.Left && t.Precedence <= s.Peek().Precedence)))
                     {
                         yield return s.Pop();
                     }
@@ -442,6 +443,9 @@ namespace EW.Support
 
             public Grouping Closes { get { return TokenTypeInfos[(int)Type].Closes; } }
 
+            /// <summary>
+            /// 右操作数
+            /// </summary>
             public bool RightOperand
             {
                 get
@@ -450,6 +454,9 @@ namespace EW.Support
                 }
             }
 
+            /// <summary>
+            /// 左操作数
+            /// </summary>
             public bool LeftOperand
             {
                 get
@@ -496,6 +503,12 @@ namespace EW.Support
                 switch (expression[i])
                 {
                     case '!':
+                        i++;
+                        if (i < expression.Length && expression[i] == '=')
+                        {
+                            i++;
+                            return TokenType.NotEquals;
+                        }
                         return TokenType.Not;
                     case '<':
                         i++;
@@ -523,12 +536,24 @@ namespace EW.Support
                         }
                         throw new InvalidDataException("Unexpected character '=' at index {0} - should it b '==' ?".F(start));
                     case '&':
+                        i++;
+                        if (i < expression.Length&& expression[i] == '&'){
+                            i++;
+                            return TokenType.And;
+                        }
                         throw new InvalidDataException("Unexpected character '&' at index {0} - should it b '&&' ?".F(start));
                     case '|':
+                        i++;
+                        if (i < expression.Length&& expression[i] == '|'){
+                            i++;
+                            return TokenType.Or;
+                        }
                         throw new InvalidDataException("Unexpected character '|' at index {0} - should it b '||' ?".F(start));
                     case '(':
+                        i++;
                         return TokenType.OpenParen;
                     case ')':
+                        i++;
                         return TokenType.CloseParen;
                     case '~':
                         i++;
@@ -536,6 +561,9 @@ namespace EW.Support
                     case '+':
                         i++;
                         return TokenType.Add;
+                    case '-':
+
+                        return TokenType.Subtract;
                     case '*':
                         i++;
                         return TokenType.Multiply;
@@ -669,6 +697,20 @@ namespace EW.Support
                 {
                     switch (t.Type)
                     {
+                        case TokenType.And:
+                            {
+                                var y = ast.Pop(ExpressionT.Bool);
+                                var x = ast.Pop(ExpressionT.Bool);
+                                ast.Push(Expressions.Expression.And(x, y));
+                                continue;
+                            }
+                        case TokenType.Or:
+                            {
+                                var y = ast.Pop(ExpressionT.Bool);
+                                var x = ast.Pop(ExpressionT.Bool);
+                                ast.Push(Expressions.Expression.Or(x, y));
+                                continue;
+                            }
                         case TokenType.Add:
                             {
                                 var y = ast.Pop(ExpressionT.Bool);
@@ -688,6 +730,20 @@ namespace EW.Support
                                 var y = ast.Pop(ExpressionT.Int);
                                 var x = ast.Pop(ExpressionT.Int);
                                 ast.Push(Expressions.Expression.GreaterThanOrEqual(x, y));
+                                continue;
+                            }
+                        case TokenType.LessThan:
+                            {
+                                var y = ast.Pop(ExpressionT.Int);
+                                var x = ast.Pop(ExpressionT.Int);
+                                ast.Push(Expressions.Expression.LessThan(x, y));
+                                continue;
+                            }
+                        case TokenType.LessThanOrEqual:
+                            {
+                                var y = ast.Pop(ExpressionT.Int);
+                                var x = ast.Pop(ExpressionT.Int);
+                                ast.Push(Expressions.Expression.LessThanOrEqual(x, y));
                                 continue;
                             }
                         case TokenType.False:
@@ -712,6 +768,18 @@ namespace EW.Support
                                 ast.Push(Expressions.Expression.Call(parseSymbol.Method, symbol, SymbolsParam));
                                 continue;
                             }
+                        case TokenType.Not:
+                            {
+                                ast.Push(Expressions.Expression.Not(ast.Pop(ExpressionT.Bool)));
+                                continue;
+                            }
+                        case TokenType.NotEquals:
+                            {
+                                var y = ast.Pop(ExpressionT.Int);
+                                var x = ast.Pop(ExpressionT.Int);
+                                ast.Push(Expressions.Expression.NotEqual(x, y));
+                                continue;
+                            }
                             
                         default:
                             throw new InvalidProgramException("ConditionExpression.Compile() is missing an expression builder for TokenType.{0}".F(Enum<TokenType>.GetValues()[(int)t.Type]));
@@ -734,12 +802,27 @@ namespace EW.Support
             readonly List<Expression> expressions = new List<Expressions.Expression>();
             readonly List<ExpressionT> types = new List<ExpressionT>();
 
+
+            static Expression AsBool(Expression expression)
+            {
+                return Expressions.Expression.NotEqual(expression, Zero);
+            }
+
+
             public Expression Peek(ExpressionT toType)
             {
                 var fromType = types[types.Count - 1];
                 var expression = expressions[expressions.Count - 1];
                 if (toType == fromType)
                     return expression;
+
+                switch (toType)
+                {
+                    case ExpressionT.Bool:
+                        return IfThenElse(AsBool(expression), True, False);
+                    case ExpressionT.Int:
+                        return IfThenElse(expression, One, Zero);
+                }
 
                 throw new InvalidProgramException("Unable to convert ExpressionType.{0} to ExpressionType.{1}".F(Enum<ExpressionT>.GetValues()[(int)fromType], Enum<ExpressionT>.GetValues()[(int)toType]));
             }
