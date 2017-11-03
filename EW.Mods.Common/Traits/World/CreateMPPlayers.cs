@@ -19,14 +19,17 @@ namespace EW.Mods.Common.Traits
         {
             var players = new MapPlayers(w.Map.PlayerDefinitions).Players;
             var worldPlayers = new List<Player>();
-
+            var worldOwnerFound = false;
             foreach(var kv in players.Where(p => !p.Value.Playable))
             {
                 var player = new Player(w, null, kv.Value);
                 worldPlayers.Add(player);
 
                 if (kv.Value.OwnsWorld)
-                    w.WorldActor.Owner = player;
+                {
+                    worldOwnerFound = true;
+                    w.SetWorldOwner(player);
+                }
             }
             
             Player localPlayer = null;

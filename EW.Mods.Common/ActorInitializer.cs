@@ -44,6 +44,10 @@ namespace EW.Mods.Common
     //    public CPos Value(World world) { return value; }
     //}
 
+
+        /// <summary>
+        /// Allow maps / transformations to specify the faction variant of an acotr.
+        /// </summary>
     public class FactionInit : IActorInit<string>
     {
         [FieldFromYamlKey]

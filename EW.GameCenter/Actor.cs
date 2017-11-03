@@ -68,7 +68,7 @@ namespace EW
         /// 
         /// </summary>
         internal IEnumerable<SyncHash> SyncHashes { get; private set; }
-        public Player Owner { get; set; }
+        public Player Owner { get; internal set; }
 
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
 
@@ -80,6 +80,8 @@ namespace EW
             World = world;
             ActorID = world.NextAID();
 
+            if (initDict.Contains<OwnerInit>())
+                Owner = init.Get<OwnerInit, Player>();
             if (name != null)
             {
                 name = name.ToLowerInvariant();

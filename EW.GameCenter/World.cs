@@ -132,6 +132,11 @@ namespace EW
             SetLocalPlayer(localPlayer);
         }
 
+        public void SetWorldOwner(Player p)
+        {
+            WorldActor.Owner = p;
+        }
+
         void SetLocalPlayer(Player localPlayer)
         {
             if (localPlayer == null)

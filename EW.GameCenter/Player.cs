@@ -34,6 +34,9 @@ namespace EW
         public World World { get; private set; }
 
         public bool IsBot;
+
+        public readonly string BotType;
+
         public bool Spectating; //旁观
         public bool HasObjectives = false;
 
@@ -51,8 +54,26 @@ namespace EW
             InternalName = pr.Name;
             PlayerReference = pr;
 
+            //Real player or host-created bot
             if(client != null)
             {
+
+
+                ClientIndex = client.Index;
+
+                if (client.Bot != null)
+                {
+
+                }
+                else
+                {
+                    PlayerName = client.Name;
+
+                }
+                BotType = client.Bot;
+                Faction = ChooseFaction(world, client.Faction, !pr.LockFaction);
+                DisplayFaction = ChooseDisplayFaction(world, client.Faction);
+                
 
             }
             else
@@ -118,6 +139,8 @@ namespace EW
 
             var selected = selectableFactions.FirstOrDefault(f => f.InternalName == name) ?? selectableFactions.Random(world.SharedRandom);
 
+
+            //Don't loop infinite
             for(var i = 0; i <= 10 && selected.RandomFactionMembers.Any(); i++)
             {
                 var faction = selected.RandomFactionMembers.Random(world.SharedRandom);

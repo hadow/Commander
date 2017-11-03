@@ -10,6 +10,22 @@ namespace EW.NetWork
 
         public class Client
         {
+            public int Index;
+
+            public string Faction;
+
+            public int SpawnPoint;
+
+            public string Name;
+
+            public string IpAddress;
+
+            public string Slot;
+
+            public string Bot;
+
+            public bool IsAdmin;
+
 
         }
         public class ClientPing
