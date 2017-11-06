@@ -10,7 +10,16 @@ namespace EW.Mods.Common.Traits
     /// </summary>
     public class HitShapeInfo : ConditionalTraitInfo,Requires<BodyOrientationInfo>
     {
+        /// <summary>
+        /// Create a targetable position for each offset listed here(relative to CenterPosition)
+        /// </summary>
         public readonly WVec[] TargetableOffsets = { WVec.Zero };
+
+
+        /// <summary>
+        /// Create a targetable position at the center of each occupied cell,Stacks with TargetableOffsets
+        /// </summary>
+        public readonly bool UseTargetableCellsOffsets = false;
 
         [FieldLoader.LoadUsing("LoadShape")]
         public readonly IHitShape Type;
@@ -44,16 +53,18 @@ namespace EW.Mods.Common.Traits
         }
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new HitShape(init.Self, this);
         }
     }
-    public class HitShape:ConditionalTrait<HitShapeInfo>
+    public class HitShape:ConditionalTrait<HitShapeInfo>,ITargetablePositions
     {
         BodyOrientation orientation;
         ITargetableCells targetableCells;
+
         public HitShape(Actor actor,HitShapeInfo info) : base(info)
         {
-
+            orientation = actor.Trait<BodyOrientation>();
+            targetableCells = actor.TraitOrDefault<ITargetableCells>();
         }
 
         protected override void Created(Actor self)
@@ -61,6 +72,23 @@ namespace EW.Mods.Common.Traits
             orientation = self.Trait<BodyOrientation>();
             targetableCells = self.TraitOrDefault<ITargetableCells>();
             base.Created(self);
+        }
+
+
+        IEnumerable<WPos> ITargetablePositions.TargetablePositions(Actor self){
+
+
+            if (IsTraitDisabled)
+                yield break;
+            if (Info.UseTargetableCellsOffsets && targetableCells !=null  ){
+                foreach (var c in targetableCells.TargetableCells())
+                    yield return self.World.Map.CenterOfCell(c.First);
+            }
+
+            foreach (var o in Info.TargetableOffsets){
+                var offset = orientation.LocalToWorld(o.Rotate(orientation.QuantizeOrientation(self, self.Orientation)));
+                yield return self.CenterPosition + offset;
+            }
         }
     }
 }

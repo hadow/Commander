@@ -27,5 +27,21 @@ namespace EW.Mods.Common
                 a *= p / 100m;
             return (int)a;
         }
+
+        /// <summary>
+        /// Quantizes the facing.
+        /// </summary>
+        /// <returns>The facing.</returns>
+        /// <param name="facing">Facing.</param>
+        /// <param name="numFrames">Number frames.</param>
+
+        public static int QuantizeFacing(int facing, int numFrames){
+
+            var step = 256 / numFrames;
+
+            var a = (facing + step / 2) & 0xff;
+
+            return a / step;
+        }
     }
 }

@@ -46,6 +46,10 @@ namespace EW
             return new WAngle(degrees * 1024 / 360);
         }
 
+
+        public static WAngle FromFacing(int facing){
+            return new WAngle(facing * 4);
+        }
         public int Facing { get { return Angle / 4; } }
 
         public int Sin()

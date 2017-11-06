@@ -55,11 +55,17 @@ namespace EW
         public Activity CurrentActivity { get; private set; }
 
         readonly IHealth health;
+
         readonly IFacing facing;
+
         readonly IDisable[] disables;
+
         readonly IRender[] renders;
+
         readonly IRenderModifier[] renderModifiers;
+
         readonly IVisibilityModifier[] visibilityModifiers;
+
         readonly IDefaultVisibility defaultVisibility;
 
         /// <summary>
@@ -73,6 +79,16 @@ namespace EW
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
 
         public WPos CenterPosition { get { return OccupiesSpace.CenterPosition; } }
+
+
+        public WRot Orientation{
+
+            get{
+                
+                var facingValue = facing != null ? facing.Facing : 0;
+                return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facingValue));
+            }
+        }
         internal Actor(World world, string name, TypeDictionary initDict)
         {
             var init = new ActorInitializer(this, initDict);

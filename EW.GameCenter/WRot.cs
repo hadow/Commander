@@ -41,5 +41,12 @@ namespace EW
         {
             return (obj is WRot) && Equals((WRot)obj);
         }
+
+
+        public int[] AsMatrix(){
+
+            var mtx = new int[16];
+            return mtx;
+        }
     }
 }

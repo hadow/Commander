@@ -42,7 +42,11 @@ namespace EW.Mods.Common.Traits
         public readonly Stance TargetStances = Stance.Enemy;
 
         public readonly Stance ForceTargetsStance = Stance.Enemy | Stance.Neutral | Stance.Ally;
+       
         public WeaponInfo WeaponInfo { get; private set; }
+
+        public WDist ModifiedRange { get; private set; }
+
         /// <summary>
         /// 
         /// </summary>

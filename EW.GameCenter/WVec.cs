@@ -59,6 +59,23 @@ namespace EW
             }
         }
 
+
+        public WVec Rotate(WRot rot){
+            return Rotate(rot.AsMatrix());
+        }
+
+
+        public WVec Rotate(int[] rotationMatrix){
+
+            var mtx = rotationMatrix;
+
+            return new WVec(1, 1, 1);
+        }
+
+
+
+
+
         #region Scripting interface
 
         public LuaValue Add(LuaRuntime runtime, LuaValue left, LuaValue right)

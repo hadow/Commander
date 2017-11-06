@@ -32,6 +32,24 @@ namespace EW.Mods.Common.Traits
         }
 
 
+        public WRot QuantizeOrientation(WRot orientation, int facings)
+        {
+
+            //Quantization disabled
+            if (facings == 0)
+                return orientation;
+
+            var facing = QuantizeFacing(orientation.Yaw.Angle / 4, facings);
+
+            return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facings));
+
+        }
+
+        public int QuantizeFacing(int facing, int facings){
+
+            return Util.QuantizeFacing(facing, facings) * (256 / facing);
+        }
+
         public object Create(ActorInitializer init){
             return new BodyOrientation(init, this);
         }
@@ -54,5 +72,21 @@ namespace EW.Mods.Common.Traits
         }
 
         public WAngle CameraPitch { get { return info.CameraPitch; } }
+
+        /// <summary>
+        /// Locals to world.
+        /// </summary>
+        /// <returns>The to world.</returns>
+        /// <param name="vec">Vec.</param>
+        public WVec LocalToWorld(WVec vec){
+            return info.LocalToWorld(vec);
+        }
+
+
+        public WRot QuantizeOrientation(Actor self,WRot orientation){
+            return info.QuantizeOrientation(orientation, quantizedFacings.Value);
+        }
+
+
     }
 }

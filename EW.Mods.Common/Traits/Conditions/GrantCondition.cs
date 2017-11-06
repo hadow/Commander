@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
+
+    /// <summary>
+    /// Grants a condition while the trait is active.
+    /// </summary>
     class GrantConditionInfo:ConditionalTraitInfo
     {
         
@@ -11,7 +15,7 @@ namespace EW.Mods.Common.Traits
         public readonly string Condition = null;//Condition to grant.
         public override object Create(ActorInitializer init)
         {
-            throw new NotImplementedException();
+            return new GrantCondition(this);
         }
 
     }
@@ -24,6 +28,8 @@ namespace EW.Mods.Common.Traits
         int conditionToken = ConditionManager.InvalidConditionToken;
 
         public GrantCondition(GrantConditionInfo info) : base(info) { }
+
+
 
         protected override void Created(Actor self)
         {
