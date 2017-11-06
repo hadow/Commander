@@ -28,7 +28,7 @@ namespace EW.Mods.Common.Traits
         public readonly Color Color = Color.FromArgb(128, Color.Yellow);
 
         public readonly Color BorderColor = Color.FromArgb(96, Color.Black);
-
+        
         /// <summary>
         /// Computed range.
         /// </summary>

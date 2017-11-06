@@ -200,6 +200,11 @@ namespace EW.Xna.Platforms
             return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
         }
 
+        public static Color FromArgb(int alpha,Color baseColor)
+        {
+            return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
+        }
+
         public int ToArgb()
         {
             return (int)_packedValue;
