@@ -38,6 +38,8 @@ namespace EW
 
         public int NetFrameNumber { get { return orderManager.NetFrameNumber; } }
 
+
+        public static int RenderFrame = 0;
         public WarGame() {
             DeviceManager = new GraphicsDeviceManager(this);
             DeviceManager.IsFullScreen = true;
@@ -242,16 +244,21 @@ namespace EW
         /// </summary>
         void RenderTick()
         {
-            using(new PerfSample("render"))
+            using (new PerfSample("render"))
             {
+                ++RenderFrame;
                 if (worldRenderer != null)
                 {
                     Renderer.BeginFrame(worldRenderer.ViewPort.TopLeft, worldRenderer.ViewPort.Zoom);
 
                     worldRenderer.Draw();
 
-                    Renderer.EndFrame();
                 }
+                else
+                    Renderer.BeginFrame(Int2.Zero, 1f);
+
+                using (new PerfSample("render_flip"))
+                    Renderer.EndFrame();
             }
         }
 

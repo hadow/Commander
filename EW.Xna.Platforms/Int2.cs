@@ -5,6 +5,7 @@ namespace EW.Xna.Platforms
     {
         public readonly int X, Y;
 
+        public static readonly Int2 Zero = new Int2(0, 0);
         public Int2(int x,int y) { X = x; Y = y; }
 
 

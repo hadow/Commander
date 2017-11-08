@@ -138,6 +138,16 @@ namespace EW.Traits
     #endregion
 
     #region Render Interface
+
+    public interface IRenderShroud
+    {
+        void RenderShroud(Shroud shroud, WorldRenderer wr);
+    }
+
+    public interface IRenderAboveShroud
+    {
+        IEnumerable<IRenderable> RenderAboveShroud(Actor self, WorldRenderer wr);
+    }
     public interface IRenderAboveShroudWhenSelected
     {
         IEnumerable<IRenderable> RenderAboveShroud(Actor self, WorldRenderer wr);

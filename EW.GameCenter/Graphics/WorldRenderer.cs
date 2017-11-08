@@ -90,14 +90,31 @@ namespace EW.Graphics
             var renderables = GenerateRenderables();
 
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
-            terrainRenderer.Draw(this, ViewPort);
-
+            WarGame.Renderer.EnableScissor(bounds);
+            //µÿ–ŒªÊ÷∆
+            //terrainRenderer.Draw(this, ViewPort);
+            
 
             for (var i = 0; i < renderables.Count; i++)
                 renderables[i].Render(this);
 
             if (enableDepthBuffer)
                 GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            foreach (var a in World.ActorsWithTrait<IRenderAboveWorld>())
+                if (a.Actor.IsInWorld && !a.Actor.Disposed)
+                    a.Trait.RenderAboveWorld(a.Actor, this);
+
+            var renderShroud = World.RenderPlayer != null ? World.RenderPlayer.Shroud : null;
+
+            foreach (var a in World.ActorsWithTrait<IRenderShroud>())
+                a.Trait.RenderShroud(renderShroud, this);
+
+            WarGame.Renderer.DisableScissor();
+
+            var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>().Where(a => a.Actor.IsInWorld && !a.Actor.Disposed).SelectMany(a => a.Trait.RenderAboveShroud(a.Actor, this));
+
+            var aboveShroudSelected = World.
         }
 
         /// <summary>

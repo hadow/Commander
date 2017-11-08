@@ -49,8 +49,8 @@ namespace EW
             TempBufferSize = graphicSettings.BatchSize;
             SheetSize = graphicSettings.SheetSize;
 
-            WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            //WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            //SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
             //WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
 
             //WorldVoxelRenderer = new VoxelRenderer(this, this.Game.Content.Load<Effect>("glsl/vxl"));
@@ -88,7 +88,7 @@ namespace EW
                 lastScroll = scroll;
                 lastZoom = zoom;
 
-                WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
+                //WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
                 WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
             }
         }
@@ -104,7 +104,7 @@ namespace EW
 
             currentPaletteTexture = palette.Texture;
 
-            WorldSpriteRenderer.SetPalette(currentPaletteTexture);
+            //WorldSpriteRenderer.SetPalette(currentPaletteTexture);
             WorldModelRenderer.SetPalette(currentPaletteTexture);
         }
 
