@@ -12,10 +12,16 @@ namespace EW.Graphics
 
         }
     }
+
+    /// <summary>
+    /// The enum values indicate the number of channels used by the type
+    /// They are not arbitrary IDs
+    /// arbitrary »Œ“‚µƒ
+    /// </summary>
     public enum SheetT
     {
         Indexed = 1,
-        BGRA = 2,
+        BGRA = 4,
     }
     public sealed class SheetBuilder:GameComponent
     {

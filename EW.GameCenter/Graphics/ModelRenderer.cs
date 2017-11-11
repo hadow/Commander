@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Primitives;
@@ -158,12 +159,45 @@ namespace EW.Graphics
 
         public void BeginFrame()
         {
+            foreach (var kv in mappedBuffers)
+                unmappedBuffers.Push(kv);
+            mappedBuffers.Clear();
+
             sheetBuilder = new SheetBuilder(this.renderer.Game,SheetT.BGRA, AllocateSheet);
-                
+            doRender.Clear();    
+        }
+
+
+        public void EndFrame()
+        {
+            if (doRender.Count == 0)
+                return;
+
+            Sheet currentSheet = null;
+            
+            foreach(var v in doRender)
+            {
+                //Change sheet
+                if(v.First != currentSheet)
+                {
+                    currentSheet = v.First;
+
+                }
+
+                v.Second();
+            }
+        }
+
+        RenderTarget2D EnableFrameBuffer(Sheet s)
+        {
+            var fbo = mappedBuffers[s];
+
+            return fbo;
         }
 
         public Sheet AllocateSheet()
         {
+            //Reuse cached fbo;
             if (unmappedBuffers.Count > 0)
             {
                 var kv = unmappedBuffers.Pop();
@@ -181,7 +215,15 @@ namespace EW.Graphics
 
         public void Dispose()
         {
+            foreach(var kvp in mappedBuffers.Concat(unmappedBuffers))
+            {
+                kvp.Key.Dispose();
+                kvp.Value.Dispose();
+            }
 
+
+            mappedBuffers.Clear();
+            unmappedBuffers.Clear();
         }
 
 
