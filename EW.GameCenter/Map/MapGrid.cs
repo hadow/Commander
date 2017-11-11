@@ -9,7 +9,7 @@ namespace EW
     public enum MapGridT
     {
         Rectangular,
-        RectangularIsometric
+        RectangularIsometric//µÈ¾à
     }
 
     /// <summary>

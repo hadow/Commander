@@ -12,4 +12,8 @@ namespace EW.Effects
         IEnumerable<IRenderable> Render(WorldRenderer wr);
 
     }
+
+    public interface IEffectAboveShroud{
+        IEnumerable<IRenderable> RenderAboveShroud(WorldRenderer wr);
+    }
 }

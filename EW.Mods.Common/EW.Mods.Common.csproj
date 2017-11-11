@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>EW.Mods.Common</RootNamespace>
     <AssemblyName>EW.Mods.Common</AssemblyName>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -47,6 +47,15 @@
     <Reference Include="Mono.Android" />
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Eluant">
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
+    <Reference Include="EW.Xna.Platforms">
+      <HintPath>..\EW.Xna.Platforms\bin\Debug\EW.Xna.Platforms.dll</HintPath>
+    </Reference>
+    <Reference Include="EW.GameCenter">
+      <HintPath>..\EW.GameCenter\bin\Debug\EW.GameCenter.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -383,26 +392,13 @@
     <Compile Include="Traits\Render\AutoSelectionSize.cs" />
     <Compile Include="Traits\Modifiers\HiddenUnderFog.cs" />
     <Compile Include="Traits\Modifiers\HiddenUnderShroud.cs" />
+    <Compile Include="Lint\CheckPalettes.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EW.GameCenter\EW.Game.Android.csproj">
-      <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
-      <Name>EW.Game.Android</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
-      <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
-      <Name>EW.Xna.Platforms</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup />

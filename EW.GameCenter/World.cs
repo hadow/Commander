@@ -26,6 +26,9 @@ namespace EW
         public readonly ActorMap ActorMap;
         public readonly ScreenMap ScreenMap;
 
+        public readonly Selection Selection = new Selection();
+
+
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
 
@@ -78,6 +81,12 @@ namespace EW
 
         public bool FogObscures(WPos pos) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(pos); }
 
+        /// <summary>
+        /// Fogs the obscures.
+        /// ÎíÐ§Ä£ºý
+        /// </summary>
+        /// <returns><c>true</c>, if obscures was foged, <c>false</c> otherwise.</returns>
+        /// <param name="a">The alpha component.</param>
         public bool FogObscures(Actor a) { return RenderPlayer != null && !RenderPlayer.CanViewActor(a); }
 
         public Player LocalPlayer { get; private set; }

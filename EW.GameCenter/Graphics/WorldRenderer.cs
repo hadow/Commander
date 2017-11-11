@@ -6,6 +6,7 @@ using EW.Xna.Platforms;
 using EW.Traits;
 using EW.Xna.Platforms.Graphics;
 using EW.Primitives;
+using EW.Effects;
 namespace EW.Graphics
 {
     /// <summary>
@@ -114,7 +115,38 @@ namespace EW.Graphics
 
             var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>().Where(a => a.Actor.IsInWorld && !a.Actor.Disposed).SelectMany(a => a.Trait.RenderAboveShroud(a.Actor, this));
 
-            var aboveShroudSelected = World.
+            var aboveShroudSelected = World.Selection.Actors.Where(a => !a.Disposed)
+                                           .SelectMany(a => a.TraitsImplementing<IRenderAboveShroudWhenSelected>()
+                                                       .SelectMany(t => t.RenderAboveShroud(a,this)));
+
+
+            var aboveShroudEffects = World.Effects.Select(e => e as IEffectAboveShroud).Where(e => e != null).SelectMany(e => e.RenderAboveShroud(this));
+
+            var aboveShroudOrderGenerator = SpriteRenderable.None;
+
+            if (World.OrderGenerator != null)
+                aboveShroudOrderGenerator = World.OrderGenerator.RenderAboveShroud(this, World);
+
+            WarGame.Renderer.WorldModelRenderer.BeginFrame();
+
+            var finalOverlayRenderables = aboveShroud.
+                                                     Concat(aboveShroudSelected).
+                                                     Concat(aboveShroudEffects).
+                                                     Concat(aboveShroudOrderGenerator).
+                                                     Select(r => r.PrepareRender(this)).ToList();
+
+            WarGame.Renderer.WorldModelRenderer.EndFrame();
+
+            //HACK:Keep old grouping behaviour
+            foreach (var g in finalOverlayRenderables.GroupBy(prs=>prs.GetType())){
+
+                foreach(var r in g){
+                    r.Render(this);
+                }
+            }
+
+
+
         }
 
         /// <summary>
@@ -208,7 +240,7 @@ namespace EW.Graphics
         /// <returns></returns>
         public WPos ProjectedPosition(Int2 screenPx)
         {
-            return new WPos(1024 * screenPx.X / TileSize.Width, 1024 * screenPx.Y / TileSize.Height, 0);
+            return new WPos(TileScale * screenPx.X / TileSize.Width, TileScale * screenPx.Y / TileSize.Height, 0);
         }
 
         /// <summary>
@@ -219,13 +251,13 @@ namespace EW.Graphics
         /// <returns></returns>
         public Vector2 ScreenPosition(WPos pos)
         {
-            return new Vector2(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f);
+            return new Vector2((float)TileSize.Width * pos.X / TileScale, (float)TileSize.Height * (pos.Y - pos.Z) / TileScale);
         }
 
         public Vector3 Screen3DPosition(WPos pos)
         {
-            var z = ZPosition(pos, 0) * TileSize.Height / 1024f;
-            return new Vector3(TileSize.Width * pos.X / 1024f, TileSize.Height * (pos.Y - pos.Z) / 1024f, z);
+            var z = ZPosition(pos, 0) *(float) TileSize.Height / TileScale;
+            return new Vector3(TileSize.Width * pos.X / TileScale, TileSize.Height * (pos.Y - pos.Z) / TileScale, z);
         }
 
         /// <summary>
@@ -283,11 +315,23 @@ namespace EW.Graphics
         //    terrainRenderer.Dispose();
         //}
 
+
+        /// <summary>
+        /// Dispose the specified disposing.
+        /// </summary>
+        /// <returns>The dispose.</returns>
+        /// <param name="disposing">If set to <c>true</c> disposing.</param>
+
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            World.Dispose();
 
+
+            //HACK: Disposing the world from here violates ownership 
+            //but the WorldRenderer lifetime matches the disposal 
+            //behavior we want for the world.and the root object setup is horrible that doing it properly would be a giant mess.
+            World.Dispose();
+            palette.Dispose();
             Theater.Dispose();
             terrainRenderer.Dispose();
         }
