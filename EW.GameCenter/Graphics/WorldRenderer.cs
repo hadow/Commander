@@ -165,7 +165,14 @@ namespace EW.Graphics
             if (World.OrderGenerator != null)
                 worldRenderables = worldRenderables.Concat(World.OrderGenerator.Render(this, World));
 
-            worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+
+            //Unpartitioned effects 
+            worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
+            //worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+
+            //Partitioned, currently on-screen effects
+            var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
+            worldRenderables = worldRenderables.Concat(effectRenderables, effectRenderables.SelectMany(e => e.Render(this));
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
             
             WarGame.Renderer.WorldModelRenderer.BeginFrame();

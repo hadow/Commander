@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
 using EW.Xna.Platforms;
+using EW.Effects;
 using EW.Primitives;
 namespace EW.Traits
 {
@@ -34,6 +35,8 @@ namespace EW.Traits
 
         readonly SpatiallyPartitioned<Actor> partitionedActors;
 
+        readonly SpatiallyPartitioned<IEffect> partitionedEffects;
+
         public ScreenMap(World world,ScreenMapInfo info)
         {
             var size = world.Map.Grid.TileSize;
@@ -42,6 +45,7 @@ namespace EW.Traits
 
             partitionedFrozenActors = new Cache<Player, SpatiallyPartitioned<FrozenActor>>(_ => new SpatiallyPartitioned<FrozenActor>(width, height, info.BinSize));
             partitionedActors = new SpatiallyPartitioned<Actor>(width, height, info.BinSize);
+            partitionedEffects = new SpatiallyPartitioned<IEffect>(width, height, info.BinSize);
         }
         public void WorldLoaded(World w,WorldRenderer wr)
         {
@@ -84,6 +88,11 @@ namespace EW.Traits
             if (p == null)
                 return NoFrozenActors;
             return partitionedFrozenActors[p].InBox(r).Where(frozenActorIsValid);
+        }
+
+
+        public IEnumerable<IEffect> EffectsInBox(Int2 a,Int2 b){
+            return partitionee
         }
 
         public void Add(Actor a)

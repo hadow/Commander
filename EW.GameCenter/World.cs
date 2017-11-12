@@ -35,6 +35,9 @@ namespace EW
         readonly List<IEffect> effects = new List<IEffect>();
         readonly List<ISync> syncedEffects = new List<ISync>();
 
+        //未分隔的特效
+        readonly List<IEffect> unpartitionedEffects = new List<IEffect>();
+
         public readonly MersenneTwister SharedRandom;
         public int Timestep;
 
@@ -77,6 +80,10 @@ namespace EW
 
         public IEnumerable<IEffect> Effects { get { return effects; } }
 
+
+        public IEnumerable<IEffect> UnpartitionedEffects{ get { return unpartitionedEffects; }}
+
+        public IEnumerable<ISync> SyncedEffects { get { return syncedEffects; }}
         public bool FogObscures(CPos p) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(p); }
 
         public bool FogObscures(WPos pos) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(pos); }
