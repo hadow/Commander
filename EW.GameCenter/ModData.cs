@@ -30,6 +30,7 @@ namespace EW
 
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
+        public readonly IModelSequenceLoader ModelSequenceLoader;
         public readonly GraphicsDevice Device;
         public ILoadScreen LoadScreen { get; private set; }
         /// <summary>
@@ -93,7 +94,20 @@ namespace EW
                 throw new InvalidOperationException("Unable to find a sequence loader for type '{0}'.".F(sequenceFormat.Type));
             SpriteSequenceLoader = (ISpriteSequenceLoader)ctor.Invoke(new[] { this });
             SpriteSequenceLoader.OnMissingSpriteError =s=> { };
-            
+
+            var modelFormat = Manifest.Get<ModelSequenceFormat>();
+            var modelLoader = ObjectCreator.FindType(modelFormat.Type + "Loader");
+            var modelCtor = modelLoader != null ? modelLoader.GetConstructor(new[] { typeof(ModData) }) : null;
+
+            if (modelCtor == null || !modelLoader.GetInterfaces().Contains(typeof(IModelSequenceLoader)) || modelCtor == null)
+                throw new InvalidOperationException("Unable to find a model loader for type '{0}'".F(modelFormat.Type));
+
+
+
+
+            ModelSequenceLoader = (IModelSequenceLoader)modelCtor.Invoke(new[] { this });
+            ModelSequenceLoader.OnMissingModelError = s => { };
+
             defaultRules = Exts.Lazy(() => Ruleset.LoadDefaults(this));
 
             //µØÐÎÌùÆ¬¼¯

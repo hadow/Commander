@@ -7,7 +7,7 @@ namespace EW
     /// </summary>
     public struct WRot:IEquatable<WRot>
     {
-
+        public static readonly WRot Zero = new WRot(WAngle.Zero, WAngle.Zero, WAngle.Zero);
         public readonly WAngle Pitch, Roll, Yaw;
 
         public WRot(WAngle pitch,WAngle roll,WAngle yaw)
@@ -27,6 +27,13 @@ namespace EW
         {
             return !(a == b);
         }
+
+        public static WRot FromFacing(int facing)
+        {
+            return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facing));
+        }
+
+        public static WRot FromYaw(WAngle yaw) { return new WRot(WAngle.Zero, WAngle.Zero, yaw); }
         public override int GetHashCode()
         {
             return Pitch.GetHashCode() ^ Roll.GetHashCode() ^ Yaw.GetHashCode();

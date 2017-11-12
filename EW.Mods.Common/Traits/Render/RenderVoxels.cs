@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 using EW.Graphics;
 using EW.Mods.Common.Graphics;
 namespace EW.Mods.Common.Traits.Render
 {
 
-    public class RenderVoxelsInfo : ITraitInfo
+    public class RenderVoxelsInfo : ITraitInfo,IRenderActorPreviewInfo,Requires<BodyOrientationInfo>
     {
+
+        /// <summary>
+        /// Defaults to the actor name
+        /// </summary>
         public readonly string Image = null;
 
+        /// <summary>
+        /// Custom palette name
+        /// </summary>
         [PaletteReference]
         public readonly string Palette = null;
 
+        /// <summary>
+        /// Custom PlayerColorPalette:BaseName.
+        /// </summary>
         public readonly string PlayerPalette = "player";
-
         public readonly string NormalsPalette = "normals";
-
         public readonly string ShadowPalette = "shadow";
 
         public readonly WAngle LightPitch = WAngle.FromDegrees(50);
@@ -25,8 +34,31 @@ namespace EW.Mods.Common.Traits.Render
         public readonly float[] LightAmbientColor = { 0.6f, 0.6f, 0.6f };
         public readonly float[] LightDiffuseColor = { 0.4f, 0.4f, 0.4f };
 
+        /// <summary>
+        /// Change the image size.
+        /// </summary>
         public readonly float Scale = 12;
+
+        
         public virtual object Create(ActorInitializer init) { return new RenderVoxels(init.Self, this); }
+
+        public virtual IEnumerable<IActorPreview> RenderPreview(ActorPreviewInitializer init)
+        {
+            var body = init.Actor.TraitInfo<BodyOrientationInfo>();
+            var faction = init.Get<FactionInit, string>();
+            var ownerName = init.Get<OwnerInit>().PlayerName;
+            var sequenceProvider = init.World.Map.Rules.Sequences;
+            var image = Image ?? init.Actor.Name;
+            var facings = body.QuantizedFacings == -1 ? init.Actor.TraitInfo<IQuantizeBodyOrientationInfo>().QuantizedBodyFacings(init.Actor, sequenceProvider, faction) :
+                body.QuantizedFacings;
+
+            var palette = init.WorldRenderer.Palette(Palette ?? PlayerPalette + ownerName);
+
+            var components = init.Actor.TraitInfos<IRenderActorPreviewVoxelsInfo>().SelectMany(rvpi => rvpi.RenderPreviewVoxels(init, this, image, init.GetOrientation(), facings, palette)).ToArray();
+
+            yield return new ModelPreview(components, WVec.Zero, 0, Scale, LightPitch, LightYaw, LightAmbientColor, LightDiffuseColor, body.CameraPitch, palette, init.WorldRenderer.Palette(NormalsPalette), init.WorldRenderer.Palette(ShadowPalette));
+        }
+
     }
     public class RenderVoxels : IRender, INotifyOwnerChanged
     {

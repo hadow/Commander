@@ -105,6 +105,23 @@ namespace EW.Mods.Common.Graphics
 
             public void Render(WorldRenderer wr)
             {
+                var groundPos = model.pos - new WVec(0, 0, wr.World.Map.DistanceAboveTerrain(model.pos).Length);
+                var tileScale = wr.World.Map.Grid.Type == MapGridT.RectangularIsometric ? 1448f : 1024f;
+
+                var groundZ = wr.World.Map.Grid.TileSize.Height * (groundPos.Z - model.pos.Z) / tileScale;
+                var pxOrigin = wr.Screen3DPosition(model.pos);
+
+                //HACK:We don't have enough texture channels to pass the depth data to the shader
+                //so for now just offset everything forward so that the back corner is rendered at pos.
+                pxOrigin = new Vector3(0, 0, Screen3DBounds(wr).Second.X);
+
+                var shadowOrigin = pxOrigin - groundZ * (new Vector2(renderProxy.ShadowDirection, 1));
+
+                var psb = renderProxy.ProjectedShadowBounds;
+                var sa = shadowOrigin + psb[0];
+                var sb = shadowOrigin + psb[2];
+                var sc = shadowOrigin + psb[1];
+                var sd = shadowOrigin + psb[3];
 
             }
 
@@ -122,6 +139,11 @@ namespace EW.Mods.Common.Graphics
             Pair<Rectangle,Vector2> Screen3DBounds(WorldRenderer wr)
             {
                 var pxOrigin = wr.ScreenPosition(model.pos);
+
+                var draw = model.models.Where(v => v.DisableFunc != null || !v.DisableFunc());
+
+                var scaleTransform = EW.Graphics.Util.ScaleMaxtrix(model.scale, model.scale, model.scale);
+                var cameraTransform = EW.Graphics.Util.MakeFloatMatrix(model.camera.AsMatrix());
 
                 var minX = float.MaxValue;
                 var minY = float.MaxValue;

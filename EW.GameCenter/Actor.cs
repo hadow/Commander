@@ -168,6 +168,7 @@ namespace EW
         /// <returns></returns>
         public IEnumerable<IRenderable> Render(WorldRenderer wr)
         {
+            //PERF:Avoid LINQ;
             var renderables = Renderables(wr);
             foreach (var modifier in renderModifiers)
                 renderables = modifier.ModifyRender(this, wr, renderables);
@@ -183,6 +184,11 @@ namespace EW
         /// <returns></returns>
         IEnumerable<IRenderable> Renderables(WorldRenderer wr)
         {
+
+            //PERF:Avoid LINQ.
+            //Implementations of Render are permitted to return both an eagerly materialized collection or a lazily generated sequence.
+            //For large amounts of renderables,a lazily generated sequence(e.g. as returned by LINQ,or by using 'yield') will avoid the need to allocate a large collection.
+            //For small amounts of renderables, allocating a small collection can often be faster and require less memory than creating the objects needed to represent a sequence.
             foreach (var render in renders)
                 foreach (var renderable in render.Render(this, wr))
                     yield return renderable;

@@ -24,6 +24,7 @@ namespace EW
         public static WAngle operator +(WAngle a,WAngle b) { return new WAngle(a.Angle + b.Angle); }
         public static WAngle operator -(WAngle a,WAngle b) { return new WAngle(a.Angle - b.Angle); }
 
+        public static WAngle operator -(WAngle a) { return new WAngle(-a.Angle); }
         public static bool operator ==(WAngle me, WAngle other) { return me.Angle == other.Angle; }
 
         public static bool operator !=(WAngle me, WAngle other) { return me.Angle != other.Angle; }

@@ -59,6 +59,26 @@ namespace EW.Mods.Common.Graphics
                 return DamageState.Light;
             return DamageState.Undamaged;
         }
+
+        public Func<WRot> GetOrientation()
+        {
+            var facingInfo = Actor.TraitInfoOrDefault<IFacingInfo>();
+            if (facingInfo == null)
+                return () => WRot.Zero;
+
+            // Dynamic facing takes priority
+            var dynamicInit = dict.GetOrDefault<DynamicFacingInit>();
+            if(dynamicInit != null)
+            {
+                var getFacing = dynamicInit.Value(null);
+                return () => WRot.FromFacing(getFacing());
+            }
+
+            var facingInit = dict.GetOrDefault<FacingInit>();
+            var facing = facingInit != null ? facingInit.Value(null) : facingInfo.GetInitialFacing();
+            var orientation = WRot.FromFacing(facing);
+            return () => orientation;
+        }
     }
 
 }

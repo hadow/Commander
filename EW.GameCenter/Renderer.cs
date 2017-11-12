@@ -51,9 +51,8 @@ namespace EW
 
             //WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
             //SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            //WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
-
-            //WorldVoxelRenderer = new VoxelRenderer(this, this.Game.Content.Load<Effect>("glsl/vxl"));
+            WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
+            
         }
 
         /// <summary>
@@ -83,7 +82,16 @@ namespace EW
         /// <param name="zoom"></param>
         public void SetViewportParams(Int2 scroll,float zoom)
         {
-            if(lastScroll != scroll || lastZoom != zoom)
+
+            var resolutionChanged = lastResolution != Resolution;
+
+            if (resolutionChanged)
+            {
+
+            }
+
+            //If zoom evaluates as different due to floating point weirdness that's ok,setting the parameters again is harmless.
+            if(resolutionChanged || lastScroll != scroll || lastZoom != zoom)
             {
                 lastScroll = scroll;
                 lastZoom = zoom;

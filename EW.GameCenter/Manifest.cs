@@ -23,6 +23,19 @@ namespace EW
             Metadata = new ReadOnlyDictionary<string, MiniYaml>(yaml.ToDictionary());
         }
     }
+
+    public sealed class ModelSequenceFormat : IGlobalModData
+    {
+        public readonly string Type;
+
+        public readonly IReadOnlyDictionary<string, MiniYaml> Metadata;
+
+        public ModelSequenceFormat(MiniYaml yaml)
+        {
+            Type = yaml.Value;
+            Metadata = new ReadOnlyDictionary<string, MiniYaml>(yaml.ToDictionary());
+        }
+    }
     public class ModMetadata
     {
         public string Title;
@@ -57,7 +70,7 @@ namespace EW
         public readonly string[] Rules, 
                                 ServerTraits,
                                 Sequences,
-                                VoxelSequences,
+                                ModelSequences,
                                 Cursors,
                                 Chrome,
                                 Assemblies,
@@ -72,7 +85,7 @@ namespace EW
                                 MapCompatibility;
 
         readonly string[] reservedModuleNames = { "Metadata", "Folders", "MapFolders","Cursors",
-                                                "Packages", "Rules", "Sequences","VoxelSequences",
+                                                "Packages", "Rules", "Sequences","ModelSequences",
                                                 "Assemblies", "Weapons","RequiresMods","Fonts",
                                                 "SoundFormats","SpriteFormats","Missions","Music","Videos","Notifications",
                                                 "TileSets","Chrome","ChromeLayout","Voices","Translations","ServerTraits",
@@ -101,6 +114,7 @@ namespace EW
                 Packages = packages.ToDictionary(x => x.Value).AsReadOnly();
             Rules = YamlList(yaml, "Rules");
             Sequences = YamlList(yaml, "Sequences");
+            ModelSequences = YamlList(yaml, "ModelSequences");
             Assemblies = YamlList(yaml, "Assemblies");
             Weapons = YamlList(yaml, "Weapons");
             Voices = YamlList(yaml, "Voices");

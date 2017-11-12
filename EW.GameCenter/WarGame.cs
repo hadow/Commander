@@ -142,7 +142,7 @@ namespace EW
             using (new PerfTimer("PrepareMap"))
                 map = ModData.PrepareMap(mapUID);
             using (new PerfTimer("NewWorld"))
-                orderManager.World = new World(map, orderManager, type);
+                orderManager.World = new World(ModData,map, orderManager, type);
 
             worldRenderer = new WorldRenderer(this,ModData, orderManager.World);
 

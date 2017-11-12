@@ -4,6 +4,7 @@ using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Primitives;
 using EW.Graphics;
+using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
     public interface ICrushable
@@ -23,6 +24,11 @@ namespace EW.Mods.Common.Traits
 	{
         IEnumerable<IActorPreview> RenderPreview(ActorPreviewInitializer init);
 	}
+
+    public interface IRenderActorPreviewVoxelsInfo : ITraitInfo
+    {
+        IEnumerable<ModelAnimation> RenderPreviewVoxels(ActorPreviewInitializer init, RenderVoxelsInfo rv, string image, Func<WRot> orientation, int facings, PaletteReference p);
+    }
 
 
 

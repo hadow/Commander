@@ -139,5 +139,15 @@ namespace EW.Xna.Platforms
 
         public static implicit operator Vector2(Int2 src) { return new Vector2(src.X, src.Y); }
 
+
+        public static Vector2 Max(Vector2 a,Vector2 b)
+        {
+            return new Vector2(Math.Max(a.X, b.X), Math.Max(a.Y, b.Y));
+        }
+
+        public static Vector2 Min(Vector2 a,Vector2 b)
+        {
+            return new Vector2(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y));
+        }
     }
 }

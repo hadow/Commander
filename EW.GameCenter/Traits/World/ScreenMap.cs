@@ -91,9 +91,9 @@ namespace EW.Traits
         }
 
 
-        public IEnumerable<IEffect> EffectsInBox(Int2 a,Int2 b){
-            return partitionee
-        }
+        //public IEnumerable<IEffect> EffectsInBox(Int2 a,Int2 b){
+        //    return partitionee
+        //}
 
         public void Add(Actor a)
         {

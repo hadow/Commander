@@ -33,10 +33,116 @@ namespace EW.Xna.Platforms
             this.M44 = m44;
         }
 
+        public Matrix(float[] m)
+        {
+            if (m.Length != 16)
+                throw new ArgumentException("the length must be 16");
+            this.M11 = m[0];
+            this.M12 = m[1];
+            this.M13 = m[2];
+            this.M14 = m[3];
+            this.M21 = m[4];
+            this.M22 = m[5];
+            this.M23 = m[6];
+            this.M24 = m[7];
+            this.M31 = m[8];
+            this.M32 = m[9];
+            this.M33 = m[10];
+            this.M34 = m[11];
+            this.M41 = m[12];
+            this.M42 = m[13];
+            this.M43 = m[14];
+            this.M44 = m[15];
+        }
+
         private static Matrix identity = new Matrix(1f,0f,0f,0f,
                                                     0f,1f,0f,0f,
                                                     0f,0f,1f,0f,
                                                     0f,0f,0f,1f);
+
+        public float this[int index]
+        {
+            get
+            {
+                switch (index)
+                {
+                    case 0:return M11;
+                    case 1:return M12;
+                    case 2:return M13;
+                    case 3:return M14;
+                    case 4:return M21;
+                    case 5:return M22;
+                    case 6:return M23;
+                    case 7:return M24;
+                    case 8:return M31;
+                    case 9:return M32;
+                    case 10:return M33;
+                    case 11:return M34;
+                    case 12:return M41;
+                    case 13:return M42;
+                    case 14:return M43;
+                    case 15:return M44;
+                }
+                throw new ArgumentException();
+            }
+            set
+            {
+                switch (index)
+                {
+                    case 0:
+                        M11 = value;
+                        break;
+                    case 1:
+                        M12 = value;
+                        break;
+                    case 2:
+                        M13 = value;
+                        break;
+                    case 3:
+                        M14 = value;
+                        break;
+                    case 4:
+                        M21 = value;
+                        break;
+                    case 5:
+                        M22 = value;
+                        break;
+                    case 6:
+                        M23 = value;
+                        break;
+                    case 7:
+                        M24 = value;
+                        break;
+                    case 8:
+                        M31 = value;
+                        break;
+                    case 9:
+                        M32 = value;
+                        break;
+                    case 10:
+                        M33 = value;
+                        break;
+                    case 11:
+                        M34 = value;
+                        break;
+                    case 12:
+                        M41 = value;
+                        break;
+                    case 13:
+                        M42 = value;
+                        break;
+                    case 14:
+                        M43 = value;
+                        break;
+                    case 15:
+                        M44 = value;
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
+
 
         public bool Equals(Matrix other)
         {

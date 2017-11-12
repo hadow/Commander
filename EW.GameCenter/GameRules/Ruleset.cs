@@ -24,14 +24,15 @@ namespace EW
         public readonly IReadOnlyDictionary<string, SoundInfo> Voices;
         public readonly IReadOnlyDictionary<string, SoundInfo> Notifications;
         public readonly IReadOnlyDictionary<string, MusicInfo> Music;
-
+        public readonly IReadOnlyDictionary<string, MiniYamlNode> ModelSequences;
         public Ruleset(IReadOnlyDictionary<string,ActorInfo> actors,
                         IReadOnlyDictionary<string,WeaponInfo> weapons,
                         IReadOnlyDictionary<string,SoundInfo> voices,
                         IReadOnlyDictionary<string,SoundInfo> notifications,
                         IReadOnlyDictionary<string,MusicInfo> music,
                         TileSet tileSet,
-                        SequenceProvider sequence)
+                        SequenceProvider sequence,
+                        IReadOnlyDictionary<string,MiniYamlNode> modelSequences)
         {
             Actors = actors;
             Weapons = weapons;
@@ -39,7 +40,8 @@ namespace EW
             Notifications = notifications;
             TileSet = tileSet;
             Sequences = sequence;
-            this.Music = music;
+            ModelSequences = modelSequences;
+            Music = music;
             foreach(var a in Actors.Values)
             {
                 foreach(var t in a.TraitInfos<IRulesetLoaded>())
@@ -80,8 +82,10 @@ namespace EW
 
                 var music = MergeOrDefault("Manifest,Music", fs, m.Music, null, null, k => new MusicInfo(k.Key, k.Value));
 
-                
-                ruleset = new Ruleset(actors, weapons, voices, notifications, music, null, null);
+                var modelSequences = MergeOrDefault("Manifest,ModelSequences", fs, m.ModelSequences, null, null, k => k);
+
+                //The default ruleset does not include a preferred tileset or sequence set
+                ruleset = new Ruleset(actors, weapons, voices, notifications, music, null, null,modelSequences);
             };
 
             if (modData.IsOnMainThread)
@@ -118,7 +122,7 @@ namespace EW
         /// <param name="mapSequences"></param>
         /// <returns></returns>
         public static Ruleset Load(ModData modData,IReadOnlyFileSystem fileSystem,string tileSet,
-            MiniYaml mapRules,MiniYaml mapWeapons,MiniYaml mapVoices,MiniYaml mapNotifications,MiniYaml mapMusic,MiniYaml mapSequences)
+            MiniYaml mapRules,MiniYaml mapWeapons,MiniYaml mapVoices,MiniYaml mapNotifications,MiniYaml mapMusic,MiniYaml mapSequences,MiniYaml mapModelSequences)
         {
             var m = modData.Manifest;
             var dr = modData.DefaultRules;
@@ -142,8 +146,11 @@ namespace EW
 
                 var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider(modData.Game,fileSystem,modData,ts,mapSequences);
 
-                //TODO:Add support for custom voxel sequences
-                ruleset = new Ruleset(actors, weapons,voices,notifications,music,ts,sequences);
+                var modelSequences = dr.ModelSequences;
+                if (mapModelSequences != null)
+                    modelSequences = MergeOrDefault("ModelSequences", fileSystem, m.ModelSequences, mapModelSequences, dr.ModelSequences, k => k);
+
+                ruleset = new Ruleset(actors, weapons,voices,notifications,music,ts,sequences,modelSequences);
             };
 
             if (modData.IsOnMainThread)
@@ -171,7 +178,7 @@ namespace EW
             var dr = modData.DefaultRules;
             var ts = modData.DefaultTileSets[tileSet];
             var sequences = modData.DefaultSequences[tileSet];
-            return new Ruleset(dr.Actors, dr.Weapons, dr.Voices, dr.Notifications, dr.Music, ts, sequences);
+            return new Ruleset(dr.Actors, dr.Weapons, dr.Voices, dr.Notifications, dr.Music, ts, sequences,dr.ModelSequences);
         }
 
 

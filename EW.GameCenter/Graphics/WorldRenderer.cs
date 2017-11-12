@@ -7,6 +7,7 @@ using EW.Traits;
 using EW.Xna.Platforms.Graphics;
 using EW.Primitives;
 using EW.Effects;
+using EW.NetWork;
 namespace EW.Graphics
 {
     /// <summary>
@@ -171,12 +172,13 @@ namespace EW.Graphics
             //worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
 
             //Partitioned, currently on-screen effects
-            var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
-            worldRenderables = worldRenderables.Concat(effectRenderables, effectRenderables.SelectMany(e => e.Render(this));
+            //var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
+            //worldRenderables = worldRenderables.Concat(effectRenderables, effectRenderables.SelectMany(e => e.Render(this));
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
             
             WarGame.Renderer.WorldModelRenderer.BeginFrame();
             var renderables = worldRenderables.Select(r => r.PrepareRender(this)).ToList();
+            WarGame.Renderer.WorldModelRenderer.EndFrame();
 
 
             return renderables;
@@ -295,6 +297,17 @@ namespace EW.Graphics
             return new Vector3((float)TileSize.Width * vec.X / TileScale,
                                 (float)TileSize.Height * (vec.Y - vec.Z) / TileScale,
                                 (float)TileSize.Height * vec.Z / TileScale);
+        }
+
+        /// <summary>
+        /// For scaling vectors to pixel sizes in the model renderer
+        /// </summary>
+        /// <param name="vec"></param>
+        /// <returns></returns>
+        public float[] ScreenVector(WVec vec)
+        {
+            var xyz = ScreenVectorComponents(vec);
+            return new[] { xyz.X, xyz.Y, xyz.Z, 1f };
         }
 
         public float ScreenZPosition(WPos pos,int offset)

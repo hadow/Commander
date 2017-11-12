@@ -39,6 +39,8 @@ namespace EW
         readonly List<IEffect> unpartitionedEffects = new List<IEffect>();
 
         public readonly MersenneTwister SharedRandom;
+
+        public readonly IModelCache ModelCache;
         public int Timestep;
 
         readonly Queue<Action<World>> frameEndActions = new Queue<Action<World>>();
@@ -114,7 +116,7 @@ namespace EW
                 return OrderManager.Connection is ReplayConnection;
             }
         }
-        internal World(Map map,OrderManager orderManager,WorldT type)
+        internal World(ModData modData,Map map,OrderManager orderManager,WorldT type)
         {
             Type = type;
             OrderManager = orderManager;
@@ -122,6 +124,7 @@ namespace EW
             Timestep = orderManager.LobbyInfo.GlobalSettings.Timestep;
             SharedRandom = new MersenneTwister(orderManager.LobbyInfo.GlobalSettings.RandomSeed);
 
+            ModelCache = modData.ModelSequenceLoader.CachModels(map, modData, map.Rules.ModelSequences);
 
             var worldActorT = type == WorldT.Editor ? "EditorWorld" : "World";
             WorldActor = CreateActor(worldActorT, new TypeDictionary());
