@@ -12,7 +12,7 @@ namespace EW.Graphics
     {
         readonly Renderer renderer;
 
-        //readonly Action renderAction;
+        readonly Action renderAction;
 
         readonly Effect effect;
 
@@ -29,7 +29,7 @@ namespace EW.Graphics
             this.renderer = renderer;
             this.effect = effect;
             vertices = new Vertex[renderer.TempBufferSize];
-            //renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
+            renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
         }
 
 
@@ -43,11 +43,22 @@ namespace EW.Graphics
         {
             effect.Parameters["DiffuseTexture"].SetValue(sheet.GetTexture());
 
-            renderer.GraphicsDevice.BlendState = BlendState.AlphaBlend;
+            renderer.GraphicsDevice.BlendState = ConvertBlend(blendMode);
             renderer.GraphicsDevice.SetVertexBuffers(bindings);
             effect.CurrentTechnique.Passes[0].Apply();
             renderer.GraphicsDevice.DrawPrimitives(type, start, length);
             
+        }
+
+        private BlendState ConvertBlend(BlendMode mode)
+        {
+
+            if (mode == BlendMode.Alpha)
+                return BlendState.AlphaBlend;
+            else if (mode == BlendMode.Additive)
+                return BlendState.Additive;
+            return BlendState.AlphaBlend;
+
         }
 
 
@@ -93,7 +104,16 @@ namespace EW.Graphics
 
         public void Flush()
         {
+            if(nv > 0)
+            {
+                effect.Parameters["DiffuseTexture"].SetValue(currentSheet.GetTexture());
 
+                renderer.GraphicsDevice.BlendState = ConvertBlend(currentBlend);
+                effect.CurrentTechnique.Passes[0].Apply();
+                renderAction();
+                nv = 0;
+                currentSheet = null;
+            }
         }
 
 

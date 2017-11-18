@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using EW.Xna.Platforms;
+using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
     [Serializable]
@@ -68,7 +69,7 @@ namespace EW.Graphics
         public Sprite Add(byte[] src,Size size,float zRamp,Vector3 spriteOffset)
         {
             if (size.Width == 0 || size.Height == 0)
-                return new Sprite(current,EW.Xna.Platforms.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
+                return new Sprite(current,EW.Xna.Platforms.Rectangle.Empty,0,spriteOffset,channel,BlendState.AlphaBlend);
 
             var rect = Allocate(size, zRamp, spriteOffset);
             Util.FastCopyIntoChannel(rect, src);

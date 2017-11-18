@@ -85,16 +85,16 @@ namespace EW.Graphics
 
             RefreshPalette();
 
+            var renderables = GenerateRenderables();
+            var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
 
             if (enableDepthBuffer)
                 GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-            var renderables = GenerateRenderables();
 
-            var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             WarGame.Renderer.EnableScissor(bounds);
             //µÿ–ŒªÊ÷∆
-            //terrainRenderer.Draw(this, ViewPort);
+            terrainRenderer.Draw(this, ViewPort);
             
 
             for (var i = 0; i < renderables.Count; i++)

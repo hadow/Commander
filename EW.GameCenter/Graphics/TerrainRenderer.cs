@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.Xna.Platforms;
 using EW.Traits;
+using EW.Xna.Platforms.Graphics;
 namespace EW.Graphics
 {
     /// <summary>

@@ -170,8 +170,9 @@ namespace EW.Graphics
         //static readonly Rectangle ScreenClip = Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height);
         //readonly Rectangle ScreenClip = Rectangle.FromLTRB(0, 0, Game.GraphicsDevice.DisplayMode.Width, 0);
         readonly Rectangle ScreenClip;
+
         /// <summary>
-        /// 
+        /// Rectangle(int viewport coords) that contains things to be drawn
         /// </summary>
         /// <param name="insideBounds"></param>
         /// <returns></returns>

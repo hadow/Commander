@@ -11,6 +11,22 @@ namespace EW
     /// </summary>
     public sealed class Renderer:DrawableGameComponent
     {
+
+        public interface IBatchRenderer { void Flush(); }
+
+        public IBatchRenderer CurrentBatchRenderer
+        {
+            get { return currentBatchRenderer; }
+            set {
+                if (currentBatchRenderer == value)
+                    return;
+                if(currentBatchRenderer != null)
+                    currentBatchRenderer.Flush();
+
+                currentBatchRenderer = value;
+            }
+        }
+
         public SpriteRenderer SpriteRenderer;
 
         public SpriteRenderer WorldSpriteRenderer;
@@ -28,6 +44,8 @@ namespace EW
 
         internal int TempBufferSize { get; private set; }
 
+        readonly VertexBuffer tempBuffer;
+        readonly VertexBufferBinding[] bindings;
         float depthScale, depthOffset;
 
         internal int SheetSize { get; private set; }
@@ -35,8 +53,8 @@ namespace EW
         Int2? lastScroll;
         float? lastZoom;
 
-        public Texture2D currentPaletteTexture;
-
+        Texture2D currentPaletteTexture;
+        IBatchRenderer currentBatchRenderer;
         /// <summary>
         /// 
         /// </summary>
@@ -49,10 +67,13 @@ namespace EW
             TempBufferSize = graphicSettings.BatchSize;
             SheetSize = graphicSettings.SheetSize;
 
-            //WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            //SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
-            
+            WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
+            //WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
+
+            tempBuffer = new VertexBuffer(GraphicsDevice, typeof(Vertex), TempBufferSize, BufferUsage.None);
+            this.bindings = new VertexBufferBinding[1];
+            this.bindings[0] = new VertexBufferBinding(tempBuffer) ;
         }
 
         /// <summary>
@@ -73,7 +94,7 @@ namespace EW
 
         public void EndFrame()
         {
-
+            Flush();
         }
         /// <summary>
         /// 
@@ -96,8 +117,8 @@ namespace EW
                 lastScroll = scroll;
                 lastZoom = zoom;
 
-                //WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
-                WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
+                WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
+                //WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
             }
         }
 
@@ -112,13 +133,22 @@ namespace EW
 
             currentPaletteTexture = palette.Texture;
 
-            //WorldSpriteRenderer.SetPalette(currentPaletteTexture);
-            WorldModelRenderer.SetPalette(currentPaletteTexture);
+            WorldSpriteRenderer.SetPalette(currentPaletteTexture);
+            //WorldModelRenderer.SetPalette(currentPaletteTexture);
+        }
+
+        public void Flush()
+        {
+            CurrentBatchRenderer = null;
         }
 
 
         public void EnableScissor(EW.Xna.Platforms.Rectangle rect)
         {
+            //Must remain inside the current scissor rect.
+            if (scissorState.Any())
+                rect.Intersects(scissorState.Peek());
+            Flush();
             this.GraphicsDevice.ScissorRectangle = rect;
             scissorState.Push(rect);
             
@@ -127,10 +157,13 @@ namespace EW
         public void DisableScissor()
         {
             scissorState.Pop();
+            Flush();
 
+            //Restore previous scissor rect
             if (scissorState.Any())
             {
                 var rect = scissorState.Peek();
+                this.GraphicsDevice.ScissorRectangle = rect;
             }
         }
 
@@ -142,13 +175,18 @@ namespace EW
         /// <param name="type"></param>
         public void DrawBatch(Vertex[] vertices,int numVertices,PrimitiveType type)
         {
-
+            tempBuffer.SetData(vertices);
+            DrawBatch(tempBuffer, 0, numVertices, type);
         }
 
+        public void DrawBatch(VertexBuffer vertices, int firstVertext, int numVertices, PrimitiveType type) {
+
+            GraphicsDevice.DrawPrimitives(type, firstVertext, numVertices);
+        }
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            WorldModelRenderer.Dispose();
+            //WorldModelRenderer.Dispose();
         }
     }
 }
