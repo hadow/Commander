@@ -11,6 +11,9 @@ namespace EW.Mods.Common.Traits
         IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init, RenderSpritesInfo rs, string image, int facings,PaletteReference p);
     }
 
+    /// <summary>
+    /// Render trait fundament that won't work without additional With* render traits.
+    /// </summary>
     public class RenderSpritesInfo:ITraitInfo,IRenderActorPreviewInfo{
 
         /// <summary>
@@ -23,6 +26,9 @@ namespace EW.Mods.Common.Traits
         [PaletteReference]
         public readonly string Palette = null;
 
+        /// <summary>
+        /// Custom PlayerColorPalette : BaseName.
+        /// </summary>
         [PaletteReference(true)]
         public readonly string PlayerPalette = "player";
 
@@ -131,9 +137,13 @@ namespace EW.Mods.Common.Traits
         }
 
         string cachedImage;
+
         readonly RenderSpritesInfo info;
+
         readonly string faction;
+
         readonly List<AnimationWrapper> anims = new List<AnimationWrapper>();
+
         public RenderSprites(ActorInitializer init, RenderSpritesInfo info)
         {
             this.info = info;

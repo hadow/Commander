@@ -63,12 +63,29 @@ namespace EW.Mods.Common.Traits
 
         [Sync]
         public int QuantizedFacings { get { return quantizedFacings.Value; } }
+
         public BodyOrientation(ActorInitializer init, BodyOrientationInfo info)
         {
 
             this.info = info;
             var self = init.Self;
             var faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : self.Owner.Faction.InternalName;
+
+            quantizedFacings = Exts.Lazy(() =>
+            {
+
+                if (info.QuantizedFacings >= 0)
+                    return info.QuantizedFacings;
+
+                var qboi = self.TraitOrDefault<IQuantizeBodyOrientationInfo>();
+
+                if(qboi == null){
+                    
+                }
+
+                return qboi.QuantizedBodyFacings(self.Info, self.World.Map.Rules.Sequences, faction);
+
+            });
         }
 
         public WAngle CameraPitch { get { return info.CameraPitch; } }

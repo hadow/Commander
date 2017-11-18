@@ -4,6 +4,10 @@ using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms;
 namespace EW.Graphics
 {
+    /// <summary>
+    /// Sprite renderer.
+    /// 精灵渲染器
+    /// </summary>
     public class SpriteRenderer
     {
         readonly Renderer renderer;
@@ -13,6 +17,7 @@ namespace EW.Graphics
         readonly Effect effect;
 
         readonly Vertex[] vertices;
+
         Sheet currentSheet;
 
         BlendMode currentBlend = BlendMode.Alpha;
@@ -27,6 +32,13 @@ namespace EW.Graphics
             //renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
         }
 
+
+        void SetRenderStateForSprite(Sprite s){
+
+            currentBlend = s.BlendMode;
+            currentSheet = s.Sheet;
+
+        }
         public void DrawVertexBuffer(VertexBufferBinding[] bindings,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)
         {
             effect.Parameters["DiffuseTexture"].SetValue(sheet.GetTexture());
@@ -37,6 +49,26 @@ namespace EW.Graphics
             renderer.GraphicsDevice.DrawPrimitives(type, start, length);
             
         }
+
+
+        public void DrawSprite(Sprite s,Vector3 location,PaletteReference pal){
+            
+            DrawSprite(s,location,pal.TextureIndex,s.Size);
+        }
+
+        public void DrawSprite(Sprite s,Vector3 location,PaletteReference pal,Vector3 size){
+
+            DrawSprite(s,location,pal.TextureIndex,size);
+        }
+
+        public void DrawSprite(Sprite s, Vector3 location, float paletteTextureIndex,Vector3 size){
+
+            SetRenderStateForSprite(s);
+            Util.FastCreateQuad(vertices, location + s.FractionalOffset*size,s,paletteTextureIndex,nv,size);
+            nv += 6;
+        }
+
+
 
         public void SetPalette(Texture palette)
         {
