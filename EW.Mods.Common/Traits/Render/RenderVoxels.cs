@@ -60,6 +60,8 @@ namespace EW.Mods.Common.Traits.Render
         }
 
     }
+
+
     public class RenderVoxels : IRender, INotifyOwnerChanged
     {
         readonly List<ModelAnimation> components = new List<ModelAnimation>();
@@ -72,6 +74,7 @@ namespace EW.Mods.Common.Traits.Render
         bool initializePalettes = true;
 
         protected PaletteReference colorPalette, normalsPalette, shadowPalette;
+
         public RenderVoxels(Actor self, RenderVoxelsInfo info)
         {
             this.self = self;
