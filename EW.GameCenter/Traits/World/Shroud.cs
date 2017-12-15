@@ -34,6 +34,8 @@ namespace EW.Traits
         [Sync]
         bool disabled;
 
+        public event Action<IEnumerable<PPos>> CellsChanged;
+
         public bool Disabled
         {
             get { return disabled; }
@@ -103,6 +105,16 @@ namespace EW.Traits
 
             var uv = (MPos)puv;
             return resolvedType.Contains(uv) && resolvedType[uv] == ShroudCellType.Visible;
+        }
+
+
+        public bool IsExplored(PPos puv)
+        {
+            if (Disabled)
+                return map.Contains(puv);
+
+            var uv = (MPos)puv;
+            return resolvedType.Contains(uv) && resolvedType[uv] > ShroudCellType.Shroud;
         }
     }
 }

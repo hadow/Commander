@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
 using EW.Primitives;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Graphics;
 using EW.Support;
 namespace EW
@@ -293,12 +293,12 @@ namespace EW
                 }
                 return ret;
             }
-            else if (fieldType == typeof(EW.Xna.Platforms.Rectangle))
+            else if (fieldType == typeof(EW.OpenGLES.Rectangle))
             {
                 if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    return new EW.Xna.Platforms.Rectangle(
+                    return new EW.OpenGLES.Rectangle(
                         Exts.ParseIntegerInvariant(parts[0]),
                         Exts.ParseIntegerInvariant(parts[1]),
                         Exts.ParseIntegerInvariant(parts[2]),
@@ -306,12 +306,12 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if (fieldType == typeof(EW.Xna.Platforms.Point))
+            else if (fieldType == typeof(EW.OpenGLES.Point))
             {
                 if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    return new EW.Xna.Platforms.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                    return new EW.OpenGLES.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
             }
             else if (fieldType == typeof(bool))
@@ -376,7 +376,7 @@ namespace EW
             {
                 if (value != null)
                 {
-                    EW.Xna.Platforms.Color rgb;
+                    EW.OpenGLES.Color rgb;
                     if (HSLColor.TryParseRGB(value, out rgb))
                         return new HSLColor(rgb);
 

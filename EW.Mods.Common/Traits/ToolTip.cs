@@ -5,9 +5,8 @@ namespace EW.Mods.Common.Traits
 {
 
 
-    public abstract class TooltipInfoBase : ITraitInfo
+    public abstract class TooltipInfoBase : ConditionalTraitInfo
     {
-        public abstract object Create(ActorInitializer init);
     }
 
     public class TooltipInfo : TooltipInfoBase
@@ -15,6 +14,15 @@ namespace EW.Mods.Common.Traits
         public override object Create(ActorInitializer init)
         {
             return new Tooltip(init.Self,this);
+        }
+    }
+
+
+    public class EditorOnlyTooltipInfo : TooltipInfoBase
+    {
+        public override object Create(ActorInitializer init)
+        {
+            return this;
         }
     }
     public class Tooltip

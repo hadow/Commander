@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES.Graphics;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     /// <summary>
@@ -31,9 +31,8 @@ namespace EW.Graphics
         /// <summary>
         /// Extract terrain vertex bufer into a reusable class.
         /// </summary>
-        readonly DynamicVertexBuffer vertexBuffer;
-
-        readonly VertexBufferBinding[] bindings;
+        readonly IVertexBuffer<Vertex> vertexBuffer;
+        
         readonly HashSet<int> dirtyRows = new HashSet<int>();
 
         readonly int rowStride;
@@ -55,11 +54,8 @@ namespace EW.Graphics
 
             var vertexCount = rowStride * map.MapSize.Y;
 
-            this.bindings = new VertexBufferBinding[1];
 
-            vertexBuffer = new DynamicVertexBuffer(wr.GraphicsDevice, typeof(Vertex), vertexCount, BufferUsage.None);
-
-            this.bindings[0] = new VertexBufferBinding(vertexBuffer);
+            vertexBuffer = WarGame.Renderer.Device.CreateVertexBuffer(vertices.Length);
 
             emptySprite = new Sprite(sheet, Rectangle.Empty, TextureChannel.Alpha);
 
@@ -78,7 +74,7 @@ namespace EW.Graphics
             for(var i= 0; i < vertices.Length; i++)
             {
                 var v = vertices[i];
-                vertices[i] = new Vertex(v.Position, v.TextureCoordinate, v.UV, palette.TextureIndex, v.C);
+                vertices[i] = new Vertex(v.X,v.Y,v.Z,v.S,v.T,v.U,v.V, palette.TextureIndex, v.C);
             }
 
 
@@ -149,7 +145,8 @@ namespace EW.Graphics
             var firstRow = cells.CandidateMapCoords.TopLeft.V.Clamp(0, map.MapSize.Y);
             var lastRow = (cells.CandidateMapCoords.BottomRight.V + 1).Clamp(firstRow, map.MapSize.Y);
 
-            int vertexSize = System.Runtime.InteropServices.Marshal.SizeOf<Vertex>();
+            WarGame.Renderer.Flush();
+            //int vertexSize = System.Runtime.InteropServices.Marshal.SizeOf<Vertex>();
             //Flush any visible changes to the GPU
             for (var row = firstRow; row <= lastRow; row++)
             {
@@ -162,14 +159,21 @@ namespace EW.Graphics
                 {
                     fixed(Vertex* vPtr = &vertices[0])
                     {
-
+                        vertexBuffer.SetData((IntPtr)(vPtr+rowOffset),rowOffset,rowStride);
                     }
 
                 }
 
-                vertexBuffer.SetData(vertexSize*rowOffset,vertices,rowOffset,rowStride,0,SetDataOptions.None);
+                
             }
-            WarGame.Renderer.WorldSpriteRenderer.DrawVertexBuffer(bindings, rowStride * firstRow, rowStride * (lastRow - firstRow), PrimitiveType.TriangleList, Sheet, BlendMode);
+            WarGame.Renderer.WorldSpriteRenderer.DrawVertexBuffer(vertexBuffer,
+                                                                    rowStride * firstRow,
+                                                                        rowStride * (lastRow - firstRow),
+                                                                        PrimitiveType.TriangleList,
+                                                                        Sheet,
+                                                                        BlendMode);
+
+            WarGame.Renderer.Flush();
         }
         
 

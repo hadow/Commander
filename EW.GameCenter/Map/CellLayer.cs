@@ -11,7 +11,7 @@ namespace EW
     public class CellLayer<T>:IEnumerable<T>
     {
         public readonly Size Size;
-        readonly EW.Xna.Platforms.Rectangle bounds;
+        readonly EW.OpenGLES.Rectangle bounds;
         /// <summary>
         /// 地图网格类型
         /// </summary>
@@ -25,7 +25,7 @@ namespace EW
         public CellLayer(MapGridT gridT,Size size)
         {
             Size = size;
-            bounds = new EW.Xna.Platforms.Rectangle(0, 0, Size.Width, Size.Height);
+            bounds = new EW.OpenGLES.Rectangle(0, 0, Size.Width, Size.Height);
             GridT = gridT;
             entries = new T[size.Width * size.Height];
         }
@@ -108,7 +108,7 @@ namespace EW
 
         public MPos Clamp(MPos uv)
         {
-            return uv.Clamp(new Xna.Platforms.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
+            return uv.Clamp(new EW.OpenGLES.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
         }
 
         public void Clear(T clearValue)

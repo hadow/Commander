@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Drawing;
 using EW.FileSystem;
-using EW.Xna.Platforms;
 using EW.Traits;
 namespace EW
 {
@@ -20,7 +19,7 @@ namespace EW
         public readonly uint ResourcesOffset;
 
 
-        public BinaryDataHeader(Stream s,EW.Xna.Platforms.Point expectedSize)
+        public BinaryDataHeader(Stream s,EW.OpenGLES.Point expectedSize)
         {
             Format = s.ReadUInt8();
             var width = s.ReadUInt16();
@@ -162,7 +161,7 @@ namespace EW
             new MapField("Actors","ActorDefinitions"),
             new MapField("Rules","RuleDefinitions",required:false),
             new MapField("Sequences","SequenceDefinitions",required:false),
-            new MapField("VoxelSequences","VoxelSequenceDefinitions",required:false),
+            new MapField("ModelSequences","ModelSequenceDefinitions",required:false),
             new MapField("Weapons","WeaponDefinitions",required:false),
         };
 
@@ -173,7 +172,7 @@ namespace EW
         public string Author;
         public string Tileset;
         public bool LockPreview;
-        public EW.Xna.Platforms.Rectangle Bounds;
+        public EW.OpenGLES.Rectangle Bounds;
         public MapVisibility Visibility = MapVisibility.Lobby;
         public string[] Categories = { "Conquest" };
 
@@ -183,7 +182,7 @@ namespace EW
 
         public readonly MiniYaml RuleDefinitions;
         public readonly MiniYaml SequenceDefinitions;
-        public readonly MiniYaml VoxelSequenceDefinitions;
+        public readonly MiniYaml ModelSequenceDefinitions;
         public readonly MiniYaml WeaponDefinitions;
         public readonly MiniYaml VoicDefinitions;
         public readonly MiniYaml NotificationDefinitions;
@@ -206,7 +205,7 @@ namespace EW
 
         public IReadOnlyPackage Package { get; private set; }
 
-        public EW.Xna.Platforms.Point MapSize { get; private set; }
+        public EW.OpenGLES.Point MapSize { get; private set; }
 
         public Ruleset Rules { get; private set; }
         
@@ -533,7 +532,9 @@ namespace EW
         {
             try
             {
-                Rules = Ruleset.Load(modData, this, Tileset, RuleDefinitions, WeaponDefinitions, VoicDefinitions, NotificationDefinitions, MusicDefinitions, SequenceDefinitions);
+                Rules = Ruleset.Load(modData, this, Tileset, RuleDefinitions, WeaponDefinitions, 
+                    VoicDefinitions, NotificationDefinitions, MusicDefinitions, SequenceDefinitions,
+                    ModelSequenceDefinitions);
 
             }
             catch (Exception e)
@@ -566,7 +567,7 @@ namespace EW
 
         public PPos Clamp(PPos puv)
         {
-            var bounds = new EW.Xna.Platforms.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
+            var bounds = new EW.OpenGLES.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
             return puv.Clamp(bounds);
         }
 
@@ -578,7 +579,7 @@ namespace EW
         /// <param name="br"></param>
         public void SetBounds(PPos tl,PPos br)
         {
-            Bounds = EW.Xna.Platforms.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
+            Bounds = EW.OpenGLES.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
             //避免不必要的转换，直接计算地图屏幕投射坐标的世界单位
             var wtop = tl.V * 1024;
             var wbottom = (br.V + 1) * 1024;

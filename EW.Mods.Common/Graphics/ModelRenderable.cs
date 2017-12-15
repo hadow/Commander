@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
 using EW.Primitives;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Graphics
 {
     public struct ModelRenderable:IRenderable

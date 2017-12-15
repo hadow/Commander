@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW
 {
     public interface IOrderGenerator

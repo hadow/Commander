@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Graphics;
 using EW.Primitives;
 namespace EW.Traits

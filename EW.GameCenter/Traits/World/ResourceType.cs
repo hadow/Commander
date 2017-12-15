@@ -5,6 +5,9 @@ namespace EW.Traits
 {
     public class ResourceTypeInfo : ITraitInfo
     {
+        /// <summary>
+        /// Sequence image that holds the different variants.
+        /// </summary>
         public readonly string Image = "resources";
 
         [FieldLoader.Require]
@@ -24,6 +27,7 @@ namespace EW.Traits
 
         /// <summary>
         /// Credit value of a single resource unit.
+        /// 每个资源单位信用值
         /// </summary>
         public readonly int ValuePerUnit = 0;
 
@@ -55,6 +59,7 @@ namespace EW.Traits
 
         /// <summary>
         /// Terrain type that this resource can spawn on
+        /// 资源可以产生的地形类型
         /// </summary>
         public readonly HashSet<string> AllowedTerrainTypes = new HashSet<string>();
 

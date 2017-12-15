@@ -7,6 +7,7 @@ using EW.Primitives;
 using EW.Support;
 using EW.Graphics;
 using EW.Effects;
+using EW.OpenGLES;
 namespace EW
 {
     public enum WorldT
@@ -282,6 +283,13 @@ namespace EW
             return TraitDict.ActorsWithTrait<T>();
         }
 
+        public IEnumerable<Actor> ActorsHavingTrait<T>()
+        {
+            return TraitDict.ActorsHavingTrait<T>();
+        }
+
+        
+
         public void AddFrameEndTask(Action<World> a)
         {
             frameEndActions.Enqueue(a);//将对象添加到Queue结尾处
@@ -387,6 +395,31 @@ namespace EW
 
             ActorMap.UpdatePosition(self, ios);
 
+        }
+
+
+        public int SyncHash()
+        {
+            var n = 0;
+            var ret = 0;
+
+            //Hash all the actors.
+            foreach (var a in Actors)
+                ret += n++ * (int)(1 + a.ActorID) * Sync.HashActor(a);
+
+            //Hash fields marked with the ISync interface.
+            foreach (var actor in ActorsHavingTrait<ISync>())
+                foreach (var syncHash in actor.SyncHashes)
+                    ret += n++ * (int)(1 + actor.ActorID) * syncHash.Hash;
+
+
+            //Hash game state relevant effects such as projectiles.
+            foreach (var sync in SyncedEffects)
+                ret += n++ * Sync.Hash(sync);
+
+            //Hash the shared random number generator.
+            ret += SharedRandom.Last;
+            return ret;
         }
 
         public bool Disposing;

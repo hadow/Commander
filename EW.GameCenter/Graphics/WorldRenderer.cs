@@ -2,18 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using EW.Xna.Platforms;
 using EW.Traits;
-using EW.Xna.Platforms.Graphics;
 using EW.Primitives;
 using EW.Effects;
 using EW.NetWork;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     /// <summary>
     /// 世界渲染器
     /// </summary>
-    public sealed class WorldRenderer:DrawableGameComponent
+    public sealed class WorldRenderer
     {
         public static readonly Func<IRenderable, int> RenderableScreenZPositionComparisonKey = r => ZPosition(r.Pos, r.ZOffset);
 
@@ -33,7 +32,7 @@ namespace EW.Graphics
 
         readonly Func<string, PaletteReference> createPaletteReference;
 
-        readonly HardwarePalette palette; //= new HardwarePalette();
+        readonly HardwarePalette palette= new HardwarePalette();
 
         public event Action PaletteInvalidated = null;
         /// <summary>
@@ -41,13 +40,12 @@ namespace EW.Graphics
         /// </summary>
         readonly bool enableDepthBuffer;
 
-        internal WorldRenderer(Game game,ModData mod,World world):base(game)
+        internal WorldRenderer(ModData mod,World world)
         {
             World = world;
             TileSize = World.Map.Grid.TileSize;
             TileScale = world.Map.Grid.Type == MapGridT.RectangularIsometric ? 1448 : 1024;
-            ViewPort = new GameViewPort(game,this, world.Map);
-            palette = new HardwarePalette(game);
+            ViewPort = new GameViewPort(this, world.Map);
             createPaletteReference = CreatePaletteReference;
 
             var mapGrid = mod.Manifest.Get<MapGrid>();
@@ -57,12 +55,17 @@ namespace EW.Graphics
             {
                 pal.Trait.LoadPalettes(this);
             }
-
+            
             palette.Initialize();
             
-            Theater = new Theater(game,world.Map.Rules.TileSet);
+            Theater = new Theater(world.Map.Rules.TileSet);
 
-            terrainRenderer = new TerrainRenderer(game,world, this);
+            terrainRenderer = new TerrainRenderer(world, this);
+        }
+
+
+        public void UpdatePalettesForPlayer(string internalName,HSLColor color,bool replaceExisting)
+        {
         }
 
         /// <summary>
@@ -87,21 +90,22 @@ namespace EW.Graphics
 
             var renderables = GenerateRenderables();
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
+            
+            WarGame.Renderer.EnableScissor(bounds);
 
             if (enableDepthBuffer)
-                GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                WarGame.Renderer.Device.EnableDepthBuffer();
 
 
-            WarGame.Renderer.EnableScissor(bounds);
+
             //地形绘制
             terrainRenderer.Draw(this, ViewPort);
-            
+
+            WarGame.Renderer.Flush();
 
             for (var i = 0; i < renderables.Count; i++)
                 renderables[i].Render(this);
 
-            if (enableDepthBuffer)
-                GraphicsDevice.DepthStencilState = DepthStencilState.None;
 
             foreach (var a in World.ActorsWithTrait<IRenderAboveWorld>())
                 if (a.Actor.IsInWorld && !a.Actor.Disposed)
@@ -109,8 +113,14 @@ namespace EW.Graphics
 
             var renderShroud = World.RenderPlayer != null ? World.RenderPlayer.Shroud : null;
 
+            if (enableDepthBuffer)
+                WarGame.Renderer.ClearDepthBuffer();
+
             foreach (var a in World.ActorsWithTrait<IRenderShroud>())
                 a.Trait.RenderShroud(renderShroud, this);
+
+            if (enableDepthBuffer)
+                WarGame.Renderer.DisableDepthBuffer();
 
             WarGame.Renderer.DisableScissor();
 
@@ -118,7 +128,7 @@ namespace EW.Graphics
 
             var aboveShroudSelected = World.Selection.Actors.Where(a => !a.Disposed)
                                            .SelectMany(a => a.TraitsImplementing<IRenderAboveShroudWhenSelected>()
-                                                       .SelectMany(t => t.RenderAboveShroud(a,this)));
+                                                       .SelectMany(t => t.RenderAboveShroud(a, this)));
 
 
             var aboveShroudEffects = World.Effects.Select(e => e as IEffectAboveShroud).Where(e => e != null).SelectMany(e => e.RenderAboveShroud(this));
@@ -138,14 +148,16 @@ namespace EW.Graphics
 
             WarGame.Renderer.WorldModelRenderer.EndFrame();
 
-            //HACK:Keep old grouping behaviour
-            foreach (var g in finalOverlayRenderables.GroupBy(prs=>prs.GetType())){
+            ////HACK:Keep old grouping behaviour
+            foreach (var g in finalOverlayRenderables.GroupBy(prs => prs.GetType()))
+            {
 
-                foreach(var r in g){
+                foreach (var r in g)
+                {
                     r.Render(this);
                 }
             }
-
+            WarGame.Renderer.Flush();
 
 
         }
@@ -168,8 +180,8 @@ namespace EW.Graphics
 
 
             //Unpartitioned effects 
-            worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
-            //worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+            //worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
+            worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
 
             //Partitioned, currently on-screen effects
             //var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
@@ -327,26 +339,14 @@ namespace EW.Graphics
         }
 
 
-        //public void Dispose()
-        //{
-        //    World.Dispose();
-
-        //    Theater.Dispose();
-        //    terrainRenderer.Dispose();
-        //}
-
-
         /// <summary>
         /// Dispose the specified disposing.
         /// </summary>
         /// <returns>The dispose.</returns>
         /// <param name="disposing">If set to <c>true</c> disposing.</param>
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
-
-
             //HACK: Disposing the world from here violates ownership 
             //but the WorldRenderer lifetime matches the disposal 
             //behavior we want for the world.and the root object setup is horrible that doing it properly would be a giant mess.

@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Drawing;
 using EW.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Mods.Common.FileFormats;
 namespace EW.Mods.Common.SpriteLoaders
 {

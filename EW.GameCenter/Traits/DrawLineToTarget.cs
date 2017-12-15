@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
 using EW.Graphics;
+using EW.OpenGLES;
 namespace EW.Traits
 {
     public class DrawLineToTargetInfo:ITraitInfo

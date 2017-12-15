@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.IO;
 using EW.FileSystem;
 using EW.Primitives;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace EW
     /// <summary>
     /// 创建自定义YAML对象
     /// </summary>
-    public class ObjectCreator
+    public sealed class ObjectCreator:IDisposable
     {
         static readonly Dictionary<string, Assembly> ResolvedAssemblies = new Dictionary<string, Assembly>();
         readonly Pair<Assembly, string>[] assemblies;
@@ -26,6 +27,12 @@ namespace EW
             ctorCache = new Cache<Type, ConstructorInfo>(GetCtor);
             typeCache = new Cache<string, Type>(FindType);
             assemblies = a.GetNamespaces().Select(ns => Pair.New(a, ns)).ToArray();
+        }
+
+
+        ~ObjectCreator()
+        {
+            Dispose(false);
         }
 
         public ObjectCreator(Manifest manifest,FileSystem.FileSystem modeFiles)
@@ -45,13 +52,36 @@ namespace EW
                 if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
                 {
 #if DEBUG
-                    //var pdbPath = path.Replace(".dll", ".pdb");
-                    //var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
+                    var pdbPath = path.Replace(".dll", ".pdb");
+                    var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
 
-                    //assembly = Assembly.Load(data, pdbData);
-                    assembly = Assembly.Load(data);
+                    assembly = Assembly.Load(data, pdbData);
+                    //assembly = Assembly.ReflectionOnlyLoad(data);
+                    //assembly = Assembly.Load(data);
                     
+                   // var filepath = new FileInfo(Assembly.GetExecutingAssembly().Location);
+                   // Console.WriteLine("Assembly load name:" + filepath.FullName);
+                   // string filepath2 = "/storage/emulated/0/Android/data/com.eastwood.command/files/.__override__/EW.GameCenter.dll";
+                   // if (File.Exists(filepath2))
+                   // {
+                   //     var centerDll = Assembly.LoadFile(filepath2);
+                   // }
 
+                   // var strs = Android.App.Application.Context.GetExternalFilesDir("Content").Path;
+                   // strs = Path.Combine(strs, "test.txt");
+                   // var file = Android.App.Application.Context.GetExternalFilesDir("Content");
+                   // var fl = Android.App.Application.Context.FileList();
+                   // fl = Android.App.Application.Context.ApplicationContext.FileList();
+                   // if (file.Exists())
+                   // {
+                   //     Console.WriteLine(file.Path);
+                   // }
+                   // if (File.Exists(strs))
+                   // {
+                   //     Console.WriteLine("success");
+                   // }
+                    
+                   //assembly = Assembly.LoadFile(filepath2);
                     //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
                     //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     //var fileName = System.IO.Path.Combine(path2, "Content/mods/common/"+path.Split('|')[1]);
@@ -101,6 +131,9 @@ namespace EW
                     return a;
                 }
             }
+
+            if (assemblies == null)
+                return null;
             return assemblies.Select(a => a.First).FirstOrDefault(a => a.FullName == e.Name);
         }
 
@@ -182,6 +215,16 @@ namespace EW
             }
 
             return ctor.Invoke(a);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+
+        void Dispose(bool disposing)
+        {
+
         }
 
         [AttributeUsage(AttributeTargets.Constructor)]

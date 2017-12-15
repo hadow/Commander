@@ -144,7 +144,7 @@ namespace EW
 
                 var ts = modData.DefaultTileSets[tileSet];
 
-                var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider(modData.Game,fileSystem,modData,ts,mapSequences);
+                var sequences = mapSequences == null ? modData.DefaultSequences[tileSet] : new SequenceProvider(fileSystem,modData,ts,mapSequences);
 
                 var modelSequences = dr.ModelSequences;
                 if (mapModelSequences != null)

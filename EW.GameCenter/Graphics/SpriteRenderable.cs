@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     public struct SpriteRenderable:IRenderable,IFinalizedRenderable

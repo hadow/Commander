@@ -4,7 +4,7 @@ using System.IO;
 using System.Drawing;
 using System.Linq;
 using EW.FileSystem;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Primitives;
 namespace EW.Graphics
 {

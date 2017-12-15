@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Activities;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Traits
 {
     public enum PipType

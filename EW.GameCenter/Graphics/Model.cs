@@ -1,5 +1,5 @@
 ﻿using System;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES.Graphics;
 using EW.FileSystem;
 namespace EW.Graphics
 {
@@ -23,7 +23,7 @@ namespace EW.Graphics
 
         bool HasModelSequence(string model, string sequence);
 
-        DynamicVertexBuffer VertexBuffer { get; }
+        IVertexBuffer<Vertex> VertexBuffer { get; }
     }
 
 
@@ -57,7 +57,7 @@ namespace EW.Graphics
 
         class PlaceholderModelCache : IModelCache
         {
-            public DynamicVertexBuffer VertexBuffer { get { throw new NotImplementedException(); } }
+            public IVertexBuffer<Vertex> VertexBuffer { get { throw new NotImplementedException(); } }
 
             public void Dispose() { }
 

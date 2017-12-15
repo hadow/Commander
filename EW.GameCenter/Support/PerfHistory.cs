@@ -1,6 +1,6 @@
 ﻿using System;
 using EW.Primitives;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Support
 {
     public static class PerfHistory

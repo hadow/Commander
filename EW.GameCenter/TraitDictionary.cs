@@ -58,6 +58,22 @@ namespace EW
             readonly List<Actor> actors = new List<Actor>();
             readonly List<T> traits = new List<T>();
 
+
+            public int Queries { get; private set; }
+
+            public IEnumerable<Actor> Actors()
+            {
+                ++Queries;
+                Actor last = null;
+                for(var i = 0; i < actors.Count; i++)
+                {
+                    if (actors[i] == last)
+                        continue;
+                    yield return actors[i];
+                    last = actors[i];
+                }
+            }
+
             public void Add(Actor actor,object trait)
             {
                 var insertIndex = actors.BinarySearchMany(actor.ActorID + 1);
@@ -231,7 +247,7 @@ namespace EW
             }
 
             
-            public int Queries { get; private set; }
+            
 
             public IEnumerable<TraitPair<T>> All()
             {
@@ -295,6 +311,11 @@ namespace EW
         public IEnumerable<TraitPair<T>> ActorsWithTrait<T>()
         {
             return InnerGet<T>().All();
+        }
+
+        public IEnumerable<Actor> ActorsHavingTrait<T>()
+        {
+            return InnerGet<T>().Actors();
         }
 
         public void RemoveActor(Actor a)

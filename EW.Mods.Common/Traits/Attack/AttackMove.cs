@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.Traits
 {

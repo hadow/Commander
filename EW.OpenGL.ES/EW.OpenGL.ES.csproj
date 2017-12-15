@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6D95A620-D0D0-4B0C-B1EE-AB9F61BCC201}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EW.OpenGLES</RootNamespace>
+    <AssemblyName>EW.OpenGLES</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;ANDROID;GLES;OPENGL;OPENAL</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Android\AndroidCompatibility.cs" />
+    <Compile Include="Android\AndroidGameActivity.cs" />
+    <Compile Include="Android\AndroidGamePlatform.cs" />
+    <Compile Include="Android\AndroidGameView.cs" />
+    <Compile Include="Android\AndroidGameWindow.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="EventHelpers.cs" />
+    <Compile Include="Exts.cs" />
+    <Compile Include="Game.cs" />
+    <Compile Include="GameActivity.cs" />
+    <Compile Include="GamePlatform.cs" />
+    <Compile Include="GamePlatform.Mobile.cs" />
+    <Compile Include="GameRenderer.cs" />
+    <Compile Include="Android\OrientationListener.cs" />
+    <Compile Include="GameRunBehaviour.cs" />
+    <Compile Include="GameServiceContainer.cs" />
+    <Compile Include="GameTime.cs" />
+    <Compile Include="GameWindow.cs" />
+    <Compile Include="Graphics\DepthFormat.cs" />
+    <Compile Include="Graphics\DisplayMode.cs" />
+    <Compile Include="Graphics\FrameBuffer.cs" />
+    <Compile Include="Graphics\GraphicsAdapter.cs" />
+    <Compile Include="Graphics\GraphicsCapabilities.cs" />
+    <Compile Include="Graphics\GraphicsCapabilities.OpenGL.cs" />
+    <Compile Include="Graphics\GraphicsDevice.cs" />
+    <Compile Include="Graphics\GraphicsDeviceInformation.cs" />
+    <Compile Include="Graphics\GraphicsDeviceManager.cs" />
+    <Compile Include="Graphics\GraphicsExtensions.cs" />
+    <Compile Include="Graphics\GraphicsResource.cs" />
+    <Compile Include="Graphics\PlatformInterfaces.cs" />
+    <Compile Include="Graphics\PreparingDeviceSettingsEventArgs.cs" />
+    <Compile Include="Graphics\PresentationParameters.cs" />
+    <Compile Include="Graphics\PresentInterval.cs" />
+    <Compile Include="Graphics\Shader.cs" />
+    <Compile Include="Graphics\SurfaceFormat.cs" />
+    <Compile Include="Graphics\Texture.cs" />
+    <Compile Include="Graphics\Vertex.cs" />
+    <Compile Include="Graphics\VertexBuffer.cs" />
+    <Compile Include="Input\Touch\AndroidTouchEventManager.cs" />
+    <Compile Include="Int2.cs" />
+    <Compile Include="MathHelper.cs" />
+    <Compile Include="OpenGL\IGraphicsContext.cs" />
+    <Compile Include="OpenGL\IWindowInfo.cs" />
+    <Compile Include="OpenGL\OpenGL.Android.cs" />
+    <Compile Include="OpenGL\OpenGL.Common.cs" />
+    <Compile Include="OpenGL\OpenGL.cs" />
+    <Compile Include="Point.cs" />
+    <Compile Include="Rectangle.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Android\ScreenReciever.cs" />
+    <Compile Include="Input\Touch\TouchLocation.cs" />
+    <Compile Include="Input\Touch\TouchLocationState.cs" />
+    <Compile Include="Input\Touch\TouchPanel.cs" />
+    <Compile Include="Input\Touch\TouchPanelState.cs" />
+    <Compile Include="Threading.cs" />
+    <Compile Include="Vector2.cs" />
+    <Compile Include="Vector3.cs" />
+    <Compile Include="Vector4.cs" />
+    <Compile Include="Viewport.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

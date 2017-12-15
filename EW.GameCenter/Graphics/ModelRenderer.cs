@@ -2,9 +2,10 @@
 using System.Drawing;
 using System.Linq;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
+
 using EW.Primitives;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     public class ModelRenderProxy
@@ -43,36 +44,38 @@ namespace EW.Graphics
 
         readonly Renderer renderer;
 
-        readonly Effect shader;
+        readonly IShader shader;
 
-        readonly Dictionary<Sheet, RenderTarget2D> mappedBuffers = new Dictionary<Sheet, RenderTarget2D>();
+        readonly Dictionary<Sheet, IFrameBuffer> mappedBuffers = new Dictionary<Sheet, IFrameBuffer>();
 
-        readonly Stack<KeyValuePair<Sheet, RenderTarget2D>> unmappedBuffers = new Stack<KeyValuePair<Sheet, RenderTarget2D>>();
+        readonly Stack<KeyValuePair<Sheet, IFrameBuffer>> unmappedBuffers = new Stack<KeyValuePair<Sheet, IFrameBuffer>>();
 
         SheetBuilder sheetBuilder;
 
-        public ModelRenderer(Renderer renderer,Effect shader)
+        public ModelRenderer(Renderer renderer,IShader shader)
         {
             this.renderer = renderer;
             this.shader = shader;
         }
 
-        public void SetPalette(Texture palette)
+        public void SetPalette(ITexture palette)
         {
-            shader.Parameters["Palette"].SetValue(palette);
+            //shader.Parameters["Palette"].SetValue(palette);
+            shader.SetTexture("Palette", palette);
         }
 
-        public void SetViewportParams(Size screen,float zoom,Int2 scroll)
+        public void SetViewportParams(Size screen, float zoom, Int2 scroll)
         {
             var a = 2f / renderer.SheetSize;
-            var view = new Matrix(
-                a,0,0,0,
-                0,-a,0,0,
-                0,0,-2*a,0,
-                -1,1,0,1
+            var view = new float[]{
+                a, 0, 0, 0,
+                0, -a, 0, 0,
+                0, 0, -2 * a, 0,
+                -1, 1, 0, 1
 
-                );
-            shader.Parameters["View"].SetValue(view);
+                };
+            //shader.Parameters["View"].SetValue(view);
+            shader.SetMatrix("View", view);
 
         }
 
@@ -90,12 +93,12 @@ namespace EW.Graphics
         void Render(ModelRenderData renderData,IModelCache cache,float[] t,float[] lightDirection,
             float[] ambientLight,float[] diffuseLight,float colorPaletteTextureMidIndex,float normalsPaletteTextureMidIndex)
         {
-            shader.Parameters["DiffuseTexture"].SetValue(renderData.Sheet.GetTexture());
-            shader.Parameters["PaletteRows"].SetValue(new Vector2(colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex));
-            shader.Parameters["TransformMatrix"].SetValue(new Matrix(t));
-            shader.Parameters["LightDirection"].SetValue(new Vector4(lightDirection[0], lightDirection[1], lightDirection[2], lightDirection[3]));
-            shader.Parameters["AmbientLight"].SetValue(new Vector3(ambientLight[0], ambientLight[1], ambientLight[2]));
-            shader.Parameters["DiffuseLight"].SetValue(new Vector3(diffuseLight[0], diffuseLight[1], diffuseLight[2]));
+            //shader.Parameters["DiffuseTexture"].SetValue(renderData.Sheet.GetTexture());
+            //shader.Parameters["PaletteRows"].SetValue(new Vector2(colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex));
+            //shader.Parameters["TransformMatrix"].SetValue(new Matrix(t));
+            //shader.Parameters["LightDirection"].SetValue(new Vector4(lightDirection[0], lightDirection[1], lightDirection[2], lightDirection[3]));
+            //shader.Parameters["AmbientLight"].SetValue(new Vector3(ambientLight[0], ambientLight[1], ambientLight[2]));
+            //shader.Parameters["DiffuseLight"].SetValue(new Vector3(diffuseLight[0], diffuseLight[1], diffuseLight[2]));
             
             
         }
@@ -324,7 +327,7 @@ namespace EW.Graphics
                 unmappedBuffers.Push(kv);
             mappedBuffers.Clear();
 
-            sheetBuilder = new SheetBuilder(this.renderer.Game,SheetT.BGRA, AllocateSheet);
+            sheetBuilder = new SheetBuilder(SheetT.BGRA, AllocateSheet);
             doRender.Clear();    
         }
 
@@ -335,25 +338,42 @@ namespace EW.Graphics
                 return;
 
             Sheet currentSheet = null;
-            
+            IFrameBuffer fbo = null;
             foreach(var v in doRender)
             {
                 //Change sheet
                 if(v.First != currentSheet)
                 {
-                    currentSheet = v.First;
+                    if (fbo != null)
+                        DisableFrameBuffer(fbo);
 
+                    currentSheet = v.First;
+                    fbo = EnableFrameBuffer(currentSheet);
                 }
 
                 v.Second();
             }
+
+            if (fbo != null)
+                DisableFrameBuffer(fbo);
         }
 
-        RenderTarget2D EnableFrameBuffer(Sheet s)
+        IFrameBuffer EnableFrameBuffer(Sheet s)
         {
             var fbo = mappedBuffers[s];
+            WarGame.Renderer.Flush();
+            fbo.Bind();
+
+            WarGame.Renderer.Device.EnableDepthBuffer();
 
             return fbo;
+        }
+
+        void DisableFrameBuffer(IFrameBuffer fbo)
+        {
+            WarGame.Renderer.Flush();
+            WarGame.Renderer.Device.DisableDepthBuffer();
+            fbo.Unbind();
         }
 
         public Sheet AllocateSheet()
@@ -368,8 +388,9 @@ namespace EW.Graphics
             }
 
             var size = new Size(renderer.SheetSize, renderer.SheetSize);
-            var frameBuffer = new RenderTarget2D(this.renderer.GraphicsDevice, size.Width, size.Height);
-            var sheet = new Sheet(this.renderer.Game, SheetT.BGRA, frameBuffer);
+            var frameBuffer = renderer.Device.CreateFrameBuffer(size);
+            var sheet = new Sheet(SheetT.BGRA, frameBuffer.Texture);
+            mappedBuffers.Add(sheet, frameBuffer);
             return sheet;
         }
 

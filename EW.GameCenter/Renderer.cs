@@ -2,18 +2,19 @@
 using System.Drawing;
 using System.Linq;
 using EW.Graphics;
-using EW.Xna.Platforms.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW
 {
     /// <summary>
     /// 
     /// </summary>
-    public sealed class Renderer:DrawableGameComponent
+    public sealed class Renderer
     {
 
         public interface IBatchRenderer { void Flush(); }
-
+        ITexture currentPaletteTexture;
+        IBatchRenderer currentBatchRenderer;
         public IBatchRenderer CurrentBatchRenderer
         {
             get { return currentBatchRenderer; }
@@ -26,6 +27,8 @@ namespace EW
                 currentBatchRenderer = value;
             }
         }
+
+        internal IGraphicsDevice Device { get; private set; }
 
         public SpriteRenderer SpriteRenderer;
 
@@ -44,8 +47,7 @@ namespace EW
 
         internal int TempBufferSize { get; private set; }
 
-        readonly VertexBuffer tempBuffer;
-        readonly VertexBufferBinding[] bindings;
+        readonly IVertexBuffer<Vertex> tempBuffer;
         float depthScale, depthOffset;
 
         internal int SheetSize { get; private set; }
@@ -53,27 +55,27 @@ namespace EW
         Int2? lastScroll;
         float? lastZoom;
 
-        Texture2D currentPaletteTexture;
-        IBatchRenderer currentBatchRenderer;
+        
         /// <summary>
         /// 
         /// </summary>
-        readonly Stack<Xna.Platforms.Rectangle> scissorState = new Stack<Xna.Platforms.Rectangle>();
+        readonly Stack<EW.OpenGLES.Rectangle> scissorState = new Stack<EW.OpenGLES.Rectangle>();
 
-        public Size Resolution { get { return new Size(GraphicsDevice.DisplayMode.Width,GraphicsDevice.DisplayMode.Height); } }
-        public Renderer(Game game,GraphicsSettings graphicSettings):base(game)
+        public Size Resolution { get { return new Size(Device.Viewport.Width,Device.Viewport.Height); } }
+        public Renderer(GraphicsSettings graphicSettings,IGraphicsDevice device)
         {
-
+            this.Device = device;
             TempBufferSize = graphicSettings.BatchSize;
             SheetSize = graphicSettings.SheetSize;
 
-            WorldSpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            SpriteRenderer = new SpriteRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/shp"));
-            //WorldModelRenderer = new ModelRenderer(this, this.Game.Content.Load<Effect>("Content/glsl/model"));
-
-            tempBuffer = new VertexBuffer(GraphicsDevice, typeof(Vertex), TempBufferSize, BufferUsage.None);
-            this.bindings = new VertexBufferBinding[1];
-            this.bindings[0] = new VertexBufferBinding(tempBuffer) ;
+            WorldModelRenderer = new ModelRenderer(this, Device.CreateShader("model"));
+            WorldSpriteRenderer = new SpriteRenderer(this, Device.CreateShader("shp"));
+            WorldRgbaColorRenderer = new RgbaColorRenderer(this, Device.CreateShader("color"));
+            WorldRgbaSpriteRenderer = new SpriteRenderer(this, Device.CreateShader("rgba"));
+            SpriteRenderer = new SpriteRenderer(this, Device.CreateShader("shp"));
+            RgbaColorRenderer = new RgbaColorRenderer(this, Device.CreateShader("color"));
+            RgbaSpriteRenderer = new SpriteRenderer(this, Device.CreateShader("rgba"));
+            tempBuffer = Device.CreateVertexBuffer(TempBufferSize);
         }
 
         /// <summary>
@@ -88,13 +90,14 @@ namespace EW
 
         public void BeginFrame(Int2 scroll,float zoom)
         {
-            GraphicsDevice.Clear(EW.Xna.Platforms.Color.White);
+            Device.Clear();
             SetViewportParams(scroll, zoom);
         }
 
         public void EndFrame()
         {
             Flush();
+            Device.Present();
         }
         /// <summary>
         /// 
@@ -108,7 +111,10 @@ namespace EW
 
             if (resolutionChanged)
             {
-
+                lastResolution = Resolution;
+                RgbaSpriteRenderer.SetViewportParams(Resolution, 0f, 0f, 1f, Int2.Zero);
+                SpriteRenderer.SetViewportParams(Resolution, 0f, 0f, 1f, Int2.Zero);
+                RgbaColorRenderer.SetViewportParams(Resolution, 0f, 0f, 1f, Int2.Zero);
             }
 
             //If zoom evaluates as different due to floating point weirdness that's ok,setting the parameters again is harmless.
@@ -117,8 +123,10 @@ namespace EW
                 lastScroll = scroll;
                 lastZoom = zoom;
 
+                WorldRgbaSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
                 WorldSpriteRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
-                //WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
+                WorldModelRenderer.SetViewportParams(Resolution, zoom, scroll);
+                WorldRgbaColorRenderer.SetViewportParams(Resolution, depthScale, depthOffset, zoom, scroll);
             }
         }
 
@@ -131,10 +139,14 @@ namespace EW
             if (palette.Texture == currentPaletteTexture)
                 return;
 
+            Flush();
             currentPaletteTexture = palette.Texture;
 
+            RgbaSpriteRenderer.SetPalette(currentPaletteTexture);
+            SpriteRenderer.SetPalette(currentPaletteTexture);
             WorldSpriteRenderer.SetPalette(currentPaletteTexture);
-            //WorldModelRenderer.SetPalette(currentPaletteTexture);
+            WorldRgbaSpriteRenderer.SetPalette(currentPaletteTexture);
+            WorldModelRenderer.SetPalette(currentPaletteTexture);
         }
 
         public void Flush()
@@ -143,13 +155,13 @@ namespace EW
         }
 
 
-        public void EnableScissor(EW.Xna.Platforms.Rectangle rect)
+        public void EnableScissor(EW.OpenGLES.Rectangle rect)
         {
             //Must remain inside the current scissor rect.
             if (scissorState.Any())
                 rect.Intersects(scissorState.Peek());
             Flush();
-            this.GraphicsDevice.ScissorRectangle = rect;
+            Device.EnableScissor(rect.Left, rect.Top, rect.Width, rect.Height);
             scissorState.Push(rect);
             
         }
@@ -163,10 +175,32 @@ namespace EW
             if (scissorState.Any())
             {
                 var rect = scissorState.Peek();
-                this.GraphicsDevice.ScissorRectangle = rect;
+                Device.EnableScissor(rect.Left, rect.Top, rect.Width, rect.Height);
+            }
+            else
+            {
+                Device.DisableScissor();
             }
         }
 
+        public void EnableDepthBuffer()
+        {
+
+        }
+
+
+        public void DisableDepthBuffer()
+        {
+            Flush();
+            Device.DisableDepthBuffer();
+        }
+
+
+        public void ClearDepthBuffer()
+        {
+            Flush();
+            Device.ClearDepthBuffer();
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -175,18 +209,25 @@ namespace EW
         /// <param name="type"></param>
         public void DrawBatch(Vertex[] vertices,int numVertices,PrimitiveType type)
         {
-            tempBuffer.SetData(vertices);
+            tempBuffer.SetData(vertices,numVertices);
             DrawBatch(tempBuffer, 0, numVertices, type);
         }
+        
 
-        public void DrawBatch(VertexBuffer vertices, int firstVertext, int numVertices, PrimitiveType type) {
-
-            GraphicsDevice.DrawPrimitives(type, firstVertext, numVertices);
-        }
-        protected override void Dispose(bool disposing)
+        public void DrawBatch<T>(IVertexBuffer<T> vertices,int firstVertex,int numVertices,PrimitiveType type) where T : struct
         {
-            base.Dispose(disposing);
-            //WorldModelRenderer.Dispose();
+            vertices.Bind();
+            Device.DrawPrimitives(type, firstVertex, numVertices);
+
+        }
+
+
+        public void Dispose()
+        {
+            Device.Dispose();
+            WorldModelRenderer.Dispose();
+            tempBuffer.Dispose();
+
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Primitives;
 
 namespace EW.Graphics
@@ -9,7 +9,7 @@ namespace EW.Graphics
     /// <summary>
     /// 游戏视窗口
     /// </summary>
-    public class GameViewPort:GameComponent
+    public class GameViewPort
     {
 
         Int2 viewportSize;
@@ -62,7 +62,7 @@ namespace EW.Graphics
             {
                 var newValue = ClosestTo(AvailableZoomSteps, value);
                 zoom = newValue;
-                viewportSize = ((1f / zoom) * new Vector2(this.Game.GraphicsDevice.DisplayMode.Width, this.Game.GraphicsDevice.DisplayMode.Height)).ToInt2();
+                viewportSize = ((1f / zoom) * new Vector2(WarGame.Renderer.Resolution)).ToInt2();
                 allCellsDirty = true;
                 cellsDirty = true;
             }
@@ -90,10 +90,10 @@ namespace EW.Graphics
             }
             return closestValue;
         }
-        public GameViewPort(Game game,WorldRenderer wr,Map map):base(game)
+        public GameViewPort(WorldRenderer wr,Map map)
         {
             worldRenderer = wr;
-            ScreenClip = Rectangle.FromLTRB(0, 0, Game.GraphicsDevice.DisplayMode.Width, Game.GraphicsDevice.DisplayMode.Height);
+            //ScreenClip = Rectangle.FromLTRB(0, 0, WarGame.Renderer., Game.GraphicsDevice.DisplayMode.Height);
             var grid = WarGame.ModData.Manifest.Get<MapGrid>();
 
             if(wr.World.Type == WorldT.Editor)
@@ -169,7 +169,7 @@ namespace EW.Graphics
         //Rectangle(in viewport coords) that contains things to be drawn
         //static readonly Rectangle ScreenClip = Rectangle.FromLTRB(0,0,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Width,GraphicsDeviceManager.M.GraphicsDevice.DisplayMode.Height);
         //readonly Rectangle ScreenClip = Rectangle.FromLTRB(0, 0, Game.GraphicsDevice.DisplayMode.Width, 0);
-        readonly Rectangle ScreenClip;
+        readonly Rectangle ScreenClip = Rectangle.FromLTRB(0,0,WarGame.Renderer.Resolution.Width,WarGame.Renderer.Resolution.Height);
 
         /// <summary>
         /// Rectangle(int viewport coords) that contains things to be drawn

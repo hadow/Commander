@@ -46,6 +46,11 @@ namespace EW
             return v;
         }
 
+        public static bool IsPowerOf2(int v)
+        {
+            return (v & (v - 1)) == 0;
+        }
+
         public static int ISqrt(int number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
         {
             return 0;

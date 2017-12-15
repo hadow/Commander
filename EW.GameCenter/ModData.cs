@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using EW.Graphics;
 using EW.FileSystem;
-using EW.Xna.Platforms;
-using EW.Xna.Platforms.Graphics;
 using System.Linq;
 namespace EW
 {
@@ -12,7 +10,7 @@ namespace EW
     /// <summary>
     /// 
     /// </summary>
-    public sealed class ModData:GameComponent
+    public sealed class ModData:IDisposable
     {
         public IEnumerable<string> Languages { get; private set; }
 
@@ -31,7 +29,6 @@ namespace EW
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
         public readonly IModelSequenceLoader ModelSequenceLoader;
-        public readonly GraphicsDevice Device;
         public ILoadScreen LoadScreen { get; private set; }
         /// <summary>
         /// 默认规则 
@@ -58,11 +55,8 @@ namespace EW
         {
             get { return defaultSequences.Value; }
         }
-        //public ModData(Game game,Manifest mod,InstalledMods mods,bool useLoadScreen = false) : this(game,mod, mods, useLoadScreen)
-        //{
-        //}
 
-        public ModData(Game game,Manifest mod,InstalledMods mods,bool useLoadScreen = false):base(game)
+        public ModData(Manifest mod,InstalledMods mods,bool useLoadScreen = false)
         {
             Languages = new string[0];
 
@@ -125,7 +119,7 @@ namespace EW
             //序列集
             defaultSequences = Exts.Lazy(() => {
 
-                var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(game,DefaultFileSystem, this, t.Value, null));
+                var items = DefaultTileSets.ToDictionary(t => t.Key, t => new SequenceProvider(DefaultFileSystem, this, t.Value, null));
                 return (IReadOnlyDictionary<string,SequenceProvider>)(new ReadOnlyDictionary<string, SequenceProvider>(items));
 
             });
@@ -199,17 +193,19 @@ namespace EW
 
 
 
-        //public void Dispose()
-        //{
-        //    MapCache.Dispose();
-
-        //}
-
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             MapCache.Dispose();
+
+            if (ObjectCreator != null)
+                ObjectCreator.Dispose();
         }
+
+        //protected override void Dispose(bool disposing)
+        //{
+        //    base.Dispose(disposing);
+        //    MapCache.Dispose();
+        //}
 
 
     }

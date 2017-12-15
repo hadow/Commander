@@ -27,7 +27,7 @@
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>3</WarningLevel>
+    <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
@@ -56,7 +56,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OpenTK-1.0" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -150,6 +149,7 @@
     <Compile Include="Orders\IOrderGenerator.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="Primitives\ActionQueue.cs" />
     <Compile Include="Primitives\Cache.cs" />
     <Compile Include="Primitives\ConcurrentCache.cs" />
     <Compile Include="Primitives\Pair.cs" />
@@ -164,7 +164,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Input\IInputHandler.cs" />
     <Compile Include="Graphics\PlatformInterfaces.cs" />
-    <Compile Include="Graphics\Vertex.cs" />
     <Compile Include="Scripting\ScriptActorInterface.cs" />
     <Compile Include="Scripting\ScriptContext.cs" />
     <Compile Include="Scripting\ScriptGlobal.cs" />
@@ -491,6 +490,33 @@
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.yaml" />
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\rules.yaml" />
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\shellmap.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi03\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod01\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod05\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06c\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07c\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\map.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\map.yaml" />
     <AndroidAsset Include="Content\mods\cnc\rules\ai.yaml" />
     <AndroidAsset Include="Content\mods\cnc\rules\aircraft.yaml" />
     <AndroidAsset Include="Content\mods\cnc\rules\campaign-maprules.yaml" />
@@ -683,7 +709,116 @@
     <AndroidAsset Include="Content\lua\sandbox.lua" />
     <AndroidAsset Include="Content\lua\scriptwrapper.lua" />
     <AndroidAsset Include="Content\lua\stacktraceplus.lua" />
-    <AndroidAsset Include="Content\glsl\shp.xnb" />
+    <AndroidAsset Include="Content\glsl\shp.frag" />
+    <AndroidAsset Include="Content\glsl\shp.vert" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\gdi01.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\sequences.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\gdi02.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\sequences.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi03\gdi03.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi03\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi03\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\gdi04a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\gdi04b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\gdi04c.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\gdi05a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05b\gdi05b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\gdi06.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\music.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\rain-ambient.aud" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\sequences.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\gdi07.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\sequences.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod01\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod01\nod01.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod01\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02a\nod02a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02b\nod02b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03a\nod03a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03b\nod03b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04a\nod04a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04b\nod04b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod05\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod05\nod05.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod05\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06a\nod06a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06b\nod06b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06c\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06c\nod06c.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06c\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\nod07a-AI.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\nod07a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\nod07b-AI.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\nod07b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07c\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07c\nod07c.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07c\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\nod08a-AI.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\nod08a.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\nod08b-AI.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\nod08b.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\map.bin" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\nod09-AI.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\nod09.lua" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\rules.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\weapons.yaml" />
+    <AndroidAsset Include="Content\mods\cnc\weapons\ballistics.yaml" />
+    <AndroidAsset Include="Content\glsl\model.frag" />
+    <AndroidAsset Include="Content\glsl\model.vert" />
+    <AndroidAsset Include="Content\glsl\color.frag" />
+    <AndroidAsset Include="Content\glsl\color.vert" />
+    <AndroidAsset Include="Content\glsl\rgba.frag" />
+    <AndroidAsset Include="Content\glsl\rgba.vert" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -704,9 +839,9 @@
       <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
       <Name>Eluant</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EW.Xna.Platforms\EW.Xna.Platforms.csproj">
-      <Project>{62338638-3d8a-4e57-969e-1c82298c0649}</Project>
-      <Name>EW.Xna.Platforms</Name>
+    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+      <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
+      <Name>EW.OpenGL.ES</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -731,10 +866,41 @@
   <ItemGroup>
     <AndroidAsset Include="Content\mods\cnc\maps\shellmap\map.png" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi01\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi02\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi03\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi04c\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi05b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi06\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\gdi07\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod01\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod02b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod03b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod04b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod05\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod06c\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod07c\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08a\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod08b\map.png" />
+    <AndroidAsset Include="Content\mods\cnc\maps\nod09\map.png" />
+  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <AndroidAsset Include="Content\mods\cnc\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.pdb" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

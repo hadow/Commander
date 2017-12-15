@@ -2,7 +2,7 @@
 using EW.Graphics;
 using EW.Traits;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
     public class FlashPaletteEffectInfo : ITraitInfo

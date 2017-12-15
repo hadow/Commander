@@ -1,11 +1,16 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using EW.Traits;
 using EW.Graphics;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
 
+    /// <summary>
+    /// Attach this to the world actor. Order of the layers defines the Z sorting.
+    /// </summary>
     public class ResourceLayerInfo : ITraitInfo, Requires<BuildingInfluenceInfo>,Requires<ResourceTypeInfo>
     {
         public object Create(ActorInitializer init) { return new ResourceLayer(init.Self); }
@@ -13,6 +18,21 @@ namespace EW.Mods.Common.Traits
 
     public class ResourceLayer:IRenderOverlay,IWorldLoaded,ITickRender,INotifyActorDisposing
     {
+
+        public struct CellContents
+        {
+            public static readonly CellContents Empty = new CellContents();
+
+            public ResourceType Type;
+
+            public int Density;
+
+            public string Variant;
+
+            public Sprite Sprite;
+        }
+
+
         readonly World world;
         
         readonly HashSet<CPos> dirty = new HashSet<CPos>();
@@ -40,12 +60,22 @@ namespace EW.Mods.Common.Traits
 
         void UpdateSpriteLayers(CPos cell)
         {
-
+            var resource = RenderContent[cell];
+            foreach(var kv in spriteLayers)
+            {
+                if (resource.Sprite != null && resource.Type.Palette == kv.Key)
+                    kv.Value.Update(cell, resource.Sprite);
+                else
+                    kv.Value.Update(cell, null);
+            }
         }
+
         public void WorldLoaded(World w,WorldRenderer wr)
         {
             var resources = w.WorldActor.TraitsImplementing<ResourceType>().ToDictionary(r => r.Info.ResourceType, r => r);
 
+            //Build the sprite layer dictionary for rendering resources
+            //All resources that have the same palette must also share a sheet and blend mode
             foreach(var r in resources)
             {
                 var layer = spriteLayers.GetOrAdd(r.Value.Palette, pal =>
@@ -54,6 +84,16 @@ namespace EW.Mods.Common.Traits
 
                     return new TerrainSpriteLayer(w, wr, first.Sheet, first.BlendMode, pal, wr.World.Type != WorldT.Editor);
                 });
+
+                //Validate that sprites are compatible with this layer
+                var sheet = layer.Sheet;
+                if (r.Value.Variants.Any(kv => kv.Value.Any(s => s.Sheet != sheet)))
+                    throw new InvalidDataException("Resource sprites span multiple sheets,Try loading their sequences earlier.");
+
+                var blendMode = layer.BlendMode;
+                if (r.Value.Variants.Any(kv => kv.Value.Any(s => s.BlendMode != blendMode)))
+                    throw new InvalidDataException("Resource sprites specify different blend modes.Try using different palettes for resource types that use different blend modes.");
+                
             }
 
             foreach(var cell in w.Map.AllCells)
@@ -73,8 +113,17 @@ namespace EW.Mods.Common.Traits
                 var type = Content[cell].Type;
                 if(type != null)
                 {
-
+                    //Set initial density based on the number of neighboring resources
+                    //Adjacent includes the current cell,so is always >=1;
                     var adjacent = GetAdjacentCellsWith(type, cell);
+                    var density = Int2.Lerp(0, type.Info.MaxDensity, adjacent, 9);
+                    var temp = Content[cell];
+                    temp.Density = Math.Max(density, 1);
+
+                    //Initialize the RenderContent with the initial map state
+                    //because the shroud may not be enabled;
+                    RenderContent[cell] = Content[cell] = temp;
+                    UpdateRenderedSprite(cell);
                 }
             }
         }
@@ -130,7 +179,8 @@ namespace EW.Mods.Common.Traits
         }
         public void Render(WorldRenderer wr)
         {
-
+            foreach (var kv in spriteLayers.Values)
+                kv.Draw(wr.ViewPort);
         }
 
 
@@ -142,15 +192,31 @@ namespace EW.Mods.Common.Traits
                 if(!self.World.FogObscures(c))
                 {
                     RenderContent[c] = Content[c];
-                    
+                    UpdateRenderedSprite(c);
+                    remove.Add(c);
                 }
             }
+
+            foreach (var r in remove)
+                dirty.Remove(r);
         }
 
 
         protected virtual void UpdateRenderedSprite(CPos cell)
         {
 
+
+            var t = RenderContent[cell];
+            if (t.Density > 0)
+            {
+                var sprites = t.Type.Variants[t.Variant];
+                var frame = Int2.Lerp(0, sprites.Length - 1, t.Density, t.Type.Info.MaxDensity);
+                t.Sprite = sprites[frame];
+            }
+            else
+                t.Sprite = null;
+
+            RenderContent[cell] = t;
         }
 
         bool disposed;
@@ -169,17 +235,6 @@ namespace EW.Mods.Common.Traits
 
 
 
-        public struct CellContents
-        {
-            public static readonly CellContents Empty = new CellContents();
-
-            public ResourceType Type;
-
-            public int Density;
-
-            public string Variant;
-
-            public Sprite Sprite;
-        }
+        
     }
 }

@@ -1,6 +1,6 @@
 using System;
-using EW.Xna.Platforms.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
 

@@ -3,7 +3,7 @@ using EW.Graphics;
 using System.IO;
 using System.Drawing;
 using System.Linq;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Mods.Common.FileFormats;
 namespace EW.Mods.Common.SpriteLoaders
 {

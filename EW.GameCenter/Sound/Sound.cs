@@ -4,7 +4,6 @@ using EW.FileSystem;
 using EW.Graphics;
 using EW.Primitives;
 using EW.GameRules;
-using EW.Xna.Platforms.Audio;
 namespace EW
 {
 
@@ -29,7 +28,7 @@ namespace EW
     }
     public sealed class Sound:IDisposable
     {
-        readonly SoundEffectInstance soundEffectInstance;
+        //readonly SoundEffectInstance soundEffectInstance;
         ISoundLoader[] loaders;
 
         Cache<string, ISoundSource> sounds;

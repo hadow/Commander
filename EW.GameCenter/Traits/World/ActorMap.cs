@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Traits
 {
     public enum SubCell

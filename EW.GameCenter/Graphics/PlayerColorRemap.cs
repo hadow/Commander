@@ -1,5 +1,5 @@
 ﻿using System;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     public class PlayerColorRemap:IPaletteRemap

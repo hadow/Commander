@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     public interface IPalette

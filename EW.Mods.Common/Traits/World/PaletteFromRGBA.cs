@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {

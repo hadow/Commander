@@ -1,5 +1,7 @@
 BOAT:
 	Inherits: ^Ship
+	Inherits@EXPERIENCE: ^GainsExperience
+	Inherits@AUTOTARGET: ^AutoTargetAll
 	Valued:
 		Cost: 300
 	Tooltip:
@@ -46,8 +48,6 @@ LST:
 		BuildPaletteOrder: 1000
 		Prerequisites: ~disabled
 	Mobile:
-		UpgradeTypes: notmobile
-		UpgradeMaxEnabledLevel: 0
 		Crushes: crate
 		TerrainSpeeds:
 			Clear: 100
@@ -61,6 +61,7 @@ LST:
 		InitialFacing: 0
 		TurnSpeed: 4
 		Speed: 142
+		RequiresCondition: !notmobile
 	Health:
 		HP: 400
 	Armor:
@@ -77,4 +78,4 @@ LST:
 		MaxWeight: 5
 		PipCount: 5
 		PassengerFacing: 0
-		LoadingUpgrades: notmobile
+		LoadingCondition: notmobile

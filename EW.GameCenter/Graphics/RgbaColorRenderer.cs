@@ -1,6 +1,7 @@
 ﻿using System;
-using EW.Xna.Platforms;
-using EW.Xna.Platforms.Graphics;
+using System.Drawing;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
@@ -13,11 +14,25 @@ namespace EW.Graphics
 
         readonly Renderer renderer;
 
-        readonly Effect shader;
+        readonly IShader shader;
 
         readonly Vertex[] vertices;
 
+        public RgbaColorRenderer(Renderer renderer,IShader shader)
+        {
+            this.renderer = renderer;
+            this.shader = shader;
+        }
 
 
+        public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,Int2 scroll)
+        {
+
+        }
+
+        public void SetDepthPreviewEnabled(bool enabled)
+        {
+
+        }
     }
 }

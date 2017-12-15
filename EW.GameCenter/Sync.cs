@@ -38,6 +38,11 @@ namespace EW
         }
 
 
+        internal static int Hash(ISync sync)
+        {
+            return GetHashFunction(sync)(sync);
+        }
+
         static Func<object,int> GenerateHashFunc(Type t)
         {
             var d = new DynamicMethod("hash_{0}".F(t.Name), typeof(int), new Type[] { typeof(object) }, t);
@@ -137,6 +142,38 @@ namespace EW
                 case TargetT.Invalid:
                     return 0;
             }
+        }
+
+
+        public static void CheckSyncUnchanged(World world,Action fn)
+        {
+            CheckSyncUnchanged(world, () => { fn(); return true; });
+        }
+
+        static bool inUnsyncedCode = false;
+        public static T CheckSyncUnchanged<T>(World world,Func<T> fn)
+        {
+
+            if (world == null)
+                return fn();
+
+            var shouldCheckSync = WarGame.Settings.Debug.SanityCheckUnsyncedCode;
+            var sync = shouldCheckSync ? world.SyncHash() : 0;
+            var prevInUnsyncedCode = inUnsyncedCode;
+            inUnsyncedCode = true;
+
+            try
+            {
+                return fn();
+            }
+            finally
+            {
+                inUnsyncedCode = prevInUnsyncedCode;
+                if (shouldCheckSync && sync != world.SyncHash())
+                    throw new InvalidOperationException("CheckSyncUnchanged: sync-changing code may not run here");
+            }
+
+
         }
 
 

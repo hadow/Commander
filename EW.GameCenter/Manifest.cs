@@ -65,6 +65,10 @@ namespace EW
         /// </summary>
         public readonly string[] SpriteFormats = { };
 
+        public readonly string[] PackageFormats = { };
+
+        public readonly string[] SoundFormats = { };
+
         readonly Dictionary<string, MiniYaml> yaml;
 
         public readonly string[] Rules, 
@@ -89,7 +93,7 @@ namespace EW
                                                 "Assemblies", "Weapons","RequiresMods","Fonts",
                                                 "SoundFormats","SpriteFormats","Missions","Music","Videos","Notifications",
                                                 "TileSets","Chrome","ChromeLayout","Voices","Translations","ServerTraits",
-                                                "LoadScreen","ChromeMetrics","SupportsMapsFrom",};
+                                                "LoadScreen","ChromeMetrics","SupportsMapsFrom","PackageFormats"};
 
         /// <summary>
         /// 
@@ -137,6 +141,16 @@ namespace EW
             if (yaml.ContainsKey("SpriteFormats"))
             {
                 SpriteFormats = FieldLoader.GetValue<string[]>("SpriteFormats", yaml["SpriteFormats"].Value);
+            }
+
+            if (yaml.ContainsKey("PackageFormats"))
+            {
+                PackageFormats = FieldLoader.GetValue<string[]>("PackageFormats", yaml["PackageFormats"].Value);
+            }
+
+            if (yaml.ContainsKey("SoundFormats"))
+            {
+                SoundFormats = FieldLoader.GetValue<string[]>("SoundFormats", yaml["SoundFormats"].Value);
             }
         }
 

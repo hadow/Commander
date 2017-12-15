@@ -5,6 +5,15 @@ using Java.IO;
 namespace EW
 {
 
+
+    public class DebugSettings
+    {
+        public bool SanityCheckUnsyncedCode = false;
+
+        public string UUID = System.Guid.NewGuid().ToString();
+    }
+
+
     public class GraphicsSettings
     {
         public int SheetSize = 2048;
@@ -14,6 +23,16 @@ namespace EW
         public string DefaultLanguage = "china";
 
         public bool PixelDouble;
+
+        /// <summary>
+        /// Add a frame rate limiter.
+        /// </summary>
+        public bool CapFramerate = true;
+
+        /// <summary>
+        /// At whick frames per second to cap the framerate.
+        /// </summary>
+        public int MaxFramerate = 60;
     }
     /// <summary>
     /// 
@@ -48,9 +67,11 @@ namespace EW
     {
         string settingFile;
 
-        public GraphicsSettings Graphics = new GraphicsSettings();
-        public GameSettings Game = new GameSettings();
-        public SoundSettings Sound = new SoundSettings();
+        public readonly GraphicsSettings Graphics = new GraphicsSettings();
+        public readonly GameSettings Game = new GameSettings();
+        public readonly SoundSettings Sound = new SoundSettings();
+        public readonly DebugSettings Debug = new DebugSettings();
+
         public Dictionary<string, object> Sections;
 
         public Settings(string file,Arguments args)
@@ -58,7 +79,7 @@ namespace EW
             settingFile = file;
             Sections = new Dictionary<string, object>()
             {
-                {"Game",Game }, { "Sound",Sound }
+                {"Game",Game }, { "Sound",Sound },{"Debug",Debug },
             };
 
             var err1 = FieldLoader.UnknownFieldAction;

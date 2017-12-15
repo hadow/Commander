@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Xna.Platforms.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES.Graphics;
 using EW.Traits;
 namespace EW.Graphics
 {
     /// <summary>
     /// 硬件颜色寄存器
     /// </summary>
-    public sealed class HardwarePalette:DrawableGameComponent
+    public sealed class HardwarePalette
     {
-        public Texture2D Texture { get; private set; }
+        public ITexture Texture { get; private set; }
         public int Height { get; private set; }
 
         readonly Dictionary<string, ImmutablePalette> palettes = new Dictionary<string, ImmutablePalette>();
@@ -23,10 +22,9 @@ namespace EW.Graphics
 
         byte[] buffer = new byte[0];
 
-        public HardwarePalette(Game game):base(game)
+        public HardwarePalette()
         {
-            //Texture = new Texture2D(GraphicsDeviceManager.M.GraphicsDevice, Palette.Size, Height);
-
+            Texture = WarGame.Renderer.Device.CreateTexture();
             readOnlyModifiablePalettes = modifiablePalettes.AsReadOnly();
         }
 
@@ -36,12 +34,8 @@ namespace EW.Graphics
         }
 
 
-        //public void Initialize()
-        public override void Initialize()
+        public void Initialize()
         {
-            if (Texture != null)
-                Texture.Dispose();
-            Texture = new Texture2D(this.GraphicsDevice, Palette.Size, Height);
             CopyModifiablePalettesToBuffer();
             CopyBufferToTexture();
         }
@@ -51,7 +45,7 @@ namespace EW.Graphics
         /// </summary>
         void CopyBufferToTexture()
         {
-            Texture.SetData(buffer);
+            Texture.SetData(buffer,Palette.Size,Height);
         }
         /// <summary>
         /// 
@@ -181,9 +175,8 @@ namespace EW.Graphics
         //    Texture.Dispose();
         //}
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             Texture.Dispose();
         }
     }

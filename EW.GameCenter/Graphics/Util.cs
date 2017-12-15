@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using EW.Xna.Platforms.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     public static class Util
@@ -61,12 +61,12 @@ namespace EW.Graphics
                 attribC = -(attribC + ChannelSelect[(int)ss.SecondaryChannel] / 10);
             }
             
-            vertices[nv] = new Vertex(a, new Vector2(r.Left, r.Top), new Vector2(sl, st), paletteTextureIndex, attribC);
-            vertices[nv + 1] = new Vertex(b, new Vector2(r.Right, r.Top), new Vector2(sr, st), paletteTextureIndex, attribC);
-            vertices[nv + 2] = new Vertex(c, new Vector2(r.Right, r.Bottom), new Vector2(sr, sb), paletteTextureIndex, attribC);
-            vertices[nv + 3] = new Vertex(c, new Vector2(r.Right, r.Bottom), new Vector2(sr, sb), paletteTextureIndex, attribC);
-            vertices[nv + 4] = new Vertex(d, new Vector2(r.Left, r.Bottom), new Vector2(sl, sb), paletteTextureIndex, attribC);
-            vertices[nv + 5] = new Vertex(a, new Vector2(r.Left, r.Top), new Vector2(sl, st), paletteTextureIndex, attribC);
+            vertices[nv] = new Vertex(a, r.Left, r.Top, sl, st, paletteTextureIndex, attribC);
+            vertices[nv + 1] = new Vertex(b, r.Right, r.Top, sr, st, paletteTextureIndex, attribC);
+            vertices[nv + 2] = new Vertex(c, r.Right, r.Bottom, sr, sb, paletteTextureIndex, attribC);
+            vertices[nv + 3] = new Vertex(c, r.Right, r.Bottom, sr, sb, paletteTextureIndex, attribC);
+            vertices[nv + 4] = new Vertex(d, r.Left, r.Bottom, sl, sb, paletteTextureIndex, attribC);
+            vertices[nv + 5] = new Vertex(a, r.Left, r.Top, sl, st, paletteTextureIndex, attribC);
 
         }
 

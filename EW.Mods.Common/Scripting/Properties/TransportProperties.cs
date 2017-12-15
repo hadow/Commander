@@ -18,7 +18,7 @@ namespace EW.Mods.Common.Scripting
 
         public void LoadPassenger(Actor a)
         {
-            Console.WriteLine("LoadPassenger");
+            //Console.WriteLine("LoadPassenger");
             cargo.Load(Self, a);
         }
 

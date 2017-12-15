@@ -1,6 +1,7 @@
 Player:
 	HackyAI@Cabal:
 		Name: Cabal
+		Type: cabal
 		MinimumExcessPower: 60
 		BuildingCommonNames:
 			ConstructionYard: fact
@@ -46,17 +47,12 @@ Player:
 			silo: 0%
 			fix: 1%
 			hpad: 2%
-		CapturingActorTypes: e6
-		CapturableActorTypes: fact, fact.gdi, fact.nod, nuke, nuk2, proc, pyle, hand, afld, weap, hpad, hq, fix, eye, tmpl, obli, v19
-		CheckCaptureTargetsForVisibility: false
-		MaximumCaptureTargetOptions: 15
 		UnitsToBuild:
 			e1: 65%
 			e2: 25%
 			e3: 40%
 			e4: 15%
 			e5: 15%
-			e6: 5%
 			harv: 10%
 			bggy: 5%
 			bike: 40%
@@ -72,7 +68,6 @@ Player:
 			orca: 5%
 		UnitLimits:
 			harv: 8
-			e6: 3
 		SquadSize: 15
 		SupportPowerDecision@Airstrike:
 			OrderName: AirstrikePowerInfoOrder
@@ -128,6 +123,7 @@ Player:
 				CheckRadius: 7c0
 	HackyAI@Watson:
 		Name: Watson
+		Type: watson
 		MinimumExcessPower: 60
 		BuildingCommonNames:
 			ConstructionYard: fact
@@ -249,6 +245,7 @@ Player:
 				CheckRadius: 7c0
 	HackyAI@HAL9001:
 		Name: HAL 9001
+		Type: hal9001
 		MinimumExcessPower: 60
 		BuildingCommonNames:
 			ConstructionYard: fact

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Effects;
 using EW.Primitives;
 namespace EW.Traits

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
-using EW.Xna.Platforms;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
@@ -10,29 +9,29 @@ namespace EW.Graphics
     /// 然后这些缓冲区通常很大，并且保持着live,因为sheets 被使用它们的sprite 引用，如果此缓冲区在不需要时显式为空，则GC可以回收它。
     /// 有时甚至不需要创建一个缓冲区，因为使用该Sheet 的对象只能直接在纹理上工作。
     /// </summary>
-    public sealed class Sheet:GameComponent
+    public sealed class Sheet:IDisposable
     {
         bool releaseBufferOnCommit;
         bool dirty;
 
-        Texture2D texture;
+        ITexture texture;
         byte[] data;
 
         public readonly Size Size;
         public readonly SheetT Type;
         
 
-        public Sheet(Game game,SheetT type,Size size):base(game)
+        public Sheet(SheetT type,Size size)
         {
             Type = type;
             Size = size;
         }
 
-        public Sheet(Game game,SheetT type,Texture2D texture):base(game)
+        public Sheet(SheetT type,ITexture texture)
         {
             Type = type;
             this.texture = texture;
-            Size = new Size(texture.Width, texture.Height);
+            Size = texture.Size;
         }
 
         public bool Buffered { get { return data != null || texture == null; } }
@@ -54,7 +53,7 @@ namespace EW.Graphics
             if (texture == null)
                 data = new byte[4 * Size.Width * Size.Height];
             else
-                texture.GetData(data);
+                data = texture.GetData();
 
             releaseBufferOnCommit = false;
         }
@@ -71,17 +70,17 @@ namespace EW.Graphics
             releaseBufferOnCommit = true;
         }
 
-        public Texture2D GetTexture()
+        public ITexture GetTexture()
         {
             if(texture == null)
             {
-                texture = new Texture2D(this.Game.GraphicsDevice, Size.Width, Size.Height);
+                texture = WarGame.Renderer.Device.CreateTexture();
                 dirty = true;
             }
 
             if(data !=null && dirty)
             {
-                texture.SetData(data);
+                texture.SetData(data,Size.Width,Size.Height);
                 dirty = false;
                 if (releaseBufferOnCommit)
                     data = null;
@@ -107,11 +106,10 @@ namespace EW.Graphics
             }
             dirty = true;
         }
+        
 
-
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             if (texture != null)
             {
                 texture.Dispose();

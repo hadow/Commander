@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Drawing;
-using EW.Xna.Platforms.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES.Graphics;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     /// <summary>
     /// Sprite renderer.
     /// 精灵渲染器
     /// </summary>
-    public class SpriteRenderer
+    public class SpriteRenderer:Renderer.IBatchRenderer
     {
         readonly Renderer renderer;
 
         readonly Action renderAction;
 
-        readonly Effect effect;
+        readonly IShader shader;
 
         readonly Vertex[] vertices;
 
@@ -24,10 +24,10 @@ namespace EW.Graphics
 
         int nv = 0;
 
-        public SpriteRenderer(Renderer renderer,Effect effect)
+        public SpriteRenderer(Renderer renderer,IShader shader)
         {
             this.renderer = renderer;
-            this.effect = effect;
+            this.shader = shader;
             vertices = new Vertex[renderer.TempBufferSize];
             renderAction = () => renderer.DrawBatch(vertices, nv, PrimitiveType.TriangleList);
         }
@@ -39,26 +39,12 @@ namespace EW.Graphics
             currentSheet = s.Sheet;
 
         }
-        public void DrawVertexBuffer(VertexBufferBinding[] bindings,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)
+        public void DrawVertexBuffer(IVertexBuffer<Vertex> buffer,int start,int length,PrimitiveType type,Sheet sheet,BlendMode blendMode)
         {
-            effect.Parameters["DiffuseTexture"].SetValue(sheet.GetTexture());
-
-            renderer.GraphicsDevice.BlendState = ConvertBlend(blendMode);
-            renderer.GraphicsDevice.SetVertexBuffers(bindings);
-            effect.CurrentTechnique.Passes[0].Apply();
-            renderer.GraphicsDevice.DrawPrimitives(type, start, length);
-            
-        }
-
-        private BlendState ConvertBlend(BlendMode mode)
-        {
-
-            if (mode == BlendMode.Alpha)
-                return BlendState.AlphaBlend;
-            else if (mode == BlendMode.Additive)
-                return BlendState.Additive;
-            return BlendState.AlphaBlend;
-
+            shader.SetTexture("DiffuseTexture", sheet.GetTexture());
+            renderer.Device.SetBlendMode(blendMode);
+            shader.Render(() => renderer.DrawBatch(buffer, start, length, type));
+            renderer.Device.SetBlendMode(BlendMode.None);
         }
 
 
@@ -81,36 +67,47 @@ namespace EW.Graphics
 
 
 
-        public void SetPalette(Texture palette)
+        public void SetPalette(ITexture palette)
         {
-            effect.Parameters["Palette"].SetValue(palette);
+            //effect.Parameters["Palette"].SetValue(palette);
+            shader.SetTexture("Palette", palette);
         }
 
         public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,Int2 scroll)
         {
-            effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
-            effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));
-            effect.Parameters["r2"].SetValue(new Vector3(-1, 1, 1 - depthOffset));
+            //effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
+            //effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));
+            //effect.Parameters["r2"].SetValue(new Vector3(-1, 1, 1 - depthOffset));
+            shader.SetVec("Scroll", scroll.X, scroll.Y, scroll.Y);
+            shader.SetVec("r1", zoom * 2f / screen.Width,
+                    -zoom * 2f / screen.Height,
+                    -depthScale * zoom / screen.Height);
+            shader.SetVec("r2", -1, 1, 1 - depthOffset);
 
             //Texture index is sampled as a float,so convert to pixels then scale.
             //纹理索引被采样为浮点数，因此转换为像素然后缩放
-            effect.Parameters["DepthTextureScale"].SetValue(128 * depthScale * zoom / screen.Height);
+            //effect.Parameters["DepthTextureScale"].SetValue(128 * depthScale * zoom / screen.Height);
+            shader.SetVec("DepthTextureScale", 128 * depthScale * zoom / screen.Height);
         }
 
         public void SetDepthPreviewEnabled(bool enabled)
         {
-            effect.Parameters["EnableDepthPreview"].SetValue(enabled);
+            //effect.Parameters["EnableDepthPreview"].SetValue(enabled);
+            shader.SetBool("EnableDepthPreview", enabled);
         }
 
         public void Flush()
         {
             if(nv > 0)
             {
-                effect.Parameters["DiffuseTexture"].SetValue(currentSheet.GetTexture());
+                //effect.Parameters["DiffuseTexture"].SetValue(currentSheet.GetTexture());
+                shader.SetTexture("DiffuseTexture", currentSheet.GetTexture());
 
-                renderer.GraphicsDevice.BlendState = ConvertBlend(currentBlend);
-                effect.CurrentTechnique.Passes[0].Apply();
-                renderAction();
+                renderer.Device.SetBlendMode(currentBlend);
+                shader.Render(renderAction);
+                renderer.Device.SetBlendMode(BlendMode.None);
+                //renderer.GraphicsDevice.BlendState = ConvertBlend(currentBlend);
+                //effect.CurrentTechnique.Passes[0].Apply();
                 nv = 0;
                 currentSheet = null;
             }

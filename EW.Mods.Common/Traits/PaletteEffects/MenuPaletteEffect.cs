@@ -2,7 +2,7 @@
 
 using EW.Traits;
 using EW.Graphics;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
     public class MenuPaletteEffectInfo : ITraitInfo

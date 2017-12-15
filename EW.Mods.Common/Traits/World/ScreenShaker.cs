@@ -1,5 +1,5 @@
 ﻿using System;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.Graphics;
 using EW.Traits;
 namespace EW.Mods.Common.Traits

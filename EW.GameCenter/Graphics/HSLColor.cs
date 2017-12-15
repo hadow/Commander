@@ -1,6 +1,6 @@
 ﻿using System;
 using EW.Scripting;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Graphics
 {
     /// <summary>
@@ -18,9 +18,9 @@ namespace EW.Graphics
         {
             RGB = color;
 
-            H = (byte)((color.GetHue() / 360.0f) * 255);
-            S = (byte)(color.GetSaturation() * 255);
-            L = (byte)(color.GetBrightness() * 255);
+            //H = (byte)((color.GetHue() / 360.0f) * 255);
+            //S = (byte)(color.GetSaturation() * 255);
+            //L = (byte)(color.GetBrightness() * 255);
 
         }
 

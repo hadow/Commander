@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
 using EW.Traits;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     /// <summary>
     /// 地形渲染
     /// </summary>
-    sealed class TerrainRenderer:DrawableGameComponent
+    sealed class TerrainRenderer
     {
 
         readonly Map map;
@@ -21,7 +21,7 @@ namespace EW.Graphics
         readonly Theater theater;
 
 
-        public TerrainRenderer(Game game,World world,WorldRenderer wr):base(game)
+        public TerrainRenderer(World world,WorldRenderer wr)
         {
 
             map = world.Map;
@@ -78,9 +78,8 @@ namespace EW.Graphics
         }
         
 
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             map.Height.CellEntryChanged -= UpdateCell;
             map.Tiles.CellEntryChanged -= UpdateCell;
 

@@ -40,7 +40,7 @@ namespace EW
             public int PlayerCount;
             public CPos[] SpawnPoints;  //³öÉúµã
             public MapGridT GridT;
-            public EW.Xna.Platforms.Rectangle Bounds;
+            public EW.OpenGLES.Rectangle Bounds;
             public Bitmap Preview;
             public MapStatus Status;
             public MapVisibility Visibility;
@@ -113,7 +113,7 @@ namespace EW
 
         public MapGridT GridT { get { return innerData.GridT; } }
 
-        public EW.Xna.Platforms.Rectangle Bounds { get { return innerData.Bounds; } }
+        public EW.OpenGLES.Rectangle Bounds { get { return innerData.Bounds; } }
 
         public Bitmap Preview { get { return innerData.Preview; } }
 
@@ -147,7 +147,7 @@ namespace EW
                 PlayerCount = 0,
                 SpawnPoints = NoSpawns,
                 GridT = gridT,
-                Bounds = EW.Xna.Platforms.Rectangle.Empty,
+                Bounds = EW.OpenGLES.Rectangle.Empty,
                 Preview = null,
                 Status = MapStatus.Unavailable,
                 Visibility = MapVisibility.Lobby,
@@ -205,7 +205,7 @@ namespace EW
             if (yaml.TryGetValue("Author", out temp))
                 newData.Author = temp.Value;
             if (yaml.TryGetValue("Bounds", out temp))
-                newData.Bounds = FieldLoader.GetValue<EW.Xna.Platforms.Rectangle>("Bounds", temp.Value);
+                newData.Bounds = FieldLoader.GetValue<EW.OpenGLES.Rectangle>("Bounds", temp.Value);
 
             if (yaml.TryGetValue("Visibility", out temp))
                 newData.Visibility = FieldLoader.GetValue<MapVisibility>("Visibility", temp.Value);
@@ -264,8 +264,9 @@ namespace EW
                 var musicDefinitions = LoadRuleSection(yaml, "Music");
                 var notificationDefinitions = LoadRuleSection(yaml, "Notifications");
                 var sequenceDefinitions = LoadRuleSection(yaml, "Sequences");
+                var modelSequenceDefinitions = LoadRuleSection(yaml, "ModelSequences");
 
-                var rules = Ruleset.Load(modData, this, TileSet, ruleDefinitions, weaponDefinitions, voiceDefinitions, notificationDefinitions, musicDefinitions, sequenceDefinitions);
+                var rules = Ruleset.Load(modData, this, TileSet, ruleDefinitions, weaponDefinitions, voiceDefinitions, notificationDefinitions, musicDefinitions, sequenceDefinitions,modelSequenceDefinitions);
 
                 var flagged = Ruleset.DefinesUnsafeCustomRules(modData,this,ruleDefinitions,weaponDefinitions,voiceDefinitions,notificationDefinitions,sequenceDefinitions);
                 return Pair.New(rules, flagged);

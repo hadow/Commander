@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using EW.Xna.Platforms;
-using EW.Xna.Platforms.Graphics;
+using EW.OpenGLES;
+using EW.OpenGLES.Graphics;
 namespace EW.Graphics
 {
     [Serializable]
@@ -24,7 +24,7 @@ namespace EW.Graphics
         Indexed = 1,
         BGRA = 4,
     }
-    public sealed class SheetBuilder:GameComponent
+    public sealed class SheetBuilder:IDisposable
     {
 
         public readonly SheetT Type;
@@ -38,16 +38,16 @@ namespace EW.Graphics
         Sheet current;
         TextureChannel channel;
         
-        public static Sheet AllocateSheet(SheetT type,int sheetSize,Game game)
+        public static Sheet AllocateSheet(SheetT type,int sheetSize)
         {
-            return new Sheet(game,type, new Size(sheetSize,sheetSize));
+            return new Sheet(type, new Size(sheetSize,sheetSize));
         }
         
-        public SheetBuilder(SheetT t,Game game):this(t,WarGame.Settings.Graphics.SheetSize,game){}
+        public SheetBuilder(SheetT t):this(t,WarGame.Settings.Graphics.SheetSize){}
 
-        public SheetBuilder(SheetT t,int sheetSize,Game game):this(game,t,()=>AllocateSheet(t,sheetSize,game)){}
+        public SheetBuilder(SheetT t,int sheetSize):this(t,()=>AllocateSheet(t,sheetSize)){}
         
-        public SheetBuilder(Game game,SheetT t,Func<Sheet> allocateSheet):base(game)
+        public SheetBuilder(SheetT t,Func<Sheet> allocateSheet)
         {
             channel = TextureChannel.Red;
             Type = t;
@@ -69,7 +69,7 @@ namespace EW.Graphics
         public Sprite Add(byte[] src,Size size,float zRamp,Vector3 spriteOffset)
         {
             if (size.Width == 0 || size.Height == 0)
-                return new Sprite(current,EW.Xna.Platforms.Rectangle.Empty,0,spriteOffset,channel,BlendState.AlphaBlend);
+                return new Sprite(current,EW.OpenGLES.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
 
             var rect = Allocate(size, zRamp, spriteOffset);
             Util.FastCopyIntoChannel(rect, src);
@@ -112,7 +112,7 @@ namespace EW.Graphics
                 p = new System.Drawing.Point(0, 0);
             }
 
-            var rect = new Sprite(current, new Xna.Platforms.Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
+            var rect = new Sprite(current, new EW.OpenGLES.Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
             p.X += imageSize.Width;
 
             return rect;
@@ -138,22 +138,22 @@ namespace EW.Graphics
         /// <summary>
         /// ÊÍ·Å×ÊÔ´
         /// </summary>
-        //public void Dispose()
-        //{
-        //    foreach (var sheet in sheets)
-        //        sheet.Dispose();
-
-        //    sheets.Clear();
-        //}
-
-        protected override void Dispose(bool disposing)
+        public void Dispose()
         {
-            base.Dispose(disposing);
             foreach (var sheet in sheets)
                 sheet.Dispose();
 
             sheets.Clear();
         }
+
+        //protected override void Dispose(bool disposing)
+        //{
+        //    base.Dispose(disposing);
+        //    foreach (var sheet in sheets)
+        //        sheet.Dispose();
+
+        //    sheets.Clear();
+        //}
 
 
 

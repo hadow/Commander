@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 using EW.FileSystem;
 using EW.Primitives;
 namespace EW

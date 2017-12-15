@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Warheads;
-using EW.Xna.Platforms;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
     public abstract class AttackBaseInfo:ConditionalTraitInfo
