@@ -159,6 +159,8 @@ namespace EW
 
         public readonly string PlayerPalette;
 
+        public readonly Color[] HeightDebugColors = new[] { Color.Red };
+
         public readonly bool EnableDepth = false;
 
         public readonly bool IgnoreTileSpriteOffsets;

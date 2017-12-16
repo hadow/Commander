@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using EW.OpenGLES;
 using EW.Primitives;
 
@@ -48,6 +49,8 @@ namespace EW.Graphics
         ProjectedCellRegion cells;
 
         ProjectedCellRegion allCells;
+
+        public static Int2 LastMousePos;
 
         /// <summary>
         /// 
@@ -224,6 +227,78 @@ namespace EW.Graphics
         public Int2 ViewToWorldPx(Int2 view)
         {
             return (1f / Zoom * view.ToVector2()).ToInt2() + TopLeft;
+        }
+
+        public CPos ViewToWorld(Int2 view)
+        {
+            var world = worldRenderer.ViewPort.ViewToWorldPx(view);
+            var map = worldRenderer.World.Map;
+            var candidates = CandidateMouseoverCells(world).ToList();
+            var tileSet = worldRenderer.World.Map.Rules.TileSet;
+
+            foreach(var uv in candidates)
+            {
+                //Coarse filter to nearby cells 对附近的单元格进行粗滤
+                var p = map.CenterOfCell(uv.ToCPos(map.Grid.Type));
+                var s = worldRenderer.ScreenPxPosition(p);
+
+                if(Math.Abs(s.X - world.X)<=tileSize.Width && Math.Abs(s.Y - world.Y) <= tileSize.Height)
+                {
+                    var ramp = 0;
+                    if (map.Contains(uv))
+                    {
+                        var ti = tileSet.GetTileInfo(map.Tiles[uv]);
+                        if (ti != null)
+                            ramp = ti.RampT;
+                    }
+
+                    var corners = map.Grid.CellCorners[ramp];
+                    var pos = map.CenterOfCell(uv.ToCPos(map));
+                    var screen = corners.Select(c => worldRenderer.ScreenPxPosition(pos + c)).ToArray();
+
+                    if (screen.PolygonContains(world))
+                        return uv.ToCPos(map);
+                }
+
+            }
+
+            //Mouse if not directly over a cell(perhaps on a cliff)
+            //Try and find the closest cell
+            if (candidates.Count > 0)
+            {
+                return candidates.OrderBy(uv =>
+                {
+                    var p = map.CenterOfCell(uv.ToCPos(map.Grid.Type));
+                    var s = worldRenderer.ScreenPxPosition(p);
+                    var dx = Math.Abs(s.X - world.X);
+                    var dy = Math.Abs(s.Y - world.Y);
+                    return dx * dx + dy * dy;
+                }).First().ToCPos(map);
+            }
+
+            return worldRenderer.World.Map.CellContaining(worldRenderer.ProjectedPosition(ViewToWorldPx(view)));
+        }
+
+
+        /// <summary>
+        /// Returns an unfiltered list of all cells that could potentially contain the mouse cursor
+        /// </summary>
+        /// <param name="world"></param>
+        /// <returns></returns>
+        IEnumerable<MPos> CandidateMouseoverCells(Int2 world)
+        {
+            var map = worldRenderer.World.Map;
+            var minPos = worldRenderer.ProjectedPosition(world);
+
+            //Find all the cells that could potentially have been clicked&touched
+            var a = map.CellContaining(minPos - new WVec(1024, 0, 0)).ToMPos(map.Grid.Type);
+            var b = map.CellContaining(minPos + new WVec(512, 512 * map.Grid.MaximumTerrainHeight, 0)).ToMPos(map.Grid.Type);
+
+            for(var v = b.V; v >= a.V; v--)
+            {
+                for (var u = b.U; u >= a.U; u--)
+                    yield return new MPos(u, v);
+            }
         }
 
         /// <summary>

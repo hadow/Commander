@@ -5,6 +5,7 @@ using System.Linq;
 using System.Globalization;
 using EW.Support;
 using EW.Traits;
+using EW.OpenGLES;
 namespace EW
 {
     public static class Enum<T>
@@ -308,6 +309,30 @@ namespace EW
         public static bool IsTraitEnabled<T>(T t)
         {
             return IsTraitEnabled(t as object);
+        }
+
+
+        public static bool PolygonContains(this Int2[] polygon, Int2 p)
+        {
+            var windingNumber = 0;
+
+            for (var i = 0; i < polygon.Length; i++)
+            {
+                var tv = polygon[i];
+                var nv = polygon[(i + 1) % polygon.Length];
+
+                if (tv.Y <= p.Y && nv.Y > p.Y && WindingDirectionTest(tv, nv, p) > 0)
+                    windingNumber++;
+                else if (tv.Y > p.Y && nv.Y <= p.Y && WindingDirectionTest(tv, nv, p) < 0)
+                    windingNumber--;
+            }
+
+            return windingNumber != 0;
+        }
+
+        static int WindingDirectionTest(Int2 v0, Int2 v1, Int2 p)
+        {
+            return (v1.X - v0.X) * (p.Y - v0.Y) - (p.X - v0.X) * (v1.Y - v0.Y);
         }
     }
     
