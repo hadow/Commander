@@ -5,6 +5,9 @@ using EW.Graphics;
 using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
+    /// <summary>
+    /// Fades the world from/to black at the start/end of the gam,and can(optionally) desaturate the world.
+    /// </summary>
     public class MenuPaletteEffectInfo : ITraitInfo
     {
         public readonly int FadeLength = 10;
@@ -37,7 +40,15 @@ namespace EW.Mods.Common.Traits
 
         public void WorldLoaded(World world, WorldRenderer wr)
         {
+            Fade(Info.Effect);
+        }
 
+
+        public void Fade(EffectType type)
+        {
+            remainingFrames = Info.FadeLength;
+            from = to;
+            to = type;
         }
 
         public void AdjustPalette(IReadOnlyDictionary<string,MutablePalette> palettes)
@@ -50,23 +61,33 @@ namespace EW.Mods.Common.Traits
                 for(var x = 0; x < Palette.Size; x++)
                 {
                     var orig = pal.GetColor(x);
+                    var t = ColorForEffect(to, orig);
+
+                    if (remainingFrames == 0)
+                        pal.SetColor(x, t);
+                    else
+                    {
+                        var f = ColorForEffect(from, orig);
+                        pal.SetColor(x, Exts.ColorLerp((float)remainingFrames / Info.FadeLength, t, f));
+                    }
                 }
             }
         }
 
-        //static Color ColorForEffect(EffectType t,Color orig)
-        //{
-        //    switch (t)
-        //    {
-        //        case EffectType.Black:
-        //            return Color.FromArgb();
-        //        case EffectType.Desaturated:
-        //            return Color.FromArgb();
-        //        default:
-        //        case EffectType.None:
-        //            return orig;
-        //    }
-        //}
+        static Color ColorForEffect(EffectType t, Color orig)
+        {
+            switch (t)
+            {
+                case EffectType.Black:
+                    return Color.FromArgb(orig.A,Color.Black);
+                case EffectType.Desaturated:
+                    var lum = (int)(255 * orig.GetBrightness());
+                    return Color.FromArgb(orig.A,lum,lum,lum);
+                default:
+                case EffectType.None:
+                    return orig;
+            }
+        }
 
         public void TickRender(WorldRenderer wr,Actor self)
         {

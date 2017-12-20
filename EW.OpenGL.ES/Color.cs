@@ -1876,6 +1876,12 @@ namespace EW.OpenGLES
 
 
         }
+
+        public static Color FromArgb(int red, int green, int blue)
+        {
+            return FromArgb(255, red, green, blue);
+        }
+
         public static Color FromArgb(int alpha, int red, int green, int blue)
         {
             CheckARGBValues(alpha, red, green, blue);
@@ -1897,6 +1903,59 @@ namespace EW.OpenGLES
             return (int)_packedValue;
         }
 
+
+        public float GetBrightness()
+        {
+            byte minval = Math.Min(R, Math.Min(G, B));
+            byte maxval = Math.Max(R, Math.Max(G, B));
+
+            return (float)(maxval + minval) / 510;
+        }
+
+        public float GetHue()
+        {
+            int r = R;
+            int g = G;
+            int b = B;
+            byte minval = (byte)Math.Min(r, Math.Min(g, b));
+            byte maxval = (byte)Math.Max(r, Math.Max(g, b));
+
+            if (maxval == minval)
+                return 0.0f;
+
+            float diff = (float)(maxval - minval);
+            float rnorm = (maxval - r) / diff;
+            float gnorm = (maxval - g) / diff;
+            float bnorm = (maxval - b) / diff;
+
+            float hue = 0.0f;
+            if (r == maxval)
+                hue = 60.0f * (6.0f + bnorm - gnorm);
+            if (g == maxval)
+                hue = 60.0f * (2.0f + rnorm - bnorm);
+            if (b == maxval)
+                hue = 60.0f * (4.0f + gnorm - rnorm);
+            if (hue > 360.0f)
+                hue = hue - 360.0f;
+
+            return hue;
+        }
+
+
+        public float GetSaturation()
+        {
+            byte minval = (byte)Math.Min(R, Math.Min(G, B));
+            byte maxval = (byte)Math.Max(R, Math.Max(G, B));
+
+            if (maxval == minval)
+                return 0.0f;
+
+            int sum = maxval + minval;
+            if (sum > 255)
+                sum = 510 - sum;
+
+            return (float)(maxval - minval) / sum;
+        }
         #region IEquatable<Color> Members
 
         /// <summary>

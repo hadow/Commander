@@ -113,7 +113,7 @@ namespace EW.Mods.Common.Graphics
         {
             Name = animation;
             Loader = loader;
-            Console.WriteLine("Sequence:" + sequence + "  animation:" + animation);
+            //Console.WriteLine("Sequence:" + sequence + "  animation:" + animation);
             var d = info.ToDictionary();
 
             try
@@ -289,7 +289,16 @@ namespace EW.Mods.Common.Graphics
 
         protected virtual Sprite GetSprite(int start,int frame,int facing)
         {
-            return sprites[start];
+            var f = Util.QuantizeFacing(facing, Facings, useClassicFacingFudge);
+            if (reverseFacings)
+                f = (Facings - f) % Facings;
+
+            var i = transpose ? (frame % Length) * Facings + f:(f*Stride)+(frame%Length);
+
+            if (Frames != null)
+                return sprites[Frames[i]];
+
+            return sprites[start+i];
         }
 
         public Sprite GetShadow(int frame,int facing)

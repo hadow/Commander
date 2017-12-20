@@ -11,5 +11,9 @@ namespace EW.Mods.Common.Traits
 
     public class GrantExternalConditionCrateAction:CrateAction
     {
+        public GrantExternalConditionCrateAction(Actor self,GrantExternalConditionCrateActionInfo info) : base(self, info)
+        {
+
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace EW.Mods.Common.Traits
     {
         readonly Map map;
         readonly CellLayer<Actor> influence;
-
+     
         public BuildingInfluence(World world)
         {
             map = world.Map;

@@ -77,7 +77,7 @@ namespace EW.Mods.Common.Traits
 
             foreach(var kvp in palettes)
             {
-                if ((info.Palettes.Count > 0 && !info.Palettes.Any(kvp.Key.StartsWith)) || (info.ExcludePalettes.Count > 0 && info.ExcludePalettes.Any(kvp.Key.StartsWith)))
+                if ((info.Palettes.Count > 0 && !StartsWithAny(kvp.Key,info.Palettes)) || (info.ExcludePalettes.Count > 0 && StartsWithAny(kvp.Key,info.ExcludePalettes)))
                     continue;
 
                 var palette = kvp.Value;
@@ -89,6 +89,18 @@ namespace EW.Mods.Common.Traits
                     palette[info.RotationBase + i] = rotationBuffer[i];
 
             }
+        }
+
+
+        static bool StartsWithAny(string name,HashSet<string> prefixes)
+        {
+            //PERF:Avoid LINQ;
+            foreach(var pref in prefixes)
+            {
+                if (name.StartsWith(pref))
+                    return true;
+            }
+            return false;
         }
 
     }

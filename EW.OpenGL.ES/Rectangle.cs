@@ -108,6 +108,14 @@ namespace EW.OpenGLES
         }
 
 
+        public static Rectangle Union(Rectangle value1,Rectangle value2)
+        {
+            int x = Math.Min(value1.X, value2.X);
+            int y = Math.Min(value1.Y, value2.Y);
+            return new Rectangle(x, y, Math.Max(value1.Right, value2.Right) - x, Math.Max(value1.Bottom, value2.Bottom) - y);
+        }
+
+
         public Point Size
         {
             get { return new Point(this.Width, this.Height); }

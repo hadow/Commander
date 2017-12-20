@@ -5,7 +5,6 @@ using EW.Primitives;
 using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Activities;
-using EW.Mods.Common.Traits;
 namespace EW.Mods.Common.Traits
 {
     [Flags]
@@ -382,6 +381,14 @@ namespace EW.Mods.Common.Traits
             FinishedMoving(self);
         }
 
+        public void SetPosition(Actor self, WPos pos)
+        {
+            var cell = self.World.Map.CellContaining(pos);
+            SetLocation(cell, FromSubCell, cell, FromSubCell);
+            SetVisualPosition(self, self.World.Map.CenterOfSubCell(cell, FromSubCell) + new WVec(0, 0, self.World.Map.DistanceAboveTerrain(pos).Length));
+            FinishedMoving(self);
+        }
+
         public void FinishedMoving(Actor self)
         {
             if (!self.IsAtGroundLevel())
@@ -400,10 +407,7 @@ namespace EW.Mods.Common.Traits
             return true;
         }
 
-        public void SetPosition(Actor self,WPos pos)
-        {
-
-        }
+        
 
         /// <summary>
         /// Sets only the visual position(CenterPosition)

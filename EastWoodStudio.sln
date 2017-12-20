@@ -8,13 +8,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Mods.Cnc", "EW.Mods.Cnc\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Xna.Platforms", "EW.Xna.Platforms\EW.Xna.Platforms.csproj", "{62338638-3D8A-4E57-969E-1C82298C0649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Game.Android", "EW.GameCenter\EW.Game.Android.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.GameLaunch", "EW.GameLaunch\EW.GameLaunch.csproj", "{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.OpenGL.ES", "EW.OpenGL.ES\EW.OpenGL.ES.csproj", "{6D95A620-D0D0-4B0C-B1EE-AB9F61BCC201}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Test", "EW.Test\EW.Test.csproj", "{0A2C2FD3-AD89-4062-A071-FBDA7F74DEE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

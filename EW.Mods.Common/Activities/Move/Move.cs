@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using EW.Mods.Common.Pathfinder;
 using EW.Mods.Common.Traits;
@@ -27,6 +28,9 @@ namespace EW.Mods.Common.Activities
         readonly Mobile mobile;
         List<CPos> path;
         CPos? destination;          //目的地
+
+        //Scriptable move order
+        //Ignores lane bias and nearby units.(忽略道路偏差和附近的单位)
         public Move(Actor self,CPos destination)
         {
             mobile = self.Trait<Mobile>();
@@ -76,8 +80,10 @@ namespace EW.Mods.Common.Activities
         {
             if (IsCanceled)
                 return NextActivity;
+
             if (mobile.IsTraitDisabled)
                 return this;
+
             if (destination == mobile.ToCell)
                 return NextActivity;
 
@@ -138,6 +144,7 @@ namespace EW.Mods.Common.Activities
             return path;
         }
 
+        [Conditional("SANITY_CHECKS")]
         void SanityCheckPath(Mobile mobile)
         {
             if (path.Count == 0)

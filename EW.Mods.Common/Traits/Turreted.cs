@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using EW.Traits;
+﻿using EW.Traits;
 using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {

@@ -21,7 +21,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\EW.GameCenter\Content\mods\common\</OutputPath>
+    <OutputPath>..\EW.GameLaunch\Content\mods\common\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,20 +35,36 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Android" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CncLoadScreen.cs" />
+    <Compile Include="FileFormats\HvaReader.cs" />
+    <Compile Include="FileFormats\VxlReader.cs" />
+    <Compile Include="Graphics\Voxel.cs" />
+    <Compile Include="Graphics\VoxelLoader.cs" />
+    <Compile Include="Graphics\VoxelModelSequenceLoader.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpriteLoaders\TmpTSLoader.cs" />
+    <Compile Include="Traits\Buildings\TiberianSunRefinery.cs" />
+    <Compile Include="Traits\Disguise.cs" />
+    <Compile Include="Traits\EnergyWall.cs" />
+    <Compile Include="Traits\Infiltration\InfiltrateForExploration.cs" />
+    <Compile Include="Traits\Infiltration\InfiltrateForPowerOutage.cs" />
+    <Compile Include="Traits\Infiltration\Infiltrates.cs" />
     <Compile Include="Traits\Render\WithBuildingBib.cs" />
     <Compile Include="Traits\Render\WithDeliveryAnimation.cs" />
+    <Compile Include="Traits\Render\WithDisguisingInfantryBody.cs" />
+    <Compile Include="Traits\Render\WithDockingOverlay.cs" />
+    <Compile Include="Traits\Render\WithVoxelUnloadBody.cs" />
+    <Compile Include="Traits\Render\WithVoxelWalkerBody.cs" />
+    <Compile Include="Traits\SupportPowers\AttackOrderPower.cs" />
     <Compile Include="Traits\SupportPowers\IonCannonPower.cs" />
+    <Compile Include="Traits\World\TSShroudPalette.cs" />
+    <Compile Include="Traits\World\VoxelNormalsPalette.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -57,15 +73,20 @@
     <AndroidResource Include="Resources\Values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EW.GameCenter\EW.Game.Android.csproj">
+    <ProjectReference Include="..\EW.GameLaunch\EW.GameLaunch.csproj">
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
-      <Name>EW.Game.Android</Name>
+      <Name>EW.GameLaunch</Name>
     </ProjectReference>
     <ProjectReference Include="..\EW.Mods.Common\EW.Mods.Common.csproj">
       <Project>{971cd67f-d10d-4da6-939a-09ce9a52cdf9}</Project>
       <Name>EW.Mods.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+      <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
+      <Name>EW.OpenGL.ES</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

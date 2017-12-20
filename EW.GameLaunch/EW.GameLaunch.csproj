@@ -1,0 +1,377 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9F9D263C-B62E-4F93-B18A-0AA9376DCEE4}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>EW</RootNamespace>
+    <AssemblyName>EW.GameLaunch</AssemblyName>
+    <AndroidApplication>true</AndroidApplication>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidTlsProvider>
+    </AndroidTlsProvider>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;ANDROID</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <Debugger>Xamarin</Debugger>
+    <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+    <AndroidSupportedAbis>
+    </AndroidSupportedAbis>
+    <PlatformTarget>x86</PlatformTarget>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidManagedSymbols>true</AndroidManagedSymbols>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Activities\Activity.cs" />
+    <Compile Include="Actor.cs" />
+    <Compile Include="Arguments.cs" />
+    <Compile Include="CPos.cs" />
+    <Compile Include="CryptoUtil.cs" />
+    <Compile Include="CVec.cs" />
+    <Compile Include="Download.cs" />
+    <Compile Include="Effects\DelayedImpact.cs" />
+    <Compile Include="Effects\IEffect.cs" />
+    <Compile Include="Exts.cs" />
+    <Compile Include="FieldLoader.cs" />
+    <Compile Include="FileFormats\Blowfish.cs" />
+    <Compile Include="FileFormats\BlowfishKeyProvider.cs" />
+    <Compile Include="FileFormats\CRC32.cs" />
+    <Compile Include="FileFormats\LCWCompression.cs" />
+    <Compile Include="FileFormats\RLEZerosCompression.cs" />
+    <Compile Include="FileFormats\XccGlobalDatabase.cs" />
+    <Compile Include="FileFormats\XccLocalDatabase.cs" />
+    <Compile Include="FileSystem\FileSystem.cs" />
+    <Compile Include="FileSystem\Folder.cs" />
+    <Compile Include="FileSystem\MixFile.cs" />
+    <Compile Include="FileSystem\PackageEntry.cs" />
+    <Compile Include="FileSystem\ZipFile.cs" />
+    <Compile Include="FileSystem\ZipFolder.cs" />
+    <Compile Include="GameRules\ActorInfo.cs" />
+    <Compile Include="GameRules\MusicInfo.cs" />
+    <Compile Include="GameRules\Ruleset.cs" />
+    <Compile Include="GameRules\SoundInfo.cs" />
+    <Compile Include="GameRules\WeaponInfo.cs" />
+    <Compile Include="GameSpeeds.cs" />
+    <Compile Include="Graphics\Animation.cs" />
+    <Compile Include="Graphics\AnimationWithOffset.cs" />
+    <Compile Include="Graphics\GameViewPort.cs" />
+    <Compile Include="Graphics\HardwarePalette.cs" />
+    <Compile Include="Graphics\HSLColor.cs" />
+    <Compile Include="Graphics\Model.cs" />
+    <Compile Include="Graphics\ModelAnimation.cs" />
+    <Compile Include="Graphics\Palette.cs" />
+    <Compile Include="Graphics\PaletteReference.cs" />
+    <Compile Include="Graphics\PlayerColorRemap.cs" />
+    <Compile Include="Graphics\RgbaColorRenderer.cs" />
+    <Compile Include="Graphics\SequenceProvider.cs" />
+    <Compile Include="Graphics\Sheet.cs" />
+    <Compile Include="Graphics\SheetBuilder.cs" />
+    <Compile Include="Graphics\Sprite.cs" />
+    <Compile Include="Graphics\SpriteLoader.cs" />
+    <Compile Include="Graphics\SpriteRenderable.cs" />
+    <Compile Include="Graphics\SpriteRenderer.cs" />
+    <Compile Include="Graphics\TargetLineRenderable.cs" />
+    <Compile Include="Graphics\TerrainRenderer.cs" />
+    <Compile Include="Graphics\TerrainSpriteLayer.cs" />
+    <Compile Include="Graphics\Theater.cs" />
+    <Compile Include="Graphics\Util.cs" />
+    <Compile Include="Graphics\VoxelLoader.cs" />
+    <Compile Include="Graphics\ModelRenderer.cs" />
+    <Compile Include="Graphics\WorldRenderer.cs" />
+    <Compile Include="InstalledMods.cs" />
+    <Compile Include="Manifest.cs" />
+    <Compile Include="Map\ActorReference.cs" />
+    <Compile Include="Map\CellRegion.cs" />
+    <Compile Include="Map\MapCache.cs" />
+    <Compile Include="Map\MapCoordsRegion.cs" />
+    <Compile Include="Map\MapPlayers.cs" />
+    <Compile Include="Map\MapPreview.cs" />
+    <Compile Include="Map\PlayerReference.cs" />
+    <Compile Include="Map\TileReference.cs" />
+    <Compile Include="Map\TileSet.cs" />
+    <Compile Include="MPos.cs" />
+    <Compile Include="Map\ActorInitializer.cs" />
+    <Compile Include="Map\CellLayer.cs" />
+    <Compile Include="Map\Map.cs" />
+    <Compile Include="Map\MapGrid.cs" />
+    <Compile Include="Map\ProjectedCellRegion.cs" />
+    <Compile Include="MiniYaml.cs" />
+    <Compile Include="ModData.cs" />
+    <Compile Include="NetWork\Connection.cs" />
+    <Compile Include="NetWork\Order.cs" />
+    <Compile Include="NetWork\OrderManager.cs" />
+    <Compile Include="NetWork\ReplayConnection.cs" />
+    <Compile Include="NetWork\Session.cs" />
+    <Compile Include="NetWork\SyncReport.cs" />
+    <Compile Include="ObjectCreator.cs" />
+    <Compile Include="MyActivity.cs" />
+    <Compile Include="Orders\IOrderGenerator.cs" />
+    <Compile Include="Platform.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Primitives\ActionQueue.cs" />
+    <Compile Include="Primitives\Cache.cs" />
+    <Compile Include="Primitives\ConcurrentCache.cs" />
+    <Compile Include="Primitives\Pair.cs" />
+    <Compile Include="Primitives\PriorityQueue.cs" />
+    <Compile Include="Primitives\ReadOnlyDictionary.cs" />
+    <Compile Include="Primitives\ReadOnlyList.cs" />
+    <Compile Include="Primitives\SegmentStream.cs" />
+    <Compile Include="Primitives\SpatiallyPartitioned.cs" />
+    <Compile Include="Primitives\TypeDictionary.cs" />
+    <Compile Include="Renderer.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Input\IInputHandler.cs" />
+    <Compile Include="Graphics\PlatformInterfaces.cs" />
+    <Compile Include="Scripting\ScriptActorInterface.cs" />
+    <Compile Include="Scripting\ScriptContext.cs" />
+    <Compile Include="Scripting\ScriptGlobal.cs" />
+    <Compile Include="Scripting\ScriptMemberExts.cs" />
+    <Compile Include="Scripting\ScriptMemberWrapper.cs" />
+    <Compile Include="Scripting\ScriptObjectWrapper.cs" />
+    <Compile Include="Scripting\LuaValueExts.cs" />
+    <Compile Include="Scripting\ScriptPlayerInterface.cs" />
+    <Compile Include="Selection.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Sound\Sound.cs" />
+    <Compile Include="Sound\SoundDevice.cs" />
+    <Compile Include="StreamExts.cs" />
+    <Compile Include="Support\MersenneTwister.cs" />
+    <Compile Include="Support\PerfHistory.cs" />
+    <Compile Include="Support\PerfItem.cs" />
+    <Compile Include="Support\PerfSample.cs" />
+    <Compile Include="Support\PerfTimer.cs" />
+    <Compile Include="Support\VariableExpression.cs" />
+    <Compile Include="Sync.cs" />
+    <Compile Include="TraitDictionary.cs" />
+    <Compile Include="Traits\ActivityUtils.cs" />
+    <Compile Include="Traits\DebugPauseState.cs" />
+    <Compile Include="Traits\DrawLineToTarget.cs" />
+    <Compile Include="Traits\LintAttributes.cs" />
+    <Compile Include="Traits\Player\FixedColorPalette.cs" />
+    <Compile Include="Traits\Player\FrozenActorLayer.cs" />
+    <Compile Include="Traits\Player\IndexedPlayerPalette.cs" />
+    <Compile Include="Traits\Player\PlayerColorPalette.cs" />
+    <Compile Include="Traits\Player\PlayerHighlightPalette.cs" />
+    <Compile Include="Traits\Selectable.cs" />
+    <Compile Include="Traits\Target.cs" />
+    <Compile Include="Traits\TraitsInterfaces.cs" />
+    <Compile Include="Traits\World\ActorMap.cs" />
+    <Compile Include="Traits\World\Faction.cs" />
+    <Compile Include="Traits\World\ResourceType.cs" />
+    <Compile Include="Traits\World\ScreenMap.cs" />
+    <Compile Include="Traits\World\Shroud.cs" />
+    <Compile Include="WAngle.cs" />
+    <Compile Include="WarGame.cs" />
+    <Compile Include="World.cs" />
+    <Compile Include="WDist.cs" />
+    <Compile Include="WorldUtils.cs" />
+    <Compile Include="WPos.cs" />
+    <Compile Include="WRot.cs" />
+    <Compile Include="WVec.cs" />
+    <Compile Include="Graphics\Renderable.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\settings.yaml" />
+    <AndroidAsset Include="Content\global mix database.dat" />
+    <AndroidAsset Include="Content\lua\sandbox.lua" />
+    <AndroidAsset Include="Content\lua\scriptwrapper.lua" />
+    <AndroidAsset Include="Content\lua\stacktraceplus.lua" />
+    <AndroidAsset Include="Content\glsl\shp.frag" />
+    <AndroidAsset Include="Content\glsl\shp.vert" />
+    <AndroidAsset Include="Content\glsl\model.frag" />
+    <AndroidAsset Include="Content\glsl\model.vert" />
+    <AndroidAsset Include="Content\glsl\color.frag" />
+    <AndroidAsset Include="Content\glsl\color.vert" />
+    <AndroidAsset Include="Content\glsl\rgba.frag" />
+    <AndroidAsset Include="Content\glsl\rgba.vert" />
+    <AndroidAsset Include="Content\mods\ts\audio\music.yaml" />
+    <AndroidAsset Include="Content\mods\ts\bits\22-n104.aud" />
+    <AndroidAsset Include="Content\mods\ts\chrome\color-picker.yaml" />
+    <AndroidAsset Include="Content\mods\ts\installer\downloads.yaml" />
+    <AndroidAsset Include="Content\mods\ts\languages\english.yaml" />
+    <AndroidAsset Include="Content\mods\ts\maps\fields-of-green\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\rules\ai.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\aircraft.yaml" />
+    <AndroidAsset Include="Content\mods\ts\tilesets\snow.yaml" />
+    <AndroidAsset Include="Content\mods\ts\uibits\buttons.png" />
+    <AndroidAsset Include="Content\mods\ts\weapons\explosions.yaml" />
+    <AndroidAsset Include="Content\mods\ts\audio\sounds-generic.yaml" />
+    <AndroidAsset Include="Content\mods\ts\audio\speech-generic.yaml" />
+    <AndroidAsset Include="Content\mods\ts\audio\speech-singleplayer.yaml" />
+    <AndroidAsset Include="Content\mods\ts\audio\voices.yaml" />
+    <AndroidAsset Include="Content\mods\ts\bits\22-n106.aud" />
+    <AndroidAsset Include="Content\mods\ts\bits\22-n108.aud" />
+    <AndroidAsset Include="Content\mods\ts\bits\alpha.pal" />
+    <AndroidAsset Include="Content\mods\ts\bits\alphatst.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\ammopips.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\bigblue2.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\camera.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\depth.pal" />
+    <AndroidAsset Include="Content\mods\ts\bits\flameall.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\infdie.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\infexpl.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\isodepth.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\lrotor.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\mltimisl-placeholder.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\mpspawn.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\pip-disguise.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\waypoint.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\w_piff.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\w_piffs.shp" />
+    <AndroidAsset Include="Content\mods\ts\chrome.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\dropdowns.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\ingame-debug.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\ingame-info.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\ingame-observer.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\ingame-observerstats.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\ingame-player.yaml" />
+    <AndroidAsset Include="Content\mods\ts\chrome\mainmenu-prerelease-notification.yaml" />
+    <AndroidAsset Include="Content\mods\ts\cursors.yaml" />
+    <AndroidAsset Include="Content\mods\ts\installer\firestorm.yaml" />
+    <AndroidAsset Include="Content\mods\ts\installer\firstdecade.yaml" />
+    <AndroidAsset Include="Content\mods\ts\installer\origin.yaml" />
+    <AndroidAsset Include="Content\mods\ts\installer\tibsun.yaml" />
+    <AndroidAsset Include="Content\mods\ts\maps\fields-of-green\fields-of-green.lua" />
+    <AndroidAsset Include="Content\mods\ts\maps\fields-of-green\map.yaml" />
+    <AndroidAsset Include="Content\mods\ts\metrics.yaml" />
+    <AndroidAsset Include="Content\mods\ts\mod.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\aircraft.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\bridges.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\civilian-infantry.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\civilian-structures.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\civilian-vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\critters.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\defaults.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\gdi-infantry.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\gdi-structures.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\gdi-support.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\gdi-vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\husks.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\misc.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\nod-infantry.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\nod-structures.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\nod-support.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\nod-vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\palettes.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\player.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\shared-infantry.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\shared-structures.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\shared-support.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\shared-vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\trees.yaml" />
+    <AndroidAsset Include="Content\mods\ts\rules\world.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\bridges.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\civilian.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\critters.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\infantry.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\misc.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\structures.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\trees.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\vehicles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\sequences\voxels.yaml" />
+    <AndroidAsset Include="Content\mods\ts\tilesets\temperate.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\ballisticweapons.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\energyweapons.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\healweapons.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\missiles.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\otherweapons.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\smallguns.yaml" />
+    <AndroidAsset Include="Content\mods\ts\weapons\superweapons.yaml" />
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\Strings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\Icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AndroidManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
+      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
+      <Name>Eluant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+      <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
+      <Name>EW.OpenGL.ES</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="lib\x86\liblua.so">
+      <Abi>x86</Abi>
+    </AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\libxlua.so">
+      <Abi>armeabi-v7a</Abi>
+    </AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidNativeLibrary Include="lib\armeabi\libxlua.so">
+      <Abi>armeabi</Abi>
+    </AndroidNativeLibrary>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\ts\icon.png" />
+    <AndroidAsset Include="Content\mods\ts\maps\fields-of-green\map.png" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.pdb" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
+    <Content Include="Content\mods\ts\uibits\chrome.png" />
+    <Content Include="Content\mods\ts\uibits\dialog.png" />
+    <Content Include="Content\mods\ts\uibits\loadscreen.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+</Project>

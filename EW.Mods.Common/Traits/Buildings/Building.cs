@@ -98,7 +98,7 @@ namespace EW.Mods.Common.Traits
                 yield return t;
         }
 
-        public object Create(ActorInitializer init)
+        public virtual object Create(ActorInitializer init)
         {
             return new Building(init,this);
         }

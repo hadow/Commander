@@ -12,5 +12,7 @@ namespace EW.Mods.Common.Traits
 
     class GiveUnitCrateAction:CrateAction
     {
+
+        public GiveUnitCrateAction(Actor self,GiveUnitCrateActionInfo info) : base(self, info) { }
     }
 }

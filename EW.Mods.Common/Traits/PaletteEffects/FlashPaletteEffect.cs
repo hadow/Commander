@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
+    using GUtil = EW.Graphics.Util;
+
+    /// <summary>
+    /// Used for bursted one-colored whole screen effects.
+    /// </summary>
     public class FlashPaletteEffectInfo : ITraitInfo
     {
 
@@ -47,6 +52,18 @@ namespace EW.Mods.Common.Traits
                 return;
 
             var frac = (float)remainingFrames / Info.Length;
+
+            foreach(var pal in palettes)
+            {
+                for(var x = 0; x < Palette.Size; x++)
+                {
+                    var orig = pal.Value.GetColor(x);
+                    var c = Info.Color;
+                    var color = Color.FromArgb(orig.A, ((int)c.R).Clamp(0, 255), ((int)c.G).Clamp(0, 255), ((int)c.B).Clamp(0, 255));
+                    var final = GUtil.PremultipliedColorLerp(frac, orig, GUtil.PremultiplyAlpha(Color.FromArgb(orig.A, color)));
+                    pal.Value.SetColor(x, final);
+                }
+            }
         }
 
 

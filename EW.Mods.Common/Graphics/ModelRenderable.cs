@@ -142,7 +142,7 @@ namespace EW.Mods.Common.Graphics
 
                 var draw = model.models.Where(v => v.DisableFunc != null || !v.DisableFunc());
 
-                var scaleTransform = EW.Graphics.Util.ScaleMaxtrix(model.scale, model.scale, model.scale);
+                var scaleTransform = EW.Graphics.Util.ScaleMatrix(model.scale, model.scale, model.scale);
                 var cameraTransform = EW.Graphics.Util.MakeFloatMatrix(model.camera.AsMatrix());
 
                 var minX = float.MaxValue;

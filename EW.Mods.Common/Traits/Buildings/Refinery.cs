@@ -9,10 +9,15 @@ namespace EW.Mods.Common.Traits
     /// </summary>
     public class RefineryInfo : Requires<WithSpriteBodyInfo>,IAcceptResourcesInfo
     {
-        public object Create(ActorInitializer init) { return new Refinery(); }
+        public virtual object Create(ActorInitializer init) { return new Refinery(init.Self,this); }
     }
     public class Refinery
     {
+
+        public Refinery(Actor self,RefineryInfo info)
+        {
+
+        }
     }
 
 

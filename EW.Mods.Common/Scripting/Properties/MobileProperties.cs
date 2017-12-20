@@ -15,6 +15,10 @@ namespace EW.Mods.Common.Scripting
             mobile = self.Trait<Mobile>();
         }
 
+        /// <summary>
+        /// Moves within the cell grid,ignoring lane biases.
+        /// </summary>
+        /// <param name="cell"></param>
         [ScriptActorPropertyActivity]
         public void ScriptedMove(CPos cell)
         {

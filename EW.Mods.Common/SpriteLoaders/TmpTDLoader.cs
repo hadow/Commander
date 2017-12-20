@@ -78,7 +78,7 @@ namespace EW.Mods.Common.SpriteLoaders
             {
 
                 frames = null;
-                return true;
+                return false;
             }
             frames = ParseFrames(s);
             return true;
