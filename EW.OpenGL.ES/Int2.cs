@@ -45,5 +45,11 @@ namespace EW.OpenGLES
             return a + (b - a) * mul / div;
         }
         public Vector2 ToVector2() { return new Vector2(X, Y); }
+
+        // Change endianness of a uint32
+        public static uint Swap(uint orig)
+        {
+            return ((orig & 0xff000000) >> 24) | ((orig & 0x00ff0000) >> 8) | ((orig & 0x0000ff00) << 8) | ((orig & 0x000000ff) << 24);
+        }
     }
 }

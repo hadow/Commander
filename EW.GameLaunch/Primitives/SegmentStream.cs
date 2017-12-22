@@ -173,5 +173,34 @@ namespace EW.Primitives
             }
             return offset;
         }
+
+        /// <summary>
+		/// Creates a new <see cref="Stream"/> that wraps a subset of the source stream without taking ownership of it,
+		/// allowing it to be reused by the caller. The <see cref="Stream"/> is independent of the source stream and
+		/// won't affect its position.
+		/// </summary>
+		/// <param name="stream">The source stream, of which only a segment should be exposed. Ownership is retained by
+		/// the caller.</param>
+		/// <param name="offset">The offset at which the segment starts.</param>
+		/// <param name="count">The length of the segment.</param>
+		public static Stream CreateWithoutOwningStream(Stream stream, long offset, int count)
+        {
+            Stream parentStream;
+            var nestedOffset = offset + GetOverallNestedOffset(stream, out parentStream);
+
+            // Special case FileStream - instead of creating an in-memory copy,
+            // just reference the portion of the on-disk file that we need to save memory.
+            // We use GetType instead of 'is' here since we can't handle any derived classes of FileStream.
+            if (parentStream.GetType() == typeof(FileStream))
+            {
+                var path = ((FileStream)parentStream).Name;
+                return new SegmentStream(File.OpenRead(path), nestedOffset, count);
+            }
+
+            // For all other streams, create a copy in memory.
+            // This uses more memory but is the only way in general to ensure the returned streams won't clash.
+            stream.Seek(offset, SeekOrigin.Begin);
+            return new MemoryStream(stream.ReadBytes(count));
+        }
     }
 }

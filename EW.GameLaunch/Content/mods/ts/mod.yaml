@@ -5,24 +5,15 @@ Metadata:
 PackageFormats: Mix
 
 Packages:
-	~^Content/ts
-	~^Content/ts/firestorm
+	~^Content/mods/ts
+	~^Content/mods/ts/firestorm
 	.
 	$ts: ts
 	./mods/common: common
 
 # Tiberian Sun
-	~scores.mix
-	~sidenc01.mix
-	~sidenc02.mix
-	~e01scd01.mix
-	~e01scd02.mix
-	~movies01.mix
-	~movies02.mix
-	~sidecd01.mix
-	~sidecd02.mix
-	~cache.mix
 	~conquer.mix
+	~cache.mix
 	~isosnow.mix
 	~isotemp.mix
 	~local.mix

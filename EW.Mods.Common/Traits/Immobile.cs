@@ -4,6 +4,9 @@ using EW.Traits;
 using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
+    /// <summary>
+    /// 固定的，不变的物体
+    /// </summary>
     class ImmobileInfo : ITraitInfo, IOccupySpaceInfo
     {
         public readonly bool OccupiesSpace = true;
@@ -34,6 +37,10 @@ namespace EW.Mods.Common.Traits
             location = init.Get<LocationInit, CPos>();
             position = init.World.Map.CenterOfCell(location);
 
+            if (info.OccupiesSpace)
+                occupied = new[] { Pair.New(TopLeft, SubCell.FullCell) };
+            else
+                occupied = new Pair<CPos, SubCell>[0];
 
         }
 
@@ -43,8 +50,26 @@ namespace EW.Mods.Common.Traits
 
         public IEnumerable<Pair<CPos,SubCell>> OccupiedCells() {  return occupied;  }
 
-        public void AddedToWorld(Actor self) { }
+        public void AddedToWorld(Actor self)
+        {
+            //self.World.ActorMap.AddInfluence(self, this);
+            //self.World.ActorMap.AddPosition(self, this);
 
-        public void RemovedFromWorld(Actor self) { }
+            //if (!self.Bounds.Size.IsEmpty)
+            //    self.World.ScreenMap.Add(self);
+
+            self.World.AddToMaps(self, this);
+        }
+
+        public void RemovedFromWorld(Actor self)
+        {
+            //self.World.ActorMap.RemoveInfluence(self, this);
+            //self.World.ActorMap.RemovePosition(self, this);
+
+            //if (!self.Bounds.Size.IsEmpty)
+            //    self.World.ScreenMap.Remove(self);
+            self.World.RemoveFromMaps(self, this);
+            
+        }
     }
 }

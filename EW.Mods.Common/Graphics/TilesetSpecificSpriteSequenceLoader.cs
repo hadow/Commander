@@ -113,7 +113,7 @@ namespace EW.Mods.Common.Graphics
 
                 return spriteName + loader.DefaultSpriteExtension;
             }
-
+            Console.WriteLine("Sprite Name:" + spriteName);
             return spriteName;
         }
     }

@@ -3,7 +3,7 @@ using System.IO;
 using System.Drawing;
 using EW.Graphics;
 using EW.OpenGLES;
-using EW.FileFormats;
+using EW.Mods.Common.FileFormats;
 namespace EW.Mods.Common.SpriteLoaders
 {
     public class ShpD2Loader : ISpriteLoader

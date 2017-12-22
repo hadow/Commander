@@ -35,7 +35,7 @@ namespace EW
             Dispose(false);
         }
 
-        public ObjectCreator(Manifest manifest,FileSystem.FileSystem modeFiles)
+        public ObjectCreator(Manifest manifest,InstalledMods mods)
         {
             typeCache = new Cache<string, Type>(FindType);
             ctorCache = new Cache<Type, ConstructorInfo>(GetCtor);
@@ -44,21 +44,32 @@ namespace EW
 
             foreach(var path in manifest.Assemblies)
             {
-                var data = modeFiles.Open(path).ReadAllBytes();
-                
-                var hash = CryptoUtil.SHA1Hash(data);
+                var resolvedPath = FileSystem.FileSystem.ResolveAssemblyPath(path, manifest, mods);
+                if (resolvedPath == null)
+                    throw new FileNotFoundException("Assembly '{0}' not found.".F(path));
+
+                var data = Android.App.Application.Context.Assets.Open(resolvedPath);
+
+                MemoryStream memStream = new MemoryStream();
+                data.CopyTo(memStream);
+                memStream.Seek(0, SeekOrigin.Begin);
+                data.Close();
+                data = memStream;
+
+                var bytes = data.ReadAllBytes();
+
+                var hash = CryptoUtil.SHA1Hash(bytes);
 
                 Assembly assembly;
                 if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
                 {
 #if DEBUG
-                    var pdbPath = path.Replace(".dll", ".pdb");
-                    var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
+                    //var pdbPath = path.Replace(".dll", ".pdb");
+                    //var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
 
-                    assembly = Assembly.Load(data, pdbData);
+                    //assembly = Assembly.Load(data, pdbData);
                     //assembly = Assembly.ReflectionOnlyLoad(data);
-                    //assembly = Assembly.Load(data);
-                    
+                    assembly = Assembly.Load(bytes);
                    // var filepath = new FileInfo(Assembly.GetExecutingAssembly().Location);
                    // Console.WriteLine("Assembly load name:" + filepath.FullName);
                    // string filepath2 = "/storage/emulated/0/Android/data/com.eastwood.command/files/.__override__/EW.GameCenter.dll";
@@ -169,6 +180,21 @@ namespace EW
             return assemblies.Select(ma => ma.First).Distinct().SelectMany(ma => ma.GetTypes());
         }
 
+        public TLoader[] GetLoaders<TLoader>(IEnumerable<string> formats,string name)
+        {
+            var loaders = new List<TLoader>();
+            foreach(var format in formats)
+            {
+                var loader = FindType(format + "Loader");
+                if (loader == null || !loader.GetInterfaces().Contains(typeof(TLoader)))
+                    throw new InvalidOperationException("Unable to find a {0} loader for type '{1}'".F(name, format));
+
+                loaders.Add((TLoader)CreateBasic(loader));
+            }
+
+            return loaders.ToArray();
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -224,7 +250,8 @@ namespace EW
 
         void Dispose(bool disposing)
         {
-
+            if(disposing)
+                AppDomain.CurrentDomain.AssemblyResolve -= ResolveAssembly;
         }
 
         [AttributeUsage(AttributeTargets.Constructor)]

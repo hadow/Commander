@@ -127,6 +127,12 @@ namespace EW.Mods.Common.Scripting
             Self.QueueActivity(new CallLuaFunc(func, Context));
         }
 
+
+        public void Wait(int ticks)
+        {
+            Self.QueueActivity(new Wait(ticks));
+        }
+
         public void Stop()
         {
             Self.CancelActivity();

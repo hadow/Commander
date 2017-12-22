@@ -105,5 +105,10 @@ namespace EW
             return BitConverter.ToSingle(s.ReadBytes(4), 0);
         }
 
+
+        public static void Write(this Stream s,byte[] data)
+        {
+            s.Write(data, 0, data.Length);
+        }
     }
 }

@@ -5,28 +5,7 @@ using System.Linq;
 using EW.Primitives;
 namespace EW.FileSystem
 {
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IReadOnlyPackage : IDisposable
-    {
-        string Name { get; }
-
-        IEnumerable<string> Contents { get; }
-
-        Stream GetStream(string filename);
-
-        bool Contains(string filename);
-    }
-
-    public interface IReadWritePackage : IReadOnlyPackage
-    {
-        void Update(string filename, byte[] contents);
-        void Delete(string filename);
-    }
-
-
+    
     /// <summary>
     /// 只读文件
     /// </summary>
@@ -73,59 +52,55 @@ namespace EW.FileSystem
         /// </summary>
         readonly IReadOnlyDictionary<string, Manifest> installedMods;
 
-        public FileSystem(IReadOnlyDictionary<string,Manifest> installedMods)
+        IPackageLoader[] packageLoaders;
+
+        public FileSystem(IReadOnlyDictionary<string,Manifest> installedMods,IPackageLoader[] packageLoaders=null)
         {
             this.installedMods = installedMods;
+            this.packageLoaders = packageLoaders.Append(new ZipFileLoader()).ToArray();
         }
 
 
+        public bool TryParsePackage(Stream stream,string filename,out IReadOnlyPackage package)
+        {
+            package = null;
+            foreach (var packageLoader in packageLoaders)
+                if (packageLoader.TryParsePackage(stream, filename, this, out package))
+                    return true;
+
+            return false;
+        }
+
         /// <summary>
-        /// 打开包文件(.mix,)
+        /// 打开包文件
         /// </summary>
         /// <param name="filename"></param>
         /// <returns></returns>
         public IReadOnlyPackage OpenPackage(string filename)
-        {
-            if (filename.EndsWith(".zip", StringComparison.InvariantCultureIgnoreCase))
-                return new ZipFile(this, filename);
-            if (filename.EndsWith(".mix", StringComparison.InvariantCultureIgnoreCase))
-                return new MixFile(this, filename);
+        { 
+            //Raw directories are the easiest and one of the most common cases,so try these first
+            var resolvedPath = Platform.ResolvePath(filename);
+            if (!filename.Contains("|") && string.IsNullOrEmpty(Path.GetExtension(resolvedPath))) //&& Directory.Exists(resolvedPath))
+                return new Folder(resolvedPath);
+            
+            
+            //Children of another package require special handling
             IReadOnlyPackage parent;
             string subPath = null;
             if (TryGetPackageContaining(filename, out parent, out subPath))
-                return OpenPackage(subPath, parent);
-            return new Folder(Platform.ResolvePath(filename));
-        }
+                return parent.OpenPackage(subPath, this);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="parent"></param>
-        /// <returns></returns>
-        public IReadOnlyPackage OpenPackage(string filename,IReadOnlyPackage parent)
-        {
-            if(filename.EndsWith(".zip",StringComparison.InvariantCultureIgnoreCase) || filename.EndsWith(".oramap", StringComparison.InvariantCultureIgnoreCase))
-            {
-                using (var s = parent.GetStream(filename))
-                    return new ZipFile(s, filename, parent);
-            }
+            //Try and open it normally
+            IReadOnlyPackage package;
+            var stream = Open(filename);
+            if (TryParsePackage(stream, filename, out package))
+                return package;
 
-            if (parent is ZipFile)
-                return new ZipFolder(this, (ZipFile)parent, filename, filename);
-            if(parent is ZipFolder)
-            {
-                var folder = (ZipFolder)parent;
-                return new ZipFolder(this, folder.Parent, folder.Name + "/" + filename, filename);
-            }
-            if(parent is Folder)
-            {
-                var subFolder = Platform.ResolvePath(Path.Combine(parent.Name, filename));
-                //if (Directory.Exists(subFolder))
-                    return new Folder(subFolder);
-            }
+            //No package loaders took ownership of the stream,so clean it up
+            stream.Dispose();
             return null;
         }
+        
 
         /// <summary>
         /// 
@@ -247,6 +222,8 @@ namespace EW.FileSystem
                 else
                 {
                     package = OpenPackage(name);
+                    if (package == null)
+                        throw new InvalidOperationException("Could not open package '{0}',file not found or its format is not supported");
                 }
 
                 Mount(package, explicitName);
@@ -327,6 +304,31 @@ namespace EW.FileSystem
             }
 
             return fileIndex.ContainsKey(filename);
+        }
+
+        public static string ResolveAssemblyPath(string path,Manifest manifest,InstalledMods installedMods)
+        {
+            var explicitSplit = path.IndexOf('|');
+            if (explicitSplit > 0)
+            {
+                var parent = path.Substring(0, explicitSplit);
+                var filename = path.Substring(explicitSplit + 1);
+
+                var parentPath = manifest.Packages.FirstOrDefault(kv => kv.Value == parent).Key;
+                if (parentPath == null)
+                    return null;
+
+                if (parentPath.StartsWith("$", StringComparison.Ordinal))
+                {
+
+                }
+                else
+                {
+                    path = Path.Combine(parentPath, filename);
+                }
+            }
+            var resolvedPath = Platform.ResolvePath(path);
+            return resolvedPath;
         }
     }
 

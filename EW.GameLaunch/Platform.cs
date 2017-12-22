@@ -7,8 +7,37 @@ namespace EW
     public enum PlatformT { Unknown,Android,Ios,Windows,Linux,OSX}
     public static class Platform
     {
+
+        public static PlatformT CurrentPlatform
+        {
+            get
+            {
+                return currentPlatform.Value;
+            }
+        }
+
+        static Lazy<PlatformT> currentPlatform = Exts.Lazy(GetCurrentPlatform);
+
+        static PlatformT GetCurrentPlatform()
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                return PlatformT.Windows;
+            return PlatformT.Android;
+        }
         private static readonly string RootDirectory = "Content";
-        public static string GameDir { get { return AppDomain.CurrentDomain.BaseDirectory; } }
+        public static string GameDir
+        {
+            get
+            {
+                //var dir = AppDomain.CurrentDomain.BaseDirectory;
+                //var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+                var dir = "Content";
+                if (!dir.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
+                    dir += Path.DirectorySeparatorChar;
+                Console.WriteLine("platform t:" + Environment.OSVersion.Platform);
+                return dir;
+            }
+        }
 
         static Lazy<string> supportDir = Exts.Lazy(GetSupportDir);
 
@@ -45,14 +74,28 @@ namespace EW
             //    Directory.CreateDirectory(Path.Combine(dir, "mods/cnc"));
 
             //return dir;//+ Path.DirectorySeparatorChar;
-            return Android.App.Application.Context.Assets.List("").FirstOrDefault(x=>x == RootDirectory);
-        }
 
-        static PlatformT GetCurrentPlatform()
-        {
-            
-            return PlatformT.Unknown;
+
+            //return Android.App.Application.Context.Assets.List("").FirstOrDefault(x=>x == RootDirectory);
+
+            var localSupportDir = Path.Combine(GameDir, "Support");
+            if (Directory.Exists(localSupportDir))
+                return localSupportDir + Path.DirectorySeparatorChar;
+
+            var dir = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            switch (CurrentPlatform)
+            {
+                case PlatformT.Windows:
+                    break;
+                case PlatformT.OSX:
+                    break;
+                default:
+                    return dir = string.Empty;
+            }
+
+            return dir + Path.DirectorySeparatorChar;
         }
+        
 
         public static string ResolvePath(params string[] path)
         {
@@ -68,9 +111,11 @@ namespace EW
                 path = SupportDir + path.Substring(1);
             }
 
+
+            //Paths starting with . are relative to the game dir
             if(path == ".")
             {
-                return SupportDir;
+                return "Content";
             }
             //if (Path.IsPathRooted(path))
             //    throw new ArgumentException("Invalid filename");
@@ -84,7 +129,7 @@ namespace EW
             //    return GameDir;
 
             if (path.StartsWith("./", StringComparison.Ordinal) || path.StartsWith(".\\", StringComparison.Ordinal))
-                path = SupportDir + path.Substring(1);
+                path = GameDir + path.Substring(2);
 
             return path;
         }

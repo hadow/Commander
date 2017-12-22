@@ -546,4 +546,14 @@ namespace EW
             FromYamlKey = true;
         }
     }
+
+    [AttributeUsage(AttributeTargets.Field)]
+    public sealed class DictionaryFromYamlKeyAttribute : FieldLoader.SerializeAttribute
+    {
+        public DictionaryFromYamlKeyAttribute()
+        {
+            FromYamlKey = true;
+            DictionaryFromYamlKey = true;
+        }
+    }
 }

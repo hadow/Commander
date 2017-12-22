@@ -91,13 +91,15 @@ namespace EW.Graphics
                         return s;
                     }).ToArray());
 
-                    var allSprites = variants.SelectMany(s => s);
-
-                    if (tileset.IgnoreTileSpriteOffsets)
-                        allSprites = allSprites.Select(s => new Sprite(s.Sheet, s.Bounds, s.ZRamp, new Vector3(Vector2.Zero, s.Offset.Z), s.Channel, s.BlendMode));
-
-                    templates.Add(t.Value.Id, new TheaterTemplate(allSprites.ToArray(), variants.First().Count(), t.Value.Images.Length));
+                    
                 }
+
+                var allSprites = variants.SelectMany(s => s);
+
+                if (tileset.IgnoreTileSpriteOffsets)
+                    allSprites = allSprites.Select(s => new Sprite(s.Sheet, s.Bounds, s.ZRamp, new Vector3(Vector2.Zero, s.Offset.Z), s.Channel, s.BlendMode));
+
+                templates.Add(t.Value.Id, new TheaterTemplate(allSprites.ToArray(), variants.First().Count(), t.Value.Images.Length));
             }
 
             missingTile = sheetBuilder.Add(new byte[1], new Size(1, 1));

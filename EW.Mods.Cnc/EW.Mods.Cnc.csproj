@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,8 +42,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CncLoadScreen.cs" />
+    <Compile Include="FileFormats\Blowfish.cs" />
+    <Compile Include="FileFormats\BlowfishKeyProvider.cs" />
+    <Compile Include="FileFormats\CRC32.cs" />
     <Compile Include="FileFormats\HvaReader.cs" />
+    <Compile Include="FileFormats\IdxEntry.cs" />
+    <Compile Include="FileFormats\IdxReader.cs" />
     <Compile Include="FileFormats\VxlReader.cs" />
+    <Compile Include="FileFormats\XccGlobalDatabase.cs" />
+    <Compile Include="FileFormats\XccLocalDatabase.cs" />
+    <Compile Include="FileSystem\BagFile.cs" />
+    <Compile Include="FileSystem\BigFile.cs" />
+    <Compile Include="FileSystem\MixFile.cs" />
+    <Compile Include="FileSystem\PackageEntry.cs" />
+    <Compile Include="FileSystem\Pak.cs" />
     <Compile Include="Graphics\Voxel.cs" />
     <Compile Include="Graphics\VoxelLoader.cs" />
     <Compile Include="Graphics\VoxelModelSequenceLoader.cs" />

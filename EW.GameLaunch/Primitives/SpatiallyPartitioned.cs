@@ -60,7 +60,14 @@ namespace EW.Primitives
         /// <param name="action"></param>
         void MutateBins(T actor,Rectangle bounds,Action<Dictionary<T,Rectangle>,T,Rectangle> action)
         {
+            int minRow, maxRow, minCol, maxCol;
+            BoundsToBinRowsAndCols(bounds, out minRow, out maxRow, out minCol, out maxCol);
 
+            for(var row = minRow; row < maxRow; row++)
+            {
+                for (var col = minCol; col < maxCol; col++)
+                    action(BinAt(row, col), actor, bounds);
+            }
         }
 
         /// <summary>
@@ -119,7 +126,9 @@ namespace EW.Primitives
 
         public void Update(T item,Rectangle bounds)
         {
-
+            ValidateBounds(item, bounds);
+            MutateBins(item, itemBounds[item], removeItem);
+            MutateBins(item, itemBounds[item] = bounds, addItem);
         }
     }
 }

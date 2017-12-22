@@ -26,6 +26,7 @@ namespace EW
 
         public readonly MapCache MapCache;
 
+        public readonly IPackageLoader[] PackageLoaders;
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
         public readonly IModelSequenceLoader ModelSequenceLoader;
@@ -59,16 +60,14 @@ namespace EW
         public ModData(Manifest mod,InstalledMods mods,bool useLoadScreen = false)
         {
             Languages = new string[0];
-
-            ModFiles = new FileSystem.FileSystem(mods);
-
+            
             //local copy of the manifest
             Manifest = new Manifest(mod.Id, mod.Package);
+            ObjectCreator = new ObjectCreator(Manifest, mods);
+            PackageLoaders = ObjectCreator.GetLoaders<IPackageLoader>(Manifest.PackageFormats, "package");
+            ModFiles = new FileSystem.FileSystem(mods,PackageLoaders);
             ModFiles.LoadFromManifest(Manifest);
-
-            ObjectCreator = new ObjectCreator(Manifest, ModFiles);
             Manifest.LoadCustomData(ObjectCreator);
-
             if (useLoadScreen)
             {
                 LoadScreen = ObjectCreator.CreateObject<ILoadScreen>(Manifest.LoadScreen.Value);

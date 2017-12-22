@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Eluant;
 namespace EW.Scripting
 {
 
@@ -28,12 +28,12 @@ namespace EW.Scripting
 
         protected override string MemberNotFoundError(string memberName)
         {
-            throw new NotImplementedException();
+            return "Table '{0}' does not define a property '{1}'".F(Name, memberName);
         }
 
         protected override string DuplicateKeyError(string memberName)
         {
-            throw new NotImplementedException();
+            return "Table '{0}' defines multiple members '{1}".F(Name, memberName);
         }
 
         public ScriptGlobal(ScriptContext context) : base(context)
@@ -45,6 +45,25 @@ namespace EW.Scripting
 
             Name = names.First().Name;
             Bind(new[] { this });
+        }
+
+        protected IEnumerable<T> FilteredObjects<T>(IEnumerable<T> objects,LuaFunction filter)
+        {
+
+            if(filter != null)
+            {
+                objects = objects.Where(a =>
+                {
+
+                    using (var luaObject = a.ToLuaValue(Context))
+                    using (var filterResult = filter.Call(luaObject))
+                    using (var result = filterResult.First())
+                        return result.ToBoolean();
+
+                });
+            }
+
+            return objects;
         }
     }
 }

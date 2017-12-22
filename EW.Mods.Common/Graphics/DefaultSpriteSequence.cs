@@ -28,7 +28,7 @@ namespace EW.Mods.Common.Graphics
         {
             var sequences = new Dictionary<string, ISpriteSequence>();
             var nodes = node.Value.ToDictionary();
-            Console.WriteLine("ParseSequences:" + nodes.Count);
+            Console.WriteLine("ParseSequences:" + node.Key +"   count:"+nodes.Count);
             MiniYaml defaults;
             try
             {
@@ -152,13 +152,14 @@ namespace EW.Mods.Common.Graphics
                     foreach(var sub in combine.Nodes)
                     {
                         var sd = sub.Value.ToDictionary();
-
+                        //Allow per-sprite offset,flipping,start,and length
                         var subStart = LoadField(sd, "Start", 0);
                         var subOffset = LoadField(sd, "Offset", Vector3.Zero);
                         var subFlipX = LoadField(sd, "FlipX", false);
                         var subFlipY = LoadField(sd, "FlipY", false);
 
                         var subSrc = GetSpriteSrc(modData, tileSet, sequence, animation, sub.Key, sd);
+                        
                         var subSprites = cache[subSrc].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, subFlipX, subFlipY), 
                             ZRamp, new Vector3(subFlipX?-s.Offset.X:s.Offset.X,subFlipY?-s.Offset.Y:s.Offset.Y,s.Offset.Z) + subOffset + offset, s.Channel, blendmode));
 
@@ -176,8 +177,12 @@ namespace EW.Mods.Common.Graphics
                 }
                 else
                 {
+                    //Apply offset to each sprite in the sequence
+                    //Different sequences may apply different offsets to the same frame.
+
                     //对序列中的每个子画面应用偏移，不同的序列可以对同一帧应用不同的偏移
                     var src = GetSpriteSrc(modData, tileSet, sequence, animation, info.Value, d);
+                    //Console.WriteLine("GetSpriteSrc:" + src);
                     sprites = cache[src].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, flipX, flipY), ZRamp,
                         new Vector3(flipX ? -s.Offset.X : s.Offset.X, flipY ? -s.Offset.Y : s.Offset.Y, s.Offset.Z) + offset, s.Channel, blendmode)).ToArray();
                 }
@@ -196,7 +201,9 @@ namespace EW.Mods.Common.Graphics
                         var ds = depthSprites.FirstOrDefault(dss => dss.Sheet == s.Sheet);
                         if(ds == null)
                         {
-                            //该序列可能已经溢出到新的Sheet上，Allocating a new depth sprite on this sheet will almost certainly work
+                            //The sequence has probably overflowed onto a new sheet.
+                            //Allocating a new depth sprite on this sheet will almost certainly work
+                            //该序列可能已经溢出到新的Sheet上，
                             ds = cache.Reload(depthSprite)[depthSpriteFrame];
                             depthSprites = cache.AllCached(depthSprite).Select(ss => ss[depthSpriteFrame]);
 
@@ -225,6 +232,7 @@ namespace EW.Mods.Common.Graphics
                     Length = LoadField(d, "Length", 1);
                 }
 
+                //Plays the animation forwards,and then in reverse
                 if (LoadField(d, "Reverses", false))
                 {
                     var frames = Frames ?? Exts.MakeArray(Length, i => Start + i);

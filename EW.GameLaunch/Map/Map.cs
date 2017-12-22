@@ -581,14 +581,18 @@ namespace EW
         /// <param name="br"></param>
         public void SetBounds(PPos tl,PPos br)
         {
+            //The tl and br coordinates are inclusive,but the Rectangle is exclusive.
+            //Pad the right and bootom edges to match.
             Bounds = EW.OpenGLES.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
             //避免不必要的转换，直接计算地图屏幕投射坐标的世界单位
             var wtop = tl.V * 1024;
             var wbottom = (br.V + 1) * 1024;
             if(Grid.Type == MapGridT.RectangularIsometric)
             {
-                wtop /= 2;
-                wbottom /= 2;
+                //wtop /= 2;
+                //wbottom /= 2;
+                ProjectedTopLeft = new WPos(tl.U * 1448, tl.V * 724, 0);
+                ProjectedBottomRight = new WPos(br.U * 1448 - 1, (br.V + 1) * 724 - 1, 0);
             }
             else
             {

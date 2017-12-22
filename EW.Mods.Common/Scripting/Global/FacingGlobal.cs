@@ -1,7 +1,7 @@
 ﻿using System;
 using EW.Scripting;
 
-namespace EW.Mods.Common.Scripting.Global
+namespace EW.Mods.Common.Scripting
 {
     [ScriptGlobal("Facing")]
     public class FacingGlobal:ScriptGlobal

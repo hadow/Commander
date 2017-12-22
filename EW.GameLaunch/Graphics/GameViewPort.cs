@@ -150,6 +150,7 @@ namespace EW.Graphics
         {
             var map = worldRenderer.World.Map;
 
+            //Calculate the projected cell position at the corners of the visible area
             var tl = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(TopLeft)).ToMPos(map);
             var br = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(BottomRight)).ToMPos(map);
 

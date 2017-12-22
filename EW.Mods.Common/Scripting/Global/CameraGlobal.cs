@@ -1,7 +1,7 @@
 using System;
 using EW.Scripting;
 
-namespace EW.Common.Scripting.Global
+namespace EW.Mods.Common.Scripting
 {
     [ScriptGlobal("Camera")]
     public class CameraGlobal:ScriptGlobal
@@ -16,13 +16,13 @@ namespace EW.Common.Scripting.Global
         {
             get
             {
-                Console.WriteLine("get Position:" + Context.WorldRenderer.ViewPort.CenterPosition.ToString());
+                //Console.WriteLine("get Position:" + Context.WorldRenderer.ViewPort.CenterPosition.ToString());
                 return Context.WorldRenderer.ViewPort.CenterPosition;
             }
             set
             {
                 Context.WorldRenderer.ViewPort.Center(value);
-                Console.Write("set Position:" + value.ToString());
+                //Console.Write("set Position:" + value.ToString());
             }
         }
     }

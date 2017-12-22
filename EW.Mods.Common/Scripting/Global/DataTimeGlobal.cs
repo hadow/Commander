@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 
 
-namespace EW.Common.Scripting.Global
-{
+namespace EW.Mods.Common.Scripting
+{ 
     class DataTimeGlobal
     {
     }

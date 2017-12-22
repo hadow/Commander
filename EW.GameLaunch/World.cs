@@ -216,7 +216,7 @@ namespace EW
 
             }
 
-            //
+            //Ö¡½áÊø»Øµ÷
             while (frameEndActions.Count != 0)
                 frameEndActions.Dequeue()(this);
         }
@@ -377,6 +377,17 @@ namespace EW
 
             foreach (var t in a.TraitsImplementing<INotifyRemovedFromWorld>())
                 t.RemovedFromWorld(a);
+        }
+
+
+        public void Remove(IEffect e)
+        {
+            effects.Remove(e);
+            var se = e as ISync;
+            if (se != null)
+            {
+                syncedEffects.Remove(se);
+            }
         }
 
 

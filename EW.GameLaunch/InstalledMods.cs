@@ -65,24 +65,14 @@ namespace EW
             try
             {
                 package = new Folder(path);
-                //if (Directory.Exists(path))
-                //    package = new Folder(path);
-                //else
-                //{
-                //    try
-                //    {
-                //        using (var fileStream = File.OpenRead(path))
-                //            package = new ZipFile(fileStream, path);
-                //    }
-                //    catch
-                //    {
-                //        throw new InvalidOperationException(path + " is not a valid mod package");
-                //    }
-                //}
-
-                //if (!package.Contains("mod.yaml"))
-                //    throw new InvalidDataException(path + " is not a valid mod package");
-
+                if (package.Contains("mod.yaml"))
+                {
+                    using (var stream = package.GetStream("icon.png"))
+                        if(stream !=null)
+                        {
+                            Console.Write("icon data:" + stream.Length);
+                        }
+                }
                 return new Manifest(id, package);
 
             }

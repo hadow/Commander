@@ -41,17 +41,7 @@ namespace EW.Mods.Common
 
         public SubCell Value(World world) { return (SubCell)value; }
     }
-
-    //public class LocationInit : IActorInit<CPos>
-    //{
-    //    readonly CPos value = CPos.Zero;
-
-    //    public LocationInit() { }
-
-    //    public LocationInit(CPos init) { value = init; }
-
-    //    public CPos Value(World world) { return value; }
-    //}
+    
 
 
         /// <summary>
@@ -68,4 +58,20 @@ namespace EW.Mods.Common
 
         public string Value(World world) { return Faction; }
     }
+
+    public class CenterPositionInit : IActorInit<WPos>
+    {
+        [FieldFromYamlKey]
+        readonly WPos value = WPos.Zero;
+
+        public CenterPositionInit() { }
+
+        public CenterPositionInit(WPos init) { value = init; }
+
+        public WPos Value(World world)
+        {
+            return value;
+        }
+    }
+
 }

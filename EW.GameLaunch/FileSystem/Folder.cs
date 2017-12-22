@@ -44,6 +44,32 @@ namespace EW.FileSystem
             }
         }
 
+
+        public IReadOnlyPackage OpenPackage(string filename,FileSystem context)
+        {
+            var resolvedPath = Platform.ResolvePath(Path.Combine(Name, filename));
+            //if (Directory.Exists(resolvedPath))
+            //    return new Folder(resolvedPath);
+            if (!filename.Contains("|") && string.IsNullOrEmpty(Path.GetExtension(resolvedPath))) //&& Directory.Exists(resolvedPath))
+                return new Folder(resolvedPath);
+
+            //Zip files loaded from Folders can be read-write
+            IReadWritePackage readWritePackage;
+            if (ZipFileLoader.TryParseReadWritePackage(resolvedPath, out readWritePackage))
+                return readWritePackage;
+
+            //Other package types can be loaded normally
+            IReadOnlyPackage package;
+            var s = GetStream(filename);
+            if (s == null)
+                return null;
+
+            if (context.TryParsePackage(s, filename, out package))
+                return package;
+            s.Dispose();
+            return null;
+        }
+
         public void Update(string filename,byte[] content)
         {
 

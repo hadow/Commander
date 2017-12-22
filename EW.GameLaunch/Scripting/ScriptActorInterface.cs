@@ -39,12 +39,17 @@ namespace EW.Scripting
 
         protected override string DuplicateKeyError(string memberName)
         {
-            throw new NotImplementedException();
+
+            return "Actor '{0}' defines the command '{1}' on multiple traits".F(actor.Info.Name,memberName);
         }
 
         protected override string MemberNotFoundError(string memberName)
         {
-            throw new NotImplementedException();
+            var actorName = actor.Info.Name;
+            if (actor.IsDead)
+                actorName += " (dead)";
+
+            return "Actor '{0}' does not define a property '{1}".F(actorName, memberName);
         }
 
 

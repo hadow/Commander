@@ -4,7 +4,7 @@ using Eluant;
 using EW.Scripting;
 using EW.Primitives;
 using EW.Mods.Common.Traits;
-namespace EW.Common.Scripting.Global
+namespace EW.Mods.Common.Scripting
 {
     [ScriptGlobal("Actor")]
     public class ActorGlobal:ScriptGlobal
@@ -21,6 +21,7 @@ namespace EW.Common.Scripting.Global
         public Actor Create(string type,bool addToWorld,LuaTable initTable)
         {
             var initDict = new TypeDictionary();
+            //Convert table entries into ActorInits
             foreach (var kv in initTable)
             {
                 
@@ -37,6 +38,7 @@ namespace EW.Common.Scripting.Global
                     var innerType = genericType.GetGenericArguments().First();
                     var valueType = innerType.IsEnum ? typeof(int) : innerType;
 
+                    //Try and coerce the table value to the required type
                     object value;
                     if (!kv.Value.TryGetClrValue(valueType, out value))
                         throw new LuaException("Invalid data type for '{0}' (expected '{1}')".F(typeName, valueType.Name));
