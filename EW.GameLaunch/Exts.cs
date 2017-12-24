@@ -343,6 +343,11 @@ namespace EW
                 (int)(t * c2.G + (1 - t) * c1.G),
                 (int)(t * c2.B + (1 - t) * c1.B));
         }
+
+
+        public static bool Contains(this Rectangle r,Int2 p){
+            return r.Contains(p.ToPoint());
+        }
     }
     
 }

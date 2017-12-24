@@ -4,7 +4,6 @@ using System.IO;
 using System.Collections.Generic;
 using EW.OpenGLES;
 using EW.FileSystem;
-using EW.Primitives;
 namespace EW
 {
     /// <summary>
@@ -12,6 +11,7 @@ namespace EW
     /// </summary>
     public class TerrainTileInfo
     {
+        [FieldLoader.Ignore]
         public readonly byte TerrainT = byte.MaxValue;
         public readonly byte Height;
         public readonly byte RampT;//Ð±ÆÂ
@@ -33,9 +33,9 @@ namespace EW
 
         public readonly string Type;
         public readonly HashSet<string> TargetTypes = new HashSet<string>();
-        public readonly HashSet<string> AcceptsSumudgeType = new HashSet<string>();
+        public readonly HashSet<string> AcceptsSmudgeType = new HashSet<string>();
         public readonly Color Color;
-        public readonly bool RestrictPlayerColor = false;
+        public readonly bool RestrictPlayerColor = false;//ÏÞ¶¨player ÑÕÉ«
         public readonly string CustomCursor;
 
         TerrainTypeInfo() { }
@@ -121,6 +121,7 @@ namespace EW
 
             tile.GetType().GetField("TerrainT").SetValue(tile, tileSet.GetTerrainIndex(my.Value));
 
+            //Fall back to the terrain-type color if necessary
             var overrideColor = tileSet.TerrainInfo[tile.TerrainT].Color;
             if (tile.LeftColor == default(Color))
                 tile.GetType().GetField("LeftColor").SetValue(tile, overrideColor);
@@ -178,6 +179,7 @@ namespace EW
         {
             var yaml = MiniYaml.DictFromStream(fileSystem.Open(filePath), filePath);
 
+            //General Info
             FieldLoader.Load(this, yaml["General"]);
 
             //Terrain Types

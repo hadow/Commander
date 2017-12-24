@@ -20,6 +20,8 @@ namespace EW.Mods.Common.Traits
             var players = new MapPlayers(w.Map.PlayerDefinitions).Players;
             var worldPlayers = new List<Player>();
             var worldOwnerFound = false;
+
+
             foreach(var kv in players.Where(p => !p.Value.Playable))
             {
                 var player = new Player(w, null, kv.Value);
@@ -31,6 +33,11 @@ namespace EW.Mods.Common.Traits
                     w.SetWorldOwner(player);
                 }
             }
+
+            if (!worldOwnerFound)
+                throw new InvalidOperationException("Map {0} does not define a player actor owning the world.".F(w.Map.Title));
+
+
             
             Player localPlayer = null;
 
@@ -47,6 +54,39 @@ namespace EW.Mods.Common.Traits
             }));
 
             w.SetPlayers(worldPlayers, localPlayer);
+
+            foreach(var p in w.Players){
+                foreach(var q in w.Players){
+                    if(!p.Stances.ContainsKey(q)){
+                        p.Stances[q] = ChooseInitialStance(p, q);
+                    }
+                }
+            }
+        }
+
+
+        static Stance ChooseInitialStance(Player p, Player q)
+        {
+
+            if (p == q)
+                return Stance.Ally;
+
+
+            if (q.Spectating && !p.NonCombatant && p.Playable)
+                return Stance.Ally;
+
+            if (p.PlayerReference.Allies.Contains(q.InternalName))
+                return Stance.Ally;
+
+            if (p.PlayerReference.Enemies.Contains(q.InternalName))
+                return Stance.Enemy;
+
+
+
+
+            return Stance.Neutral;
         }
     }
+
+
 }

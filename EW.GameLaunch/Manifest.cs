@@ -237,6 +237,37 @@ namespace EW
             return module;
         }
 
+
+        /// <summary>
+        /// Load an uncached IGlobalModData instance directly from the manifest yaml.
+        /// This should only be used by external mods that want to query data from this mod.
+        /// </summary>
+        /// <returns>The get.</returns>
+        /// <param name="oc">Oc.</param>
+        /// <typeparam name="T">The 1st type parameter.</typeparam>
+        public T Get<T>(ObjectCreator oc) where T:IGlobalModData{
+
+
+            MiniYaml data;
+            var t = typeof(T);
+            if(!yaml.TryGetValue(t.Name,out data)){
+                return (T)oc.CreateBasic(t);
+            }
+
+            IGlobalModData module;
+            var ctor = t.GetConstructor(new[] { typeof(MiniYaml) });
+            if(ctor !=null){
+                module = (IGlobalModData)ctor.Invoke(new object[] { data.Value });
+            }
+            else{
+
+                module = oc.CreateObject<IGlobalModData>(t.Name);
+                FieldLoader.Load(module,data);
+            }
+
+            return (T)module;
+        }
+
         public bool Contains<T>() where T : IGlobalModData
         {
             return modules.Contains<T>();

@@ -57,7 +57,7 @@ namespace EW
                     Enum<MapClassification>.Parse(kv.Value);
 
                 IReadOnlyPackage package;
-                var optional = name.StartsWith("~");
+                var optional = name.StartsWith("~",StringComparison.Ordinal);
                 if (optional)
                     name = name.Substring(1);
 

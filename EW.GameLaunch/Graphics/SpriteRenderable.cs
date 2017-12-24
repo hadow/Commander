@@ -69,12 +69,13 @@ namespace EW.Graphics
 
         public void Render(WorldRenderer wr)
         {
-
+            WarGame.Renderer.WorldSpriteRenderer.DrawSprite(sprite,ScreenPosition(wr),palette,scale*sprite.Size);
         }
 
         public void RenderDebugGeometry(WorldRenderer wr)
         {
-
+            var screenOffset = ScreenPosition(wr) + sprite.Offset;
+            WarGame.Renderer.WorldRgbaColorRenderer.DrawRect(screenOffset,screenOffset+sprite.Size,1/wr.ViewPort.Zoom,Color.Red);
         }
 
         public Rectangle ScreenBounds(WorldRenderer wr)

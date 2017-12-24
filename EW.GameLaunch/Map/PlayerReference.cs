@@ -7,8 +7,9 @@ namespace EW
     public class PlayerReference
     {
         public string Name;
+        public string Palette;
         public string Bot = null;
-
+        public string StartingUnitsClass = null;
         public bool Playable = false;
         public bool AllowBots = true;
         public bool Required = false;

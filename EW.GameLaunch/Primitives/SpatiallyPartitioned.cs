@@ -12,6 +12,7 @@ namespace EW.Primitives
         readonly int rows, cols, binSize;
 
         readonly Dictionary<T, Rectangle>[] itemBoundsBins;
+
         readonly Dictionary<T, Rectangle> itemBounds = new Dictionary<T, Rectangle>();
 
         readonly Action<Dictionary<T, Rectangle>, T, Rectangle> addItem = (bin, actor, bounds) => bin.Add(actor, bounds);
@@ -80,6 +81,10 @@ namespace EW.Primitives
             int minRow, maxRow, minCol, maxCol;
             BoundsToBinRowsAndCols(box, out minRow, out maxRow, out minCol, out maxCol);
 
+
+            //We want to return any items intersecting the box
+            //If the box covers multiple bins,we must handle items that are contained in multiple bins and avoid returning them more than once
+            //We shall use a set to track these.
             var items = minRow >= maxRow || minCol >= maxCol ? null : new HashSet<T>();
 
             for(var row = minRow; row < maxRow; row++)
@@ -92,6 +97,10 @@ namespace EW.Primitives
                         var item = kvp.Key;
                         var bounds = kvp.Value;
 
+
+                        //If the item is in the bin,we must check intersects the box before returning it.
+                        //We shall track it in the set of items seen so far to avoid returning it again if it appears in another bin.
+                        //PERF: If the item is wholly contained within the bin,we can avoid the cost of tracking it.
                         if (bounds.Intersects(box) && (items == null || binBounds.Contains(bounds) || items.Add(item)))
                             yield return item;
                             
@@ -101,6 +110,12 @@ namespace EW.Primitives
             }
         }
 
+        /// <summary>
+        /// Bins the bounds.
+        /// </summary>
+        /// <returns>The bounds.</returns>
+        /// <param name="row">Row.</param>
+        /// <param name="col">Col.</param>
         Rectangle BinBounds(int row,int col)
         {
             return new Rectangle(col * binSize, row * binSize, binSize, binSize);
@@ -129,6 +144,25 @@ namespace EW.Primitives
             ValidateBounds(item, bounds);
             MutateBins(item, itemBounds[item], removeItem);
             MutateBins(item, itemBounds[item] = bounds, addItem);
+        }
+
+
+        public IEnumerable<T> At(Int2 location){
+
+            var col = (location.X / binSize).Clamp(0, cols - 1);
+            var row = (location.Y / binSize).Clamp(0, rows - 1);
+
+            foreach(var kvp in BinAt(row,col)){
+                if (kvp.Value.Contains(location))
+                    yield return kvp.Key;
+            }
+        }
+
+
+        public IEnumerable<Rectangle> ItemBounds{
+            get{
+                return itemBounds.Values;
+            }
         }
     }
 }

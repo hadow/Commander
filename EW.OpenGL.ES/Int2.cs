@@ -51,5 +51,8 @@ namespace EW.OpenGLES
         {
             return ((orig & 0xff000000) >> 24) | ((orig & 0x00ff0000) >> 8) | ((orig & 0x0000ff00) << 8) | ((orig & 0x000000ff) << 24);
         }
+
+
+        public Point ToPoint() { return new Point(X, Y); }
     }
 }

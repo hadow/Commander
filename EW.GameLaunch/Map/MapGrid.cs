@@ -37,12 +37,12 @@ namespace EW
 
         public readonly WVec[] SubCellOffsets =
         {
-            new WVec(0,0,0),   //full cell - index 0
-            new WVec(-299,-256,0), //top left - index 1
-            new WVec(256,-256,0),  //top right -index 2
-            new WVec(0,0,0),       //center -index 3
-            new WVec(-299,256,0),  //bottom left -index 4
-            new WVec(256,256,0),   //bottom right -index 5
+            new WVec(0,0,0),        //full cell - index 0
+            new WVec(-299,-256,0),  //top left - index 1
+            new WVec(256,-256,0),   //top right -index 2
+            new WVec(0,0,0),        //center -index 3
+            new WVec(-299,256,0),   //bottom left -index 4
+            new WVec(256,256,0),    //bottom right -index 5
         };
 
         readonly int[][] cellCornerHalfHeights = new int[][]
@@ -86,28 +86,56 @@ namespace EW
         {
             FieldLoader.Load(this, yaml);
 
+            // The default subcell index defaults to the middle entry
             var defaultSubCellIndex = (byte)DefaultSubCell;
             if (defaultSubCellIndex == byte.MaxValue)
                 DefaultSubCell = (SubCell)(SubCellOffsets.Length / 2);
+            
             else if (defaultSubCellIndex < (SubCellOffsets.Length > 1 ? 1 : 0) || defaultSubCellIndex >= SubCellOffsets.Length)
-                throw new InvalidDataException("Subcell default index must be a valid index into the offset triples and musb be greater than 0 for mods with subcells.");
+                throw new InvalidDataException("Subcell default index must be a valid index into the offset triples and must be greater than 0 for mods with subcells.");
 
-            var leftDelta = Type == MapGridT.RectangularIsometric ? new WVec(-512, 0, 0) : new WVec(-512, -512, 0);
-            var topDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, -512, 0) : new WVec(512, -512, 0);
-            var rightDelta = Type == MapGridT.RectangularIsometric ? new WVec(512, 0, 0) : new WVec(512, 512, 0);
-            var bottomDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, 512, 0) : new WVec(-512, 512, 0);
+            //var leftDelta = Type == MapGridT.RectangularIsometric ? new WVec(-512, 0, 0) : new WVec(-512, -512, 0);
+            //var topDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, -512, 0) : new WVec(512, -512, 0);
+            //var rightDelta = Type == MapGridT.RectangularIsometric ? new WVec(512, 0, 0) : new WVec(512, 512, 0);
+            //var bottomDelta = Type == MapGridT.RectangularIsometric ? new WVec(0, 512, 0) : new WVec(-512, 512, 0);
 
-            CellCorners = cellCornerHalfHeights.Select(ramp => new WVec[]
-            {
-                leftDelta + new WVec(0,0,512*ramp[0]),
-                topDelta + new WVec(0,0,512*ramp[1]),
-                rightDelta + new WVec(0,0,512*ramp[2]),
-                bottomDelta+new WVec(0,0,512*ramp[3])
+            //CellCorners = cellCornerHalfHeights.Select(ramp => new WVec[]
+            //{
+            //    leftDelta + new WVec(0,0,512*ramp[0]),
+            //    topDelta + new WVec(0,0,512*ramp[1]),
+            //    rightDelta + new WVec(0,0,512*ramp[2]),
+            //    bottomDelta+new WVec(0,0,512*ramp[3])
 
-            }).ToArray();
+            //}).ToArray();
+
+            var makeCorners = Type == MapGridT.Rectangular ? (Func<int[],WVec[]>)RectangularCellCorners : IsometricCellCorners;
+
+            CellCorners = cellCornerHalfHeights.Select(makeCorners).ToArray();
 
             TilesByDistance = CreateTilesByDistance();
         }
+
+        static WVec[] IsometricCellCorners(int[] cornerHeight){
+
+            return new WVec[]{
+                new WVec(-724,0,724*cornerHeight[0]),
+                new WVec(0,-724,724*cornerHeight[1]),
+                new WVec(724,0,724*cornerHeight[2]),
+                new WVec(0,724,724*cornerHeight[3])
+            };
+        }
+
+        static WVec[] RectangularCellCorners(int[] cornerHeight){
+            return new WVec[]{
+                new WVec(-512,-512,512*cornerHeight[0]),
+                new WVec(512,-512,512*cornerHeight[1]),
+                new WVec(512,512,512*cornerHeight[2]),
+                new WVec(-512,512,512*cornerHeight[3]),
+            };
+        }
+
+
+
 
         /// <summary>
         /// 
@@ -130,7 +158,7 @@ namespace EW
                     }
                 }
             }
-
+            //Sort each integer-distance group by the actual distance.
             foreach(var list in ts)
             {
                 list.Sort((a, b) => {
@@ -139,6 +167,8 @@ namespace EW
                     if (result != 0)
                         return result;
 
+
+                    //如果长度相等，则使用其他方法对其进行排序。首先尝试哈希码，因为它会给出比X或Y更多的随机出现结果，总是偏向最左边 / 最上面的位置。
                     result = a.GetHashCode().CompareTo(b.GetHashCode());
                     if (result != 0)
                         return result;

@@ -57,6 +57,10 @@ namespace EW.OpenGLES
             return (((this.X <= x) && (x < (this.X + this.Width))) && ((this.Y <= y) && (y < (this.Y + this.Height))));
         }
 
+        public bool Contains(Point p){
+            return (this.X <= p.X && p.X < (this.X + this.Width)) && this.Y <= p.Y && (p.Y < (this.Y + this.Height));
+        }
+
         public int Right
         {
             get { return (this.X + this.Width); }

@@ -12,6 +12,7 @@ namespace EW.Traits
     {
         /// <summary>
         /// Size of partition bins (world pixels)
+        /// 分区大小
         /// </summary>
         public readonly int BinSize = 250;
 
@@ -24,6 +25,7 @@ namespace EW.Traits
     public class ScreenMap:IWorldLoaded
     {
         static readonly IEnumerable<FrozenActor> NoFrozenActors = new FrozenActor[0];
+
         readonly Func<Actor, bool> actorIsInWorld = a => a.IsInWorld;
 
         readonly Func<FrozenActor, bool> frozenActorIsValid = fa => fa.IsValid;

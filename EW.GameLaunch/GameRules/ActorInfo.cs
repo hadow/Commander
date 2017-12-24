@@ -103,19 +103,43 @@ namespace EW
 
             var testResolve = new Func<Type, Type, bool>((a, b) => a == b || a.IsAssignableFrom(b));
 
-            var more = unresolved.Where(u => u.Dependencies.All(d => resolved.Exists(r => testResolve(d, r.Type)) &&
-                !unresolved.Any(u1 => testResolve(d, u1.Type))));
+            //This query detects which unresolved traits can be immediately resolved as all their direct dependencies are met.
+            var more = unresolved.Where(u =>
+                                        u.Dependencies.All(d =>     //To be resolvable ,all dependencies must be satisfied according to the following conditions.
+                                                           resolved.Exists(r => testResolve(d, r.Type)) &&  //There must exist a resolved trait that meets the dependency
+                                        !unresolved.Any(u1 => testResolve(d, u1.Type))));   // All matching traits that meet this dependency must be resolved first
 
+            //Continue resolving traits as long as possible 
+            //Each time we resolve some traits,this means dependencies for other traits may then be possible to satisfy in the next pass 
             while (more.Any())
                 resolved.AddRange(more);
 
+            if(unresolved.Any()){
+
+                var exceptionString = "ActorInfo (\"" + Name + "\") failed to initialize of because of the following:\r\n";
+                var missing = unresolved.SelectMany(u => u.Dependencies.Where(d => !source.Any(s => testResolve(d, s.Type)))).Distinct();
+
+                exceptionString += "Missing :\r\n";
+                foreach (var m in missing)
+                    exceptionString += m + "\r\n";
+
+                exceptionString += "Unresolved :\r\n";
+                foreach (var u in unresolved){
+
+                    var deps = u.Dependencies.Where(d => !resolved.Exists(r => r.Type == d));
+                    exceptionString += u.Type + ": { " + string.Join(",", deps) + "}\r\n";
+                }
+
+                throw new YamlException(exceptionString);
+
+            }
             constructOrderCache = resolved.Select(r => r.Trait).ToList();
 
             return constructOrderCache;
         }
 
         /// <summary>
-        /// 
+        /// 先决，前提条件
         /// </summary>
         /// <param name="info"></param>
         /// <returns></returns>

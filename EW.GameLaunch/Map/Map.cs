@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Drawing;
 using EW.FileSystem;
 using EW.Traits;
+using EW.Primitives;
 namespace EW
 {
     /// <summary>
@@ -176,10 +177,11 @@ namespace EW
         public MapVisibility Visibility = MapVisibility.Lobby;
         public string[] Categories = { "Conquest" };
 
-        //
+        //Play and Actor yaml ,Public for access by the map importers and lint checks
         public List<MiniYamlNode> PlayerDefinitions = new List<MiniYamlNode>();
         public List<MiniYamlNode> ActorDefinitions = new List<MiniYamlNode>();
 
+        //Custom map yaml.
         public readonly MiniYaml RuleDefinitions;
         public readonly MiniYaml SequenceDefinitions;
         public readonly MiniYaml ModelSequenceDefinitions;
@@ -210,9 +212,17 @@ namespace EW
         public Ruleset Rules { get; private set; }
         
         public ProjectedCellRegion ProjectedCellBounds { get; private set;}
-        
+
+        /// <summary>
+        /// The Bottom-Right of the playable area in projected world coordinates.
+        /// </summary>
+        /// <value>The projected bottom right.</value>
         public WPos ProjectedBottomRight { get; private set; }
 
+        /// <summary>
+        /// The Top-Lef of the playable area in projected world coordinates.
+        /// </summary>
+        /// <value>The projected top left.</value>
         public WPos ProjectedTopLeft { get; private set; }
 
         public CellLayer<TerrainTile> Tiles { get; private set; }
@@ -226,6 +236,8 @@ namespace EW
         public CellRegion AllCells { get; private set; }
 
         public List<CPos> AllEdgeCells { get; private set; }
+
+
         public Map(ModData modData,IReadOnlyPackage package)
         {
             this.modData = modData;
@@ -705,21 +717,48 @@ namespace EW
                     throw new FileNotFoundException("Required file {0} not present in this map".F(required));
             }
 
-            using(var ms = new MemoryStream())
+            //using(var ms = new MemoryStream())
+            //{
+            //    foreach(var filename in contents)
+            //    {
+            //        if(filename.EndsWith(".yaml") || filename.EndsWith(".bin") || filename.EndsWith(".lua"))
+            //        {
+            //            using (var s = package.GetStream(filename))
+            //                s.CopyTo(ms);
+            //        }
+            //    }
+
+            //    ms.Seek(0, SeekOrigin.Begin);
+            //    return CryptoUtil.SHA1Hash(ms);
+            //}
+            var streams = new List<Stream>();
+
+            try
             {
-                foreach(var filename in contents)
-                {
-                    if(filename.EndsWith(".yaml") || filename.EndsWith(".bin") || filename.EndsWith(".lua"))
-                    {
-                        using (var s = package.GetStream(filename))
-                            s.CopyTo(ms);
-                    }
+                foreach(var filename in contents){
+
+                    if (filename.EndsWith(".yaml") || filename.EndsWith(".bin") || filename.EndsWith(".lua"))
+                        streams.Add(package.GetStream(filename));
+
                 }
 
-                ms.Seek(0, SeekOrigin.Begin);
-                return CryptoUtil.SHA1Hash(ms);
-            }
+                //Take the SHA1
+                if (streams.Count == 0)
+                    return CryptoUtil.SHA1Hash(new byte[0]);
 
+                var merged = streams[0];
+                for (var i = 1; i < streams.Count; i++)
+                {
+                    merged = new MergedStream(merged, streams[i]);
+
+                }
+
+                return CryptoUtil.SHA1Hash(merged);
+            }
+            finally{
+                foreach(var stream in streams)
+                    stream.Dispose();
+            }
 
 
         }

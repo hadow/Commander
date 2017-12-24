@@ -89,6 +89,8 @@ namespace EW
                 return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facingValue));
             }
         }
+
+
         internal Actor(World world, string name, TypeDictionary initDict)
         {
             var init = new ActorInitializer(this, initDict);
