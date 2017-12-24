@@ -11,3 +11,8 @@
 /EW.GameCenter/bin/Debug
 /EW.Xna.Platforms/obj/Debug
 /obj
+/EW.GameLaunch/obj/Debug
+/EW.GameLaunch/bin/Debug
+/.vs/EastWoodStudio/v15
+/packages/OpenTK.2.0.0
+/EW.Test
