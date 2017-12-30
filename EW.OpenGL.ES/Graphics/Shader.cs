@@ -22,7 +22,6 @@ namespace EW.OpenGLES.Graphics
             var fragmentShader = CompileShaderObject(ShaderType.FragmentShader, name);
 
             program = GL.CreateProgram();
-
             GraphicsExtensions.CheckGLError();
             GL.BindAttribLocation(program, VertexPosAttributeIndex, "aVertexPosition");
             GraphicsExtensions.CheckGLError();
@@ -54,7 +53,8 @@ namespace EW.OpenGLES.Graphics
             GL.UseProgram(program);
             GraphicsExtensions.CheckGLError();
             int numUniforms;
-            GL.GetProgram(program, GetProgramParameterName.LogLength, out numUniforms);
+            //GL.GetProgram(program, GetProgramParameterName.LogLength, out numUniforms);
+            GL.GetProgram(program, GetProgramParameterName.ActiveUniforms, out numUniforms);
             GraphicsExtensions.CheckGLError();
 
             var nextTexUnit = 0;
@@ -195,16 +195,37 @@ namespace EW.OpenGLES.Graphics
                     var ptr = new IntPtr(pVec);
                     switch (length)
                     {
-
+                        case 1:GL.Uniform1fv(param, 1, ptr);break;
+                        case 2:GL.Uniform2fv(param, 1, ptr);break;
+                        case 3:GL.Uniform3fv(param, 1, ptr);break;
+                        case 4:GL.Uniform4fv(param, 1, ptr);break;
+                        default:throw new InvalidDataException("Invalid vector length");
                     }
                 }
             }
+
+            GraphicsExtensions.CheckGLError();
         }
 
 
         public void SetMatrix(string name, float[] mtx)
         {
+            Threading.EnsureUIThread();
+            if (mtx.Length != 16)
+                throw new InvalidDataException("Invalid 4x4 matrix");
 
+            GL.UseProgram(program);
+            GraphicsExtensions.CheckGLError();
+            var param = GL.GetUniformLocation(program, name);
+            GraphicsExtensions.CheckGLError();
+
+            unsafe
+            {
+                fixed (float* pMtx = mtx)
+                    GL.UniformMatrix4fv(param, 1, false, new IntPtr(pMtx));
+            }
+
+            GraphicsExtensions.CheckGLError();
         }
 
         public void SetTexture(string name, ITexture t)

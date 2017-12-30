@@ -23,7 +23,7 @@ namespace EW
         public readonly Actor WorldActor;
         public readonly Map Map;
         public readonly WorldT Type;
-        public readonly ActorMap ActorMap;
+        public readonly IActorMap ActorMap;
         public readonly ScreenMap ScreenMap;
 
         public readonly Selection Selection = new Selection();
@@ -128,7 +128,7 @@ namespace EW
 
             var worldActorT = type == WorldT.Editor ? "EditorWorld" : "World";
             WorldActor = CreateActor(worldActorT, new TypeDictionary());
-            ActorMap = WorldActor.Trait<ActorMap>();
+            ActorMap = WorldActor.Trait<IActorMap>();
             ScreenMap = WorldActor.Trait<ScreenMap>();
             
             //Add players
@@ -176,6 +176,7 @@ namespace EW
         /// <param name="wr"></param>
         public void LoadComplete(WorldRenderer wr)
         {
+            //ScreenMap must be initialized before anything else
             using (new PerfTimer("ScreenMap.WorldLoaded"))
                 ScreenMap.WorldLoaded(this, wr);
             foreach(var wlh in WorldActor.TraitsImplementing<IWorldLoaded>())

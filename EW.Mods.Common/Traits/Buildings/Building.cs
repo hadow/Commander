@@ -36,6 +36,28 @@ namespace EW.Mods.Common.Traits
         public readonly int Adjacent = 2;
 
 
+        public readonly CVec Dimensions = new CVec(1, 1);
+
+
+        public readonly WVec LocalCenterOffset = WVec.Zero;
+
+
+        /// <summary>
+        /// Clear smudges from underneath the building footprint.
+        /// 清除建筑物足迹下面的污迹。
+        /// </summary>
+        public readonly bool RemoveSmudgesOnBuild = true;
+
+        /// <summary>
+        /// Clear smudges from underneath the building footprint on sell.
+        /// </summary>
+        public readonly bool RemoveSmudgesOnSell = true;
+
+        /// <summary>
+        /// Clear smudges from underneath the building footprint on transform.
+        /// </summary>
+        public readonly bool RemoveSmudgesOnTransform = true;
+
         public readonly bool RequiresBaseProvider = false;
 
         public readonly bool AllowInvalidPlacement = false;
@@ -98,6 +120,13 @@ namespace EW.Mods.Common.Traits
                 yield return t;
         }
 
+
+        public WVec CenterOffset(World w)
+        {
+            var off = (w.Map.CenterOfCell(new CPos(Dimensions.X, Dimensions.Y)) - w.Map.CenterOfCell(new CPos(1, 1))) / 2;
+            return (off - new WVec(0, 0, off.Z)) + LocalCenterOffset;
+        }
+
         public virtual object Create(ActorInitializer init)
         {
             return new Building(init,this);
@@ -106,7 +135,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public class Building:IOccupySpace,ISync,INotifyAddToWorld,INotifyRemovedFromWorld
+    public class Building:IOccupySpace,ISync,INotifyAddToWorld,INotifyRemovedFromWorld,INotifyCreated,INotifySold,ITargetableCells
     {
         public readonly BuildingInfo Info;
         readonly Actor self;
@@ -131,22 +160,65 @@ namespace EW.Mods.Common.Traits
 
         public Building(ActorInitializer init,BuildingInfo info)
         {
+            self = init.Self;
             topLeft = init.Get<LocationInit, CPos>();
 
             Info = info;
             occupiedCells = Info.UnpathableTiles(TopLeft).Select(c => Pair.New(c, SubCell.FullCell)).ToArray();
 
+            targetableCells = Info.FootprintTiles(TopLeft, FootprintCellType.Occupied).Select(c => Pair.New(c, SubCell.FullCell)).ToArray();
+
+            CenterPosition = init.World.Map.CenterOfCell(topLeft) + Info.CenterOffset(init.World);
+        }
+
+
+        public IEnumerable<Pair<CPos,SubCell>> TargetableCells()
+        {
+            return targetableCells;
         }
 
         public IEnumerable<Pair<CPos,SubCell>> OccupiedCells() { return occupiedCells; }
 
+
+
+        void INotifyCreated.Created(Actor self)
+        {
+            
+        }
+
+
         public virtual void AddedToWorld(Actor self)
         {
+            if (Info.RemoveSmudgesOnBuild)
+                RemoveSmudges();
 
+            self.World.AddToMaps(self, this);
         }
 
         void INotifyRemovedFromWorld.RemovedFromWorld(Actor self)
         {
+            self.World.RemoveFromMaps(self, this);
+        }
+
+
+        void INotifySold.Selling(Actor self)
+        {
+
+        }
+
+
+        void INotifySold.Sold(Actor self)
+        {
+
+        }
+
+
+        /// <summary>
+        /// 移除印跡
+        /// </summary>
+        public void RemoveSmudges()
+        {
+            var smudgeLayers = self.World.WorldActor.TraitsImplementing<SmudgeLayer>();
 
         }
     }

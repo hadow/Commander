@@ -12,10 +12,18 @@ namespace EW.Mods.Common.Traits
     {
         None = 0,
         TransientActors,//短暂的，路过的
-        BlockedByMovers,
+        BlockedByMovers,//被移动者阻挡
         All = TransientActors | BlockedByMovers
     }
 
+
+    public static class CustomMovementLayerType
+    {
+        public const byte Tunnel = 1;           //遂道
+        public const byte Subterranean = 2;
+        public const byte Jumpjet = 3;          //垂直起降喷气机
+        public const byte ElevatedBridge = 4;   //高架桥
+    }
     public static class CellConditionsExts
     {
         public static bool HasCellCondition(this CellConditions c,CellConditions cellCondition)
@@ -26,18 +34,12 @@ namespace EW.Mods.Common.Traits
     }
     /// <summary>
     /// Unit is able to move
+    /// 单位能够移动
     /// </summary>
-    public class MobileInfo:UpgradableTraitInfo,IMoveInfo,IPositionableInfo,IOccupySpaceInfo,IFacingInfo,
+    public class MobileInfo:ConditionalTraitInfo,IMoveInfo,IPositionableInfo,IFacingInfo,
         UsesInit<FacingInit>, UsesInit<LocationInit>, UsesInit<SubCellInit>
     {
-        /// <summary>
-        /// Allow multiple units in one cell.
-        /// </summary>
-        public readonly bool SharesCell = false;
 
-        public readonly int TurnSpeed = 255;
-
-        public readonly HashSet<string> Crushes = new HashSet<string>();
         /// <summary>
         /// 地形信息
         /// </summary>
@@ -67,6 +69,7 @@ namespace EW.Mods.Common.Traits
         /// <summary>
         /// This struct allows us to cache the terrain info for the tileset used by the world.
         /// This allows us to speed up some performance-sensitive pathfinding calculations.
+        /// 这个结构允许我们缓存世界使用的tileset的地形信息。这使我们能够加快一些性能敏感的寻路计算。
         /// </summary>
         public struct WorldMovementInfo
         {
@@ -81,9 +84,117 @@ namespace EW.Mods.Common.Traits
             }
         }
 
+
+        /// <summary>
+        /// Allow multiple units in one cell.
+        /// 在一个单元格中允许多个单元。
+        /// </summary>
+        public readonly bool SharesCell = false;
+
+        /// <summary>
+        /// Speed at which the actor turns.
+        /// </summary>
+        public readonly int TurnSpeed = 255;
+
+        public readonly int InitialFacing = 0;
+
+        public readonly int WaitSpread = 2;
+
+        public readonly int WaitAverage = 5;
+
+        public readonly int Speed = 1;
+
+        public readonly bool OnRails = false;
+
+        public readonly bool MoveIntoShroud = true; //Can the actor be ordered to move in to shroud?
+
+        [VoiceReference]
+        public readonly string Voice = "Action";
+
+        /// <summary>
+        /// The condition to grant to self while inside a tunnel.
+        /// </summary>
+        public readonly string TunnelCondition = null;
+
+        /// <summary>
+        /// Can this unit move underground?
+        /// </summary>
+        public readonly bool Subterranean = false;
+
+        /// <summary>
+        /// The condition to grant to self while underground.
+        /// </summary>
+        public readonly string SubterraneanCondition = null;
+
+        /// <summary>
+        /// Pathfinding cost for submerging or reemerging.
+        /// </summary>
+        public readonly int SubterraneanTransitionCost = 0;
+
+        /// <summary>
+        /// The terrain types that this actor can transition on.Leave empty to allow any.
+        /// </summary>
+        public readonly HashSet<string> SubterraneanTransitionTerrainTypes = new HashSet<string>();
+
+        /// <summary>
+        /// Can this actor transition on slopes?
+        /// </summary>
+        public readonly bool SubterraneanTransitionOnRamps = false;
+
+        public readonly WDist SubterraneanTransitionDepth = new WDist(-1024);
+
+        /// <summary>
+        /// Dig animation image to play when transitioning.
+        /// 在过渡时挖掘动画图像进行播放
+        /// </summary>
+        public readonly string SubterraneanTransitionImage = null;
+
+        [SequenceReference("SubterraneanTransitionImage")]
+        public readonly string SubterraneanTransitionSequence = null;
+
+        [PaletteReference]
+        public readonly string SubterraneanTransitionPalette = "effect";
+
+        public readonly string SubterraneanTransitionSound = null;
+
+        /// <summary>
+        /// The condition to grant to self while flying.
+        /// </summary>
+        [GrantedConditionReference]
+        public readonly string JumpjetCondition = null;
+
+        /// <summary>
+        /// Pathfinding cost for taking off or landing
+        /// 寻找起飞或着陆的成本
+        /// </summary>
+        public readonly int JumpjetTransitionCost = 0;
+
+        /// <summary>
+        /// Can this unit fly over obstacles?
+        /// 这个单位可以飞越障碍吗？
+        /// </summary>
+        public readonly bool Jumpjet = false;
+
+        /// <summary>
+        /// The terrain types that this actor can transition on.Leave empty to allow any.
+        /// </summary>
+        public readonly HashSet<string> JumpjetTransitionTerrainTypes = new HashSet<string>();
+
+        /// <summary>
+        /// Can this actor transition on slopes?
+        /// </summary>
+        public readonly bool JumpjetTransitionOnRamps = true;
+        /// <summary>
+        /// Set Water:0 for ground units and lower the value on rough terrain;
+        /// 设置水：地面单位为0，降低粗糙地形的值
+        /// </summary>
         [FieldLoader.LoadUsing("LoadSpeeds",true)]
         public readonly Dictionary<string, TerrainInfo> TerrainSpeeds;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly HashSet<string> Crushes = new HashSet<string>();
 
         public readonly Cache<TileSet, TerrainInfo[]> TilesetTerrainInfo;
         public readonly Cache<TileSet, int> TilesetMovementClass;
@@ -94,7 +205,7 @@ namespace EW.Mods.Common.Traits
             TilesetMovementClass = new Cache<TileSet, int>(CalculateTilesetMovementClass);
         }
         
-        public readonly int InitialFacing = 0;
+        
         public IReadOnlyDictionary<CPos,SubCell> OccupiedCells(ActorInfo info,CPos location,SubCell subCell = SubCell.Any)
         {
             return new ReadOnlyDictionary<CPos, SubCell>(new Dictionary<CPos, SubCell>() { { location, subCell } });
@@ -301,11 +412,29 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class Mobile:UpgradableTrait<MobileInfo>,IPositionable,INotifyAddToWorld,INotifyRemovedFromWorld,IMove,IFacing,ISync,IActorPreviewInitModifier,IDeathActorInitModifier,INotifyBlockingMove
+    public class Mobile:ConditionalTrait<MobileInfo>,
+        INotifyCreated,
+        IPositionable,
+        INotifyAddToWorld,
+        INotifyRemovedFromWorld,
+        IMove,
+        IFacing,
+        ISync,
+        IActorPreviewInitModifier,
+        IDeathActorInitModifier,
+        INotifyBlockingMove
     {
+        const int AverageTicksBeforePathing = 5;
+        const int SpreadTicksBeforePathing = 5;
         internal int TicksBeforePathing = 0;
 
+        ConditionManager conditionManager;
+        int tunnelToken = ConditionManager.InvalidConditionToken;
+        int subterraneanToken = ConditionManager.InvalidConditionToken;
+        int jumpjetToken = ConditionManager.InvalidConditionToken;
+
         readonly Actor self;
+        readonly Lazy<IEnumerable<int>> speedModifiers;
 
         CPos fromCell, toCell;
 
@@ -327,6 +456,10 @@ namespace EW.Mods.Common.Traits
 
         public int TurnSpeed { get { return Info.TurnSpeed; } }
 
+
+        public bool IsMoving { get; set; }
+
+        public bool IsMovingVertically { get { return false; } }
         int facing;
         [Sync]
         public int Facing
@@ -334,9 +467,39 @@ namespace EW.Mods.Common.Traits
             get { return facing; }
             set { facing = value; }
         }
+
+
         public Mobile(ActorInitializer init, MobileInfo info): base(info)
         {
             self = init.Self;
+
+            speedModifiers = Exts.Lazy(() => self.TraitsImplementing<ISpeedModifier>().ToArray().Select(x => x.GetSpeedModifier()));
+
+            ToSubCell = FromSubCell = info.SharesCell ? init.World.Map.Grid.DefaultSubCell : SubCell.FullCell;
+
+            if (init.Contains<SubCellInit>())
+                FromSubCell = ToSubCell = init.Get<SubCellInit, SubCell>();
+
+            if (init.Contains<LocationInit>())
+            {
+                fromCell = toCell = init.Get<LocationInit, CPos>();
+                SetVisualPosition(self, init.World.Map.CenterOfSubCell(FromCell, FromSubCell));
+            }
+
+            Facing = init.Contains<FacingInit>() ? init.Get<FacingInit,int>() : info.InitialFacing;
+
+            //Sets the visual position to WPos accuracy
+            //Use LocationInit if you want to insert the actor into the ActorMap!
+
+            if (init.Contains<CenterPositionInit>())
+                SetVisualPosition(self, init.Get<CenterPositionInit, WPos>());
+        }
+
+        protected override void Created(Actor self)
+        {
+
+            conditionManager = self.TraitOrDefault<ConditionManager>();
+            base.Created(self);
         }
 
         public IEnumerable<Pair<CPos,SubCell>> OccupiedCells()
@@ -438,6 +601,13 @@ namespace EW.Mods.Common.Traits
             return preferred;
         }
 
+        /// <summary>
+        /// Sets only the location ( fromCell,toCell,FromSubCell,ToSubCell)
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="fromSub"></param>
+        /// <param name="to"></param>
+        /// <param name="toSub"></param>
         public void SetLocation(CPos from,SubCell fromSub,CPos to,SubCell toSub)
         {
             if (FromCell == from && ToCell == to && FromSubCell == fromSub && ToSubCell == toSub)
@@ -461,6 +631,17 @@ namespace EW.Mods.Common.Traits
             if (self.IsInWorld)
                 self.World.ActorMap.AddInfluence(self, this);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="nudger">推动者</param>
+        /// <param name="force"></param>
+        public void Nudge(Actor self,Actor nudger,bool force)
+        {
+
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -480,7 +661,7 @@ namespace EW.Mods.Common.Traits
 
         #region IMove interface
 
-        public bool IsMoving { get; set; }
+        
 
         /// <summary>
         /// 附近可移动的单元格

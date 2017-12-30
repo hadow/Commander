@@ -1,12 +1,15 @@
 using System;
-
+using Eluant;
+using Eluant.ObjectBinding;
+using EW.Scripting;
+using EW.Support;
 
 namespace EW
 {
     /// <summary>
-    /// 
+    /// 1d world distance - 1024 units = 1 cell
     /// </summary>
-    public struct WDist:IEquatable<WDist>,IComparable,IComparable<WDist>
+    public struct WDist:IEquatable<WDist>,IComparable,IComparable<WDist>,IScriptBindable,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public static readonly WDist Zero = new WDist(0);
         public static readonly WDist MaxValue = new WDist(int.MaxValue);
@@ -32,7 +35,21 @@ namespace EW
             return other == this;
         }
 
+        public override int GetHashCode()
+        {
+            return Length.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is WDist && Equals((WDist)obj);
+        }
+
         #region Operator
+
+        public static WDist operator +(WDist a,WDist b) { return new WDist(a.Length + b.Length); }
+
+        public static WDist operator -(WDist a,WDist b) { return new WDist(a.Length - b.Length); }
 
         public static bool operator ==(WDist a,WDist b)
         {
@@ -67,7 +84,8 @@ namespace EW
             switch (components.Length)
             {
                 case 2:
-                    if (!Exts.TryParseIntegerInvariant(components[0], out cell) || !Exts.TryParseIntegerInvariant(components[1], out subCell))
+                    if (!Exts.TryParseIntegerInvariant(components[0], out cell) ||
+                        !Exts.TryParseIntegerInvariant(components[1], out subCell))
                         return false;
                     break;
                 case 1:
@@ -87,5 +105,61 @@ namespace EW
 
         public static WDist FromCells(int cells) { return new WDist(1024 * cells); }
 
+
+        #region Scripting interface
+
+        public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)
+        {
+            WDist a;
+            WDist b;
+            if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
+                throw new LuaException("Attempted to call WDist.Add(WDist,WDist) with invalid arguments.");
+
+            return new LuaCustomClrObject(a + b);
+        }
+
+        public LuaValue Subtract(LuaRuntime runtime,LuaValue left,LuaValue right)
+        {
+            WDist a;
+            WDist b;
+            if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
+                throw new LuaException("Attempted to call WDist.Subtract(WDist,WDist) with invalid arguments.");
+
+            return new LuaCustomClrObject(a - b);
+        }
+
+
+        public LuaValue Equals(LuaRuntime runtime,LuaValue left,LuaValue right)
+        {
+            WDist a;
+            WDist b;
+            if (!left.TryGetClrValue(out a) || !right.TryGetClrValue(out b))
+                throw new LuaException("Attempted to call WDist.Equals(WDist,WDist) with invalid arguments.");
+
+            return a == b;
+        }
+
+
+        public LuaValue this[LuaRuntime runtime,LuaValue key]
+        {
+            get
+            {
+                switch (key.ToString())
+                {
+                    case "Length":return Length;
+                    case "Range":return Length;
+                    default:
+                        throw new LuaException("WDist does not defina a member '{0}'".F(key));
+                }
+            }
+
+            set
+            {
+                throw new LuaException("WDist is read-only.Use WDist.New to create a new value");
+            }
+        }
+
+
+        #endregion
     }
 }

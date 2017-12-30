@@ -55,6 +55,7 @@ namespace EW.OpenGLES
     {
         LogLength = 0x8B84,
         LinkStatus = 0x8B82,
+        ActiveUniforms = 0x8B86,
     }
 
     internal enum DrawElementsType
@@ -747,10 +748,30 @@ namespace EW.OpenGLES
         internal delegate void UseProgramDelegate (int program);
         internal static UseProgramDelegate UseProgram;
 
+        [System.Security.SuppressUnmanagedCodeSecurity()]
+        [MonoNativeFunctionWrapper]
+        internal delegate void UniformMatrix4fvDelegate(int location, int count, bool transpose, IntPtr value);
+        internal static UniformMatrix4fvDelegate UniformMatrix4fv;
+
         [System.Security.SuppressUnmanagedCodeSecurity ()]
         [MonoNativeFunctionWrapper]
-        internal unsafe delegate void Uniform4fvDelegate (int location, int size, float* values);
+        internal unsafe delegate void Uniform4fvDelegate (int location, int size, IntPtr value);
         internal static Uniform4fvDelegate Uniform4fv;
+
+        [System.Security.SuppressUnmanagedCodeSecurity()]
+        [MonoNativeFunctionWrapper]
+        internal unsafe delegate void Uniform3fvDelegate(int location, int count, IntPtr value);
+        internal static Uniform3fvDelegate Uniform3fv;
+
+        [System.Security.SuppressUnmanagedCodeSecurity()]
+        [MonoNativeFunctionWrapper]
+        internal unsafe delegate void Uniform2fvDelegate(int location, int count, IntPtr value);
+        internal static Uniform2fvDelegate Uniform2fv;
+
+        [System.Security.SuppressUnmanagedCodeSecurity()]
+        [MonoNativeFunctionWrapper]
+        internal unsafe delegate void Uniform1fvDelegate(int location, int count, IntPtr value);
+        internal static Uniform1fvDelegate Uniform1fv;
 
         [System.Security.SuppressUnmanagedCodeSecurity()]
         [MonoNativeFunctionWrapper]
@@ -1280,7 +1301,11 @@ namespace EW.OpenGLES
             DrawElements = (DrawElementsDelegate)LoadEntryPoint<DrawElementsDelegate> ("glDrawElements");
             DrawArrays = (DrawArraysDelegate)LoadEntryPoint<DrawArraysDelegate> ("glDrawArrays");
             Uniform1i = (Uniform1iDelegate)LoadEntryPoint<Uniform1iDelegate> ("glUniform1i");
+            UniformMatrix4fv = (UniformMatrix4fvDelegate)LoadEntryPoint<UniformMatrix4fvDelegate>("glUniformMatrix4fv");
             Uniform4fv = (Uniform4fvDelegate)LoadEntryPoint<Uniform4fvDelegate> ("glUniform4fv");
+            Uniform3fv = (Uniform3fvDelegate)LoadEntryPoint<Uniform3fvDelegate>("glUniform3fv");
+            Uniform2fv = (Uniform2fvDelegate)LoadEntryPoint<Uniform2fvDelegate>("glUniform2fv");
+            Uniform1fv = (Uniform1fvDelegate)LoadEntryPoint<Uniform1fvDelegate>("glUniform1fv");
             Uniform1f = (Uniform1fDelegate)LoadEntryPoint<Uniform1fDelegate>("glUniform1f");
             Uniform2f = (Uniform2fDelegate)LoadEntryPoint<Uniform2fDelegate>("glUniform2f");
             Uniform3f = (Uniform3fDelegate)LoadEntryPoint<Uniform3fDelegate>("glUniform3f");
@@ -1529,9 +1554,9 @@ namespace EW.OpenGLES
             Uniform1i(location, value);
         }
 
-        internal static unsafe void Uniform4 (int location, int size, float* value) {
-            Uniform4fv(location, size, value);
-        }
+        //internal static unsafe void Uniform4 (int location, int size, float* value) {
+        //    Uniform4fv(location, size, value);
+        //}
 
         internal unsafe static string GetString (StringName name)
         {

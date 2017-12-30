@@ -4,6 +4,9 @@ using Eluant.ObjectBinding;
 using EW.Scripting;
 namespace EW
 {
+    /// <summary>
+    /// Location in the game world
+    /// </summary>
     public struct WPos:IScriptBindable,IEquatable<WPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public readonly int X, Y, Z;
@@ -41,6 +44,11 @@ namespace EW
         public override string ToString()
         {
             return X + "," + Y + "," + Z;
+        }
+
+        public static WPos Lerp(WPos a,WPos b,int mul,int div)
+        {
+            return a + (b - a) * mul / div;
         }
 
         #region operator

@@ -99,8 +99,14 @@ namespace EW.Graphics
             //shader.Parameters["LightDirection"].SetValue(new Vector4(lightDirection[0], lightDirection[1], lightDirection[2], lightDirection[3]));
             //shader.Parameters["AmbientLight"].SetValue(new Vector3(ambientLight[0], ambientLight[1], ambientLight[2]));
             //shader.Parameters["DiffuseLight"].SetValue(new Vector3(diffuseLight[0], diffuseLight[1], diffuseLight[2]));
-            
-            
+
+            shader.SetTexture("DiffuseTexture", renderData.Sheet.GetTexture());
+            shader.SetVec("PaletteRows", colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex);
+            shader.SetMatrix("TransformMatrix", t);
+            shader.SetVec("LightDirection", lightDirection, 4);
+            shader.SetVec("AmbientLight", ambientLight, 3);
+            shader.SetVec("DiffuseLight", diffuseLight, 3);
+            shader.Render(() => renderer.DrawBatch(cache.VertexBuffer, renderData.Start, renderData.Count, PrimitiveType.TriangleList));
         }
 
 
@@ -228,6 +234,7 @@ namespace EW.Graphics
 
                 foreach(var m in models)
                 {
+                    //Convert screen offset to world offset
                     var offsetVec = Util.MatrixVectorMultiply(invCameraTransform, wr.ScreenVector(m.OffsetFunc()));
                     var offsetTransform = Util.TranslationMatrix(offsetVec[0], offsetVec[1], offsetVec[2]);
 

@@ -231,9 +231,8 @@ namespace EW.OpenGLES.Graphics
         }
         public void Clear(Color color)
         {
-            var v4 = color.ToVector4();
             Threading.EnsureUIThread();
-            GL.ClearColor(v4.X, v4.Y, v4.Z, v4.W);
+            GL.ClearColor(color.R,color.G,color.B,color.A);
             GraphicsExtensions.CheckGLError();
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GraphicsExtensions.CheckGLError();

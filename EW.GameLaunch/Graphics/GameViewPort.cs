@@ -151,15 +151,19 @@ namespace EW.Graphics
             var map = worldRenderer.World.Map;
 
             //Calculate the projected cell position at the corners of the visible area
+            //计算可见区域角落处投影单元位置
             var tl = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(TopLeft)).ToMPos(map);
             var br = (PPos)map.CellContaining(worldRenderer.ProjectedPosition(BottomRight)).ToMPos(map);
 
+            //RectangularIsometric maps don't have straight edges,and wo we need an additional
+            //cell margin to includethe cells that are half visible on each edge.
             if(map.Grid.Type == MapGridT.RectangularIsometric)
             {
                 tl = new PPos(tl.U - 1,tl.V-1);
                 br = new PPos(br.U + 1, br.V + 1);
             }
 
+            //Clamp to the visible map bounds, if requested
             if (insideBounds)
             {
                 tl = map.Clamp(tl);
@@ -250,7 +254,7 @@ namespace EW.Graphics
                     {
                         var ti = tileSet.GetTileInfo(map.Tiles[uv]);
                         if (ti != null)
-                            ramp = ti.RampT;
+                            ramp = ti.RampType;
                     }
 
                     var corners = map.Grid.CellCorners[ramp];

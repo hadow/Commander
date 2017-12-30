@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
 using EW.OpenGLES;
-
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
 

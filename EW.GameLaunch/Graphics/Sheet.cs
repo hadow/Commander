@@ -1,6 +1,8 @@
 ﻿using System;
-using System.Drawing;
+using System.IO;
 using EW.OpenGLES.Graphics;
+using System.Drawing;
+using System.Drawing.Imaging;
 namespace EW.Graphics
 {
     /// <summary>
@@ -34,6 +36,18 @@ namespace EW.Graphics
             Size = texture.Size;
         }
 
+        public Sheet(SheetT type,Stream stream)
+        {
+            //using (var bitmap = BitmapFactory.DecodeStream(stream, null, 
+              //  new BitmapFactory.Options { InScaled = false, InDither = false, InJustDecodeBounds = false, InPurgeable = true, InInputShareable = true, }))
+            using(var bitmap = (Bitmap)Image.FromStream(stream))
+            {
+                Size = new Size(bitmap.Width, bitmap.Height);
+                data = new byte[4 * Size.Width * Size.Height];
+                Util.FastCopyIntoSprite(new Sprite(this, bitmap.Bounds2(), TextureChannel.Red), bitmap);
+            }
+            Type = type;
+        }
         public bool Buffered { get { return data != null || texture == null; } }
 
         /// <summary>

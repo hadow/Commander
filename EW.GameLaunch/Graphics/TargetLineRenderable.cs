@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.OpenGLES;
 using System.Linq;
+using System.Drawing;
 namespace EW.Graphics
 {
     public struct TargetLineRenderable:IRenderable,IFinalizedRenderable
@@ -50,9 +51,9 @@ namespace EW.Graphics
 
         public void RenderDebugGeometry(WorldRenderer wr) { }
 
-        public Rectangle ScreenBounds(WorldRenderer wr)
+        public EW.OpenGLES.Rectangle ScreenBounds(WorldRenderer wr)
         {
-            return Rectangle.Empty;
+            return EW.OpenGLES.Rectangle.Empty;
         }
 
     }

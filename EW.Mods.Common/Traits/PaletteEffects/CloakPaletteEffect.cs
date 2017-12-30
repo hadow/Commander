@@ -4,6 +4,7 @@ using EW.OpenGLES;
 using EW.Primitives;
 using EW.Graphics;
 using EW.Traits;
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using EW.Primitives;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Support
 {
     public static class PerfHistory

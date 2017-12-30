@@ -140,5 +140,10 @@ namespace EW.Mods.Common.Traits
             if (Info.UncloakOn.HasFlag(UncloakType.Attack))
                 Uncloak();
         }
+
+        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
+        {
+
+        }
     }
 }

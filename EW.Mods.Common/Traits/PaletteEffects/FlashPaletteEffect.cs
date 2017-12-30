@@ -3,6 +3,7 @@ using EW.Graphics;
 using EW.Traits;
 using System.Collections.Generic;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
     using GUtil = EW.Graphics.Util;

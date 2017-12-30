@@ -157,5 +157,26 @@ namespace EW.OpenGLES
         {
             return new Vector2(Math.Min(a.X, b.X), Math.Min(a.Y, b.Y));
         }
+
+
+        public float LengthSquared { get { return X * X + Y * Y; } }
+
+        public float Length
+        {
+            get
+            {
+                return (float)Math.Sqrt(LengthSquared);
+            }
+        }
+
+        static float Constrain(float x,float a,float b)
+        {
+            return x < a ? a : x >b ? b  : x;
+        }
+
+        public Vector2 Constrain(Vector2 min,Vector2 max)
+        {
+            return new Vector2(Constrain(X, min.X, max.X), Constrain(Y, min.Y, max.Y));
+        }
     }
 }

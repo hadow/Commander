@@ -5,6 +5,7 @@ using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Warheads;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
     public abstract class AttackBaseInfo:ConditionalTraitInfo

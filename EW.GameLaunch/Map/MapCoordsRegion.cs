@@ -51,11 +51,13 @@ namespace EW
                 var u = current.U + 1;
                 var v = current.V;
 
+                //Check for column overflow
                 if (u > r.bottomRight.U)
                 {
                     v += 1;
                     u = r.topLeft.U;
 
+                    //Check for row overflow
                     if (v > r.bottomRight.V)
                         return false;
                 }

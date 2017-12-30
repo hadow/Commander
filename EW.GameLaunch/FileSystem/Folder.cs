@@ -82,6 +82,8 @@ namespace EW.FileSystem
                 var filePath = Path.Combine(path, filename);
                 //return File.OpenRead(Path.Combine(path, filename));
                 var stream = Android.App.Application.Context.Assets.Open(filePath);
+                if (filename.IndexOf("loadscreen")>-1)
+                    return stream;
 #if ANDROID
                 MemoryStream memStream = new MemoryStream();
                 stream.CopyTo(memStream);

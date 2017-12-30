@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-
+using EW.Mods.Common.Traits;
 namespace EW.Mods.Common
 {
     public static class Util
@@ -66,6 +66,16 @@ namespace EW.Mods.Common
                 var frame = Util.QuantizeFacing(facing, 40);
                 return frame < 20 ? frame - 3 : frame - 8;
             }
+        }
+
+
+        public static WPos BetweenCells(World w,CPos from,CPos to)
+        {
+            var fromPos = from.Layer == 0 ? w.Map.CenterOfCell(from) : w.GetCustomMovementLayers()[from.Layer].CenterOfCell(from);
+
+            var toPos = to.Layer == 0 ? w.Map.CenterOfCell(to) : w.GetCustomMovementLayers()[to.Layer].CenterOfCell(to);
+
+            return WPos.Lerp(fromPos, toPos, 1, 2);
         }
     }
 }

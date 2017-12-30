@@ -91,7 +91,6 @@ namespace EW.Mods.Common.Graphics
             var loader = (TilesetSpecificSpriteSequenceLoader)Loader;
 
             var spriteName = sprite ?? sequence;
-
             if (LoadField(d, "UseTilesetCode", false))
             {
                 string code;
@@ -113,7 +112,7 @@ namespace EW.Mods.Common.Graphics
 
                 return spriteName + loader.DefaultSpriteExtension;
             }
-            Console.WriteLine("Sprite Name:" + spriteName);
+            
             return spriteName;
         }
     }

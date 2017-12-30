@@ -14,7 +14,7 @@ namespace EW.Mods.Common.Traits
         /// <param name="target"></param>
         /// <param name="self"></param>
         /// <returns></returns>
-        List<CPos> FindUnitPath(CPos source, CPos target, Actor self);
+        List<CPos> FindUnitPath(CPos source, CPos target, Actor self,Actor ignoreActor);
 
         List<CPos> FindUnitPathToRange(CPos source, SubCell surSub, WPos target, WDist range, Actor self);
 
@@ -45,7 +45,7 @@ namespace EW.Mods.Common.Traits
             this.world = world;
         }
 
-        public List<CPos> FindUnitPath(CPos source,CPos target,Actor self)
+        public List<CPos> FindUnitPath(CPos source,CPos target,Actor self,Actor ignoreActor)
         {
             //var mi = self.Info.TraitInfo<MobileInfo>();
 

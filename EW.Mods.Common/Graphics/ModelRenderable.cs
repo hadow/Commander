@@ -95,6 +95,10 @@ namespace EW.Mods.Common.Graphics
             readonly ModelRenderable model;
             readonly ModelRenderProxy renderProxy;
 
+
+            static readonly uint[] CornerXIndex = new uint[] {0,0,0,0,3,3,3,3 };
+            static readonly uint[] CornerYIndex = new uint[] { 1, 1, 4, 4, 1, 1, 4, 4 };
+            static readonly uint[] CornerZIndex = new uint[] { 2, 5, 2, 5, 2, 5, 2, 5 };
             public FinalizedModelRenderable(WorldRenderer wr,ModelRenderable model)
             {
                 this.model = model;
@@ -113,6 +117,7 @@ namespace EW.Mods.Common.Graphics
 
                 //HACK:We don't have enough texture channels to pass the depth data to the shader
                 //so for now just offset everything forward so that the back corner is rendered at pos.
+                //我们没有足够的纹理通道将深度数据传递给着色器，所以现在只需将所有东西都向前偏移，以便后边的角落渲染位置
                 pxOrigin = new Vector3(0, 0, Screen3DBounds(wr).Second.X);
 
                 var shadowOrigin = pxOrigin - groundZ * (new Vector2(renderProxy.ShadowDirection, 1));
@@ -123,6 +128,8 @@ namespace EW.Mods.Common.Graphics
                 var sc = shadowOrigin + psb[1];
                 var sd = shadowOrigin + psb[3];
 
+                WarGame.Renderer.WorldRgbaSpriteRenderer.DrawSprite(renderProxy.ShadowSprite, sa, sb, sc, sd);
+                WarGame.Renderer.WorldRgbaSpriteRenderer.DrawSprite(renderProxy.Sprite, pxOrigin - 0.5f * renderProxy.Sprite.Size);
             }
 
             public void RenderDebugGeometry(WorldRenderer wr)
@@ -151,6 +158,29 @@ namespace EW.Mods.Common.Graphics
                 var maxX = float.MinValue;
                 var maxY = float.MinValue;
                 var maxZ = float.MinValue;
+
+                foreach(var v in draw)
+                {
+                    var bounds = v.Model.Bounds(v.FrameFunc());
+                    var worldTransform = v.RotationFunc().Reverse().Aggregate(scaleTransform,
+                        (x, y) => EW.Graphics.Util.MatrixMultiply(x, EW.Graphics.Util.MakeFloatMatrix(y.AsMatrix())));
+
+                    var pxPos = pxOrigin + wr.ScreenVectorComponents(v.OffsetFunc());
+                    var screenTransform = EW.Graphics.Util.MatrixMultiply(cameraTransform, worldTransform);
+
+                    for(var i = 0; i < 8; i++)
+                    {
+                        var vec = new float[] { bounds[CornerXIndex[i]], bounds[CornerYIndex[i]], bounds[CornerZIndex[i]], 1 };
+                        var screen = EW.Graphics.Util.MatrixVectorMultiply(screenTransform, vec);
+                        minX = Math.Min(minX, pxPos.X + screen[0]);
+                        minY = Math.Min(minY, pxPos.Y + screen[1]);
+                        minZ = Math.Min(minZ, pxPos.Z + screen[2]);
+                        maxX = Math.Max(maxX, pxPos.X + screen[0]);
+                        maxY = Math.Max(maxY, pxPos.Y + screen[1]);
+                        maxZ = Math.Max(maxZ, pxPos.Z + screen[2]);
+                    }
+
+                }
 
                 return Pair.New(Rectangle.FromLTRB((int)minX, (int)minY, (int)maxX, (int)maxY), new Vector2(minZ, maxZ));
             }

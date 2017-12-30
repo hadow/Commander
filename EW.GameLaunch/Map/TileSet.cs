@@ -4,6 +4,7 @@ using System.IO;
 using System.Collections.Generic;
 using EW.OpenGLES;
 using EW.FileSystem;
+using System.Drawing;
 namespace EW
 {
     /// <summary>
@@ -14,7 +15,7 @@ namespace EW
         [FieldLoader.Ignore]
         public readonly byte TerrainT = byte.MaxValue;
         public readonly byte Height;
-        public readonly byte RampT;//Ð±ÆÂ
+        public readonly byte RampType;//Ð±ÆÂ
 
         public readonly Color LeftColor;
         public readonly Color RightColor;
@@ -57,7 +58,7 @@ namespace EW
 
         public readonly int[] Frames;
 
-        public readonly Point Size;
+        public readonly EW.OpenGLES.Point Size;
 
         public readonly bool PickAny;
 

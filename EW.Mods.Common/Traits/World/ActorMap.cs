@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using EW.OpenGLES;
-namespace EW.Traits
+using EW.Traits;
+namespace EW.Mods.Common.Traits
 {
-    public enum SubCell
-    {
-        Invalid = int.MinValue,
-        Any = int.MinValue/2,
-        FullCell = 0,
-        First = 1,
-    }
+    //public enum SubCell
+    //{
+    //    Invalid = int.MinValue,
+    //    Any = int.MinValue/2,
+    //    FullCell = 0,
+    //    First = 1,
+    //}
 
     public class ActorMapInfo:ITraitInfo
     {
@@ -29,9 +30,11 @@ namespace EW.Traits
     /// <summary>
     /// 
     /// </summary>
-    public class ActorMap:ITick
+    public class ActorMap:IActorMap,ITick,INotifyCreated
     {
-
+        /// <summary>
+        /// 影响节点
+        /// </summary>
         class InfluenceNode
         {
             public InfluenceNode Next;
@@ -95,7 +98,7 @@ namespace EW.Traits
         }
         
         /// <summary>
-        /// 近距离触发器
+        /// 邻近触发器
         /// </summary>
         class ProximityTrigger:IDisposable
         {
@@ -250,7 +253,8 @@ namespace EW.Traits
         int nextTriggerId;
 
         readonly CellLayer<InfluenceNode> influence;
-
+        readonly Dictionary<int, CellLayer<InfluenceNode>> customInfluence = new Dictionary<int, CellLayer<InfluenceNode>>();
+        public readonly Dictionary<int, ICustomMovementLayer> CustomMovementLayers = new Dictionary<int, ICustomMovementLayer>();
         readonly Bin[] bins;
         readonly int rows, cols;
 
@@ -266,9 +270,15 @@ namespace EW.Traits
         {
             this.info = info;
             this.map = world.Map;
-
-            bins = new Bin[rows * cols];
             influence = new CellLayer<InfluenceNode>(world.Map);
+
+            cols = CellCoordToBinIndex(world.Map.MapSize.X) + 1;
+            rows = CellCoordToBinIndex(world.Map.MapSize.Y) + 1;
+            bins = new Bin[rows * cols];
+
+            for (var row = 0; row < rows; row++)
+                for (var col = 0; col < cols; col++)
+                    bins[row * cols + col] = new Bin();
 
             //缓存这个代理，不必重复分配
             actorShouldBeRemoved = removeActorPosition.Contains;
@@ -292,6 +302,19 @@ namespace EW.Traits
             foreach (var t in proximityTriggers)
                 t.Value.Tick(this);
         }
+        
+
+
+        void INotifyCreated.Created(Actor self)
+        {
+            foreach(var cml in self.TraitsImplementing<ICustomMovementLayer>())
+            {
+                CustomMovementLayers[cml.Index] = cml;
+                customInfluence.Add(cml.Index, new CellLayer<InfluenceNode>(self.World.Map));
+            }
+
+        }
+
 
         /// <summary>
         /// 
@@ -340,10 +363,27 @@ namespace EW.Traits
         /// <returns></returns>
         public IEnumerable<Actor> GetActorsAt(CPos a)
         {
+            //PERF: Custom enumerator for efficiency - using 'yield' is slower
             var uv = a.ToMPos(map);
             if (!influence.Contains(uv))
                 return Enumerable.Empty<Actor>();
-            return new ActorsAtEnumerable(influence[uv]);
+
+            var layer = a.Layer == 0 ? influence : customInfluence[a.Layer];
+
+            return new ActorsAtEnumerable(layer[uv]);
+        }
+
+
+        public IEnumerable<Actor> GetActorsAt(CPos a,SubCell sub)
+        {
+            var uv = a.ToMPos(map);
+            if (!influence.Contains(uv))
+                yield break;
+
+            var layer = a.Layer == 0 ? influence : customInfluence[a.Layer];
+            for (var i = layer[uv]; i != null; i = i.Next)
+                if (!i.Actor.Disposed && (i.SubCell == sub || i.SubCell == SubCell.FullCell))
+                    yield return i.Actor;
         }
 
         public void AddInfluence(Actor self,IOccupySpace ios)
@@ -418,6 +458,24 @@ namespace EW.Traits
         {
             RemovePosition(a, ios);
             addActorPosition.Add(a);
+        }
+
+        IEnumerable<Bin> BinsInBox(WPos a,WPos b)
+        {
+            var lef = Math.Min(a.X, b.X);
+            var top = Math.Min(a.Y, b.Y);
+            var right = Math.Max(a.X, b.X);
+            var bottom = Math.Max(a.Y, b.Y);
+            var region = BinRectangleCoveringWorldArea(lef, top, right, bottom);
+
+            var minCol = region.Left;
+            var minRow = region.Top;
+            var maxCol = region.Right;
+            var maxRow = region.Bottom;
+
+            for (var row = minRow; row <= maxRow; row++)
+                for (var col = minCol; col <= maxCol; col++)
+                    yield return BinAt(row, col);
         }
 
         /// <summary>
@@ -502,19 +560,134 @@ namespace EW.Traits
             return FreeSubCell(cell, SubCell.Any, checkTransient) != SubCell.Invalid;
         }
 
+        public SubCell FreeSubCell(CPos cell,SubCell preferredSubCell,Func<Actor,bool> checkIfBlocker)
+        {
+            if (preferredSubCell > SubCell.Any && !AnyActorsAt(cell, preferredSubCell, checkIfBlocker))
+                return preferredSubCell;
+
+            if (!AnyActorsAt(cell))
+                return map.Grid.DefaultSubCell;
+
+            for (var i = (int)SubCell.First; i < map.Grid.SubCellOffsets.Length; i++)
+                if (i != (int)preferredSubCell && !AnyActorsAt(cell, (SubCell)i, checkIfBlocker))
+                    return (SubCell)i;
+            return SubCell.Invalid;
+        }
+
         public SubCell FreeSubCell(CPos cell,SubCell preferredSubCell = SubCell.Any,bool checkTransient = true)
         {
 
             return SubCell.Invalid;
         }
         
+
+        /// <summary>
+        /// always includes transients with influence
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
         public bool AnyActorsAt(CPos a)
         {
             var uv = a.ToMPos(map);
             if (!influence.Contains(uv))
                 return false;
 
-            return influence[uv] != null;
+            var layer = a.Layer == 0 ? influence : customInfluence[a.Layer];
+            return layer[uv] != null;
+        }
+
+
+        public bool AnyActorsAt(CPos a,SubCell sub,Func<Actor,bool> withCondition)
+        {
+            var uv = a.ToMPos(map);
+            if (!influence.Contains(uv))
+                return false;
+
+            var always = sub == SubCell.FullCell || sub == SubCell.Any;
+            var layer = a.Layer == 0 ? influence : customInfluence[a.Layer];
+            for (var i = layer[uv]; i != null; i = i.Next)
+                if ((always || i.SubCell == sub || i.SubCell == SubCell.FullCell && !i.Actor.Disposed && withCondition(i.Actor)))
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="sub"></param>
+        /// <param name="checkTransient"></param>
+        /// <returns></returns>
+        public bool AnyActorsAt(CPos a,SubCell sub,bool checkTransient = true)
+        {
+            var uv = a.ToMPos(map);
+            if (!influence.Contains(uv))
+                return false;
+
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="range"></param>
+        /// <param name="vRange"></param>
+        /// <param name="onEntry"></param>
+        /// <param name="onExit"></param>
+        /// <returns></returns>
+        public int AddProximityTrigger(WPos pos,WDist range,WDist vRange,Action<Actor> onEntry,Action<Actor> onExit)
+        {
+            var id = nextTriggerId++;
+            var t = new ProximityTrigger(pos, range, vRange, onEntry, onExit);
+            proximityTriggers.Add(id, t);
+
+            foreach (var bin in BinsInBox(t.TopLeft, t.BottomRight))
+                bin.ProximityTriggers.Add(t);
+
+            return id;
+        }
+
+
+        public void RemoveProximityTrigger(int id)
+        {
+            ProximityTrigger t;
+            if (!proximityTriggers.TryGetValue(id, out t))
+                return;
+
+            foreach (var bin in BinsInBox(t.TopLeft, t.BottomRight))
+                bin.ProximityTriggers.Remove(t);
+
+            t.Dispose();
+        }
+
+
+        public void UpdateProximityTrigger(int id ,WPos newPos,WDist newRange,WDist newVRange)
+        {
+            ProximityTrigger t;
+            if (!proximityTriggers.TryGetValue(id, out t))
+                return;
+
+            foreach (var bin in BinsInBox(t.TopLeft, t.BottomRight))
+                bin.ProximityTriggers.Remove(t);
+
+            t.Update(newPos, newRange, newVRange);
+
+            foreach (var bin in BinsInBox(t.TopLeft, t.BottomRight))
+                bin.ProximityTriggers.Add(t);
+        }
+    }
+
+
+
+    public static class ActorMapWorldExts
+    {
+        public static Dictionary<int,ICustomMovementLayer> GetCustomMovementLayers(this World world)
+        {
+            return ((ActorMap)world.ActorMap).CustomMovementLayers;
         }
     }
 }

@@ -35,6 +35,10 @@ namespace EW.Graphics
 
         void SetRenderStateForSprite(Sprite s){
 
+            renderer.CurrentBatchRenderer = this;
+            if (s.BlendMode != currentBlend || s.Sheet != currentSheet || nv + 6 > renderer.TempBufferSize)
+                Flush();
+
             currentBlend = s.BlendMode;
             currentSheet = s.Sheet;
 
@@ -47,6 +51,18 @@ namespace EW.Graphics
             renderer.Device.SetBlendMode(BlendMode.None);
         }
 
+        public void DrawSprite(Sprite s,Vector3 a,Vector3 b,Vector3 c,Vector3 d)
+        {
+            SetRenderStateForSprite(s);
+            Util.FastCreateQuad(vertices, a, b, c, d, s, 0, nv);
+            nv += 6;
+        }
+
+        //For RGBASpriteRenderer,which doesn't use palettes
+        public void DrawSprite(Sprite s,Vector3 location)
+        {
+            DrawSprite(s, location, 0, s.Size);
+        }
 
         public void DrawSprite(Sprite s,Vector3 location,PaletteReference pal){
             

@@ -106,6 +106,7 @@ namespace EW.Graphics
                 sprite = emptySprite;
 
             //The vertex buffer does not have geometry for cells outside the map
+            //顶点缓冲区没有地图外的单元格的几何图形
             if (!map.Tiles.Contains(uv))
                 return;
 

@@ -6,6 +6,7 @@ using EW.Activities;
 using EW.OpenGLES;
 namespace EW.Traits
 {
+    public sealed class RequireExplicitImplementationAttribute : Attribute { }
     public enum PipType
     {
         Transparent,
@@ -23,6 +24,14 @@ namespace EW.Traits
         Enemy = 1,      //敌对
         Neutral = 2,    //中立国
         Ally = 4,       //同盟国
+    }
+
+    public enum SubCell
+    {
+        Invalid = int.MinValue,
+        Any = int.MinValue/2,
+        FullCell = 0,
+        First = 1,
     }
 
     public static class StancExts
@@ -194,7 +203,7 @@ namespace EW.Traits
     }
     #endregion
 
-    public interface IAutoSelectionSize { Vector2 SelectionSize(Actor self); }
+    public interface IAutoSelectionSize { Int2 SelectionSize(Actor self); }
 
     /// <summary>
     /// 占领地
@@ -362,6 +371,11 @@ namespace EW.Traits
         void LoadPalettes(WorldRenderer wr);
     }
 
+    public interface ILoadsPlayerPalettes
+    {
+        void LoadPlayerPalettes(WorldRenderer wr, string playerName, HSLColor playerColor, bool replaceExisting);
+    }
+
     public interface IPaletteModifier
     {
         void AdjustPalette(IReadOnlyDictionary<string, MutablePalette> b);
@@ -436,5 +450,48 @@ namespace EW.Traits
     public interface ITargetableInfo : ITraitInfoInterface
     {
         HashSet<string> GetTargetTypes();
+    }
+
+
+    public interface IActorMap
+    {
+        IEnumerable<Actor> GetActorsAt(CPos a);
+
+        IEnumerable<Actor> GetActorsAt(CPos a, SubCell sub);
+
+        bool HasFreeSubCell(CPos cell, bool checkTransient = true);
+
+        SubCell FreeSubCell(CPos cell, SubCell preferredSubCell = SubCell.Any, bool checkTransient = true);
+
+        SubCell FreeSubCell(CPos cell, SubCell preferredSubCell, Func<Actor, bool> checkIfBlocker);
+
+        bool AnyActorsAt(CPos a);
+
+        bool AnyActorsAt(CPos a, SubCell sub, bool checkTransient = true);
+
+        bool AnyActorsAt(CPos a, SubCell sub, Func<Actor, bool> withCondition);
+
+        void AddInfluence(Actor self, IOccupySpace ios);
+
+        void RemoveInfluence(Actor self, IOccupySpace ios);
+
+        int AddCellTrigger(CPos[] cells, Action<Actor> onEntry, Action<Actor> onExit);
+
+        void RemoveCellTrigger(int id);
+
+        int AddProximityTrigger(WPos pos, WDist range, WDist vRange, Action<Actor> onEntry, Action<Actor> onExit);
+
+        void RemoveProximityTrigger(int id);
+
+        void UpdateProximityTrigger(int id, WPos newPos, WDist newRange, WDist newVRange);
+
+        void AddPosition(Actor a, IOccupySpace ios);
+
+        void RemovePosition(Actor a, IOccupySpace ios);
+
+        void UpdatePosition(Actor a, IOccupySpace ios);
+
+        IEnumerable<Actor> ActorsInBox(WPos a, WPos b);
+           
     }
 }

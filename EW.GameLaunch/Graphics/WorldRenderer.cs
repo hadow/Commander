@@ -55,6 +55,9 @@ namespace EW.Graphics
             {
                 pal.Trait.LoadPalettes(this);
             }
+
+            foreach (var p in world.Players)
+                UpdatePalettesForPlayer(p.InternalName, p.Color, false);
             
             palette.Initialize();
             
@@ -66,6 +69,8 @@ namespace EW.Graphics
 
         public void UpdatePalettesForPlayer(string internalName,HSLColor color,bool replaceExisting)
         {
+            foreach (var pal in World.WorldActor.TraitsImplementing<ILoadsPlayerPalettes>())
+                pal.LoadPlayerPalettes(this, internalName, color, replaceExisting);
         }
 
         /// <summary>
@@ -90,14 +95,11 @@ namespace EW.Graphics
 
             var renderables = GenerateRenderables();
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
-            
             WarGame.Renderer.EnableScissor(bounds);
 
             if (enableDepthBuffer)
                 WarGame.Renderer.Device.EnableDepthBuffer();
-
-
-
+            
             //地形绘制
             terrainRenderer.Draw(this, ViewPort);
 
@@ -106,6 +108,8 @@ namespace EW.Graphics
             for (var i = 0; i < renderables.Count; i++)
                 renderables[i].Render(this);
 
+            if (enableDepthBuffer)
+                WarGame.Renderer.ClearDepthBuffer();
 
             foreach (var a in World.ActorsWithTrait<IRenderAboveWorld>())
                 if (a.Actor.IsInWorld && !a.Actor.Disposed)
@@ -249,6 +253,7 @@ namespace EW.Graphics
         {
             palette.ReplacePalette(name, pal);
 
+            //Update cached PlayerReference if one exists.
             if (palettes.ContainsKey(name))
                 palettes[name].Palette = pal;
         }
@@ -256,6 +261,8 @@ namespace EW.Graphics
         /// <summary>
         /// Returns a position int the world that is projected to the given screen position.
         /// There are many possible world positions,and the returned value chooses the value with no elevation.
+        /// 返回投影到给定屏幕位置的世界中的位置。
+        /// 有许多可能的世界位置，返回值选择没有高程的值。
         /// </summary>
         /// <param name="screenPx"></param>
         /// <returns></returns>
@@ -281,6 +288,13 @@ namespace EW.Graphics
             return new Vector3(TileSize.Width * pos.X / TileScale, TileSize.Height * (pos.Y - pos.Z) / TileScale, z);
         }
 
+        public Vector3 Screen3DPxPosition(WPos pos)
+        {
+            //Round to nearest pixel
+            var px = Screen3DPosition(pos);
+            return new Vector3((float)Math.Round(px.X), (float)Math.Round(px.Y), px.Z);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -300,7 +314,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// For scaling vectors to pixel sizes in the model renderer
         /// </summary>
         /// <param name="vec"></param>
         /// <returns></returns>

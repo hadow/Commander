@@ -36,8 +36,7 @@
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AndroidSupportedAbis>
-    </AndroidSupportedAbis>
+    <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
@@ -56,6 +55,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoDrawing">
+      <HintPath>D:\github\mono\mcs\class\MonoDrawing\bin\Debug\MonoDrawing.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -174,6 +176,7 @@
     <Compile Include="Sound\Sound.cs" />
     <Compile Include="Sound\SoundDevice.cs" />
     <Compile Include="StreamExts.cs" />
+    <Compile Include="Support\LaunchArguments.cs" />
     <Compile Include="Support\MersenneTwister.cs" />
     <Compile Include="Support\PerfHistory.cs" />
     <Compile Include="Support\PerfItem.cs" />
@@ -194,7 +197,6 @@
     <Compile Include="Traits\Selectable.cs" />
     <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
-    <Compile Include="Traits\World\ActorMap.cs" />
     <Compile Include="Traits\World\Faction.cs" />
     <Compile Include="Traits\World\ResourceType.cs" />
     <Compile Include="Traits\World\ScreenMap.cs" />
@@ -508,6 +510,9 @@
     <AndroidAsset Include="Content\mods\ts\speech02.mix" />
     <AndroidAsset Include="Content\mods\ts\tem.mix" />
     <AndroidAsset Include="Content\mods\ts\temperat.mix" />
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\liblua.so" />
+    <AndroidNativeLibrary Include="lib\arm64\liblua.so" />
+    <AndroidAsset Include="Content\glsl\shp - Copy.frag" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -539,13 +544,13 @@
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="lib\armeabi-v7a\libxlua.so">
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\liblua.so">
       <Abi>armeabi-v7a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="lib\armeabi\libxlua.so">
-      <Abi>armeabi</Abi>
+    <AndroidNativeLibrary Include="lib\arm64\liblua.so">
+      <Abi>arm64-v8a</Abi>
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
@@ -555,9 +560,9 @@
     <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.pdb" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
     <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
-    <Content Include="Content\mods\ts\uibits\chrome.png" />
-    <Content Include="Content\mods\ts\uibits\dialog.png" />
-    <Content Include="Content\mods\ts\uibits\loadscreen.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\chrome.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\dialog.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />

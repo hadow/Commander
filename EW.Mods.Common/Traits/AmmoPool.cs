@@ -85,7 +85,13 @@ namespace EW.Mods.Common.Traits
 
         }
 
-        public void Attacking(Actor self,Target target,Armament a,Barrel barrel)
+        void INotifyAttack.Attacking(Actor self,Target target,Armament a,Barrel barrel)
+        {
+
+        }
+
+
+        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
         {
 
         }

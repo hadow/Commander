@@ -48,7 +48,6 @@
     <Compile Include="Android\AndroidGamePlatform.cs" />
     <Compile Include="Android\AndroidGameView.cs" />
     <Compile Include="Android\AndroidGameWindow.cs" />
-    <Compile Include="Color.cs" />
     <Compile Include="EventHelpers.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="Game.cs" />

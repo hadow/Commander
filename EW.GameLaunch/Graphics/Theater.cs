@@ -70,9 +70,10 @@ namespace EW.Graphics
                         var f = allFrames[j];
                         var tile = t.Value.Contains(j)?t.Value[j]:null;
 
+                        //The internal z axis is inverted from expectation (negative is closer)
                         var zOffset = tile != null ? -tile.ZOffset : 0;
 
-                        var zRamp = tile != null ? -tile.ZRamp : 1f;
+                        var zRamp = tile != null ? tile.ZRamp : 1f;
 
                         var offset = new Vector3(f.Offset, zOffset);
 

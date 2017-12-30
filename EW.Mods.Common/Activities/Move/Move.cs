@@ -10,12 +10,12 @@ using EW.Primitives;
 namespace EW.Mods.Common.Activities
 {
     /// <summary>
-    /// 
+    /// 行进
     /// </summary>
     public class Move:Activity
     {
         static readonly List<CPos> NoPath = new List<CPos>();
-        readonly Actor ignoredActor;
+        readonly Actor ignoreActor;
         readonly Func<List<CPos>> getPath;
 
         readonly WDist nearEnough;
@@ -24,6 +24,11 @@ namespace EW.Mods.Common.Activities
         bool hasWaited;
         bool hasNotifiedBlocker;
         int waitTicksRemaining;
+
+        //To work around queued activity issues while minimizing changes to legacy behaviour
+        //解决排队的活动问题，同时最大限度地减少对传统行为的更改
+        bool evaluateNearestMovableCell;
+
 
         readonly Mobile mobile;
         List<CPos> path;
@@ -50,9 +55,24 @@ namespace EW.Mods.Common.Activities
             nearEnough = WDist.Zero;
             
         }
-        public Move(Actor self,CPos destination,WDist nearEnough)
+        public Move(Actor self,CPos destination,WDist nearEnough,Actor ignoreActor = null,bool evaluateNearestMovableCell = false)
         {
+            mobile = self.Trait<Mobile>();
 
+            getPath = () =>
+            {
+                if (!this.destination.HasValue)
+                    return NoPath;
+
+                return self.World.WorldActor.Trait<IPathFinder>().FindUnitPath(mobile.ToCell, this.destination.Value, self, ignoreActor);
+            };
+
+            //Note:Will be recalculated from OnFirstRun if evaluateNearestMovableCell is true
+            this.destination = destination;
+
+            this.nearEnough = nearEnough;
+            this.ignoreActor = ignoreActor;
+            this.evaluateNearestMovableCell = evaluateNearestMovableCell;
         }
 
         public Move(Actor self,CPos destination,Actor ignoredActor)
@@ -78,7 +98,7 @@ namespace EW.Mods.Common.Activities
 
         public override Activity Tick(Actor self)
         {
-            if (IsCanceled)
+            if (IsCanceled && self.Location.Layer != CustomMovementLayerType.Tunnel)
                 return NextActivity;
 
             if (mobile.IsTraitDisabled)
@@ -120,8 +140,16 @@ namespace EW.Mods.Common.Activities
             else
             {
                 mobile.SetLocation(mobile.FromCell, mobile.FromSubCell, nextCell.Value.First, nextCell.Value.Second);
-                var from = self.World.Map.CenterOfSubCell(mobile.FromCell, mobile.FromSubCell);
-                return this;
+
+                var map = self.World.Map;
+                var from = (mobile.FromCell.Layer == 0 ? map.CenterOfCell(mobile.FromCell) :
+                    self.World.GetCustomMovementLayers()[mobile.FromCell.Layer].CenterOfCell(mobile.FromCell)) + map.Grid.OffsetOfSubCell(mobile.FromSubCell);
+
+                var to = Util.BetweenCells(self.World, mobile.FromCell, mobile.ToCell) +
+                    (map.Grid.OffsetOfSubCell(mobile.FromSubCell) + map.Grid.OffsetOfSubCell(mobile.ToSubCell)) / 2;
+
+                var move = new MoveFirstHalf(this, from, to, mobile.Facing, mobile.Facing, 0);
+                return move;
             }
         }
 
@@ -132,11 +160,15 @@ namespace EW.Mods.Common.Activities
 
             var nextCell = path[path.Count - 1];
 
-            var subCell = mobile.GetAvailableSubCell(nextCell, SubCell.Any, ignoredActor);
+            var subCell = mobile.GetAvailableSubCell(nextCell, SubCell.Any, ignoreActor);
 
             return Pair.New(nextCell, subCell);
         }
 
+        /// <summary>
+        /// 计算路径
+        /// </summary>
+        /// <returns></returns>
         List<CPos> EvalPath()
         {
             var path = getPath().TakeWhile(a => a != mobile.ToCell).ToList();
@@ -144,7 +176,7 @@ namespace EW.Mods.Common.Activities
             return path;
         }
 
-        [Conditional("SANITY_CHECKS")]
+        [Conditional("SANITY_CHECKS")]  //健全性检查
         void SanityCheckPath(Mobile mobile)
         {
             if (path.Count == 0)

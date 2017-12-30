@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using EW.Support;
 
 namespace EW.Graphics
 {
@@ -38,6 +39,12 @@ namespace EW.Graphics
             Name = name.ToLowerInvariant();
             this.facingFunc = facingFunc;
             this.paused = paused;
+        }
+
+
+        public string GetRandomExistingSequence(string[] sequences,MersenneTwister random)
+        {
+            return sequences.Where(s => HasSequence(s)).Random(random);
         }
 
         public void Tick()
@@ -88,6 +95,31 @@ namespace EW.Graphics
         {
             CurrentSequence = GetSequence(sequenceName);
             timeUntilNextFrame = CurrentSequenceTickOrDefault();
+        }
+
+        public void PlayThen(string sequenceName,Action after)
+        {
+            backwards = false;
+            tickAlways = false;
+            PlaySequence(sequenceName);
+
+            frame = 0;
+            tickFunc = () =>
+            {
+                ++frame;
+                if (frame > CurrentSequence.Length)
+                {
+                    frame = CurrentSequence.Length - 1;
+                    tickFunc = () => { };
+                    if (after != null)
+                        after();
+                }
+            };
+        }
+
+        public void Play(string sequenceName)
+        {
+            PlayThen(sequenceName, null);
         }
 
         public ISpriteSequence GetSequence(string sequenceName)

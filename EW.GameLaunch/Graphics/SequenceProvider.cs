@@ -121,6 +121,7 @@ namespace EW.Graphics
 
             foreach(var n in nodes)
             {
+                //Work around the loop closure issue in older versions of C#
                 var node = n;
                 var key = node.Value.ToLines(node.Key).JoinWith("|");
 

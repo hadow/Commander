@@ -21,9 +21,9 @@ namespace EW.Mods.Common.Traits
 
 
         public CustomSelectionSize(CustomSelectionSizeInfo info) { this.info = info; }
-        public Vector2 SelectionSize(Actor self)
+        public Int2 SelectionSize(Actor self)
         {
-            return new Vector2(info.CustomBounds[0], info.CustomBounds[1]);
+            return new Int2(info.CustomBounds[0], info.CustomBounds[1]);
         }
 
     }

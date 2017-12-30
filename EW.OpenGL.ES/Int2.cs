@@ -15,11 +15,14 @@ namespace EW.OpenGLES
 
         public static Int2 operator -(Int2 a,Int2 b) { return new Int2(a.X - b.X, a.Y - b.Y); }
 
+        public static Int2 operator -(Int2 a) { return new Int2(-a.X, -a.Y); }
+
         public static bool operator ==(Int2 a,Int2 b) { return a.X == b.X && a.Y == b.Y; }
 
         public static bool operator !=(Int2 a ,Int2 b) { return !(a == b); }
 
         public static Int2 operator /(Int2 a,int b) { return new Int2(a.X / b, a.Y / b); }
+
         #endregion
 
         public bool Equals(Int2 other) { return this == other; }

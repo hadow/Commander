@@ -2,11 +2,11 @@ C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\bin\Debug\EW.OpenGLES.dl
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\bin\Debug\EW.OpenGLES.pdb
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\bin\Debug\EW.OpenGLES.apk
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\bin\Debug\EW.OpenGLES-Signed.apk
+C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\EW.OpenGL.ES.csprojResolveAssemblyReference.cache
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\EW.OpenGL.ES.csproj.CoreCompileInputs.cache
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\EW.OpenGLES.dll
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\EW.OpenGLES.pdb
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\android\bin\EW.OpenGLES.apk
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\R.cs.flag
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\uploadflags.txt
-C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\obj\Debug\EW.OpenGL.ES.csprojResolveAssemblyReference.cache
 C:\Users\hadow\Source\Repos\EastWoodStudio\EW.OpenGL.ES\bin\Debug\EW.OpenGLES.dll.mdb

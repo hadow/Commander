@@ -12,6 +12,7 @@ namespace EW.Graphics
         public readonly Func<bool> DisableFunc;
         public readonly Func<WPos, int> ZOffset;
 
+        public AnimationWithOffset(Animation a,Func<WVec> offset,Func<bool> disable) : this(a, offset, disable, null) { }
 
         public AnimationWithOffset(Animation a,Func<WVec> offset,Func<bool> disable,Func<WPos,int> zOffset)
         {

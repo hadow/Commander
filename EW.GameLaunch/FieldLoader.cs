@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
@@ -13,7 +15,7 @@ using EW.Support;
 namespace EW
 {
     /// <summary>
-    /// 
+    /// ×Ö¶Î·´Éä
     /// </summary>
     public static class FieldLoader
     {
@@ -223,6 +225,64 @@ namespace EW
                 }
                 return value;
             }
+            else if(fieldType == typeof(WRot))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(',');
+                    if(parts.Length == 3)
+                    {
+                        int rr, rp, ry;
+                        if (Exts.TryParseIntegerInvariant(parts[0], out rr) &&
+                            Exts.TryParseIntegerInvariant(parts[1], out rp) &&
+                            Exts.TryParseIntegerInvariant(parts[2], out ry))
+                            return new WRot(new WAngle(rr), new WAngle(rp), new WAngle(ry));
+                    }
+                }
+
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(WAngle))
+            {
+                int res;
+                if (Exts.TryParseIntegerInvariant(value, out res))
+                    return new WAngle(res);
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(WVec))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(',');
+                    if(parts.Length == 3)
+                    {
+                        WDist rx, ry, rz;
+                        if (WDist.TryParse(parts[0], out rx) && WDist.TryParse(parts[1], out ry) && WDist.TryParse(parts[2], out rz))
+                            return new WVec(rx, ry, rz);
+                    }
+                }
+            }
+            else if(fieldType == typeof(WVec[]))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(',');
+                    if (parts.Length % 3 != 0)
+                        return InvalidValueAction(value, fieldType, fieldName);
+
+                    var vecs = new WVec[parts.Length / 3];
+                    for(var i = 0; i < vecs.Length; i++)
+                    {
+                        WDist rx, ry, rz;
+                        if (WDist.TryParse(parts[3 * i], out rx) && WDist.TryParse(parts[3 * i + 1], out ry) && WDist.TryParse(parts[3 * i + 2], out rz))
+                            vecs[i] = new WVec(rx, ry, rz);
+
+                    }
+                    return vecs;
+                }
+
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             else if(fieldType == typeof(WDist))
             {
                 WDist res;
@@ -372,14 +432,38 @@ namespace EW
                 return dict;
 
             }
+            else if(fieldType == typeof(System.Drawing.Color))
+            {
+                System.Drawing.Color color;
+                if (value != null && HSLColor.TryParseRGB(value, out color))
+                    return color;
+
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(System.Drawing.Color[]))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(',');
+                    var colors = new System.Drawing.Color[parts.Length];
+
+                    for(var i = 0; i < parts.Length; i++)
+                    {
+                        if (!HSLColor.TryParseRGB(parts[i], out colors[i]))
+                            return InvalidValueAction(value, fieldType, fieldName);
+                    }
+                    return colors;
+                }
+            }
             else if (fieldType == typeof(HSLColor))
             {
                 if (value != null)
                 {
-                    EW.OpenGLES.Color rgb;
+                    System.Drawing.Color rgb;
                     if (HSLColor.TryParseRGB(value, out rgb))
                         return new HSLColor(rgb);
 
+                    //Allowed old HSLColor / ColorRamp formats to be parsed as HSLColor
                     var parts = value.Split(',');
                     if (parts.Length == 3 || parts.Length == 4)
                         return new HSLColor((byte)Exts.ParseIntegerInvariant(parts[0]).Clamp(0, 255),
@@ -404,6 +488,23 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
+            else
+            {
+                var conv = TypeDescriptor.GetConverter(fieldType);
+                if (conv.CanConvertFrom(typeof(string)))
+                {
+                    try
+                    {
+                        return conv.ConvertFromInvariantString(value);
+                    }
+                    catch
+                    {
+                        return InvalidValueAction(value, fieldType, fieldName);
+                    }
+                }
+            }
+
+            UnknownFieldAction("[Type]{0}".F(value), fieldType);
             return null;
         }
 
@@ -555,5 +656,14 @@ namespace EW
             FromYamlKey = true;
             DictionaryFromYamlKey = true;
         }
+    }
+
+
+    [AttributeUsage(AttributeTargets.All)]
+    public sealed class DescAttribute : Attribute
+    {
+        public readonly string[] Lines;
+
+        public DescAttribute(params string[] lines) { Lines = lines; }
     }
 }

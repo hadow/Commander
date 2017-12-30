@@ -1,6 +1,6 @@
 precision highp float;
 uniform vec3 Scroll;
-uniform vec3 r1, r2;
+uniform vec3 r1, r2;		//matrix elements
 attribute vec4 aVertexPosition;
 attribute vec4 aVertexTexCoord;
 attribute vec2 aVertexTexMetadata;

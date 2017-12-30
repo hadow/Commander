@@ -125,6 +125,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
+        /// Allow SheetBuilder to generate 1/2/4 channel sheets.
         /// 
         /// </summary>
         /// <param name="t"></param>

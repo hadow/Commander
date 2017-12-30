@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Support
 {
     public class PerfItem

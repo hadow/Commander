@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Graphics
 {
     public interface IPalette
@@ -37,7 +38,7 @@ namespace EW.Graphics
         }
 
         /// <summary>
-        /// 
+        /// 具有只读属性的Pal
         /// </summary>
         class ReadOnlyPalette : IPalette
         {

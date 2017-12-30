@@ -151,21 +151,21 @@ namespace EW
 
             var grid = ModData.Manifest.Contains<MapGrid>() ? ModData.Manifest.Get<MapGrid>() : null;
             Renderer.InitializeDepthBuffer(grid);
-            //ModData.LoadScreen.StartGame(args);
-            LoadShellMap();
+            ModData.LoadScreen.StartGame(args);
+            //LoadShellMap();
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public void LoadShellMap()
+        public static void LoadShellMap()
         {
             var shellmap = ChooseShellMap();
             using (new PerfTimer("StartGame"))
                 StartGame(shellmap, WorldT.Shellmap);
         }
 
-        string ChooseShellMap()
+        static string ChooseShellMap()
         {
             var shellMaps = ModData.MapCache.Where(m => m.Status == MapStatus.Available && m.Visibility.HasFlag(MapVisibility.Shellmap)).Select(m => m.Uid);
 
@@ -180,7 +180,7 @@ namespace EW
         /// </summary>
         /// <param name="mapUID"></param>
         /// <param name="type"></param>
-        internal void StartGame(string mapUID,WorldT type)
+        internal static void StartGame(string mapUID,WorldT type)
         {
 
             if (worldRenderer != null)

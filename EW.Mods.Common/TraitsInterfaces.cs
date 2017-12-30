@@ -7,6 +7,35 @@ using EW.Graphics;
 using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
+
+
+    [RequireExplicitImplementation]
+    public interface ICustomMovementLayer
+    {
+        byte Index { get; }
+
+        bool InteractsWithDefaultLayer { get; }
+
+        bool EnabledForActor(ActorInfo ai, MobileInfo mi);
+
+        int EntryMovementCost(ActorInfo ai, MobileInfo mi, CPos cell);
+
+        int ExitMovementCost(ActorInfo ai, MobileInfo mi, CPos cell);
+
+        byte GetTerrainIndex(CPos cell);
+
+        WPos CenterOfCell(CPos cell);
+    }
+
+    [RequireExplicitImplementation]
+    public interface IRenderInfantrySequenceModifier
+    {
+        bool IsModifyingSequence { get; }
+
+        string SequencePrefix { get; }
+    }
+
+    public interface INotifyBuildComplete { void BuildingComplete(Actor self); }
     public interface ICrushable
     {
         bool CrushableBy(Actor self, Actor crusher, HashSet<string> crushClasses);
@@ -44,7 +73,12 @@ namespace EW.Mods.Common.Traits
         void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
     }
 
-    public interface INotifyAttack { void Attacking(Actor self, Target target, Armament a, Barrel barrel); }
+    public interface INotifyAttack
+    {
+
+        void PreparingAttack(Actor self, Target target, Armament a, Barrel barrel);
+        void Attacking(Actor self, Target target, Armament a, Barrel barrel);
+    }
 
 
     public interface IAcceptResourcesInfo : ITraitInfo { }

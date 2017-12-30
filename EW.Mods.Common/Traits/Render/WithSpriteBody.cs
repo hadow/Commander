@@ -49,7 +49,7 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class WithSpriteBody:ConditionalTrait<WithSpriteBodyInfo>
+    public class WithSpriteBody:ConditionalTrait<WithSpriteBodyInfo>, INotifyBuildComplete
     {
 
         public readonly Animation DefaultAnimation;
@@ -65,12 +65,55 @@ namespace EW.Mods.Common.Traits
                 paused = () => init.Self.IsDisabled() && DefaultAnimation.CurrentSequence.Name == NormalizeSequence(init.Self, Info.Sequence);
 
             DefaultAnimation = new Animation(init.World, rs.GetImage(init.Self), baseFacing, paused);
+            rs.Add(new AnimationWithOffset(DefaultAnimation, null, () => IsTraitDisabled));
 
+            if(info.StartSequence !=null)
+            {
+                PlayCustomAnimation(init.Self, info.StartSequence, () => PlayCustomAnimationRepeating(init.Self, info.Sequence));
+            }
+            else
+            {
+                DefaultAnimation.PlayRepeating(NormalizeSequence(init.Self, info.Sequence));
+            }
         }
 
+
+        //TODO:Get rid of INotifyBuildComplete in favor of using the condition system.
+        //摆脱INotifyBuildComplete有利于使用条件系统
+        void INotifyBuildComplete.BuildingComplete(Actor self)
+        {
+            OnBuildComplete(self);
+        }
+
+        protected virtual void OnBuildComplete(Actor self)
+        {
+            DefaultAnimation.PlayRepeating(NormalizeSequence(self, Info.Sequence));
+        }
         public string NormalizeSequence(Actor self,string sequence)
         {
             return RenderSprites.NormalizeSequence(DefaultAnimation, self.GetDamageState(), sequence);
+        }
+
+        public void PlayCustomAnimation(Actor self,string name,Action after = null)
+        {
+            DefaultAnimation.PlayThen(NormalizeSequence(self, name), () =>
+            {
+                DefaultAnimation.Play(NormalizeSequence(self, Info.Sequence));
+                if (after != null)
+                    after();
+            });
+        }
+
+
+        public void CancelCustomAnimation(Actor self)
+        {
+            DefaultAnimation.PlayRepeating(NormalizeSequence(self, Info.Sequence));
+        }
+
+        public void PlayCustomAnimationRepeating(Actor self,string name)
+        {
+            var sequence = NormalizeSequence(self, name);
+            DefaultAnimation.PlayThen(sequence, () => PlayCustomAnimationRepeating(self, sequence));
         }
     }
 }

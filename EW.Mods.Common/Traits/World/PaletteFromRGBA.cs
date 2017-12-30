@@ -4,6 +4,7 @@ using System.Linq;
 using EW.Graphics;
 using EW.OpenGLES;
 using EW.Traits;
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
     /// <summary>

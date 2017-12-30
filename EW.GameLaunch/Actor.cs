@@ -148,13 +148,13 @@ namespace EW
         Rectangle DetermineBounds()
         {
             var si = Info.TraitInfoOrDefault<SelectableInfo>();
-            var size = (si != null && si.Bounds != null) ? new Vector2(si.Bounds[0], si.Bounds[1]) : TraitsImplementing<IAutoSelectionSize>().Select(x => x.SelectionSize(this)).FirstOrDefault();
+            var size = (si != null && si.Bounds != null) ? new Int2(si.Bounds[0], si.Bounds[1]) : TraitsImplementing<IAutoSelectionSize>().Select(x => x.SelectionSize(this)).FirstOrDefault();
 
             var offset = -size / 2;
             if (si != null && si.Bounds != null && si.Bounds.Length > 2)
-                offset += new Vector2(si.Bounds[2], si.Bounds[3]);
+                offset += new Int2(si.Bounds[2], si.Bounds[3]);
 
-            return new Rectangle((int)offset.X, (int)offset.Y, (int)size.X, (int)size.Y);
+            return new Rectangle(offset.X, offset.Y, size.X, size.Y);
         }
         
 
@@ -310,7 +310,12 @@ namespace EW
 
         public LuaValue ToString(LuaRuntime runtime)
         {
-            return "Actor ({0})".F(this);
+            //PERF:Avoid format strings
+            //return "Actor ({0})".F(this);
+            var name = Info.Name + "    " + ActorID;
+            if (!IsInWorld)
+                name += "( not in world)";
+            return name;
         }
 
         public bool HasScriptProperty(string name)

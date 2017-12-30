@@ -3,6 +3,9 @@ using EW.Activities;
 using EW.Traits;
 namespace EW.Mods.Common.Activities
 {
+    /// <summary>
+    /// 转身
+    /// </summary>
     public class Turn:Activity
     {
         readonly IDisabledTrait disablable;

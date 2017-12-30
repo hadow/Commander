@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Mods.Common.Graphics
 {
     public struct RangeCircleRenderable:IRenderable,IFinalizedRenderable
@@ -54,7 +55,7 @@ namespace EW.Mods.Common.Graphics
 
         }
 
-        public Rectangle ScreenBounds(WorldRenderer wr) { return Rectangle.Empty; }
+        public EW.OpenGLES.Rectangle ScreenBounds(WorldRenderer wr) { return EW.OpenGLES.Rectangle.Empty; }
 
 
         public void RenderDebugGeometry(WorldRenderer wr){}

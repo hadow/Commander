@@ -196,7 +196,7 @@ namespace EW
         CellLayer<PPos[]> cellProjection;
         CellLayer<List<MPos>> inverseCellProjection;
         CellLayer<short> cachedTerrainIndexes;
-
+        CellLayer<byte> projectedHeight;
 
 
         public string Uid { get; private set; }
@@ -332,6 +332,9 @@ namespace EW
 
         public bool Contains(CPos cell)
         {
+            //.ToMPos() returns the same result if the X and Y coordinates are switched.X<Y is invalid in the RectangularIsometric coordinate system.
+            //so we pre-filter these to avoid returning the wrong result.
+            
             if (Grid.Type == MapGridT.RectangularIsometric && cell.X < cell.Y)
                 return false;
             return Contains(cell.ToMPos(this));
@@ -339,6 +342,9 @@ namespace EW
 
         public bool Contains(MPos uv)
         {
+            // The first check ensure that the cell is within the valid map region,avoiding potential crashes in deeper code.
+            //第一次检查确保单元格在有效的地图区域内，避免在更深的代码中潜在的崩溃。
+            // All CellLayers have the same geometry,and CustomTerrain is convenient.
             return CustomTerrain.Contains(uv) && ContainsAllProjectedCellsCovering(uv);
         }
 
@@ -353,6 +359,8 @@ namespace EW
             if (Grid.MaximumTerrainHeight == 0)
                 return Contains((PPos)uv);
 
+
+            //If the cell has no valid projection,then we're off the map
             var projectedCells = ProjectedCellsCovering(uv);
             if (projectedCells.Length == 0)
                 return false;
@@ -391,18 +399,71 @@ namespace EW
 
             uv = cell.ToMPos(Grid.Type);
 
+            // Remove old reverse projection
+            // 删除旧的反向投影
             foreach (var puv in cellProjection[uv])
+            {
+                var temp = (MPos)puv;
                 inverseCellProjection[(MPos)puv].Remove(uv);
+                projectedHeight[temp] = ProjectedCellHeightInner(puv);
+            }
+
 
             var projected = ProjectCellInner(uv);
             cellProjection[uv] = projected;
 
             foreach (var puv in projected)
-                inverseCellProjection[(MPos)puv].Add(uv);
+            {
+                var temp = (MPos)puv;
+                inverseCellProjection[temp].Add(uv);
+
+                var height = ProjectedCellHeightInner(puv);
+                projectedHeight[temp] = height;
+
+                // Propagate height up cliff faces
+                while (true)
+                {
+                    temp = new MPos(temp.U, temp.V - 1);
+                    if (!inverseCellProjection.Contains(temp) || inverseCellProjection[temp].Any())
+                        break;
+
+                    projectedHeight[temp] = height;
+                }
+            }
 
         }
 
         static readonly PPos[] NoProjectedCells = { };
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="puv"></param>
+        /// <returns></returns>
+        byte ProjectedCellHeightInner(PPos puv)
+        {
+            while (inverseCellProjection.Contains((MPos)puv))
+            {
+                var inverse = inverseCellProjection[(MPos)puv];
+                if (inverse.Any())
+                {
+                    //The original games treat the top of cliffs the same way as the bottom
+                    //This information isn't stored in the map data,so query the offset from the tileset.
+                    var temp = inverse.MaxBy(uv => uv.V);
+                    var terrain = Tiles[temp];
+                    return (byte)(Height[temp] - Rules.TileSet.Templates[terrain.Type][terrain.Index].Height);
+                }
+
+                //Try the next cell down if this is a cliff face
+                //如果这是一个悬崖面，尝试下一个单元格
+                puv = new PPos(puv.U, puv.V + 1);
+            }
+
+            return 0;
+        }
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -418,15 +479,18 @@ namespace EW
             if (height == 0)
                 return new[] { (PPos)uv };
 
-            if((height & 1) == 1)
+            //Odd-height ramps get bumped up a level to the next even height layer
+            if ((height & 1) == 1)
             {
                 var ti = Rules.TileSet.GetTileInfo(Tiles[uv]);
-                if (ti != null && ti.RampT != 0)
+                if (ti != null && ti.RampType != 0)
                     height += 1;
             }
 
             var candidates = new List<PPos>();
 
+            
+            //Odd-height level tiles are equally covered by four projected tiles.
             if ((height & 1) == 1)
             {
                 if ((uv.V & 1) == 1)
@@ -479,7 +543,9 @@ namespace EW
 
             cellProjection = new CellLayer<PPos[]>(this);
             inverseCellProjection = new CellLayer<List<MPos>>(this);
+            projectedHeight = new CellLayer<byte>(this);
 
+            //Initialize collections
             foreach(var cell in AllCells)
             {
                 var uv = cell.ToMPos(Grid.Type);
@@ -488,6 +554,7 @@ namespace EW
                     
             }
 
+            //Initialize projections
             foreach (var cell in AllCells)
                 UpdateProjection(cell);
         }
@@ -502,7 +569,15 @@ namespace EW
             if (Grid.Type == MapGridT.Rectangular)
                 return new CPos(pos.X / 1024, pos.Y / 1024);
 
-            //Convert from world position to isometric cell postion;
+            //Convert from world position to isometric cell postion:
+            //(a) Subtract ([1/2 cell],[1/2 cell]) to move the rotation center to the middle of the corner cell
+            //(b) Rotate axes by -pi/4 to align the world axes with the cell axes
+            //(c) Apply an offset so that the integer division by [1 cell] rounds in the right direction:
+            //      (i) u is always positive,so add [1/2 cell] (which then partially cancels the -[1 cell] term from the rotation)
+            //      (ii) v can be negative,so we need to be careful about rounding directions. We add [1/2 cell] * away from 0* (negative if y>x ).
+
+            //(e) Divide by [1 cell] to bring into cell coords.
+            // The world axes are rotated relative to the cell axes,so the standard cell size (1024) is increased by a factor of sqrt(2)
             var u = (pos.Y + pos.X - 724) / 1448;
             var v = (pos.Y - pos.X + (pos.Y > pos.X ? 724 : -724)) / 1448;
             return new CPos(u, v);
@@ -518,7 +593,17 @@ namespace EW
             if (Grid.Type == MapGridT.Rectangular)
                 return new WPos(1024 * cell.X + 512, 1024 * cell.Y + 512, 0);
 
-            //
+            //Convert from isometric cell position (x,y) to world position (u,v):
+            //(a) Consider the relationships:
+            //  - Center of origin cell is (512,512)
+            //  - +x adds (512,512) to world pos
+            //  - +y adds (-512,512) to world pos
+            //(b) Therefore:
+            // - ax+by adds (a-b)*512 + 512 to u
+            // - ax+by adds (a+b)*512 + 512 to v
+            //(c) u,v coordinates run diagonally to the cell axes, and we define 1024 as the length projected onto the primary cell axis
+            //u，v坐标以单元轴对角线方式运行，我们将1024定义为投影到主单元轴上的长度
+            // - 512*sqrt(2) = 724;
             var z = Height.Contains(cell) ? 724 * Height[cell] : 0;
             return new WPos(724 * (cell.X - cell.Y + 1), 724 * (cell.X + cell.Y + 1), z);
         }
@@ -575,6 +660,18 @@ namespace EW
 
             
 
+        }
+
+
+        public CPos Clamp(CPos cell)
+        {
+            return default(CPos);
+        }
+
+
+        public MPos Clamp(MPos uv)
+        {
+            return default(MPos);
         }
 
         
@@ -764,7 +861,7 @@ namespace EW
         }
 
         /// <summary>
-        /// /
+        /// 在地形之上的距离
         /// </summary>
         /// <param name="pos"></param>
         /// <returns></returns>

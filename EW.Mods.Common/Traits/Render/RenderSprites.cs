@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Graphics;
 using EW.Primitives;
+using EW.OpenGLES;
 namespace EW.Mods.Common.Traits
 {
 
@@ -149,7 +151,35 @@ namespace EW.Mods.Common.Traits
             this.info = info;
             faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : init.Self.Owner.Faction.InternalName;
         }
-        public virtual void Tick(Actor self){}
+
+        public static Func<int> MakeFacingFunc(Actor self)
+        {
+            var facing = self.TraitOrDefault<IFacing>();
+            if (facing == null)
+                return () => 0;
+            return () => facing.Facing;
+        }
+        public virtual void Tick(Actor self)
+        {
+            foreach(var a in anims)
+            {
+                a.Animation.Animation.Tick();
+            }
+
+        }
+
+
+        public void Add(AnimationWithOffset anim,string palette = null,bool isPlayerPalette = false)
+        {
+            //Use defaults
+            if(palette == null)
+            {
+                palette = info.Palette ?? info.PlayerPalette;
+                isPlayerPalette = info.Palette == null;
+            }
+
+            anims.Add(new AnimationWrapper(anim, palette, isPlayerPalette));
+        }
 
 
         public string GetImage(Actor self)
@@ -194,6 +224,15 @@ namespace EW.Mods.Common.Traits
         {
             if (!inits.Contains<FactionInit>())
                 inits.Add(new FactionInit(faction));
+        }
+
+
+        //Required by WithSpriteBody and WithInfantryBody
+        public Int2 AutoSelectionSize(Actor self)
+        {
+            return anims.Where(b => b.IsVisible &&
+                                b.Animation.Animation.CurrentSequence != null).
+                                Select(a => (a.Animation.Animation.Image.Size.XY * info.Scale).ToInt2()).FirstOrDefault();
         }
 
 

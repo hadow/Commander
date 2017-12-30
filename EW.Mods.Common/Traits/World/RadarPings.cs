@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.Traits;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
     public class RadarPingsInfo : ITraitInfo
@@ -21,6 +22,7 @@ namespace EW.Mods.Common.Traits
         public readonly List<RadarPing> Pings = new List<RadarPing>();
         readonly RadarPingsInfo info;
 
+        public WPos? LastPingPosition;
         public RadarPings(RadarPingsInfo info)
         {
             this.info = info;
@@ -30,6 +32,24 @@ namespace EW.Mods.Common.Traits
             foreach (var ping in Pings.ToArray())
                 if (!ping.Tick())
                     Pings.Remove(ping);
+        }
+
+
+        public RadarPing Add(Func<bool> isVisible,WPos position,Color color,int duration)
+        {
+            var ping = new RadarPing(isVisible, position, color, duration, info.FromRadius, info.ToRadius, info.ShrinkSpeed, info.RotationSpeed);
+
+            if (ping.IsVisible())
+                LastPingPosition = ping.Position;
+
+            Pings.Add(ping);
+
+            return ping;
+        }
+
+        public void Remove(RadarPing ping)
+        {
+            Pings.Remove(ping);
         }
 
     }
@@ -69,6 +89,8 @@ namespace EW.Mods.Common.Traits
             if (++tick == Duration)
                 return false;
 
+            radius = Math.Max(radius - ShrinkSpeed, ToRadius);
+            angle -= RotationSpeed;
             return true;
         }
     }

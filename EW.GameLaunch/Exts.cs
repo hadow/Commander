@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using System.Globalization;
 using EW.Support;
 using EW.Traits;
@@ -345,9 +346,33 @@ namespace EW
         }
 
 
-        public static bool Contains(this Rectangle r,Int2 p){
+        public static bool Contains(this EW.OpenGLES.Rectangle r,Int2 p){
             return r.Contains(p.ToPoint());
         }
+
+
+        public static T MinBy<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
+        {
+            return ts.CompareBy(selector, 1, true);
+        }
+
+        public static T MaxBy<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
+        {
+            return ts.CompareBy(selector, -1, true);
+        }
+
+
+        public static System.Drawing.Rectangle Bounds(this Bitmap b)
+        {
+            return new System.Drawing.Rectangle(0, 0, b.Width, b.Height);
+        }
+
+        public static EW.OpenGLES.Rectangle Bounds2(this Bitmap b)
+        {
+            return new OpenGLES.Rectangle(0, 0, b.Width, b.Height);
+        }
+
+        
     }
     
 }

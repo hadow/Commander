@@ -82,11 +82,11 @@ namespace EW
 
             var sequenceFormat = Manifest.Get<SpriteSequenceFormat>();
             var sequenceLoader = ObjectCreator.FindType(sequenceFormat.Type + "Loader");
-            var ctor = sequenceLoader != null ? sequenceLoader.GetConstructor(new[] { typeof(ModData) }) : null;
-            if (sequenceLoader == null || !sequenceLoader.GetInterfaces().Contains(typeof(ISpriteSequenceLoader)) || ctor == null)
+            var sequenceCtor = sequenceLoader != null ? sequenceLoader.GetConstructor(new[] { typeof(ModData) }) : null;
+            if (sequenceLoader == null || !sequenceLoader.GetInterfaces().Contains(typeof(ISpriteSequenceLoader)) || sequenceCtor == null)
                 throw new InvalidOperationException("Unable to find a sequence loader for type '{0}'.".F(sequenceFormat.Type));
-            SpriteSequenceLoader = (ISpriteSequenceLoader)ctor.Invoke(new[] { this });
-            SpriteSequenceLoader.OnMissingSpriteError =s=> { };
+            SpriteSequenceLoader = (ISpriteSequenceLoader)sequenceCtor.Invoke(new[] { this });
+            SpriteSequenceLoader.OnMissingSpriteError =s=> { Console.WriteLine(s); };
 
             var modelFormat = Manifest.Get<ModelSequenceFormat>();
             var modelLoader = ObjectCreator.FindType(modelFormat.Type + "Loader");

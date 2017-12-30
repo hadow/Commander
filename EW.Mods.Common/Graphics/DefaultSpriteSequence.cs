@@ -28,18 +28,20 @@ namespace EW.Mods.Common.Graphics
         {
             var sequences = new Dictionary<string, ISpriteSequence>();
             var nodes = node.Value.ToDictionary();
-            Console.WriteLine("ParseSequences:" + node.Key +"   count:"+nodes.Count);
+
             MiniYaml defaults;
             try
             {
                 if (nodes.TryGetValue("Defaults", out defaults))
                 {
                     nodes.Remove("Defaults");
+
                     foreach (var n in nodes)
                     {
                         n.Value.Nodes = MiniYaml.Merge(new[] { defaults.Nodes, n.Value.Nodes });
                         n.Value.Value = n.Value.Value ?? defaults.Value;
                     }
+
                 }
             }
             catch (Exception e)
@@ -53,6 +55,7 @@ namespace EW.Mods.Common.Graphics
                 {
                     try
                     {
+                        //Console.WriteLine("Parse sequence:node key:" + node.Key + "   animation:" + kvp.Key + " count:"+kvp.Value.Nodes.Count);
                         sequences.Add(kvp.Key, CreateSequence(modData, tileSet, cache, node.Key, kvp.Key, kvp.Value));
                     }
                     catch (FileNotFoundException ex)
@@ -182,7 +185,6 @@ namespace EW.Mods.Common.Graphics
 
                     //对序列中的每个子画面应用偏移，不同的序列可以对同一帧应用不同的偏移
                     var src = GetSpriteSrc(modData, tileSet, sequence, animation, info.Value, d);
-                    //Console.WriteLine("GetSpriteSrc:" + src);
                     sprites = cache[src].Select(s => new Sprite(s.Sheet, FlipRectangle(s.Bounds, flipX, flipY), ZRamp,
                         new Vector3(flipX ? -s.Offset.X : s.Offset.X, flipY ? -s.Offset.Y : s.Offset.Y, s.Offset.Z) + offset, s.Channel, blendmode)).ToArray();
                 }
@@ -190,7 +192,7 @@ namespace EW.Mods.Common.Graphics
                 var depthSprite = LoadField<string>(d, "DepthSprite", null);
                 if (!string.IsNullOrEmpty(depthSprite))
                 {
-                    Console.WriteLine("DepthSprite:" + depthSprite);
+                    //Console.WriteLine("DepthSprite:" + depthSprite);
                     var depthSpriteFrame = LoadField(d, "DepthSpriteFrame", 0);
                     var depthOffset = LoadField(d, "DepthSpriteOffset", Vector2.Zero);
                     var depthSprites = cache.AllCached(depthSprite).Select(s => s[depthSpriteFrame]);

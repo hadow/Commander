@@ -130,7 +130,8 @@ namespace EW.Graphics
             CopyBufferToTexture();
 
             //Reset modified palettes back to their original colors,ready for next time.
-            foreach(var kvp in modifiablePalettes)
+            //将修改后的调色板重置为原来的颜色，准备下次使用。
+            foreach (var kvp in modifiablePalettes)
             {
                 var originalPalette = palettes[kvp.Key];
                 var modifiedPalette = kvp.Value;
@@ -170,10 +171,6 @@ namespace EW.Graphics
             throw new InvalidOperationException("Palette '{0}' does not exist".F(name));
 
         }
-        //public void Dispose()
-        //{
-        //    Texture.Dispose();
-        //}
 
         public void Dispose()
         {

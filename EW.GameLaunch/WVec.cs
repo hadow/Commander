@@ -29,6 +29,11 @@ namespace EW
         public static bool operator ==(WVec a,WVec b) { return a.X == b.X && a.Y == b.Y && a.Z == b.Z; }
 
         public static bool operator !=(WVec a,WVec b) { return !(a == b); }
+
+        public static WVec operator *(int a,WVec b) { return new WVec(a * b.X, a * b.Y, a * b.Z); }
+        public static WVec operator *(WVec a,int b) { return b * a; }
+
+        public static WVec operator /(WVec a,int b) { return new WVec(a.X / b, a.Y / b, a.Z / b); }
         #endregion
 
         public int Length { get { return (int)Exts.ISqrt(LengthSquared); } }

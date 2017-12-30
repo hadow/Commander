@@ -11,7 +11,12 @@ namespace EW
     public struct CPos:IScriptBindable,IEquatable<CPos>,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaEqualityBinding,ILuaTableBinding
     {
         public readonly int X, Y;
-        public CPos(int x,int y) { X = x;Y = y; }
+
+        public readonly byte Layer;
+
+        public CPos(int x,int y) { X = x;Y = y; Layer = 0; }
+
+        public CPos(int x,int y,byte layer) { X = x;Y = y;Layer = layer; }
 
         public static readonly CPos Zero = new CPos(0, 0);
 
@@ -68,10 +73,12 @@ namespace EW
 
         public MPos ToMPos(MapGridT gridT)
         {
-            //TODO:
-
             if (gridT == MapGridT.Rectangular)
                 return new MPos(X, Y);
+
+
+            //Convert from RectangularIsometric cell (x,y) position to rectangular map position (u,v)
+
 
             var u = (X - Y) / 2;
             var v = X + Y;

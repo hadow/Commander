@@ -12,9 +12,23 @@ namespace EW
 
         public MPos(int u,int v) { U = u; V = v; }
 
+        public static bool operator ==(MPos me,MPos other) { return me.U == other.U && me.V == other.V; }
+
+        public static bool operator !=(MPos me,MPos other) { return !(me == other); }
+
         public bool Equals(MPos mPos)
         {
             return mPos.U == this.U && mPos.V == this.V;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MPos && Equals((MPos)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return U.GetHashCode() ^ V.GetHashCode();
         }
 
         public CPos ToCPos(Map map)
@@ -44,7 +58,13 @@ namespace EW
     }
 
     /// <summary>
-    /// 投影地图位置
+    /// PPos 最好被认为是在屏幕空间中应用的单元风格。
+    /// 具有不同地形高度的多个单元格可以投影到相同的PPos上，
+    /// 或者投影到多个PPos(如果它们不与屏幕网格对齐)
+    /// PPos 坐标主要用于地图边缘检查和遮罩可见性查询
+    /// PPos is best thought of as a cell grid applied in screen space.
+    /// Multiple cells with different terrain heights may be projected to the same PPOs,or to multiple PPos if they do not align with
+    /// the screen grid.PPos coordinates are used primarily for map edge checks and shroud /visibility queries.
     /// </summary>
     public struct PPos:IEquatable<PPos>
     {

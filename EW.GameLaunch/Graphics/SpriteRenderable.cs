@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using EW.OpenGLES;
 namespace EW.Graphics
 {
@@ -78,11 +79,11 @@ namespace EW.Graphics
             WarGame.Renderer.WorldRgbaColorRenderer.DrawRect(screenOffset,screenOffset+sprite.Size,1/wr.ViewPort.Zoom,Color.Red);
         }
 
-        public Rectangle ScreenBounds(WorldRenderer wr)
+        public EW.OpenGLES.Rectangle ScreenBounds(WorldRenderer wr)
         {
             var screenOffset = ScreenPosition(wr);
 
-            return new Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
+            return new EW.OpenGLES.Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
         }
 
         Vector3 ScreenPosition(WorldRenderer wr)

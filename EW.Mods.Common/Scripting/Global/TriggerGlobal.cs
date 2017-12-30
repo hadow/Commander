@@ -39,19 +39,19 @@ namespace EW.Mods.Common.Scripting
 
         public void OnProduction(Actor a,LuaFunction func)
         {
-            //GetScriptTriggers(a).RegisterCallback(Trigger.OnProduction, func, Context);
+            GetScriptTriggers(a).RegisterCallback(Trigger.OnProduction, func, Context);
         }
 
 
         public void OnIdle(Actor a,LuaFunction func)
         {
-            //GetScriptTriggers(a).RegisterCallback(Trigger.OnIdle, func, Context);
+            GetScriptTriggers(a).RegisterCallback(Trigger.OnIdle, func, Context);
         }
 
 
         public void OnDamaged(Actor a ,LuaFunction func)
         {
-            //GetScriptTriggers(a).RegisterCallback(Trigger.OnDamaged, func, Context);
+            GetScriptTriggers(a).RegisterCallback(Trigger.OnDamaged, func, Context);
         }
     }
 }

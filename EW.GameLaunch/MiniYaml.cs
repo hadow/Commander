@@ -62,7 +62,7 @@ namespace EW
 
         public MiniYamlNode Clone()
         {
-            return new MiniYamlNode(Key, Value);
+            return new MiniYamlNode(Key, Value.Clone());
         }
 
 
@@ -386,11 +386,12 @@ namespace EW
         {
             var resolved = new List<MiniYamlNode>();
 
+            //Inheritance is tracked  from parent->child ,but not from child->parentsiblings.
             inherited = new Dictionary<string, MiniYamlNode.SourceLocation>(inherited);
 
             foreach(var n in node.Nodes)
             {
-                if(n.Key == "Inherits" || n.Key.StartsWith("Inherits@"))
+                if(n.Key == "Inherits" || n.Key.StartsWith("Inherits@",StringComparison.Ordinal))
                 {
                     MiniYaml parent;
                     if(!tree.TryGetValue(n.Value.Value,out parent))
@@ -406,7 +407,7 @@ namespace EW
                         MergeIntoResolved(r, resolved, tree, inherited);
                     
                 }
-                else if (n.Key.StartsWith("-"))
+                else if (n.Key.StartsWith("-",StringComparison.Ordinal))
                 {
                     var removed = n.Key.Substring(1);
                     if(resolved.RemoveAll(r=>r.Key == removed) == 0)
@@ -437,6 +438,7 @@ namespace EW
             if (existingNode != null)
             {
                 existingNode.Value = MergePartial(existingNode.Value, overrideNode.Value);
+                existingNode.Value.Nodes = ResolveInherits(existingNode.Key, existingNode.Value, tree, inherited);
             }
             else
             {

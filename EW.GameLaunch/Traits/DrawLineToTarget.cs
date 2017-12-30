@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.Graphics;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Traits
 {
     public class DrawLineToTargetInfo:ITraitInfo

@@ -5,17 +5,24 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class SpeedMultiplierInfo : UpgradeMultiplierTraitInfo
+
+    /// <summary>
+    /// Modifies the movement speed of this actor
+    /// </summary>
+    public class SpeedMultiplierInfo : ConditionalTraitInfo
     {
+
+        [FieldLoader.Require]
+        public readonly int Modifier = 100;//Percentage modifier to apply.
         public override object Create(ActorInitializer init)
         {
-            return new SpeedMultiplier(this, init.Self.Info.Name);
+            return new SpeedMultiplier(this);
         }
     }
-    public class SpeedMultiplier:UpgradeMultiplierTrait,ISpeedModifier
+    public class SpeedMultiplier:ConditionalTrait<SpeedMultiplierInfo>,ISpeedModifier
     {
-        public SpeedMultiplier(SpeedMultiplierInfo info,string actorType) : base(info, "SpeedMultiplier", actorType) { }
+        public SpeedMultiplier(SpeedMultiplierInfo info) : base(info) { }
 
-        public int GetSpeedModifier() { return GetModifier(); }
+        public int GetSpeedModifier() { return IsTraitDisabled ? 100 : Info.Modifier; }
     }
 }

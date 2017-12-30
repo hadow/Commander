@@ -88,7 +88,7 @@ namespace EW.OpenGLES.Mobile
                 }
                 else if(_game.GraphicsDevice != null)
                 {
-                    _game.GraphicsDevice.Clear(Color.Black);
+                    _game.GraphicsDevice.Clear(System.Drawing.Color.Black);
 
                     _game.Platform.Present();
                 }

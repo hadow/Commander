@@ -7,6 +7,7 @@ using EW.Traits;
 using EW.Scripting;
 using EW.NetWork;
 using EW.Primitives;
+using EW.Graphics;
 namespace EW
 {
     public enum WinState { Undefined,Won,Lost}
@@ -17,8 +18,8 @@ namespace EW
     public class Player:IScriptBindable,IScriptNotifyBind,ILuaTableBinding,ILuaEqualityBinding,ILuaToStringBinding
     {
         public WinState WinState = WinState.Undefined;
-       
 
+        public readonly HSLColor Color;
         public readonly Actor PlayerActor;
 
         public readonly string PlayerName;
@@ -80,7 +81,7 @@ namespace EW
             {
                 //Map player
                 ClientIndex = 0;
-
+                Color = pr.Color;
                 PlayerName = pr.Name;
                 NonCombatant = pr.NonCombatant;
                 Playable = pr.Playable;

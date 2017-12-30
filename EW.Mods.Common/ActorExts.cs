@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using EW.Traits;
 using EW.OpenGLES;
+using System.Drawing;
 namespace EW.Mods.Common
 {
     public static class ActorExts
