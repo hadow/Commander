@@ -53,20 +53,89 @@ namespace EW
             return (v & (v - 1)) == 0;
         }
 
-        public static int ISqrt(int number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
-        {
-            return 0;
-        }
-
-
         public static uint ISqrt(uint number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
         {
-            return 0;
+            var divisor = 1U << 30;
+
+            var root = 0U;
+
+            var remainder = number;
+
+            //Find the highest term in the divisor
+            //找出除数中的最高项
+            while (divisor > number)
+                divisor >>= 2;
+
+            while(divisor!=0){
+
+                if(root+divisor <= remainder){
+                    remainder -= root + divisor;
+                    root += 2 * divisor;
+
+                }
+
+                root >>= 1;
+                divisor >>= 2;
+
+            }
+
+            if (round == ISqrtRoundMode.Nearest && remainder > root)
+                root += 1;
+            else if (round == ISqrtRoundMode.Ceiling && root * root < number)
+                root += 1;
+
+            return root;
+
         }
+
+
+        public static int ISqrt(int number, ISqrtRoundMode round = ISqrtRoundMode.Floor)
+        {
+
+            if (number < 0)
+                throw new InvalidOperationException("Attempted to calculate the square root of a negative integer :{0}".F(number));
+
+            return (int)ISqrt((uint)number, round);
+        }
+
 
         public static long ISqrt(long number,ISqrtRoundMode round = ISqrtRoundMode.Floor)
         {
-            return 0L;
+            if(number <0)
+                throw new InvalidOperationException("Attempted to calculate the square root of a negative integer :{0}".F(number));
+
+            return (long)ISqrt((ulong)number,round);
+        }
+
+        public static ulong ISqrt(ulong number,ISqrtRoundMode round = ISqrtRoundMode.Floor){
+
+            var divisor = 1UL << 62;
+
+            var root = 0UL;
+
+            var remainder = root;
+
+            while (divisor > number)
+                divisor >>= 2;
+
+            while(divisor != 0){
+                if(root+divisor<= remainder){
+                    remainder -= root + divisor;
+                    root += 2 * divisor;
+
+                }
+
+                root >>= 1;
+                divisor >>= 2;
+
+            }
+
+            if (round == ISqrtRoundMode.Nearest && remainder > root)
+                root += 1;
+            else if (round == ISqrtRoundMode.Ceiling && root * root < number)
+                root += 1;
+
+            return root;
         }
 
         public static string F(this string fmt,params object[] args)
@@ -359,6 +428,11 @@ namespace EW
         public static T MaxBy<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
         {
             return ts.CompareBy(selector, -1, true);
+        }
+
+
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source){
+            return new HashSet<T>(source);
         }
 
 

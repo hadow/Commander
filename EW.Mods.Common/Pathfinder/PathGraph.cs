@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Mods.Common.Traits;
-
+using EW.Primitives;
+using System.Linq;
 namespace EW.Mods.Common.Pathfinder
 {
 
@@ -72,6 +73,9 @@ namespace EW.Mods.Common.Pathfinder
         public Actor IgnoredActor { get; set; }
 
         readonly CellConditions checkConditions;
+
+        readonly bool checkTerrainHeight;
+
         
         readonly MobileInfo mobileInfo;
 
@@ -79,19 +83,28 @@ namespace EW.Mods.Common.Pathfinder
 
         readonly CellInfoLayerPool.PooledCellInfoLayer pooledLayer;
 
-        CellLayer<CellInfo> cellInfo;
+        CellLayer<CellInfo> groundInfo;
+
+        readonly Dictionary<byte, Pair<ICustomMovementLayer, CellLayer<CellInfo>>> customLayerInfo = new Dictionary<byte, Pair<ICustomMovementLayer, CellLayer<CellInfo>>>();
+
 
         public PathGraph(CellInfoLayerPool layerPool,MobileInfo mobileInfo,Actor actor,World world,bool checkForBlocked)
         {
             pooledLayer = layerPool.Get();
-            cellInfo = pooledLayer.Layer;
+            groundInfo = pooledLayer.GetLayer();
+
+            var layers = world.GetCustomMovementLayers().Values.Where(cml => cml.EnabledForActor(actor.Info, mobileInfo));
+
+            foreach (var cml in layers)
+                customLayerInfo[cml.Index] = Pair.New(cml, pooledLayer.GetLayer());
+            
             World = world;
             this.mobileInfo = mobileInfo;
             worldMovementInfo = mobileInfo.GetWorldMovementInfo(world);
             Actor = actor;
             LaneBias = 1;
             checkConditions = checkForBlocked ? CellConditions.TransientActors:CellConditions.None;
-
+            checkTerrainHeight = world.Map.Grid.MaximumTerrainHeight > 0;
         }
 
         static readonly CVec[][] DirectedNeighbors =
@@ -101,6 +114,10 @@ namespace EW.Mods.Common.Pathfinder
             new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1),new CVec(1,0),new CVec(1,1)},
             new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1)},
             CVec.Directions,
+            new[]{new CVec(1,-1),new CVec(1,0),new CVec(1,1)},
+            new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)},
+            new[]{new CVec(-1,1),new CVec(0,1),new CVec(1,1)},
+            new[]{new CVec(1,-1),new CVec(1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)}
 
         };
 
@@ -111,7 +128,7 @@ namespace EW.Mods.Common.Pathfinder
         /// <returns></returns>
         public List<GraphConnection> GetConnections(CPos position)
         {
-            var previousPos = cellInfo[position].PreviousPos;
+            var previousPos = groundInfo[position].PreviousPos;
 
             var dx = position.X - previousPos.X;
             var dy = position.Y - previousPos.Y;
@@ -168,18 +185,19 @@ namespace EW.Mods.Common.Pathfinder
 
         public CellInfo this[CPos pos]
         {
-            get { return cellInfo[pos]; }
+            get { return groundInfo[pos]; }
             set
             {
-                cellInfo[pos] = value;
+                groundInfo[pos] = value;
             }
         }
 
 
         public void Dispose()
         {
+            customLayerInfo.Clear();
             pooledLayer.Dispose();
-            cellInfo = null;
+            groundInfo = null;
         }
 
     }

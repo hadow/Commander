@@ -20,6 +20,7 @@ namespace EW.Mods.Common.Traits
 
         /// <summary>
         /// Calculates a path given a search specification
+        /// 计算给定搜索规范的路径
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
@@ -29,10 +30,11 @@ namespace EW.Mods.Common.Traits
 
     /// <summary>
     /// Calculates routes for mobile units based on the A* search algorithm.
+    /// 根据A *搜索算法计算移动单元的路线
     /// </summary>
     public class PathFinderInfo : ITraitInfo
     {
-        public object Create(ActorInitializer init) { return new PathFinder(init.World); }
+        public object Create(ActorInitializer init) { return new PathFinderUnitPathCacheDecorator(new PathFinder(init.World),new PathCacheStorage(init.World)); }
     }
 
     public class PathFinder:IPathFinder
@@ -47,22 +49,27 @@ namespace EW.Mods.Common.Traits
 
         public List<CPos> FindUnitPath(CPos source,CPos target,Actor self,Actor ignoreActor)
         {
-            //var mi = self.Info.TraitInfo<MobileInfo>();
+            var mi = self.Info.TraitInfo<MobileInfo>();
 
-            //var domainIndex = world.WorldActor.TraitOrDefault<DomainIndex>();
+            //if water-land transition is required,bail early
+            var domainIndex = world.WorldActor.TraitOrDefault<DomainIndex>();
 
-            //if (domainIndex != null)
-            //{
-            //    var passable = mi.GetMovementClass(world.Map.Rules.TileSet);
-            //    if (!domainIndex.IsPassable(source, target, (uint)passable))
-            //        return EmptyPath;
-            //}
+            if (domainIndex != null)
+            {
+                var passable = mi.GetMovementClass(world.Map.Rules.TileSet);
+                if (!domainIndex.IsPassable(source, target, (uint)passable))
+                    return EmptyPath;
+            }
 
-            //List<CPos> pb;
-            //using (var fromSrc = PathSearch.FromPoint(world, mi, self, target, source, true))
-            //using (var fromDest = PathSearch.FromPoint(world, mi, self, source, target, true).Reverse())
-            //    pb = FindBidiPath(fromSrc, fromDest);
-            throw new NotImplementedException();
+            List<CPos> pb;
+            using (var fromSrc = PathSearch.FromPoint(world, mi, self, target, source, true).WithIgnoredActor(ignoreActor))
+            using (var fromDest = PathSearch.FromPoint(world, mi, self, source, target, true).WithIgnoredActor(ignoreActor).Reverse())
+                pb = FindBidiPath(fromSrc, fromDest);
+
+            CheckStanePath2(pb,source,target);
+
+            return pb;
+
         }
 
         public List<CPos> FindBidiPath(IPathSearch fromSrc,IPathSearch fromDest)
@@ -77,7 +84,26 @@ namespace EW.Mods.Common.Traits
 
         public List<CPos> FindUnitPathToRange(CPos source,SubCell srcSub,WPos target,WDist range,Actor self)
         {
-            throw new NotImplementedException();
+
+            var mi = self.Info.TraitInfo<MobileInfo>();
+            var targetCell = world.Map.CellContaining(target);
+
+            target -= world.Map.Grid.OffsetOfSubCell(srcSub);
+
+            var tilesInRange = world.Map.f
+        }
+
+
+        static void CheckStanePath2(IList<CPos> path,CPos src,CPos dest){
+            if (path.Count == 0)
+                return;
+
+            if (path[0] != dest)
+                throw new InvalidOperationException("(PathFinder) sanity check failed:doesn't go to dest");
+
+            if (path[path.Count - 1] != src)
+                throw new InvalidOperationException("(PathFinder) sanity check failed:doesn't come from src.");
+            
         }
     }
 }

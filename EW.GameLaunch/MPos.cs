@@ -12,6 +12,8 @@ namespace EW
 
         public MPos(int u,int v) { U = u; V = v; }
 
+        public static readonly MPos Zero = new MPos(0, 0);
+
         public static bool operator ==(MPos me,MPos other) { return me.U == other.U && me.V == other.V; }
 
         public static bool operator !=(MPos me,MPos other) { return !(me == other); }

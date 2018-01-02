@@ -880,5 +880,48 @@ namespace EW
             return delta.Yaw.Facing;
         }
 
+
+        public IEnumerable<CPos> FindTilesInCircle(CPos center,int maxRange,bool allowOutsideBounds = false){
+
+            return FindTilesInAnnulus(center, 0, maxRange, allowOutsideBounds);
+        }
+
+
+        /// <summary>
+        /// Bot ranges are inclusive because everything that calls it is designed for maxRange being inclusive.
+        /// it rounds the actual distance up to the next integer so that this call.
+        /// will return any cells that intersect with the requested range circel.
+        /// The returned positions are sorted by distance from the center.
+        /// </summary>
+        /// <returns>The tiles in annulus.</returns>
+        /// <param name="center">Center.</param>
+        /// <param name="minRange">Minimum range.</param>
+        /// <param name="maxRange">Max range.</param>
+        /// <param name="allowOutsideBounds">If set to <c>true</c> allow outside bounds.</param>
+
+        public IEnumerable<CPos> FindTilesInAnnulus(CPos center,int minRange,int maxRange,bool allowOutsideBounds = false){
+
+
+            if (maxRange < minRange)
+                throw new ArgumentOutOfRangeException("maxRange", "Maximum range is less than the minimum range.");
+
+            if (maxRange >= Grid.TilesByDistance.Length)
+                throw new ArgumentOutOfRangeException("maxRange", "The requested range ({0}) cannot exceed the value of MaximumTileSearchRange ({1})  ".F(maxRange, Grid.MaximumTileSearchRange));
+
+            Func<CPos, bool> valid = Contains;
+
+            if (allowOutsideBounds)
+                valid = Tiles.Contains;
+
+            for (var i = minRange; i < maxRange;i++){
+                foreach(var offset in Grid.TilesByDistance[i]){
+                    var t = offset + center;
+                    if (valid(t))
+                        yield return t;
+                }
+            }
+        }
+
+
     }
 }

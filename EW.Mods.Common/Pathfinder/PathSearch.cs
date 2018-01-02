@@ -21,7 +21,9 @@ namespace EW.Mods.Common.Pathfinder
 
         //PERF:Maintain a pool of layers used for paths searches for each world.These searches are performed often 
         //so we wish to avoid the high cost of initializing a new search space every time by reusing the old ones.
+        //维护用于路径搜索的每个世界的图层池。这些搜索经常执行，所以我们希望避免每次重新使用旧搜索空间的初始化新的搜索空间的成本。
         static readonly ConditionalWeakTable<World, CellInfoLayerPool> LayerPoolTable = new ConditionalWeakTable<World, CellInfoLayerPool>();
+
         static readonly ConditionalWeakTable<World, CellInfoLayerPool>.CreateValueCallback CreateLayerPool = world => new CellInfoLayerPool(world.Map);
 
         static CellInfoLayerPool LayerPoolForWorld(World world)
@@ -62,6 +64,7 @@ namespace EW.Mods.Common.Pathfinder
         /// <summary>
         /// This function analyzes the neighbors of the most promising node in the Pathfinding graph
         /// using the A* algorithm (A-Star) and returns that node
+        /// 该函数使用A* 算法 分析 Pathfinding图中最有希望的节点的邻居，并返回该节点。 
         /// </summary>
         /// <returns>The most promising node of the iteration</returns>
         public override CPos Expand()
@@ -85,6 +88,9 @@ namespace EW.Mods.Common.Pathfinder
                 if (neighborCell.Status == CellStatus.Closed || gCost >= neighborCell.CostSoFar)
                     continue;
 
+                // Now we may seriously consider this direction using heuristics.If the cell has already been processed,
+                //we can reuse the result (just the difference between the estimated total and the cost so far)
+                //现在我们可以用启发式的方法认真考虑这个方向。如果这个单元格已经被处理了，我们可以重新使用这个结果（只是估计的总数和成本之间的差距）
                 int hCost;
                 if (neighborCell.Status == CellStatus.Open)
                     hCost = neighborCell.EstimatedTotal - neighborCell.CostSoFar;
@@ -96,6 +102,13 @@ namespace EW.Mods.Common.Pathfinder
 
                 if (neighborCell.Status != CellStatus.Open)
                     OpenQueue.Add(new GraphConnection(neighborCPos, estimatedCost));
+
+                if(Debug){
+                    if (gCost > MaxCost)
+                        gCost = MaxCost;
+
+                    considered.AddLast(new Pair<CPos, int>(neighborCPos,gCost));
+                }
             }
 
             return currentMinNode;

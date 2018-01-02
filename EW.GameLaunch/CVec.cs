@@ -43,6 +43,9 @@ namespace EW
             return new CVec(a.X + b.X, a.Y + b.Y);
         }
 
+
+
+
         public static CVec operator -(CVec a,CVec b)
         {
             return new CVec(a.X - b.X, a.Y - b.Y);

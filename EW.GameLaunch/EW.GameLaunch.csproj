@@ -14,7 +14,7 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
@@ -38,10 +38,6 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
-    <AndroidCreatePackagePerAbi>false</AndroidCreatePackagePerAbi>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +60,9 @@
     <Reference Include="Mono.Android" />
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Eluant">
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -210,6 +209,7 @@
     <Compile Include="WRot.cs" />
     <Compile Include="WVec.cs" />
     <Compile Include="Graphics\Renderable.cs" />
+    <Compile Include="CacheStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />
@@ -514,6 +514,8 @@
     <AndroidNativeLibrary Include="lib\arm64\liblua.so" />
     <AndroidAsset Include="Content\glsl\shp - Copy.frag" />
     <None Include="Resources\AboutResources.txt" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -529,10 +531,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
       <Name>EW.OpenGL.ES</Name>
@@ -563,9 +561,13 @@
     <AndroidAsset Include="Content\mods\ts\uibits\chrome.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\dialog.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
+    <Content Include="Content\mods\ts\uibits\chrome.png" />
+    <Content Include="Content\mods\ts\uibits\dialog.png" />
+    <Content Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
+    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

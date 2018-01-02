@@ -43,22 +43,33 @@ namespace EW.Mods.Common.Pathfinder
 
         public class PooledCellInfoLayer : IDisposable
         {
-            public CellLayer<CellInfo> Layer { get; private set; }
-
+            //public CellLayer<CellInfo> Layer { get; private set; }
+            List<CellLayer<CellInfo>> layers = new List<CellLayer<CellInfo>>();
             CellInfoLayerPool layerPool;
 
             public PooledCellInfoLayer(CellInfoLayerPool layerPool)
             {
                 this.layerPool = layerPool;
-                Layer = layerPool.GetLayer();
+                //Layer = layerPool.GetLayer();
+            }
+
+
+            public CellLayer<CellInfo> GetLayer(){
+
+                var layer = layerPool.GetLayer();
+                layers.Add(layer);
+                return layer;
+
             }
                
             public void Dispose()
             {
-                if (Layer == null)
-                    return;
-                layerPool.ReturnLayer(Layer);
-                Layer = null;
+
+                if(layerPool!=null){
+                    foreach (var layer in layers)
+                        layerPool.ReturnLayer(layer);
+                }
+                layers = null;
                 layerPool = null;
             }
         }
