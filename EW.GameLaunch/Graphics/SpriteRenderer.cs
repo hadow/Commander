@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
-using EW.OpenGLES.Graphics;
-using EW.OpenGLES;
+using EW.Framework.Graphics;
+using EW.Framework;
 namespace EW.Graphics
 {
     /// <summary>
@@ -91,9 +91,6 @@ namespace EW.Graphics
 
         public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,Int2 scroll)
         {
-            //effect.Parameters["Scroll"].SetValue(new Vector3(scroll.X, scroll.Y, scroll.Y));
-            //effect.Parameters["r1"].SetValue(new Vector3(zoom * 2f / screen.Width, -zoom * 2f / screen.Height, -depthScale * zoom / screen.Height));
-            //effect.Parameters["r2"].SetValue(new Vector3(-1, 1, 1 - depthOffset));
             shader.SetVec("Scroll", scroll.X, scroll.Y, scroll.Y);
             shader.SetVec("r1", zoom * 2f / screen.Width,
                     -zoom * 2f / screen.Height,
@@ -116,14 +113,11 @@ namespace EW.Graphics
         {
             if(nv > 0)
             {
-                //effect.Parameters["DiffuseTexture"].SetValue(currentSheet.GetTexture());
                 shader.SetTexture("DiffuseTexture", currentSheet.GetTexture());
 
                 renderer.Device.SetBlendMode(currentBlend);
                 shader.Render(renderAction);
                 renderer.Device.SetBlendMode(BlendMode.None);
-                //renderer.GraphicsDevice.BlendState = ConvertBlend(currentBlend);
-                //effect.CurrentTechnique.Passes[0].Apply();
                 nv = 0;
                 currentSheet = null;
             }

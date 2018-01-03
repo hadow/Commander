@@ -51,5 +51,11 @@ namespace EW.Mods.Common.Traits
                 }
             };
         }
+
+
+        public Actor GetBuildingAt(CPos cell)
+        {
+            return influence.Contains(cell) ? influence[cell] : null;
+        }
     }
 }

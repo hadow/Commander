@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Activities;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Traits
 {
     public sealed class RequireExplicitImplementationAttribute : Attribute { }

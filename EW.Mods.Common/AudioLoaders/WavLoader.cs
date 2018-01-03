@@ -20,7 +20,7 @@ namespace EW.Mods.Common.AudioLoaders
 
 
 
-        bool ISoundLoader.TryParseSound(Stream stream, out ISoundForamt sound)
+        bool ISoundLoader.TryParseSound(Stream stream, out ISoundFormat sound)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace EW.Mods.Common.AudioLoaders
             }
             catch
             {
-
+                //Not a (supported) WAV
             }
 
             sound = null;
@@ -44,7 +44,7 @@ namespace EW.Mods.Common.AudioLoaders
     }
 
 
-    public sealed class WavFormat : ISoundForamt
+    public sealed class WavFormat : ISoundFormat
     {
         public int Channels { get { return reader.Value.Channels; } }
 

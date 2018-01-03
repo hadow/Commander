@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using EW.Traits;
-using EW.OpenGLES;
+using EW.Framework;
 using EW.Graphics;
-using EW.OpenGLES.Graphics;
+using EW.Framework.Graphics;
 namespace EW.Mods.Common.Traits
 {
     public class ShroudRendererInfo : ITraitInfo

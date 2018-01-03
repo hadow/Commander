@@ -1,5 +1,5 @@
 ﻿using System;
-using EW.OpenGLES.Graphics;
+using EW.Framework.Graphics;
 using EW.FileSystem;
 namespace EW.Graphics
 {

@@ -234,10 +234,12 @@ namespace EW.Mods.Common.Traits
         /// <param name="ignoreActor"></param>
         /// <param name="check"></param>
         /// <returns></returns>
-        public bool CanEnterCell(World world,Actor self,CPos cell,Actor ignoreActor = null,CellConditions check = CellConditions.All)
+        public bool CanEnterCell(World world,Actor self,CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
         {
             if (MovementCostForCell(world, cell) == int.MaxValue)
                 return false;
+
+            var check = checkTransientActors ? CellConditions.All : CellConditions.BlockedByMovers;
             return CanMoveFreelyInto(world, self, cell, ignoreActor, check);
         }
 
@@ -316,7 +318,7 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 
+        /// 移动至某一单元格的成本
         /// </summary>
         /// <param name="worldMovementInfo"></param>
         /// <param name="self"></param>
@@ -375,6 +377,11 @@ namespace EW.Mods.Common.Traits
             return ret;
         }
 
+        /// <summary>
+        /// 移动单位在不同地形下的速度
+        /// </summary>
+        /// <param name="tileSet"></param>
+        /// <returns></returns>
         TerrainInfo[] LoadTilesetSpeeds(TileSet tileSet)
         {
             var info = new TerrainInfo[tileSet.TerrainInfo.Length];
@@ -398,6 +405,7 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public int CalculateTilesetMovementClass(TileSet tileset)
         {
+            //Collect our ability to cross *all* terraintypes,in a bitvector
             return TilesetTerrainInfo[tileset].Select(ti => ti.Cost < int.MaxValue).ToBits();
         }
 
@@ -406,10 +414,7 @@ namespace EW.Mods.Common.Traits
             return TilesetMovementClass[tileset];
         }
 
-        public bool CanEnterCell(World world,Actor self,CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
-        {
-            return false;
-        }
+        
     }
 
     public class Mobile:ConditionalTrait<MobileInfo>,
@@ -516,7 +521,7 @@ namespace EW.Mods.Common.Traits
 
         public bool CanEnterCell(CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
         {
-            return Info.CanEnterCell(self.World, self, cell,ignoreActor, checkTransientActors ? CellConditions.All : CellConditions.BlockedByMovers);
+            return Info.CanEnterCell(self.World, self, cell,ignoreActor, checkTransientActors);
         }
 
         /// <summary>

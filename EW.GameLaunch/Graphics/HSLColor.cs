@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using EW.Scripting;
-using EW.OpenGLES;
+using EW.Framework;
 using System.Drawing;
 namespace EW.Graphics
 {

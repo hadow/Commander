@@ -59,6 +59,15 @@ namespace EW
 
         }
 
+
+        public IEnumerable<KeyValuePair<string,MusicInfo>> InstalledMusic
+        {
+            get
+            {
+                return Music.Where(m => m.Value.Exists);
+            }
+        }
+
         /// <summary>
         ///  加载默认规则集
         /// </summary>

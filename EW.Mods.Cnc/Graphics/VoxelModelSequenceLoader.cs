@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.FileSystem;
 using System.IO;
-using EW.OpenGLES.Graphics;
+using EW.Framework.Graphics;
 
 namespace EW.Mods.Cnc.Graphics
 {

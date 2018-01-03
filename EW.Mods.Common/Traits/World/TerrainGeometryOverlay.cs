@@ -29,7 +29,7 @@ namespace EW.Mods.Common.Traits
             if (console == null || help == null)
                 return;
 
-            Enabled = true;
+            //Enabled = true;
 
         }
 

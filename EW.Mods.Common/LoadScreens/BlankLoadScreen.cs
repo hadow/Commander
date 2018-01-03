@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Support;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Common.LoadScreens
 {
     public class BlankLoadScreen:ILoadScreen

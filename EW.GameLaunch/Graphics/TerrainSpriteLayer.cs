@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using EW.OpenGLES.Graphics;
-using EW.OpenGLES;
+using EW.Framework.Graphics;
+using EW.Framework;
 namespace EW.Graphics
 {
     /// <summary>
@@ -51,9 +51,7 @@ namespace EW.Graphics
             rowStride = 6 * map.MapSize.X;
 
             vertices = new Vertex[rowStride * map.MapSize.Y];
-
-            var vertexCount = rowStride * map.MapSize.Y;
-
+            
 
             vertexBuffer = WarGame.Renderer.Device.CreateVertexBuffer(vertices.Length);
 
@@ -144,11 +142,12 @@ namespace EW.Graphics
             var cells = restrictToBounds ? viewport.VisibleCellsInsideBounds : viewport.AllVisibleCells;
 
             //only draw the rows that are visible
+            //只绘制可见的行
             var firstRow = cells.CandidateMapCoords.TopLeft.V.Clamp(0, map.MapSize.Y);
             var lastRow = (cells.CandidateMapCoords.BottomRight.V + 1).Clamp(firstRow, map.MapSize.Y);
 
             WarGame.Renderer.Flush();
-            //int vertexSize = System.Runtime.InteropServices.Marshal.SizeOf<Vertex>();
+            
             //Flush any visible changes to the GPU
             for (var row = firstRow; row <= lastRow; row++)
             {
@@ -159,6 +158,8 @@ namespace EW.Graphics
 
                 unsafe
                 {
+                    //The compiler / language spec won't let us calculate a pointer to an offset inside a generic array T[],
+                    //and so we are forced to calculate the start-of-row pointer here to pass in to SetData.
                     fixed(Vertex* vPtr = &vertices[0])
                     {
                         vertexBuffer.SetData((IntPtr)(vPtr+rowOffset),rowOffset,rowStride);

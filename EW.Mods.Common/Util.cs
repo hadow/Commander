@@ -1,11 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using EW.Support;
 using EW.Mods.Common.Traits;
+using System.Linq;
 namespace EW.Mods.Common
 {
     public static class Util
     {
+
+        /// <summary>
+        /// 洗牌
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ts"></param>
+        /// <param name="random"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> ts,MersenneTwister random)
+        {
+            var items = ts.ToArray();
+
+            for(var i = 0; i < items.Length-1; i++)
+            {
+                var j = random.Next(items.Length - i);
+                var item = items[i + j];
+                items[i + j] = items[i];
+                items[i] = item;
+                yield return item;
+            }
+
+            if (items.Length > 0)
+                yield return items[items.Length - 1];
+        }
+
+
+        public static IEnumerable<CPos> RandomWalk(CPos p,MersenneTwister r)
+        {
+            for(; ; )
+            {
+                var dx = r.Next(-1, 2);
+                var dy = r.Next(-1, 2);
+
+                if (dx == 0 && dy == 0)
+                    continue;
+
+                p += new CVec(dx, dy);
+                yield return p;
+            }
+        }
+
 
         public static int TickFacing(int facing,int desiredFacing,int rot)
         {

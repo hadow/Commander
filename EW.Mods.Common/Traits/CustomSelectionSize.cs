@@ -1,5 +1,5 @@
 using System;
-using EW.OpenGLES;
+using EW.Framework;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {

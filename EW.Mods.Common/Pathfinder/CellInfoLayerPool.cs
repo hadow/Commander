@@ -15,7 +15,9 @@ namespace EW.Mods.Common.Pathfinder
 
         public CellInfoLayerPool(Map map)
         {
-            defaultLayer = CellLayer<CellInfo>.CreateInstance(mpos => new CellInfo(int.MaxValue, int.MaxValue, mpos.ToCPos(map), CellStatus.Unvisited), new Size(map.MapSize.X, map.MapSize.Y), map.Grid.Type);
+            defaultLayer = CellLayer<CellInfo>.CreateInstance(mpos =>
+            new CellInfo(int.MaxValue, int.MaxValue, mpos.ToCPos(map), CellStatus.Unvisited),
+            new Size(map.MapSize.X, map.MapSize.Y), map.Grid.Type);
         }
         public PooledCellInfoLayer Get()
         {
@@ -31,6 +33,7 @@ namespace EW.Mods.Common.Pathfinder
 
             if (layer == null)
                 layer = new CellLayer<CellInfo>(defaultLayer.GridT, defaultLayer.Size);
+            layer.CopyValuesFrom(defaultLayer);
             return layer;
         }
 
@@ -50,7 +53,6 @@ namespace EW.Mods.Common.Pathfinder
             public PooledCellInfoLayer(CellInfoLayerPool layerPool)
             {
                 this.layerPool = layerPool;
-                //Layer = layerPool.GetLayer();
             }
 
 

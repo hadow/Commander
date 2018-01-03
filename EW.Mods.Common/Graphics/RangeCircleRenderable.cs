@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Graphics;
-using EW.OpenGLES;
+using EW.Framework;
 using System.Drawing;
 namespace EW.Mods.Common.Graphics
 {
@@ -55,7 +55,7 @@ namespace EW.Mods.Common.Graphics
 
         }
 
-        public EW.OpenGLES.Rectangle ScreenBounds(WorldRenderer wr) { return EW.OpenGLES.Rectangle.Empty; }
+        public EW.Framework.Rectangle ScreenBounds(WorldRenderer wr) { return EW.Framework.Rectangle.Empty; }
 
 
         public void RenderDebugGeometry(WorldRenderer wr){}

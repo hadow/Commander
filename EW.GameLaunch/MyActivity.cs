@@ -24,7 +24,7 @@ namespace EW
         ScreenOrientation =ScreenOrientation.SensorLandscape,
         ConfigurationChanges =ConfigChanges.Orientation|ConfigChanges.Keyboard|ConfigChanges.KeyboardHidden)]
     //[IntentFilter(new[] { Intent.ActionView},Categories =new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },DataScheme ="file",DataMimeType ="*/*",DataPathPattern =".*\\.md")]
-    public class MyActivity: EW.OpenGLES.Mobile.AndroidGameActivity
+    public class MyActivity: EW.Framework.Mobile.AndroidGameActivity
     {
         
         protected override void OnCreate(Bundle savedInstanceState)

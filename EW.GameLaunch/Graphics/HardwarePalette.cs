@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.OpenGLES.Graphics;
+using EW.Framework.Graphics;
 using EW.Traits;
 namespace EW.Graphics
 {

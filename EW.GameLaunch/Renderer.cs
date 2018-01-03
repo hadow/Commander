@@ -2,8 +2,8 @@
 using System.Drawing;
 using System.Linq;
 using EW.Graphics;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 namespace EW
 {
     /// <summary>
@@ -59,7 +59,7 @@ namespace EW
         /// <summary>
         /// 
         /// </summary>
-        readonly Stack<EW.OpenGLES.Rectangle> scissorState = new Stack<EW.OpenGLES.Rectangle>();
+        readonly Stack<EW.Framework.Rectangle> scissorState = new Stack<EW.Framework.Rectangle>();
 
         public Size Resolution { get { return new Size(Device.Viewport.Width,Device.Viewport.Height); } }
         public Renderer(GraphicsSettings graphicSettings,IGraphicsDevice device)
@@ -155,7 +155,7 @@ namespace EW
         }
 
 
-        public void EnableScissor(EW.OpenGLES.Rectangle rect)
+        public void EnableScissor(EW.Framework.Rectangle rect)
         {
             //Must remain inside the current scissor rect.
             if (scissorState.Any())

@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using EW.Support;
 using EW.Traits;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW
 {
     public static class Enum<T>
@@ -415,7 +415,7 @@ namespace EW
         }
 
 
-        public static bool Contains(this EW.OpenGLES.Rectangle r,Int2 p){
+        public static bool Contains(this EW.Framework.Rectangle r,Int2 p){
             return r.Contains(p.ToPoint());
         }
 
@@ -441,9 +441,9 @@ namespace EW
             return new System.Drawing.Rectangle(0, 0, b.Width, b.Height);
         }
 
-        public static EW.OpenGLES.Rectangle Bounds2(this Bitmap b)
+        public static EW.Framework.Rectangle Bounds2(this Bitmap b)
         {
-            return new OpenGLES.Rectangle(0, 0, b.Width, b.Height);
+            return new EW.Framework.Rectangle(0, 0, b.Width, b.Height);
         }
 
         

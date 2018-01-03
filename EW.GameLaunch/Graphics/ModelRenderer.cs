@@ -4,8 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 
 using EW.Primitives;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 namespace EW.Graphics
 {
     public class ModelRenderProxy

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using EW.Graphics;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 namespace EW.Mods.Common.Graphics
 {
     /// <summary>

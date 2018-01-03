@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Mods.Common.Traits;
 using System.Runtime.CompilerServices;
 using EW.Primitives;
+using System.Linq;
 namespace EW.Mods.Common.Pathfinder
 {
     /// <summary>
@@ -48,6 +49,30 @@ namespace EW.Mods.Common.Pathfinder
             if (world.Map.Contains(from))
                 search.AddInitialCell(from);
             return search;
+        }
+
+        public static IPathSearch FromPoints(World world,MobileInfo mi,Actor self,IEnumerable<CPos> froms,CPos target,bool checkForBlocked)
+        {
+            var graph = new PathGraph(LayerPoolForWorld(world), mi, self, world, checkForBlocked);
+            var search = new PathSearch(graph)
+            {
+                heuristic = DefaultEstimator(target)
+            };
+
+            search.isGoal = loc =>
+            {
+                var locInfo = search.Graph[loc];
+                return locInfo.EstimatedTotal - locInfo.CostSoFar == 0;
+            };
+
+
+            foreach (var sl in froms.Where(sl => world.Map.Contains(sl)))
+                search.AddInitialCell(sl);
+
+
+            return search;
+            
+          
         }
 
 

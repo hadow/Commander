@@ -33,6 +33,7 @@ namespace EW.Traits
 
         /// <summary>
         /// Maximum number of resource units allowed in a single cell.
+        /// 单个单元格中允许的最大资源数
         /// </summary>
         public readonly int MaxDensity = 10;
 
@@ -65,16 +66,19 @@ namespace EW.Traits
 
         /// <summary>
         /// Allow resource to spawn under Mobile actors.
+        /// 允许资源在移动的Actor 下生成
         /// </summary>
         public readonly bool AllowUnderActors = false;
 
         /// <summary>
         /// Allow resource to spawn under Buildings.
+        /// 允许资源在建筑物下生成
         /// </summary>
         public readonly bool AllowUnderBuildings = false;
 
         /// <summary>
         /// Allow resource to spawn on ramp tiles.
+        /// 允许资源在斜坡上生成
         /// </summary>
         public readonly bool AllowOnRamps = false;
 

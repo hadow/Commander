@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 using System.Drawing;
 namespace EW.Graphics
 {

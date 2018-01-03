@@ -9,7 +9,7 @@ using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
 using EW.Primitives;
-using EW.OpenGLES;
+using EW.Framework;
 using EW.Graphics;
 using EW.Support;
 namespace EW
@@ -353,12 +353,12 @@ namespace EW
                 }
                 return ret;
             }
-            else if (fieldType == typeof(EW.OpenGLES.Rectangle))
+            else if (fieldType == typeof(EW.Framework.Rectangle))
             {
                 if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    return new EW.OpenGLES.Rectangle(
+                    return new EW.Framework.Rectangle(
                         Exts.ParseIntegerInvariant(parts[0]),
                         Exts.ParseIntegerInvariant(parts[1]),
                         Exts.ParseIntegerInvariant(parts[2]),
@@ -366,12 +366,12 @@ namespace EW
                 }
                 return InvalidValueAction(value, fieldType, fieldName);
             }
-            else if (fieldType == typeof(EW.OpenGLES.Point))
+            else if (fieldType == typeof(EW.Framework.Point))
             {
                 if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    return new EW.OpenGLES.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                    return new EW.Framework.Point(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
             }
             else if (fieldType == typeof(bool))

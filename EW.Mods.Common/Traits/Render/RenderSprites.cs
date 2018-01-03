@@ -5,7 +5,7 @@ using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Graphics;
 using EW.Primitives;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Common.Traits
 {
 

@@ -32,10 +32,26 @@ namespace EW.Mods.Common.Pathfinder
             Cost = cost;
         }
     }
+
+    /// <summary>
+    /// Represents a graph with nodes and edges
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface IGraph<T> : IDisposable
     {
+        /// <summary>
+        /// Gets all the Connections for a given node in the graph.
+        /// 获取图中给定节点的所有连接
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         List<GraphConnection> GetConnections(CPos position);
 
+        /// <summary>
+        /// Retrieves an object given a node in the graph.
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
         T this[CPos pos] { get;set; }
 
         Func<CPos,bool> CustomBlock { get; set; }
@@ -46,7 +62,7 @@ namespace EW.Mods.Common.Pathfinder
 
         bool InReverse { get; set; }
 
-        Actor IgnoredActor { get; set; }
+        Actor IgnoreActor { get; set; }
 
         World World { get; }
 
@@ -70,11 +86,11 @@ namespace EW.Mods.Common.Pathfinder
 
         public bool InReverse { get; set; }
 
-        public Actor IgnoredActor { get; set; }
+        public Actor IgnoreActor { get; set; }
 
         readonly CellConditions checkConditions;
 
-        readonly bool checkTerrainHeight;
+        readonly bool checkTerrainHeight;       //检查地形高度
 
         
         readonly MobileInfo mobileInfo;
@@ -107,17 +123,18 @@ namespace EW.Mods.Common.Pathfinder
             checkTerrainHeight = world.Map.Grid.MaximumTerrainHeight > 0;
         }
 
+
         static readonly CVec[][] DirectedNeighbors =
         {
-            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1),new CVec(-1,0),new CVec(-1,1)},
-            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1)},
-            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1),new CVec(1,0),new CVec(1,1)},
-            new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1)},
-            CVec.Directions,
-            new[]{new CVec(1,-1),new CVec(1,0),new CVec(1,1)},
-            new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)},
-            new[]{new CVec(-1,1),new CVec(0,1),new CVec(1,1)},
-            new[]{new CVec(1,-1),new CVec(1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)}
+            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1),new CVec(-1,0),new CVec(-1,1)}, //0
+            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1)},                               //1
+            new[]{new CVec(-1,-1),new CVec(0,-1),new CVec(1,-1),new CVec(1,0),new CVec(1,1)},   //2
+            new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1)},                               //3
+            CVec.Directions,                                                                    //4
+            new[]{new CVec(1,-1),new CVec(1,0),new CVec(1,1)},                                  //5
+            new[]{new CVec(-1,-1),new CVec(-1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)},   //6
+            new[]{new CVec(-1,1),new CVec(0,1),new CVec(1,1)},                                  //7
+            new[]{new CVec(1,-1),new CVec(1,0),new CVec(-1,1),new CVec(0,1),new CVec(1,1)}      //8
 
         };
 
@@ -128,7 +145,8 @@ namespace EW.Mods.Common.Pathfinder
         /// <returns></returns>
         public List<GraphConnection> GetConnections(CPos position)
         {
-            var previousPos = groundInfo[position].PreviousPos;
+            var info = position.Layer == 0 ? groundInfo : customLayerInfo[position.Layer].Second;
+            var previousPos = info[position].PreviousPos;
 
             var dx = position.X - previousPos.X;
             var dy = position.Y - previousPos.Y;
@@ -145,6 +163,26 @@ namespace EW.Mods.Common.Pathfinder
                 if (movementCost != Constants.InvalidNode)
                     validNeighbors.Add(new GraphConnection(neighbor, movementCost));
             }
+
+            if(position.Layer == 0)
+            {
+                foreach(var cli in customLayerInfo.Values)
+                {
+                    var layerPosition = new CPos(position.X, position.Y, cli.First.Index);
+                    var entryCost = cli.First.EntryMovementCost(Actor.Info, mobileInfo, layerPosition);
+                    if (entryCost != Constants.InvalidNode)
+                        validNeighbors.Add(new GraphConnection(layerPosition, entryCost));
+                }
+            }
+            else
+            {
+                var layerPosition = new CPos(position.X, position.Y, 0);
+                var exitCost = customLayerInfo[position.Layer].First.ExitMovementCost(Actor.Info, mobileInfo, layerPosition);
+                if (exitCost != Constants.InvalidNode)
+                    validNeighbors.Add(new GraphConnection(layerPosition, exitCost));
+            }
+
+
             return validNeighbors;
         }
 
@@ -157,13 +195,20 @@ namespace EW.Mods.Common.Pathfinder
         /// <returns></returns>
         int GetCostToNode(CPos destNode,CVec direction)
         {
-            var movementCost = mobileInfo.MovementCostToEnterCell(worldMovementInfo, Actor, destNode, IgnoredActor, checkConditions);
+            var movementCost = mobileInfo.MovementCostToEnterCell(worldMovementInfo, Actor, destNode, IgnoreActor, checkConditions);
             if (movementCost != int.MaxValue && !(CustomBlock != null && CustomBlock(destNode)))
                 return CalculateCellCost(destNode, direction, movementCost);
 
             return Constants.InvalidNode;
         }
 
+        /// <summary>
+        /// 计算近邻单元格成本
+        /// </summary>
+        /// <param name="neighborCPos"></param>
+        /// <param name="direction"></param>
+        /// <param name="movementCost"></param>
+        /// <returns></returns>
         int CalculateCellCost(CPos neighborCPos,CVec direction,int movementCost)
         {
             var cellCost = movementCost;
@@ -178,17 +223,42 @@ namespace EW.Mods.Common.Pathfinder
                     return Constants.InvalidNode;
 
                 cellCost += customCost;
+            }
+            
+            //Prevent units from jumping over height discontinuities. 防止单位跳高不连续
 
+            if(checkTerrainHeight && neighborCPos.Layer == 0)
+            {
+                var from = neighborCPos - direction;
+                if(Math.Abs(World.Map.Height[neighborCPos] - World.Map.Height[from]) > 1)
+                {
+                    return Constants.InvalidNode;
+                }
+            }
+            //Directional bonuses for smoother flow!
+           if(LaneBias != 0)
+            {
+                var ux = neighborCPos.X + (InReverse ? 1 : 0) & 1;
+                var uy = neighborCPos.Y + (InReverse ? 1 : 0) & 1;
+
+                if ((ux == 0 && direction.Y < 0) || (ux == 1 && direction.Y > 0))
+                    cellCost += LaneBias;
+
+                if ((uy == 0 && direction.X < 0) || (uy == 1 && direction.X > 0))
+                    cellCost += LaneBias;
             }
             return cellCost;
         }
 
         public CellInfo this[CPos pos]
         {
-            get { return groundInfo[pos]; }
+            get
+            {
+                return  (pos.Layer == 0 ? groundInfo:customLayerInfo[pos.Layer].Second)[pos];
+            }
             set
             {
-                groundInfo[pos] = value;
+                (pos.Layer == 0 ? groundInfo : customLayerInfo[pos.Layer].Second)[pos] = value;
             }
         }
 

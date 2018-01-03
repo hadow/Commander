@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace EW.Primitives
 {
     /// <summary>
-    /// 
+    /// Êý¾Ý»º´æ
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="U"></typeparam>
@@ -22,10 +22,7 @@ namespace EW.Primitives
             cache = new Dictionary<T, U>(c);
         }
 
-        public Cache(Func<T,U> loader):this(loader,EqualityComparer<T>.Default)
-        {
-
-        }
+        public Cache(Func<T,U> loader):this(loader,EqualityComparer<T>.Default){}
 
 
         public U this[T key]

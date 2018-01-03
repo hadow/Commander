@@ -2,8 +2,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 using EW.Support;
 using EW.Graphics;
 using EW.NetWork;
@@ -43,6 +43,7 @@ namespace EW
             }
         }
 
+        public static Sound Sound;
         public static Renderer Renderer;
         static WorldRenderer worldRenderer;
         internal static OrderManager orderManager;
@@ -142,6 +143,8 @@ namespace EW
                 throw new InvalidOperationException("Unknown or invalid mod '{0}'.".F(mod));
 
             Renderer = new Renderer(Settings.Graphics,GraphicsDevice);
+            Sound = new Sound(Settings.Sound);
+            Sound.StopVideo();
             ModData = new ModData(Mods[mod], Mods, true);
 
             using (new Support.PerfTimer("LoadMaps"))
@@ -283,7 +286,7 @@ namespace EW
 
                     var integralTickTimestep = (worldTickDelta / worldTimestep) * worldTimestep;
                     orderManager.LastTickTime += integralTickTimestep >= TimestepJankThreshold ? integralTickTimestep : worldTimestep;
-
+                    Sound.Tick();
                     if (world == null) return;
                     //Don't tick when the shellmap is disabled
                     if (world.ShouldTick)

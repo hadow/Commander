@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 namespace EW.Graphics
 {
     /// <summary>

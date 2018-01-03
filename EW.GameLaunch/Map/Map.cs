@@ -20,7 +20,7 @@ namespace EW
         public readonly uint ResourcesOffset;
 
 
-        public BinaryDataHeader(Stream s,EW.OpenGLES.Point expectedSize)
+        public BinaryDataHeader(Stream s,EW.Framework.Point expectedSize)
         {
             Format = s.ReadUInt8();
             var width = s.ReadUInt16();
@@ -173,7 +173,7 @@ namespace EW
         public string Author;
         public string Tileset;
         public bool LockPreview;
-        public EW.OpenGLES.Rectangle Bounds;
+        public EW.Framework.Rectangle Bounds;
         public MapVisibility Visibility = MapVisibility.Lobby;
         public string[] Categories = { "Conquest" };
 
@@ -207,7 +207,7 @@ namespace EW
 
         public IReadOnlyPackage Package { get; private set; }
 
-        public EW.OpenGLES.Point MapSize { get; private set; }
+        public EW.Framework.Point MapSize { get; private set; }
 
         public Ruleset Rules { get; private set; }
         
@@ -678,7 +678,7 @@ namespace EW
 
         public PPos Clamp(PPos puv)
         {
-            var bounds = new EW.OpenGLES.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
+            var bounds = new EW.Framework.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
             return puv.Clamp(bounds);
         }
 
@@ -692,7 +692,7 @@ namespace EW
         {
             //The tl and br coordinates are inclusive,but the Rectangle is exclusive.
             //Pad the right and bootom edges to match.
-            Bounds = EW.OpenGLES.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
+            Bounds = EW.Framework.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
             //避免不必要的转换，直接计算地图屏幕投射坐标的世界单位
             var wtop = tl.V * 1024;
             var wbottom = (br.V + 1) * 1024;
@@ -725,14 +725,18 @@ namespace EW
         }
 
         /// <summary>
-        /// 获取地形索引
+        /// 获取某一单元格所代表的地形索引
+        /// Transparently cache results of GetTerrainIndex in Map.
+        /// 
+        /// This method performs an expensive calculation and is called often during pathfinding.
+        /// We create a cache of the terrain indicies for the map to vastly reduce the cost.
         /// </summary>
         /// <param name="cell"></param>
         /// <returns></returns>
         public byte GetTerrainIndex(CPos cell)
         {
             const short InvalidCachedTerrainIndex = -1;
-            //Lazily initialize a cache for terrain indexes;
+            //Lazily initialize a cache for terrain indexes;懒初始化地形索引缓存
             if(cachedTerrainIndexes == null)
             {
                 cachedTerrainIndexes = new CellLayer<short>(this);
@@ -749,6 +753,7 @@ namespace EW
 
             var terrainIndex = cachedTerrainIndexes[uv];
 
+            //PERF:Cache terrain indexes per cell on demand.//按需求对每个单元格缓存地形索引
             if(terrainIndex == InvalidCachedTerrainIndex)
             {
                 var custom = CustomTerrain[uv];

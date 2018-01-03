@@ -2,7 +2,7 @@ using System;
 using EW.Graphics;
 using System.IO;
 using System.Drawing;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Common.SpriteLoaders
 {
     public class TmpTDLoader:ISpriteLoader

@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 namespace EW.Graphics
 {
     [Serializable]
@@ -69,7 +69,7 @@ namespace EW.Graphics
         public Sprite Add(byte[] src,Size size,float zRamp,Vector3 spriteOffset)
         {
             if (size.Width == 0 || size.Height == 0)
-                return new Sprite(current,EW.OpenGLES.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
+                return new Sprite(current,EW.Framework.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
 
             var rect = Allocate(size, zRamp, spriteOffset);
             Util.FastCopyIntoChannel(rect, src);
@@ -118,7 +118,7 @@ namespace EW.Graphics
                 p = new System.Drawing.Point(0, 0);
             }
 
-            var rect = new Sprite(current, new EW.OpenGLES.Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
+            var rect = new Sprite(current, new EW.Framework.Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
             p.X += imageSize.Width;
 
             return rect;
@@ -152,15 +152,6 @@ namespace EW.Graphics
 
             sheets.Clear();
         }
-
-        //protected override void Dispose(bool disposing)
-        //{
-        //    base.Dispose(disposing);
-        //    foreach (var sheet in sheets)
-        //        sheet.Dispose();
-
-        //    sheets.Clear();
-        //}
 
 
 

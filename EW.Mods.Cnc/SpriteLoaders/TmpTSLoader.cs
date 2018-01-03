@@ -2,7 +2,7 @@
 using System.IO;
 using System.Drawing;
 using EW.Graphics;
-using EW.OpenGLES;
+using EW.Framework;
 
 namespace EW.Mods.Cnc.SpriteLoaders
 {
@@ -49,11 +49,11 @@ namespace EW.Mods.Cnc.SpriteLoaders
                     var extraHeight = s.ReadInt32();
                     var flags = s.ReadUInt32();
 
-                    var bounds = new EW.OpenGLES.Rectangle(0, 0, size.Width, size.Height);
+                    var bounds = new EW.Framework.Rectangle(0, 0, size.Width, size.Height);
                     if ((flags & 0x01) != 0)
                     {
-                        var extraBounds = new EW.OpenGLES.Rectangle(extraX, extraY, extraWidth, extraHeight);
-                        bounds = EW.OpenGLES.Rectangle.Union(bounds, extraBounds);
+                        var extraBounds = new EW.Framework.Rectangle(extraX, extraY, extraWidth, extraHeight);
+                        bounds = EW.Framework.Rectangle.Union(bounds, extraBounds);
 
                         Offset = new Vector2(bounds.X + 0.5f * (bounds.Width - size.Width), bounds.Y + 0.5f * (bounds.Height - size.Height));
                         Size = new Size(bounds.Width, bounds.Height);
@@ -102,7 +102,7 @@ namespace EW.Mods.Cnc.SpriteLoaders
             }
         }
 
-        static void UnpackTileData(Stream s, byte[] data, Size size, EW.OpenGLES.Rectangle frameBounds)
+        static void UnpackTileData(Stream s, byte[] data, Size size, EW.Framework.Rectangle frameBounds)
         {
             var width = 4;
             for (var j = 0; j < size.Height; j++)

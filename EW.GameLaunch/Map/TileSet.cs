@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using EW.OpenGLES;
+using EW.Framework;
 using EW.FileSystem;
 using System.Drawing;
 namespace EW
@@ -58,7 +58,7 @@ namespace EW
 
         public readonly int[] Frames;
 
-        public readonly EW.OpenGLES.Point Size;
+        public readonly EW.Framework.Point Size;
 
         public readonly bool PickAny;
 
@@ -169,7 +169,18 @@ namespace EW
 
         [FieldLoader.Ignore]
         public readonly TerrainTypeInfo[] TerrainInfo;
-
+        //Impassable(不可逾越)
+        //Road,
+        //Rail(铁轨),
+        //Bridge(桥),
+        //Water(水面),
+        //DirtRoad(泥土路),
+        //rough(粗糙的),
+        //cliff(悬崖),
+        //Veins(山脉),
+        //rock (岩石),
+        //subterranean(地下)
+        //Jumpjet
         readonly Dictionary<string, byte> terrainIndexByType = new Dictionary<string, byte>();
 
         public readonly IReadOnlyDictionary<ushort, TerrainTemplateInfo> Templates;
@@ -210,6 +221,11 @@ namespace EW
             get { return TerrainInfo[index]; }
         }
 
+        /// <summary>
+        /// 根据地形切片获取索引
+        /// </summary>
+        /// <param name="r"></param>
+        /// <returns></returns>
         public byte GetTerrainIndex(TerrainTile r)
         {
             TerrainTemplateInfo tpl;

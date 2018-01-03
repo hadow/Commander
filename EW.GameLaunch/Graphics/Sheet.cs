@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using EW.OpenGLES.Graphics;
+using EW.Framework.Graphics;
 using System.Drawing;
 using System.Drawing.Imaging;
 namespace EW.Graphics

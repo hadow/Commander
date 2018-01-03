@@ -36,7 +36,7 @@
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -151,6 +151,7 @@
     <Compile Include="Primitives\MergedStream.cs" />
     <Compile Include="Primitives\Pair.cs" />
     <Compile Include="Primitives\PriorityQueue.cs" />
+    <Compile Include="Primitives\ReadOnlyAdapterStream.cs" />
     <Compile Include="Primitives\ReadOnlyDictionary.cs" />
     <Compile Include="Primitives\ReadOnlyList.cs" />
     <Compile Include="Primitives\SegmentStream.cs" />
@@ -510,12 +511,8 @@
     <AndroidAsset Include="Content\mods\ts\speech02.mix" />
     <AndroidAsset Include="Content\mods\ts\tem.mix" />
     <AndroidAsset Include="Content\mods\ts\temperat.mix" />
-    <AndroidNativeLibrary Include="lib\armeabi-v7a\liblua.so" />
-    <AndroidNativeLibrary Include="lib\arm64\liblua.so" />
     <AndroidAsset Include="Content\glsl\shp - Copy.frag" />
     <None Include="Resources\AboutResources.txt" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -531,9 +528,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+    <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
-      <Name>EW.OpenGL.ES</Name>
+      <Name>EW.Framework.Android</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -542,32 +539,30 @@
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
-    <AndroidNativeLibrary Include="lib\armeabi-v7a\liblua.so">
-      <Abi>armeabi-v7a</Abi>
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\libopenal32.so">
+      <Platforms>Android</Platforms>
     </AndroidNativeLibrary>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidNativeLibrary Include="lib\arm64\liblua.so">
-      <Abi>arm64-v8a</Abi>
+    <AndroidNativeLibrary Include="lib\x86\libopenal32.so">
+      <Platforms>Android</Platforms>
+    </AndroidNativeLibrary>
+    <AndroidNativeLibrary Include="lib\x86_64\libopenal32.so">
+      <Platforms>Android</Platforms>
     </AndroidNativeLibrary>
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\mods\ts\icon.png" />
     <AndroidAsset Include="Content\mods\ts\maps\fields-of-green\map.png" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.pdb" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.pdb" />
     <AndroidAsset Include="Content\mods\ts\uibits\chrome.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\dialog.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
     <Content Include="Content\mods\ts\uibits\chrome.png" />
     <Content Include="Content\mods\ts\uibits\dialog.png" />
     <Content Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
-    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

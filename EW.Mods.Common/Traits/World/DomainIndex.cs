@@ -33,8 +33,13 @@ namespace EW.Mods.Common.Traits
             }
         }
 
-        public bool IsPassable(CPos p1,CPos p2,uint movementClass)
+        public bool IsPassable(CPos p1,CPos p2,MobileInfo mi,uint movementClass)
         {
+            if (p1.Layer != 0 || p2.Layer != 0)
+                return true;
+
+            if (mi.Subterranean || mi.Jumpjet)
+                return true;
             return domainIndexes[movementClass].IsPassable(p1, p2); 
         }
 

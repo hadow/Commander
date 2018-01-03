@@ -2,7 +2,7 @@ using System;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Scripting;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW
 {
     /// <summary>

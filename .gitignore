@@ -16,3 +16,5 @@
 /.vs/EastWoodStudio/v15
 /packages/OpenTK.2.0.0
 /EW.Test
+/EW.Framework.Android/bin/Debug
+/EW.Framework.Android/obj/Debug

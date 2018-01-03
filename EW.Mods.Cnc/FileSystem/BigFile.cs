@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using EW.FileSystem;
 using FS = EW.FileSystem.FileSystem;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Cnc.FileSystem
 {
     public class BigLoader : IPackageLoader

@@ -4,8 +4,8 @@ using System.Linq;
 using System.Drawing;
 using EW.FileSystem;
 using EW.Graphics;
-using EW.OpenGLES;
-using EW.OpenGLES.Graphics;
+using EW.Framework;
+using EW.Framework.Graphics;
 using EW.Primitives;
 using EW.Mods.Cnc.FileFormats;
 namespace EW.Mods.Cnc.Graphics

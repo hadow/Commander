@@ -94,9 +94,9 @@
       <Project>{971cd67f-d10d-4da6-939a-09ce9a52cdf9}</Project>
       <Name>EW.Mods.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+    <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
-      <Name>EW.OpenGL.ES</Name>
+      <Name>EW.Framework.Android</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

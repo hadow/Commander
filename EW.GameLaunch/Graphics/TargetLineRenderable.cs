@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.OpenGLES;
+using EW.Framework;
 using System.Linq;
 using System.Drawing;
 namespace EW.Graphics
@@ -51,9 +51,9 @@ namespace EW.Graphics
 
         public void RenderDebugGeometry(WorldRenderer wr) { }
 
-        public EW.OpenGLES.Rectangle ScreenBounds(WorldRenderer wr)
+        public EW.Framework.Rectangle ScreenBounds(WorldRenderer wr)
         {
-            return EW.OpenGLES.Rectangle.Empty;
+            return EW.Framework.Rectangle.Empty;
         }
 
     }

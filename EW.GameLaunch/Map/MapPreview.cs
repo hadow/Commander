@@ -40,7 +40,7 @@ namespace EW
             public int PlayerCount;
             public CPos[] SpawnPoints;  //³öÉúµã
             public MapGridT GridT;
-            public EW.OpenGLES.Rectangle Bounds;
+            public EW.Framework.Rectangle Bounds;
             public Bitmap Preview;
             public MapStatus Status;
             public MapVisibility Visibility;
@@ -113,7 +113,7 @@ namespace EW
 
         public MapGridT GridT { get { return innerData.GridT; } }
 
-        public EW.OpenGLES.Rectangle Bounds { get { return innerData.Bounds; } }
+        public EW.Framework.Rectangle Bounds { get { return innerData.Bounds; } }
 
         public Bitmap Preview { get { return innerData.Preview; } }
 
@@ -147,7 +147,7 @@ namespace EW
                 PlayerCount = 0,
                 SpawnPoints = NoSpawns,
                 GridT = gridT,
-                Bounds = EW.OpenGLES.Rectangle.Empty,
+                Bounds = EW.Framework.Rectangle.Empty,
                 Preview = null,
                 Status = MapStatus.Unavailable,
                 Visibility = MapVisibility.Lobby,
@@ -205,7 +205,7 @@ namespace EW
             if (yaml.TryGetValue("Author", out temp))
                 newData.Author = temp.Value;
             if (yaml.TryGetValue("Bounds", out temp))
-                newData.Bounds = FieldLoader.GetValue<EW.OpenGLES.Rectangle>("Bounds", temp.Value);
+                newData.Bounds = FieldLoader.GetValue<EW.Framework.Rectangle>("Bounds", temp.Value);
 
             if (yaml.TryGetValue("Visibility", out temp))
                 newData.Visibility = FieldLoader.GetValue<MapVisibility>("Visibility", temp.Value);

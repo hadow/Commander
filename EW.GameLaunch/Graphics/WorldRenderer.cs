@@ -6,7 +6,7 @@ using EW.Traits;
 using EW.Primitives;
 using EW.Effects;
 using EW.NetWork;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Graphics
 {
     /// <summary>

@@ -27,6 +27,7 @@ namespace EW
         public readonly MapCache MapCache;
 
         public readonly IPackageLoader[] PackageLoaders;
+        public readonly ISoundLoader[] SoundLoaders;
         public readonly ISpriteLoader[] SpriteLoaders;
         public readonly ISpriteSequenceLoader SpriteSequenceLoader;
         public readonly IModelSequenceLoader ModelSequenceLoader;
@@ -78,7 +79,8 @@ namespace EW
 
             MapCache = new MapCache(this);
 
-            SpriteLoaders = GetLoaders<ISpriteLoader>(Manifest.SpriteFormats, "sprite");
+            SoundLoaders = ObjectCreator.GetLoaders<ISoundLoader>(Manifest.SoundFormats, "sound");
+            SpriteLoaders = ObjectCreator.GetLoaders<ISpriteLoader>(Manifest.SpriteFormats, "sprite");
 
             var sequenceFormat = Manifest.Get<SpriteSequenceFormat>();
             var sequenceLoader = ObjectCreator.FindType(sequenceFormat.Type + "Loader");
@@ -132,7 +134,7 @@ namespace EW
         /// <param name="fileSystem"></param>
         public void InitializeLoaders(IReadOnlyFileSystem fileSystem)
         {
-
+            WarGame.Sound.Initialize(SoundLoaders, fileSystem);
         }
 
         /// <summary>

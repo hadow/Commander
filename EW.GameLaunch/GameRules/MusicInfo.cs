@@ -33,7 +33,25 @@ namespace EW.GameRules
                 return;
             }
 
-            stream.Dispose();
+            try
+            {
+                Exists = true;
+                foreach(var loader in WarGame.ModData.SoundLoaders)
+                {
+                    ISoundFormat soundFormat;
+                    if(loader.TryParseSound(stream,out soundFormat))
+                    {
+                        Length = (int)soundFormat.LengthInSeconds;
+                        soundFormat.Dispose();
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                stream.Dispose();
+            }
+
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
 using EW.Graphics;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Cnc.Traits
 {
     class TSShroudPaletteInfo:ITraitInfo

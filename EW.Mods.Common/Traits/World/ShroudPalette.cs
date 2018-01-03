@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using EW.Graphics;
-using EW.OpenGLES;
+using EW.Framework;
 using EW.Traits;
 using System.Drawing;
 namespace EW.Mods.Common.Traits

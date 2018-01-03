@@ -66,12 +66,15 @@
     <Compile Include="AI\Squad.cs" />
     <Compile Include="AI\StateBase.cs" />
     <Compile Include="AI\StateMachine.cs" />
+    <Compile Include="AudioLoaders\AudLoader.cs" />
     <Compile Include="AudioLoaders\WavLoader.cs" />
     <Compile Include="ColorValidator.cs" />
     <Compile Include="Commands\ChatCommands.cs" />
     <Compile Include="Commands\DevCommands.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
+    <Compile Include="FileFormats\AudReader.cs" />
+    <Compile Include="FileFormats\ImaAdpcmReader.cs" />
     <Compile Include="FileFormats\InstallShieldCABCompression.cs" />
     <Compile Include="FileFormats\LCWCompression.cs" />
     <Compile Include="FileFormats\LZOCompression.cs" />
@@ -98,6 +101,8 @@
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
     <Compile Include="Pathfinder\Constants.cs" />
+    <Compile Include="Pathfinder\PathCacheStorage.cs" />
+    <Compile Include="Pathfinder\PathFinderUnitPathCacheDecorator.cs" />
     <Compile Include="Pathfinder\PathGraph.cs" />
     <Compile Include="Pathfinder\PathSearch.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />
@@ -477,9 +482,9 @@
       <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
       <Name>EW.GameLaunch</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EW.OpenGL.ES\EW.OpenGL.ES.csproj">
+    <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
-      <Name>EW.OpenGL.ES</Name>
+      <Name>EW.Framework.Android</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

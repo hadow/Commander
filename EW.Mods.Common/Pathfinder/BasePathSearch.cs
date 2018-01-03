@@ -105,7 +105,7 @@ namespace EW.Mods.Common.Pathfinder
 
         public IPathSearch WithIgnoredActor(Actor a)
         {
-            Graph.IgnoredActor = a;
+            Graph.IgnoreActor = a;
             return this;
         }
 

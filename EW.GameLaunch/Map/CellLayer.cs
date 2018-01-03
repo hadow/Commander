@@ -11,7 +11,7 @@ namespace EW
     public class CellLayer<T>:IEnumerable<T>
     {
         public readonly Size Size;
-        readonly EW.OpenGLES.Rectangle bounds;
+        readonly EW.Framework.Rectangle bounds;
         /// <summary>
         /// 地图网格类型
         /// </summary>
@@ -25,9 +25,21 @@ namespace EW
         public CellLayer(MapGridT gridT,Size size)
         {
             Size = size;
-            bounds = new EW.OpenGLES.Rectangle(0, 0, Size.Width, Size.Height);
+            bounds = new EW.Framework.Rectangle(0, 0, Size.Width, Size.Height);
             GridT = gridT;
             entries = new T[size.Width * size.Height];
+        }
+
+
+        public void CopyValuesFrom(CellLayer<T> anotherLayer)
+        {
+            if (Size != anotherLayer.Size || GridT != anotherLayer.GridT)
+                throw new ArgumentException("layers must have a matching size and shape (grid type).", "anotherlayer");
+
+            if (CellEntryChanged != null)
+                throw new InvalidOperationException("Cannot copy values when there are listeners attached to the CellEntryChanged event.");
+
+            Array.Copy(anotherLayer.entries, entries, entries.Length);
         }
 
         public IEnumerator<T> GetEnumerator()
@@ -90,7 +102,11 @@ namespace EW
                     CellEntryChanged(uv.ToCPos(GridT));
             }
         }
-
+        /// <summary>
+        /// Resolve an array index from cell coordinates.
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
         public T this[CPos cell]
         {
             get
@@ -108,15 +124,26 @@ namespace EW
 
         public MPos Clamp(MPos uv)
         {
-            return uv.Clamp(new EW.OpenGLES.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
+            return uv.Clamp(new EW.Framework.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
         }
 
+        /// <summary>
+        /// Clears the layer contents with a known value.
+        /// </summary>
+        /// <param name="clearValue"></param>
         public void Clear(T clearValue)
         {
             for (var i = 0; i < entries.Length; i++)
                 entries[i] = clearValue;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="initialCellValueFactory"></param>
+        /// <param name="size"></param>
+        /// <param name="mapGridT"></param>
+        /// <returns></returns>
         public static CellLayer<T> CreateInstance(Func<MPos,T> initialCellValueFactory,Size size,MapGridT mapGridT)
         {
             var cellLayer = new CellLayer<T>(mapGridT, size);

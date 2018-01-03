@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using EW.Traits;
 using EW.Graphics;
-using EW.OpenGLES;
+using EW.Framework;
 namespace EW.Mods.Common.Traits
 {
 
@@ -31,6 +31,8 @@ namespace EW.Mods.Common.Traits
 
             public Sprite Sprite;
         }
+
+        static readonly CellContents EmptyCell = new CellContents();
 
 
         readonly World world;
@@ -68,6 +70,33 @@ namespace EW.Mods.Common.Traits
                 else
                     kv.Value.Update(cell, null);
             }
+        }
+
+        public ResourceType GetResource(CPos cell) { return Content[cell].Type; }
+
+        public ResourceType GetRenderedResource(CPos cell) { return RenderContent[cell].Type; }
+
+        public int GetResourceDensity(CPos cell) { return Content[cell].Density; }
+
+        public bool IsFull(CPos cell)
+        {
+            return Content[cell].Density == Content[cell].Type.Info.MaxDensity;
+        }
+        public int GetMaxResourceDensity(CPos cell)
+        {
+            if (Content[cell].Type == null)
+                return 0;
+            return Content[cell].Type.Info.MaxDensity;
+        }
+
+        public bool CanSpawnResourceAt(ResourceType newResourceType,CPos cell)
+        {
+            if (!world.Map.Contains(cell))
+                return false;
+
+            var currentResourceType = GetResource(cell);
+
+            return (currentResourceType == newResourceType && !IsFull(cell)) || (currentResourceType == null && AllowResourceAt(newResourceType, cell));
         }
 
         public void WorldLoaded(World w,WorldRenderer wr)
@@ -128,6 +157,22 @@ namespace EW.Mods.Common.Traits
             }
         }
 
+
+        public void AddResource(ResourceType t,CPos p,int n)
+        {
+            var cell = Content[p];
+            if (cell.Type == null)
+                cell = CreateResourceCell(t, p);
+
+            if (cell.Type != t)
+                return;
+
+            cell.Density = Math.Min(cell.Type.Info.MaxDensity, cell.Density + n);
+
+            Content[p] = cell;
+            dirty.Add(p);
+        }
+
         int GetAdjacentCellsWith(ResourceType t,CPos cell)
         {
             var sum = 0;
@@ -144,6 +189,12 @@ namespace EW.Mods.Common.Traits
             return sum;
         }
 
+        /// <summary>
+        /// 创建资源
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="cell"></param>
+        /// <returns></returns>
         CellContents CreateResourceCell(ResourceType t,CPos cell)
         {
             world.Map.CustomTerrain[cell] = world.Map.Rules.TileSet.GetTerrainIndex(t.Info.TerrainType);
@@ -169,6 +220,19 @@ namespace EW.Mods.Common.Traits
             if (!rt.Info.AllowedTerrainTypes.Contains(world.Map.GetTerrainInfo(cell).Type))
                 return false;
 
+            if (!rt.Info.AllowUnderActors && world.ActorMap.AnyActorsAt(cell))
+                return false;
+
+            if (!rt.Info.AllowUnderBuildings && buildingInfluence.GetBuildingAt(cell) != null)
+                return false;
+
+            if (!rt.Info.AllowOnRamps)
+            {
+                var tile = world.Map.Tiles[cell];
+                var tileInfo = world.Map.Rules.TileSet.GetTileInfo(tile);
+                if (tileInfo != null && tileInfo.RampType > 0)
+                    return false;
+            }
             return true;
 
         }
@@ -204,8 +268,6 @@ namespace EW.Mods.Common.Traits
 
         protected virtual void UpdateRenderedSprite(CPos cell)
         {
-
-
             var t = RenderContent[cell];
             if (t.Density > 0)
             {
@@ -234,6 +296,18 @@ namespace EW.Mods.Common.Traits
         }
 
 
+        public void Destroy(CPos cell)
+        {
+            //Don't break other users of CustomTerrain if there are no resources
+            if (Content[cell].Type == null)
+                return;
+
+            //Clear cell
+            Content[cell] = EmptyCell;
+            world.Map.CustomTerrain[cell] = byte.MaxValue;
+
+            dirty.Add(cell);
+        }
 
         
     }
