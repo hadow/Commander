@@ -8,6 +8,12 @@ using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
 
+    interface IWallConnector
+    {
+        bool AdjacentWallCanConnect(Actor self, CPos wallLocation, string wallType, out CVec facing);
+
+        void SetDirty();
+    }
 
     [RequireExplicitImplementation]
     public interface ICustomMovementLayer

@@ -29,6 +29,7 @@ SOFTWARE.
 #endregion License
 
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.Runtime.Serialization;
 

@@ -2,6 +2,7 @@ using System;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Scripting;
+using EW.Framework;
 namespace EW
 {
     /// <summary>
@@ -25,6 +26,11 @@ namespace EW
             Y = y.Length;
             Z = z.Length;
            
+        }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3(X, Y, Z);
         }
         public bool Equals(WPos other)
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Android.Views;
 using EW.Framework.Mobile;
 using EW.Framework.Touch;

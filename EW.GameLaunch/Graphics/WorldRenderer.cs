@@ -104,7 +104,7 @@ namespace EW.Graphics
             terrainRenderer.Draw(this, ViewPort);
 
             WarGame.Renderer.Flush();
-
+            
             for (var i = 0; i < renderables.Count; i++)
                 renderables[i].Render(this);
 

@@ -13,7 +13,7 @@ namespace EW.Mods.Common.Scripting
         public PlayerGlobal(ScriptContext context) : base(context) { }
 
         /// <summary>
-        /// Returns the player with the specified internal name,or nil if a match i s not found.
+        /// Returns the player with the specified internal name,or nil if a match is not found.
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>

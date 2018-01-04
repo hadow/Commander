@@ -233,7 +233,7 @@ namespace EW
                 if (worldRenderer != null)
                 {
                     Renderer.BeginFrame(worldRenderer.ViewPort.TopLeft, worldRenderer.ViewPort.Zoom);
-
+                    Sound.SetListenerPosition(worldRenderer.ViewPort.CenterPosition.ToVector3());
                     worldRenderer.Draw();
 
                 }

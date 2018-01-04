@@ -68,8 +68,9 @@ namespace EW.Graphics
 
         public Sprite Add(byte[] src,Size size,float zRamp,Vector3 spriteOffset)
         {
+            //Don't bother allocating empty sprites.
             if (size.Width == 0 || size.Height == 0)
-                return new Sprite(current,EW.Framework.Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
+                return new Sprite(current,Rectangle.Empty,0,spriteOffset,channel,BlendMode.Alpha);
 
             var rect = Allocate(size, zRamp, spriteOffset);
             Util.FastCopyIntoChannel(rect, src);
@@ -118,7 +119,7 @@ namespace EW.Graphics
                 p = new System.Drawing.Point(0, 0);
             }
 
-            var rect = new Sprite(current, new EW.Framework.Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
+            var rect = new Sprite(current, new Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
             p.X += imageSize.Width;
 
             return rect;

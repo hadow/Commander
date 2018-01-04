@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Framework;
-using System.Linq;
 using System.Drawing;
+using System.Linq;
 namespace EW.Graphics
 {
     public struct TargetLineRenderable:IRenderable,IFinalizedRenderable
@@ -51,9 +50,9 @@ namespace EW.Graphics
 
         public void RenderDebugGeometry(WorldRenderer wr) { }
 
-        public EW.Framework.Rectangle ScreenBounds(WorldRenderer wr)
+        public Rectangle ScreenBounds(WorldRenderer wr)
         {
-            return EW.Framework.Rectangle.Empty;
+            return Rectangle.Empty;
         }
 
     }

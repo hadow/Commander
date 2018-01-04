@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.GameLaunch", "EW.GameLau
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eluant", "..\Eluant\Eluant\Eluant.csproj", "{D4CFD952-4EDC-421D-84A5-998688815124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.OpenGL.ES", "EW.OpenGL.ES\EW.OpenGL.ES.csproj", "{6D95A620-D0D0-4B0C-B1EE-AB9F61BCC201}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EW.Framework.Android", "EW.Framework.Android\EW.Framework.Android.csproj", "{6D95A620-D0D0-4B0C-B1EE-AB9F61BCC201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

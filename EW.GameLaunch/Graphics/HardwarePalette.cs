@@ -71,6 +71,23 @@ namespace EW.Graphics
 
         /// <summary>
         /// Implement dynamic hardware palette sizing
+        /// 
+        /// The HardwarePalette will now grow its palette buffer and texture in power-of-2 increments..
+        /// This avoids it having to allocate memory for a full 256*256 texture up front.
+        /// In practice the default mods use 22 or 23 paleetes so a 32X256 texture is used.
+        /// This means both the buffer and texture save neatly on memory.
+        /// Additionally, HarewarePalette.ApplyModifiers sees a nice speedup as it has to transfer a much smaller amount of memory from the buffer to the texture
+        /// 
+        /// to facilitate this change,the MaxPalettes constant is no more.
+        /// instead the PaletteReference deals with the calculation of the index and this is passed into the appropriate methods.
+        /// 
+        /// 实现动态的调色板寄存
+        /// 
+        /// HardwarePalette 现在以2的幂次增加其调色板的缓冲区和纹理大小。这避免了它必须先分配内存以获得完整的256x256纹理。
+        /// 实际上默认的mod 使用22或者23种调色板，因此使用了32x256的纹理。这意味着缓冲区和纹理整齐的保存在内存当中。
+        /// 此外HardwarePalette.ApplyModifiers 有着一个不错的加速，因为它必须从字节缓冲区传递少量的内存到纹理。
+        /// 
+        /// 为了促进这种变化。MaxPalettes 常数不再。PaletteReference处理调色板索引的计算，并将其传递给适当的方法。
         /// </summary>
         /// <param name="name"></param>
         /// <param name="p"></param>

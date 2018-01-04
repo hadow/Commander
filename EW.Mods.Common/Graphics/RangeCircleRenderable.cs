@@ -55,7 +55,7 @@ namespace EW.Mods.Common.Graphics
 
         }
 
-        public EW.Framework.Rectangle ScreenBounds(WorldRenderer wr) { return EW.Framework.Rectangle.Empty; }
+        public Rectangle ScreenBounds(WorldRenderer wr) { return Rectangle.Empty; }
 
 
         public void RenderDebugGeometry(WorldRenderer wr){}

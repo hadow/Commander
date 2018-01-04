@@ -244,10 +244,10 @@ namespace EW.Framework.Audio
 
                     // If 4.4 or higher, then we don't need to double buffer on the application side.
                     // See http://stackoverflow.com/a/15006327
-                    if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
-                    {
-                        updateBuffers = 1;
-                    }
+                    //if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+                    //{
+                    //    updateBuffers = 1;
+                    //}
                 }
                 else
                 {

@@ -77,7 +77,7 @@ namespace EW.Framework.Graphics
 
         public void Present()
         {
-
+            Threading.EnsureUIThread();
             Game.Instance.Platform.Present();
 
 
@@ -181,7 +181,8 @@ namespace EW.Framework.Graphics
         public void SetBlendMode(BlendMode mode)
         {
             Threading.EnsureUIThread();
-            GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+            //GL.BlendEquationSeparate(BlendEquationMode.FuncAdd, BlendEquationMode.FuncAdd);
+            GL.BlendEquation((int)BlendEquationMode.FuncAdd);
             GraphicsExtensions.CheckGLError();
             switch (mode)
             {
@@ -204,6 +205,11 @@ namespace EW.Framework.Graphics
                         GL.BlendEquation((int)BlendEquationMode.FuncReverseSubtract);
                     }
                     break;
+                case BlendMode.Multiply:
+                    GL.Enable(EnableCap.Blend);
+                    GraphicsExtensions.CheckGLError();
+                    GL.BlendFunc((int)BlendingFactorDest.DstColor, (int)BlendingFactorSrc.OneMinusSrcAlpha);
+                    break;
                 case BlendMode.Multiplicative:
                     GL.Enable(EnableCap.Blend);
                     GraphicsExtensions.CheckGLError();
@@ -216,17 +222,13 @@ namespace EW.Framework.Graphics
                     break;
 
             }
+            GraphicsExtensions.CheckGLError();
         }
 
 
 
         public void Clear()
         {
-            //Threading.EnsureUIThread();
-            //GL.ClearColor(0, 0, 0, 1);
-            //GraphicsExtensions.CheckGLError();
-            //GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            //GraphicsExtensions.CheckGLError();
             Clear(Color.Black);
         }
         public void Clear(Color color)
@@ -238,16 +240,16 @@ namespace EW.Framework.Graphics
             GraphicsExtensions.CheckGLError();
         }
 
-        static int ModelFromPrimitiveType(PrimitiveType pt)
+        static GLPrimitiveType ModelFromPrimitiveType(PrimitiveType pt)
         {
             switch (pt)
             {
                 case PrimitiveType.PointList:
-                    return (int)GLPrimitiveType.Points;
+                    return GLPrimitiveType.Points;
                 case PrimitiveType.LineList:
-                    return (int)GLPrimitiveType.Lines;
+                    return GLPrimitiveType.Lines;
                 case PrimitiveType.TriangleList:
-                    return (int)GLPrimitiveType.Triangles;
+                    return GLPrimitiveType.Triangles;
             }
 
             throw new NotImplementedException();
@@ -263,7 +265,7 @@ namespace EW.Framework.Graphics
 
         public void DrawPrimitives(PrimitiveType pt,int firstVertex,int numVertices)
         {
-            GL.DrawArrays((GLPrimitiveType)ModelFromPrimitiveType(pt), firstVertex, numVertices);
+            GL.DrawArrays(ModelFromPrimitiveType(pt), firstVertex, numVertices);
             GraphicsExtensions.CheckGLError();
         }
 

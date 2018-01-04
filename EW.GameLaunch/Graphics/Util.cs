@@ -109,7 +109,7 @@ namespace EW.Graphics
 
                 attribC = -(attribC + ChannelSelect[(int)ss.SecondaryChannel] / 10);
             }
-            
+            //Console.WriteLine(string.Format("pallette index:{0} color:{1}", paletteTextureIndex, attribC));
             vertices[nv] = new Vertex(a, r.Left, r.Top, sl, st, paletteTextureIndex, attribC);
             vertices[nv + 1] = new Vertex(b, r.Right, r.Top, sr, st, paletteTextureIndex, attribC);
             vertices[nv + 2] = new Vertex(c, r.Right, r.Bottom, sr, sb, paletteTextureIndex, attribC);

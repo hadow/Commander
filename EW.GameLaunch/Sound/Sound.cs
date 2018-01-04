@@ -32,7 +32,6 @@ namespace EW
     public enum SoundType { World,UI}
     public sealed class Sound:IDisposable
     {
-        //readonly SoundEffectInstance soundEffectInstance;
 
         readonly ISoundEngine soundEngine;
 
@@ -102,7 +101,14 @@ namespace EW
 
         public void StopMusic()
         {
-            
+            if(music != null)
+            {
+                soundEngine.StopSound(music);
+                music = null;
+            }
+
+            currentMusic = null;
+            MusicPlaying = false;
         }
 
         T LoadSound<T>(string filename,Func<ISoundFormat,T> loadFormat)
@@ -153,6 +159,12 @@ namespace EW
 
             currentSounds = new Dictionary<uint, ISound>();
             video = null;
+        }
+
+
+        public ISound Play(SoundType type,string name,WPos pos)
+        {
+            return Play(type, null, name, false, pos.ToVector3(), 1f);
         }
 
 
@@ -221,9 +233,9 @@ namespace EW
         /// 
         /// </summary>
         /// <param name="position"></param>
-        public void SetListenerPosition(WPos position)
+        public void SetListenerPosition(Vector3 position)
         {
-
+            soundEngine.SetListenerPosition(position);
         }
 
         /// <summary>
@@ -231,7 +243,7 @@ namespace EW
         /// </summary>
         public void StopAudio()
         {
-
+            soundEngine.StopAllSounds();
         }
 
         public void StopVideo()

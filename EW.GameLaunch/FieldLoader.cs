@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Drawing;
 using System.Runtime.Serialization;
 using System.Globalization;
@@ -321,6 +320,28 @@ namespace EW
                     return new CVec(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
                 }
             }
+            else if(fieldType == typeof(CVec[]))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(',');
+
+                    if (parts.Length % 2 != 0)
+                        return InvalidValueAction(value, fieldType, fieldName);
+
+                    var vecs = new CVec[parts.Length / 2];
+
+                    for(var i = 0; i < vecs.Length; i++)
+                    {
+                        int rx, ry;
+                        if (int.TryParse(parts[2 * i], out rx) && int.TryParse(parts[2 * i + 1], out ry))
+                            vecs[i] = new CVec(rx, ry);
+                    }
+                    return vecs;
+                }
+
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             else if (fieldType.IsEnum)
             {
                 try
@@ -353,12 +374,12 @@ namespace EW
                 }
                 return ret;
             }
-            else if (fieldType == typeof(EW.Framework.Rectangle))
+            else if (fieldType == typeof(Rectangle))
             {
                 if (value != null)
                 {
                     var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                    return new EW.Framework.Rectangle(
+                    return new Rectangle(
                         Exts.ParseIntegerInvariant(parts[0]),
                         Exts.ParseIntegerInvariant(parts[1]),
                         Exts.ParseIntegerInvariant(parts[2]),

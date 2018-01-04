@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using EW.Framework;
 using EW.Framework.Graphics;
 namespace EW.Graphics
@@ -50,7 +51,8 @@ namespace EW.Graphics
         public readonly TextureChannel SecondaryChannel;
         public readonly float SecondaryTop, SecondaryLeft, SecondaryBottom, SecondaryRight;
 
-        public SpriteWithSecondaryData(Sprite s,Rectangle secondaryBounds,TextureChannel secondaryChannel) : base(s.Sheet, s.Bounds, s.ZRamp, s.Offset, s.Channel, s.BlendMode)
+        public SpriteWithSecondaryData(Sprite s,Rectangle secondaryBounds,TextureChannel secondaryChannel) :
+            base(s.Sheet, s.Bounds, s.ZRamp, s.Offset, s.Channel, s.BlendMode)
         {
             SecondaryBounds = secondaryBounds;
             SecondaryChannel = secondaryChannel;

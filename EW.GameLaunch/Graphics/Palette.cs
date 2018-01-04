@@ -12,6 +12,9 @@ namespace EW.Graphics
         /// <summary>
         /// By allowing a palette to be copied to an array,
         /// a speedup can be gained in HardwarePalette since palettes can be block copied using native magic rather than having to copy them item by item
+        /// 
+        /// We transpose the buffer in HardwarePalette in order to allow a contiguous block copy into this buffer,
+        /// transposing again in the shader to keep everything correct.
         /// </summary>
         /// <param name="destination"></param>
         /// <param name="destinationOffset"></param>

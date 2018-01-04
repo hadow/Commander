@@ -17,6 +17,9 @@ namespace EW.Traits
         public readonly int[] RemapIndex = { };
 
 
+        /// <summary>
+        /// The fixed color to remap.
+        /// </summary>
         public readonly HSLColor Color;
 
         /// <summary>

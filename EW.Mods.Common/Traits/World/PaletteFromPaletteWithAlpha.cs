@@ -9,6 +9,7 @@ namespace EW.Mods.Common.Traits
 
     /// <summary>
     /// Create a palette by applying alpha transparency to another palette.
+    /// 通过将Alpha 透明度应用于另一个调色板来创建调色板
     /// </summary>
     class PaletteFromPaletteWithAlphaInfo : ITraitInfo
     {

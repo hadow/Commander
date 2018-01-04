@@ -59,7 +59,7 @@ namespace EW
         /// <summary>
         /// 
         /// </summary>
-        readonly Stack<EW.Framework.Rectangle> scissorState = new Stack<EW.Framework.Rectangle>();
+        readonly Stack<Rectangle> scissorState = new Stack<Rectangle>();
 
         public Size Resolution { get { return new Size(Device.Viewport.Width,Device.Viewport.Height); } }
         public Renderer(GraphicsSettings graphicSettings,IGraphicsDevice device)
@@ -155,11 +155,11 @@ namespace EW
         }
 
 
-        public void EnableScissor(EW.Framework.Rectangle rect)
+        public void EnableScissor(Rectangle rect)
         {
             //Must remain inside the current scissor rect.
             if (scissorState.Any())
-                rect.Intersects(scissorState.Peek());
+                rect.Intersect(scissorState.Peek());
             Flush();
             Device.EnableScissor(rect.Left, rect.Top, rect.Width, rect.Height);
             scissorState.Push(rect);

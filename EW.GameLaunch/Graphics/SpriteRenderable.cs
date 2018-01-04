@@ -79,11 +79,11 @@ namespace EW.Graphics
             WarGame.Renderer.WorldRgbaColorRenderer.DrawRect(screenOffset,screenOffset+sprite.Size,1/wr.ViewPort.Zoom,Color.Red);
         }
 
-        public EW.Framework.Rectangle ScreenBounds(WorldRenderer wr)
+        public Rectangle ScreenBounds(WorldRenderer wr)
         {
             var screenOffset = ScreenPosition(wr);
 
-            return new EW.Framework.Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
+            return new Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
         }
 
         Vector3 ScreenPosition(WorldRenderer wr)

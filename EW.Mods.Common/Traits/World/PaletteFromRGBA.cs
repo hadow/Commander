@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using EW.Graphics;
-using EW.Framework;
 using EW.Traits;
 using System.Drawing;
 namespace EW.Mods.Common.Traits
@@ -41,7 +38,7 @@ namespace EW.Mods.Common.Traits
 
         public void LoadPalettes(WorldRenderer wr)
         {
-
+            //Enable palette only for a specific tileset.
             if (info.Tileset != null && info.Tileset.ToLowerInvariant() != world.Map.Tileset.ToLowerInvariant())
                 return;
 

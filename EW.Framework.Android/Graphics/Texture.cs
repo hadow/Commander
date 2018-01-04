@@ -46,7 +46,7 @@ namespace EW.Framework.Graphics
 
             Size = new Size(width, height);
             PrepareTexture();
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, IntPtr.Zero);
             GraphicsExtensions.CheckGLError();
         }
 
@@ -65,9 +65,9 @@ namespace EW.Framework.Graphics
                 {
                     var intPtr = new IntPtr((void*)ptr);
                     PrepareTexture();
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
-                    //GL.TexImage2D(TextureTarget.Texture2D, 0,
-                    //    PixelInternalFormat.BGRA_EXT, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
+                   // GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
+                    GL.TexImage2D(TextureTarget.Texture2D, 0,
+                        PixelInternalFormat.Rgba, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
                     //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
                     GraphicsExtensions.CheckGLError();
                 }
@@ -81,24 +81,24 @@ namespace EW.Framework.Graphics
         /// <param name="pixelHeight"></param>
         /// <param name="pixelWidth"></param>
         /// <param name="colors"></param>
-        private static void ConvertToABGR(int pixelHeight, int pixelWidth, byte[] colors)
-        {
-            int pixelCount = pixelHeight * pixelWidth;
-            //int pixelCount = colors.Length;
-            for(int i = 0; i < pixelCount; i++)
-            {
-                uint pixel = colors[i];
-                colors[i] = (byte)((pixel & 0xFF00FF00) | ((pixel & 0x00FF0000) >> 16) | ((pixel & 0x000000FF) << 16));
-            }
-        }
+        //private static void ConvertToABGR(int pixelHeight, int pixelWidth, byte[] colors)
+        //{
+        //    int pixelCount = pixelHeight * pixelWidth;
+        //    //int pixelCount = colors.Length;
+        //    for(int i = 0; i < pixelCount; i++)
+        //    {
+        //        uint pixel = colors[i];
+        //        colors[i] = (byte)((pixel & 0xFF00FF00) | ((pixel & 0x00FF0000) >> 16) | ((pixel & 0x000000FF) << 16));
+        //    }
+        //}
 
-        public static void ConvertTARGB(byte[] colors) {
+        //public static void ConvertTARGB(byte[] colors) {
 
-            for (int i = 0; i < colors.Length; i++) {
-                uint pixel = colors[i];
-                colors[i] = (byte)((pixel & 0xFFFFFF00) | ((pixel&0x000000FF)<<24));
-            }
-        }
+        //    for (int i = 0; i < colors.Length; i++) {
+        //        uint pixel = colors[i];
+        //        colors[i] = (byte)((pixel & 0xFFFFFF00) | ((pixel&0x000000FF)<<24));
+        //    }
+        //}
 
 
         //An array of RGBA
@@ -120,8 +120,8 @@ namespace EW.Framework.Graphics
                 {
                     var intPtr = new IntPtr((void*)ptr);
                     PrepareTexture();
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba,
-                        width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8,
+                        width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
 
                 }
             }
@@ -187,11 +187,7 @@ namespace EW.Framework.Graphics
             GraphicsExtensions.CheckGLError();
             return data;
         }
-
-        //public void Dispose()
-        //{
-        //    GC.SuppressFinalize(this);
-        //}
+        
 
         protected override void Dispose(bool disposing)
         {

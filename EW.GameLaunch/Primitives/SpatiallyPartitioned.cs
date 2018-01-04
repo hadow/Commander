@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Framework;
+using System.Drawing;
 namespace EW.Primitives
 {
     /// <summary>
@@ -101,7 +102,7 @@ namespace EW.Primitives
                         //If the item is in the bin,we must check intersects the box before returning it.
                         //We shall track it in the set of items seen so far to avoid returning it again if it appears in another bin.
                         //PERF: If the item is wholly contained within the bin,we can avoid the cost of tracking it.
-                        if (bounds.Intersects(box) && (items == null || binBounds.Contains(bounds) || items.Add(item)))
+                        if (bounds.IntersectsWith(box) && (items == null || binBounds.Contains(bounds) || items.Add(item)))
                             yield return item;
                             
 

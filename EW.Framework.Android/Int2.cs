@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 namespace EW.Framework
 {
     public struct Int2:IEquatable<Int2>
@@ -39,7 +40,8 @@ namespace EW.Framework
 
         public Int2 Clamp(Rectangle r)
         {
-            return new Int2(Math.Min(r.Right, Math.Max(X, r.Left)), Math.Min(r.Bottom, Math.Max(Y, r.Top)));
+            return new Int2(Math.Min(r.Right, Math.Max(X, r.Left)), 
+                Math.Min(r.Bottom, Math.Max(Y, r.Top)));
         }
 
 
@@ -55,7 +57,12 @@ namespace EW.Framework
             return ((orig & 0xff000000) >> 24) | ((orig & 0x00ff0000) >> 8) | ((orig & 0x0000ff00) << 8) | ((orig & 0x000000ff) << 24);
         }
 
+        public static int Dot(Int2 a,Int2 b)
+        {
+            return a.X * b.X + a.Y * b.Y;
+        }
 
-        public Point ToPoint() { return new Point(X, Y); }
+
+        public System.Drawing.Point ToPoint() { return new System.Drawing.Point(X, Y); }
     }
 }

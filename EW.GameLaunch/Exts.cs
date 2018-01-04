@@ -415,7 +415,7 @@ namespace EW
         }
 
 
-        public static bool Contains(this EW.Framework.Rectangle r,Int2 p){
+        public static bool Contains(this Rectangle r,Int2 p){
             return r.Contains(p.ToPoint());
         }
 
@@ -436,14 +436,14 @@ namespace EW
         }
 
 
-        public static System.Drawing.Rectangle Bounds(this Bitmap b)
+        public static Rectangle Bounds(this Bitmap b)
         {
-            return new System.Drawing.Rectangle(0, 0, b.Width, b.Height);
+            return new Rectangle(0, 0, b.Width, b.Height);
         }
 
-        public static EW.Framework.Rectangle Bounds2(this Bitmap b)
+        public static Rectangle Bounds2(this Bitmap b)
         {
-            return new EW.Framework.Rectangle(0, 0, b.Width, b.Height);
+            return new Rectangle(0, 0, b.Width, b.Height);
         }
 
         

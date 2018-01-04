@@ -120,6 +120,7 @@ namespace EW
             var tile = new TerrainTileInfo();
             FieldLoader.Load(tile, my);
 
+            //Terrain type must be converted from a string to an index.
             tile.GetType().GetField("TerrainT").SetValue(tile, tileSet.GetTerrainIndex(my.Value));
 
             //Fall back to the terrain-type color if necessary

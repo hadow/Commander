@@ -9,7 +9,7 @@
     <RootNamespace>EW</RootNamespace>
     <AssemblyName>EW.GameLaunch</AssemblyName>
     <AndroidApplication>true</AndroidApplication>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -32,12 +32,15 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AndroidUseSharedRuntime>True</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -511,7 +514,6 @@
     <AndroidAsset Include="Content\mods\ts\speech02.mix" />
     <AndroidAsset Include="Content\mods\ts\tem.mix" />
     <AndroidAsset Include="Content\mods\ts\temperat.mix" />
-    <AndroidAsset Include="Content\glsl\shp - Copy.frag" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -555,14 +557,16 @@
     <AndroidAsset Include="Content\mods\ts\uibits\chrome.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\dialog.png" />
     <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
-    <Content Include="Content\mods\ts\uibits\chrome.png" />
-    <Content Include="Content\mods\ts\uibits\dialog.png" />
-    <Content Include="Content\mods\ts\uibits\loadscreen.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\chrome.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\dialog.png" />
+    <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

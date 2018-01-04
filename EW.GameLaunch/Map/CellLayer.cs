@@ -11,7 +11,7 @@ namespace EW
     public class CellLayer<T>:IEnumerable<T>
     {
         public readonly Size Size;
-        readonly EW.Framework.Rectangle bounds;
+        readonly Rectangle bounds;
         /// <summary>
         /// 地图网格类型
         /// </summary>
@@ -25,7 +25,7 @@ namespace EW
         public CellLayer(MapGridT gridT,Size size)
         {
             Size = size;
-            bounds = new EW.Framework.Rectangle(0, 0, Size.Width, Size.Height);
+            bounds = new Rectangle(0, 0, Size.Width, Size.Height);
             GridT = gridT;
             entries = new T[size.Width * size.Height];
         }
@@ -124,7 +124,7 @@ namespace EW
 
         public MPos Clamp(MPos uv)
         {
-            return uv.Clamp(new EW.Framework.Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
+            return uv.Clamp(new Rectangle(0, 0, Size.Width - 1, Size.Height - 1));
         }
 
         /// <summary>

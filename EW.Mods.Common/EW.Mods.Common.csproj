@@ -8,12 +8,12 @@
     <OutputType>Library</OutputType>
     <RootNamespace>EW.Mods.Common</RootNamespace>
     <AssemblyName>EW.Mods.Common</AssemblyName>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <AndroidTlsProvider>
     </AndroidTlsProvider>
   </PropertyGroup>
@@ -431,6 +431,7 @@
     <Compile Include="Traits\World\PaletteFromPlayerPaletteWithAlpha.cs" />
     <Compile Include="Traits\World\PaletteFromRGBA.cs" />
     <Compile Include="Traits\World\PathFinder.cs" />
+    <Compile Include="Traits\World\PlayerPaletteFromCurrentTileset.cs" />
     <Compile Include="Traits\World\RadarPings.cs" />
     <Compile Include="Traits\World\ResourceClaimLayer.cs" />
     <Compile Include="Traits\World\ResourceLayer.cs" />
@@ -443,6 +444,8 @@
     <Compile Include="Traits\World\StartGameNotification.cs" />
     <Compile Include="Traits\World\SubterraneanActorLayer.cs" />
     <Compile Include="Traits\World\TerrainGeometryOverlay.cs" />
+    <Compile Include="Traits\World\TerrainTunnel.cs" />
+    <Compile Include="Traits\World\TerrainTunnelLayer.cs" />
     <Compile Include="Traits\World\ValidateOrder.cs" />
     <Compile Include="Traits\World\WarheadDebugOverlay.cs" />
     <Compile Include="Traits\PaletteEffects\CloakPaletteEffect.cs" />

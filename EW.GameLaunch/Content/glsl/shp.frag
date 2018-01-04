@@ -44,13 +44,10 @@ void main()
 	}
 
 	// Convert to window coords
-	//gl_FragDepth = 0.5 * depth + 0.5;
-	//gl_FragDepthEXT = 0.5 * depth + 0.5;
-	//gl_Position.z = 0.5*depth+0.5;
+	gl_FragDepthEXT = 0.5 * depth + 0.5;
 	if (EnableDepthPreview)
 	{
-		float x = 1.0 - (0.5*depth+0.5);
-		//float x = 1.0 - gl_FragDepthEXT;
+		float x = 1.0 - gl_FragDepthEXT;
 		float r = clamp(jet_r(x), 0.0, 1.0);
 		float g = clamp(jet_g(x), 0.0, 1.0);
 		float b = clamp(jet_b(x), 0.0, 1.0);

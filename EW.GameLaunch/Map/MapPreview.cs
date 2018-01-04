@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Drawing;
 using System.Collections.Generic;
 using EW.FileSystem;
 using EW.Primitives;
@@ -40,8 +41,8 @@ namespace EW
             public int PlayerCount;
             public CPos[] SpawnPoints;  //³öÉúµã
             public MapGridT GridT;
-            public EW.Framework.Rectangle Bounds;
-            public Bitmap Preview;
+            public Rectangle Bounds;
+            //public Bitmap Preview;
             public MapStatus Status;
             public MapVisibility Visibility;
             public MapClassification Class;
@@ -113,9 +114,9 @@ namespace EW
 
         public MapGridT GridT { get { return innerData.GridT; } }
 
-        public EW.Framework.Rectangle Bounds { get { return innerData.Bounds; } }
+        public Rectangle Bounds { get { return innerData.Bounds; } }
 
-        public Bitmap Preview { get { return innerData.Preview; } }
+        //public Bitmap Preview { get { return innerData.Preview; } }
 
         public MapStatus Status { get { return innerData.Status; } }
 
@@ -147,8 +148,8 @@ namespace EW
                 PlayerCount = 0,
                 SpawnPoints = NoSpawns,
                 GridT = gridT,
-                Bounds = EW.Framework.Rectangle.Empty,
-                Preview = null,
+                Bounds = Rectangle.Empty,
+                //Preview = null,
                 Status = MapStatus.Unavailable,
                 Visibility = MapVisibility.Lobby,
             
@@ -205,7 +206,7 @@ namespace EW
             if (yaml.TryGetValue("Author", out temp))
                 newData.Author = temp.Value;
             if (yaml.TryGetValue("Bounds", out temp))
-                newData.Bounds = FieldLoader.GetValue<EW.Framework.Rectangle>("Bounds", temp.Value);
+                newData.Bounds = FieldLoader.GetValue<Rectangle>("Bounds", temp.Value);
 
             if (yaml.TryGetValue("Visibility", out temp))
                 newData.Visibility = FieldLoader.GetValue<MapVisibility>("Visibility", temp.Value);
@@ -273,9 +274,9 @@ namespace EW
 
             });
 
-            if (Package.Contains("map.png"))
-                using (var dataStream = p.GetStream("map.png"))
-                    newData.Preview = BitmapFactory.DecodeStream(dataStream);
+            //if (Package.Contains("map.png"))
+            //    using (var dataStream = p.GetStream("map.png"))
+            //        newData.Preview = BitmapFactory.DecodeStream(dataStream);
 
             innerData = newData;
         }

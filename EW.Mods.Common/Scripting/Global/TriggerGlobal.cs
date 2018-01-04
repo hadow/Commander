@@ -18,6 +18,12 @@ namespace EW.Mods.Common.Scripting
             return events;
         }
 
+
+        /// <summary>
+        /// Call a function after a specified delay.The callback function will be called as func().
+        /// </summary>
+        /// <param name="delay"></param>
+        /// <param name="func"></param>
         public void AfterDelay(int delay,LuaFunction func)
         {
             var f = (LuaFunction)func.CopyReference();

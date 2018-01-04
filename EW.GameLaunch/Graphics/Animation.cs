@@ -91,6 +91,17 @@ namespace EW.Graphics
             };
         }
 
+
+        public void PlayFetchIndex(string sequenceName,Func<int> func)
+        {
+            backwards = false;
+            tickAlways = true;
+            PlaySequence(sequenceName);
+
+            frame = func();
+            tickFunc = () => frame = func();
+        }
+
         void PlaySequence(string sequenceName)
         {
             CurrentSequence = GetSequence(sequenceName);

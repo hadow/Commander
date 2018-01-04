@@ -8,7 +8,7 @@ varying vec4 vTexCoord;
 varying vec2 vTexMetadata;
 varying vec4 vChannelMask;
 varying vec4 vDepthMask;
-
+//BGRA
 vec4 DecodeChannelMask(float x)
 {
 	if (x > 0.7)
@@ -18,7 +18,7 @@ vec4 DecodeChannelMask(float x)
 	if (x > 0.3)
 		return vec4(0,1,0,0);
 	else
-		return vec4(1,0,0,0);
+		return vec4(0,0,1,0);
 }
 
 void main()

@@ -1,5 +1,5 @@
 using System;
-using EW.Framework;
+using System.Drawing;
 namespace EW
 {
     /// <summary>

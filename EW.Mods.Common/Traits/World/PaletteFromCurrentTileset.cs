@@ -6,6 +6,7 @@ namespace EW.Mods.Common.Traits
 {
     /// <summary>
     /// Loads the palette specified in the tileset definition
+    /// 加载在地形图集定义中指定的调色板
     /// </summary>
     public class PaletteFromCurrentTilesetInfo : ITraitInfo
     {

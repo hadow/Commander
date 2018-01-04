@@ -2,17 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using EW.Framework;
+using System.Drawing;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-    //public enum SubCell
-    //{
-    //    Invalid = int.MinValue,
-    //    Any = int.MinValue/2,
-    //    FullCell = 0,
-    //    First = 1,
-    //}
 
     public class ActorMapInfo:ITraitInfo
     {

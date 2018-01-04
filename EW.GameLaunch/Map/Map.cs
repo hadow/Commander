@@ -173,7 +173,7 @@ namespace EW
         public string Author;
         public string Tileset;
         public bool LockPreview;
-        public EW.Framework.Rectangle Bounds;
+        public Rectangle Bounds;
         public MapVisibility Visibility = MapVisibility.Lobby;
         public string[] Categories = { "Conquest" };
 
@@ -559,6 +559,19 @@ namespace EW
                 UpdateProjection(cell);
         }
 
+        public List<MPos> Unproject(PPos puv)
+        {
+            var uv = (MPos)puv;
+
+            if (!initializedCellProjection)
+                InitializeCellPojection();
+
+            if (!inverseCellProjection.Contains(uv))
+                return new List<MPos>();
+
+            return inverseCellProjection[uv];
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -678,7 +691,7 @@ namespace EW
 
         public PPos Clamp(PPos puv)
         {
-            var bounds = new EW.Framework.Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
+            var bounds = new Rectangle(Bounds.X, Bounds.Y, Bounds.Width - 1, Bounds.Height - 1);
             return puv.Clamp(bounds);
         }
 
@@ -692,7 +705,7 @@ namespace EW
         {
             //The tl and br coordinates are inclusive,but the Rectangle is exclusive.
             //Pad the right and bootom edges to match.
-            Bounds = EW.Framework.Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
+            Bounds = Rectangle.FromLTRB(tl.U, tl.V, br.U + 1, br.V + 1);
             //避免不必要的转换，直接计算地图屏幕投射坐标的世界单位
             var wtop = tl.V * 1024;
             var wbottom = (br.V + 1) * 1024;
