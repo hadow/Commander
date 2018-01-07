@@ -9,6 +9,11 @@ namespace EW.Mods.Common.Graphics
     {
         const int RangeCircleSegments = 32;
 
+        static readonly int[][] RangeCircleStartRotations = Exts.MakeArray(RangeCircleSegments, i => WRot.FromFacing(8 * i).AsMatrix());
+        static readonly int[][] RangeCircleEndRotations = Exts.MakeArray(RangeCircleSegments, i => WRot.FromFacing(8 * i + 6).AsMatrix());
+
+
+
         readonly WPos centerPosition;
         readonly WDist radius;
         readonly int zOffset;

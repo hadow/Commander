@@ -436,16 +436,6 @@ namespace EW
         }
 
 
-        public static Rectangle Bounds(this Bitmap b)
-        {
-            return new Rectangle(0, 0, b.Width, b.Height);
-        }
-
-        public static Rectangle Bounds2(this Bitmap b)
-        {
-            return new Rectangle(0, 0, b.Width, b.Height);
-        }
-
         
     }
     

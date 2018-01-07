@@ -326,18 +326,18 @@ namespace EW
         {
             ActorMap.AddInfluence(self, ios);
             ActorMap.AddPosition(self, ios);
-
-            if(!self.Bounds.Size.IsEmpty)
-                ScreenMap.Add(self);
+            ScreenMap.AddOrUpdate(self);
+            //if(!self.Bounds.Size.IsEmpty)
+                //ScreenMap.Add(self);
         }
 
         public void RemoveFromMaps(Actor self,IOccupySpace ios)
         {
             ActorMap.RemoveInfluence(self, ios);
             ActorMap.RemovePosition(self, ios);
-
-            if(!self.Bounds.Size.IsEmpty)
-                ScreenMap.Remove(self);
+            ScreenMap.Remove(self);
+            //if(!self.Bounds.Size.IsEmpty)
+                //ScreenMap.Remove(self);
         }
 
 
@@ -351,7 +351,7 @@ namespace EW
             actors.Add(a.ActorID, a);
             ActorAdded(a);
 
-            foreach(var t in a.TraitsImplementing<INotifyAddToWorld>())
+            foreach(var t in a.TraitsImplementing<INotifyAddedToWorld>())
             {
                 t.AddedToWorld(a);
             }
@@ -406,9 +406,10 @@ namespace EW
         {
             if (!self.IsInWorld)
                 return;
-            if (!self.Bounds.Size.IsEmpty)
-                ScreenMap.Update(self);
+            //if (!self.Bounds.Size.IsEmpty)
+                //ScreenMap.Update(self);
 
+            ScreenMap.AddOrUpdate(self);
             ActorMap.UpdatePosition(self, ios);
 
         }

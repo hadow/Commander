@@ -11,52 +11,52 @@ namespace EW.Graphics
         static readonly int[] ChannelMasks = { 2, 1, 0, 3 };
         static readonly float[] ChannelSelect = { 0.2f, 0.4f, 0.6f, 0.8f };
 
-        public static void FastCopyIntoSprite(Sprite dest,Bitmap src)
-        {
-            var createdTempBitmap = false;
-            if(src.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
-            {
-                createdTempBitmap = true;
-            }
-            try
-            {
-                var destData = dest.Sheet.GetData();
-                var destStride = dest.Sheet.Size.Width;
-                var width = dest.Bounds.Width;
-                var height = dest.Bounds.Height;
+        //public static void FastCopyIntoSprite(Sprite dest,Bitmap src)
+        //{
+        //    var createdTempBitmap = false;
+        //    if(src.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+        //    {
+        //        createdTempBitmap = true;
+        //    }
+        //    try
+        //    {
+        //        var destData = dest.Sheet.GetData();
+        //        var destStride = dest.Sheet.Size.Width;
+        //        var width = dest.Bounds.Width;
+        //        var height = dest.Bounds.Height;
 
-                var srcData = src.LockBits(src.Bounds(), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        //        var srcData = src.LockBits(src.Bounds(), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                     
-                unsafe
-                {
-                    var c = (int*)srcData.Scan0;
+        //        unsafe
+        //        {
+        //            var c = (int*)srcData.Scan0;
 
-                    //Cast the data to an int array so we can copy the src data directly
-                    fixed(byte* bd = &destData[0])
-                    {
-                        var data = (int*)bd;
-                        var x = dest.Bounds.Left;
-                        var y = dest.Bounds.Top;
+        //            //Cast the data to an int array so we can copy the src data directly
+        //            fixed(byte* bd = &destData[0])
+        //            {
+        //                var data = (int*)bd;
+        //                var x = dest.Bounds.Left;
+        //                var y = dest.Bounds.Top;
 
-                        for(var j = 0; j < height; j++)
-                        {
-                            for(var i = 0; i < width; i++)
-                            {
-                                var cc = Color.FromArgb(*(c + (j * srcData.Stride >> 2) + i));
-                                data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
-                            }
-                        }
-                    }
-                }
+        //                for(var j = 0; j < height; j++)
+        //                {
+        //                    for(var i = 0; i < width; i++)
+        //                    {
+        //                        var cc = Color.FromArgb(*(c + (j * srcData.Stride >> 2) + i));
+        //                        data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                src.UnlockBits(srcData);
-            }
-            finally
-            {
-                if (createdTempBitmap)
-                    src.Dispose();
-            }
-        }
+        //        src.UnlockBits(srcData);
+        //    }
+        //    finally
+        //    {
+        //        if (createdTempBitmap)
+        //            src.Dispose();
+        //    }
+        //}
 
         /// <summary>
         /// 

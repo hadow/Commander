@@ -16,4 +16,8 @@ namespace EW.Effects
     public interface IEffectAboveShroud{
         IEnumerable<IRenderable> RenderAboveShroud(WorldRenderer wr);
     }
+
+    public interface ISpatiallyPartitionable{}
+
+
 }

@@ -93,7 +93,9 @@ namespace EW.Graphics
 
             RefreshPalette();
 
-            var renderables = GenerateRenderables();
+
+            var onScreenActors = World.ScreenMap.RenderableActorsInBox(ViewPort.TopLeft, ViewPort.BottomRight).ToHashSet();
+            var renderables = GenerateRenderables(onScreenActors);
             var bounds = ViewPort.GetScissorBounds(World.Type != WorldT.Editor);
             WarGame.Renderer.EnableScissor(bounds);
 
@@ -170,9 +172,41 @@ namespace EW.Graphics
         /// 
         /// </summary>
         /// <returns></returns>
-        List<IFinalizedRenderable> GenerateRenderables()
-        {
-            var actors = World.ScreenMap.ActorsInBox(ViewPort.TopLeft, ViewPort.BottomRight).Append(World.WorldActor);
+        //List<IFinalizedRenderable> GenerateRenderables()
+        //{
+        //    var actors = World.ScreenMap.ActorsInBox(ViewPort.TopLeft, ViewPort.BottomRight).Append(World.WorldActor);
+
+        //    if (World.RenderPlayer != null)
+        //        actors = actors.Append(World.RenderPlayer.PlayerActor);
+
+        //    var worldRenderables = actors.SelectMany(a => a.Render(this));
+
+        //    if (World.OrderGenerator != null)
+        //        worldRenderables = worldRenderables.Concat(World.OrderGenerator.Render(this, World));
+
+
+        //    //Unpartitioned effects 
+        //    //worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
+        //    worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+
+        //    //Partitioned, currently on-screen effects
+        //    //var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
+        //    //worldRenderables = worldRenderables.Concat(effectRenderables, effectRenderables.SelectMany(e => e.Render(this));
+        //    worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
+            
+        //    WarGame.Renderer.WorldModelRenderer.BeginFrame();
+        //    var renderables = worldRenderables.Select(r => r.PrepareRender(this)).ToList();
+        //    WarGame.Renderer.WorldModelRenderer.EndFrame();
+
+
+        //    return renderables;
+        //}
+
+
+
+        List<IFinalizedRenderable> GenerateRenderables(HashSet<Actor> actorsInBox){
+
+            var actors = actorsInBox.Append(World.WorldActor);
 
             if (World.RenderPlayer != null)
                 actors = actors.Append(World.RenderPlayer.PlayerActor);
@@ -182,20 +216,17 @@ namespace EW.Graphics
             if (World.OrderGenerator != null)
                 worldRenderables = worldRenderables.Concat(World.OrderGenerator.Render(this, World));
 
+            worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
 
-            //Unpartitioned effects 
-            //worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
-            worldRenderables = worldRenderables.Concat(World.Effects.SelectMany(e => e.Render(this)));
+            //Partitioned,currently on-screen effects
+            var effectRenderables = World.ScreenMap.RenderableEffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
+            worldRenderables = worldRenderables.Concat(effectRenderables.SelectMany(e => e.Render(this)));
 
-            //Partitioned, currently on-screen effects
-            //var effectRenderables = World.ScreenMap.EffectsInBox(ViewPort.TopLeft, ViewPort.BottomRight);
-            //worldRenderables = worldRenderables.Concat(effectRenderables, effectRenderables.SelectMany(e => e.Render(this));
             worldRenderables = worldRenderables.OrderBy(RenderableScreenZPositionComparisonKey);
-            
+
             WarGame.Renderer.WorldModelRenderer.BeginFrame();
             var renderables = worldRenderables.Select(r => r.PrepareRender(this)).ToList();
             WarGame.Renderer.WorldModelRenderer.EndFrame();
-
 
             return renderables;
         }

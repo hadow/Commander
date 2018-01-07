@@ -70,6 +70,11 @@ namespace EW
             return -new WAngle(Angle - 512).Cos();
         }
 
+
+        public override int GetHashCode()
+        {
+            return Angle.GetHashCode();
+        }
         static readonly int[] CosineTable =
         {
             1024, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1022, 1022, 1022, 1021,

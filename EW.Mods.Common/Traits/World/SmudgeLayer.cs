@@ -174,6 +174,47 @@ namespace EW.Mods.Common.Traits
             render.Draw(wr.ViewPort);
         }
 
+        public void AddSmudge(CPos loc){
+
+            if (!world.Map.Contains(loc))
+                return;
+
+            if((!dirty.ContainsKey(loc) || dirty[loc].Sprite == null) && !tiles.ContainsKey(loc)){
+                //no smudge; create a new one
+
+                var st = smudges.Keys.Random(WarGame.CosmeticRandom);
+
+                dirty[loc] = new Smudge() { Type = st, Depth = 0, Sprite = smudges[st][0] };
+
+            }
+            else{
+
+                var tile = dirty.ContainsKey(loc) && dirty[loc].Sprite != null ? dirty[loc] : tiles[loc];
+                var maxDepth = smudges[tile.Type].Length;
+                if(tile.Depth< maxDepth -1){
+                    tile.Depth++;
+                    tile.Sprite = smudges[tile.Type][tile.Depth];
+                }
+
+                dirty[loc] = tile;
+
+            }
+        }
+
+
+        public void RemoveSmudge(CPos loc){
+
+            if (!world.Map.Contains(loc))
+                return;
+
+            var tile = dirty.ContainsKey(loc) ? dirty[loc] : new Smudge();
+
+            tile.Sprite = null;
+
+            dirty[loc] = tile;
+
+        }
+
         public void Disposing(Actor self)
         {
             if (disposed)

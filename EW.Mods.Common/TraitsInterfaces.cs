@@ -8,6 +8,29 @@ using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
 
+    #region Notify
+
+    public interface INotifyProduction { void UnitProduced(Actor self, Actor other, CPos exit); }
+
+    public interface INotifyOtherProduction { void UnitProducedByOther(Actor self, Actor producer, Actor produced, string productionType); }
+
+    [RequireExplicitImplementation]
+    public interface INotifyBuildComplete { void BuildingComplete(Actor self); }
+
+    [RequireExplicitImplementation]
+    public interface INotifyAttack
+    {
+
+        void PreparingAttack(Actor self, Target target, Armament a, Barrel barrel);
+        void Attacking(Actor self, Target target, Armament a, Barrel barrel);
+    }
+
+#endregion
+    public interface IBlocksProjectiles{
+
+        WDist BlockingHeight { get; }
+    }
+
     interface IWallConnector
     {
         bool AdjacentWallCanConnect(Actor self, CPos wallLocation, string wallType, out CVec facing);
@@ -41,7 +64,6 @@ namespace EW.Mods.Common.Traits
         string SequencePrefix { get; }
     }
 
-    public interface INotifyBuildComplete { void BuildingComplete(Actor self); }
     public interface ICrushable
     {
         bool CrushableBy(Actor self, Actor crusher, HashSet<string> crushClasses);
@@ -79,12 +101,7 @@ namespace EW.Mods.Common.Traits
         void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
     }
 
-    public interface INotifyAttack
-    {
 
-        void PreparingAttack(Actor self, Target target, Armament a, Barrel barrel);
-        void Attacking(Actor self, Target target, Armament a, Barrel barrel);
-    }
 
 
     public interface IAcceptResourcesInfo : ITraitInfo { }

@@ -38,9 +38,6 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,9 +51,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MonoDrawing">
-      <HintPath>D:\github\mono\mcs\class\MonoDrawing\bin\Debug\MonoDrawing.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -515,6 +509,8 @@
     <AndroidAsset Include="Content\mods\ts\tem.mix" />
     <AndroidAsset Include="Content\mods\ts\temperat.mix" />
     <None Include="Resources\AboutResources.txt" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -563,10 +559,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
+    <Folder Include="Content\mods\common\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

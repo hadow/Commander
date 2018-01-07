@@ -120,7 +120,7 @@ namespace EW.Traits
     
     public interface INotifyCreated { void Created(Actor self); }
 
-    public interface INotifyAddToWorld { void AddedToWorld(Actor self); }
+    public interface INotifyAddedToWorld { void AddedToWorld(Actor self); }
 
     public interface INotifyActorDisposing { void Disposing(Actor self); }
 
@@ -232,7 +232,8 @@ namespace EW.Traits
 
         void SetVisualPosition(Actor self, WPos wPos);
     }
-    
+
+    [RequireExplicitImplementation]
     public interface ITemporaryBlocker
     {
         bool CanRemoveBlockage(Actor self, Actor blocking);
@@ -307,6 +308,7 @@ namespace EW.Traits
     /// 
     /// </summary>
     public interface IUpgradableInfo : ITraitInfo { }
+
     public interface IMove
     {
         Activity MoveTo(CPos cell, int nearEnough);
@@ -494,4 +496,6 @@ namespace EW.Traits
         IEnumerable<Actor> ActorsInBox(WPos a, WPos b);
            
     }
+
+
 }

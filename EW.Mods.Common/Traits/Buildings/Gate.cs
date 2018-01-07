@@ -6,8 +6,9 @@ namespace EW.Mods.Common.Traits
 {
     /// <summary>
     /// Will open and be passable for actors that appear friendly when there are no enemies in range.
+    /// 
     /// </summary>
-    public class GateInfo:BuildingInfo
+    public class GateInfo:PausableConditionalTraitInfo,Requires<BuildingInfo>
     {
         public readonly string OpeningSound = null;
 
@@ -17,6 +18,10 @@ namespace EW.Mods.Common.Traits
 
         public readonly int TransitionDelay = 33;
 
+        /// <summary>
+        /// The height of the blocks projectiles.
+        /// 阻止射弹高度
+        /// </summary>
         public readonly WDist BlocksProjectilesHeight = new WDist(640);
 
 
@@ -27,12 +32,14 @@ namespace EW.Mods.Common.Traits
 
     }
 
-    public class Gate : Building,ITick,ISync
+    public class Gate :PausableConditionalTrait<GateInfo>,
+    ITick,ISync,
+    INotifyAddedToWorld,INotifyRemovedFromWorld,ITemporaryBlocker,IBlocksProjectiles
     {
 
         readonly GateInfo info;
         readonly Actor self;
-
+        readonly Building building;
         public readonly int OpenPosition;
 
         IEnumerable<CPos> blockedPositions;
@@ -43,18 +50,21 @@ namespace EW.Mods.Common.Traits
         int desiredPosition;
         int remainingOpenTime;
 
-        public Gate(ActorInitializer init,GateInfo info):base(init,info)
+        public readonly IEnumerable<CPos> Footprint;
+        public Gate(ActorInitializer init,GateInfo info):base(info)
         {
             this.info = info;
             self = init.Self;
+            building = self.Trait<Building>();
             OpenPosition = info.TransitionDelay;
-
+            blockedPositions = building.Info.Tiles(self.Location);
+            Footprint = blockedPositions;
         }
 
 
         void ITick.Tick(Actor self)
         {
-            if (self.IsDisabled() || Locked || !BuildComplete)
+            if (IsTraitDisabled || IsTraitPaused || building.Locked || !building.BuildComplete)
                 return;
 
             if (desiredPosition < Position)
@@ -63,14 +73,26 @@ namespace EW.Mods.Common.Traits
                 if(Position == OpenPosition)
                 {
                     WarGame.Sound.Play(SoundType.World, info.ClosingSound, self.CenterPosition);
-                    self.World.ActorMap.AddInfluence(self, this);
+                    self.World.ActorMap.AddInfluence(self, building);
                 }
 
                 Position--;
             }
             else if(desiredPosition > Position)
             {
+                //Gate was fully closed.
+                if(Position == 0){
+                    
+                }
 
+                Position++;
+
+                //Gate is now fully open.
+                if(Position == OpenPosition){
+                    self.World.ActorMap.RemoveInfluence(self,building);
+                    remainingOpenTime = Info.CloseDelay;
+
+                }
             }
 
             if(Position == OpenPosition)
@@ -82,15 +104,43 @@ namespace EW.Mods.Common.Traits
             }
         }
 
-        public override void AddedToWorld(Actor self)
+        void INotifyAddedToWorld.AddedToWorld(Actor self)
         {
-            base.AddedToWorld(self);
-            blockedPositions = info.Tiles(self.Location);
+            blockedPositions = Footprint;
         }
+
+        void INotifyRemovedFromWorld.RemovedFromWorld(Actor self){
+
+            blockedPositions = Enumerable.Empty<CPos>();
+
+        }
+
+        bool ITemporaryBlocker.CanRemoveBlockage(Actor self,Actor blocking){
+            return CanRemoveBlockage(self,blocking);
+        }
+
+        bool ITemporaryBlocker.IsBlocking(Actor self,CPos cell){
+            return Position != OpenPosition && blockedPositions.Contains(cell);
+        }
+
+
+        bool CanRemoveBlockage(Actor self,Actor blocking){
+
+            return !IsTraitDisabled && !IsTraitPaused && building.BuildComplete && !building.Locked && blocking.AppearsFriendlyTo(self);
+        }
+
+
 
         bool IsBlocked()
         {
             return blockedPositions.Any(loc => self.World.ActorMap.GetActorsAt(loc).Any(a => a != self));
+        }
+
+
+        WDist IBlocksProjectiles.BlockingHeight{
+            get{
+                return new WDist(Info.BlocksProjectilesHeight.Length * (OpenPosition - Position) / OpenPosition);
+            }
         }
     }
 }

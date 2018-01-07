@@ -39,6 +39,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -47,6 +48,12 @@
     <Reference Include="Mono.Android" />
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Eluant">
+      <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
+    <Reference Include="EW.GameLaunch">
+      <HintPath>..\EW.GameLaunch\bin\Debug\EW.GameLaunch.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -101,8 +108,6 @@
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
     <Compile Include="Pathfinder\Constants.cs" />
-    <Compile Include="Pathfinder\PathCacheStorage.cs" />
-    <Compile Include="Pathfinder\PathFinderUnitPathCacheDecorator.cs" />
     <Compile Include="Pathfinder\PathGraph.cs" />
     <Compile Include="Pathfinder\PathSearch.cs" />
     <Compile Include="Projectiles\AreaBeam.cs" />
@@ -469,6 +474,11 @@
     <Compile Include="Traits\Modifiers\HiddenUnderFog.cs" />
     <Compile Include="Traits\Modifiers\HiddenUnderShroud.cs" />
     <Compile Include="Lint\CheckPalettes.cs" />
+    <Compile Include="Pathfinder\PathFinderUnitPathCacheDecorator.cs" />
+    <Compile Include="Pathfinder\PathCacheStorage.cs" />
+    <Compile Include="Traits\Buildings\GivesBuildableArea.cs" />
+    <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
+    <Compile Include="Traits\Effects\SpriteEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -477,14 +487,6 @@
     <AndroidResource Include="Resources\values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Eluant\Eluant\Eluant.csproj">
-      <Project>{d4cfd952-4edc-421d-84a5-998688815124}</Project>
-      <Name>Eluant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EW.GameLaunch\EW.GameLaunch.csproj">
-      <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
-      <Name>EW.GameLaunch</Name>
-    </ProjectReference>
     <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
       <Name>EW.Framework.Android</Name>
