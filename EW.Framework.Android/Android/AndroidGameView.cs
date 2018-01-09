@@ -14,7 +14,7 @@ using EW.Framework.Graphics;
 namespace EW.Framework.Mobile
 {
     [CLSCompliant(false)]//indicates whether a program element is compliant with the Common Language Specification(CLS).This class not be inherited.
-    public class AndroidGameView : SurfaceView, ISurfaceHolderCallback, View.IOnTouchListener
+    public class AndroidGameView : SurfaceView, ISurfaceHolderCallback, View.IOnTouchListener,View.IOnClickListener,View.IOnDragListener
     {
 
         public class BackgroundContext
@@ -310,14 +310,26 @@ namespace EW.Framework.Mobile
             {
                 _touchManager.Enabled = value;
                 SetOnTouchListener(value ? this : null);
+                SetOnClickListener(value ? this : null);
+                SetOnDragListener(value ? this : null);
             }
         }
 
 
         public bool OnTouch(View v, MotionEvent e)
         {
+            
             _touchManager.OnTouchEvent(e);
             return true;
+        }
+
+        public bool OnDrag(View v,DragEvent e)
+        {
+            return true;
+        }
+        public void OnClick(View v)
+        {
+
         }
 
 
@@ -547,6 +559,7 @@ namespace EW.Framework.Mobile
             catch(Exception ex)
             {
                 Log.Error("AndroidGameView", "GL Exception occured during RunIteration {0}", ex.Message);
+                //throw ex;
             }
 
 

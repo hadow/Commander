@@ -17,17 +17,34 @@ namespace EW.Framework.Graphics
             GraphicsExtensions.CheckGLError();
             Bind();
 
-            var ptr = GCHandle.Alloc(new T[size], GCHandleType.Pinned);
+            //Generates a buffer with uninitialized memory.
+            GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VertexSize * size), IntPtr.Zero, BufferUsageHint.DynamicDraw);
+
+            GraphicsExtensions.CheckGLError();
+            //We need to zero all the memory,Let's generate a smallish array and copy that over the whole buffer.
+            var zeroedArrayElementSize = Math.Min(size, 2048);
+
+            var ptr = GCHandle.Alloc(new T[zeroedArrayElementSize], GCHandleType.Pinned);
             try
             {
-                GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VertexSize * size), ptr.AddrOfPinnedObject(), BufferUsageHint.DynamicDraw);
+                for(var offset = 0; offset < size; offset += zeroedArrayElementSize)
+                {
+                    var length = Math.Min(zeroedArrayElementSize, size - offset);
+                    GL.BufferSubData(BufferTarget.ArrayBuffer,
+                        new IntPtr(VertexSize * offset),
+                        new IntPtr(VertexSize * length),
+                        ptr.AddrOfPinnedObject());
+                    GraphicsExtensions.CheckGLError();
+                }
+
+                //GL.BufferData(BufferTarget.ArrayBuffer, new IntPtr(VertexSize * size), ptr.AddrOfPinnedObject(), BufferUsageHint.DynamicDraw);
             }
             finally
             {
                 ptr.Free();
             }
 
-            GraphicsExtensions.CheckGLError();
+            //GraphicsExtensions.CheckGLError();
         }
 
 

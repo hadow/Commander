@@ -12,7 +12,7 @@ namespace EW.Framework.Audio
 
         bool Complete { get; }
 
-        void SetPosition(int x,int y,int z);
+        void SetPosition(Vector3 pos);
 
     }
     public class SoundDevice

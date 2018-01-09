@@ -37,14 +37,14 @@ namespace EW.Framework.Audio
             }
         }
 
-        public static bool IsStereoFormat(ALFormat format)
-        {
-            return (format == ALFormat.Stereo8
-                || format == ALFormat.Stereo16
-                || format == ALFormat.StereoFloat32
-                || format == ALFormat.StereoIma4
-                || format == ALFormat.StereoMSAdpcm);
-        }
+        //public static bool IsStereoFormat(ALFormat format)
+        //{
+        //    return (format == ALFormat.Stereo8
+        //        || format == ALFormat.Stereo16
+        //        || format == ALFormat.StereoFloat32
+        //        || format == ALFormat.StereoIma4
+        //        || format == ALFormat.StereoMSAdpcm);
+        //}
     }
 
     internal static class AlcHelper
@@ -336,14 +336,14 @@ namespace EW.Framework.Audio
             get; private set;
         }
 
-        public static void DestroyInstance()
-        {
-            if (_instance != null)
-            {
-                _instance.Dispose();
-                _instance = null;
-            }
-        }
+        //public static void DestroyInstance()
+        //{
+        //    if (_instance != null)
+        //    {
+        //        _instance.Dispose();
+        //        _instance = null;
+        //    }
+        //}
 
         /// <summary>
         /// Destroys the AL context and closes the device, when they exist.
@@ -602,7 +602,18 @@ namespace EW.Framework.Audio
 
         public void SetSoundVolume(float volume,ISound music,ISound video)
         {
+            var sounds = sourcePool.Keys.Where(key =>
+            {
+                int state;
+                AL.GetSource(key, ALGetSourcei.SourceState, out state);
 
+                return (state == (int)ALSourceState.Playing || state == (int)ALSourceState.Paused) &&
+                (music == null || key != ((OpenAlSound)music).Source) &&
+                (video == null || key != ((OpenAlSound)video).Source);
+            });
+
+            foreach(var s in sounds)
+                AL.Source(s, ALSourcef.Gain, volume);
         }
 
         public void SetAllSoundsPaused(bool paused)
@@ -706,18 +717,21 @@ namespace EW.Framework.Audio
                 Volume = volume;
                 //Pitch
                 AL.Source(source, ALSourcef.Pitch, 1f);
+                ALHelper.CheckError("Failed to set source pitch.");
                 //Pan
                 AL.Source(source, ALSource3f.Position, pos.X, pos.Y, pos.Z);
+                ALHelper.CheckError("Failed to set source pan.");
                 //Velocity
                 AL.Source(source, ALSource3f.Velocity, 0f, 0f, 0f);
+                ALHelper.CheckError("Failed to set source velocity.");
                 //Looping
                 AL.Source(source, ALSourceb.Looping, looping);
-                ALHelper.CheckError("");
+                ALHelper.CheckError("Failed to set source loop state.");
                 AL.Source(source, ALSourcei.SourceRelative, relative?1:0);
-
+                ALHelper.CheckError("Failed set source relative.");
                 //Distance Model
                 AL.DistanceModel(ALDistanceModel.InverseDistanceClamped);
-
+                ALHelper.CheckError("Failed set source distance.");
 
             }
 
@@ -733,9 +747,9 @@ namespace EW.Framework.Audio
 
             }
 
-            public void SetPosition(int x,int y ,int z)
+            public void SetPosition(Vector3 pos)
             {
-                AL.Source(Source, ALSource3f.Position, x, y, z);
+                AL.Source(Source, ALSource3f.Position, pos.X, pos.Y, pos.Z);
             }
             
             public virtual bool Complete
@@ -751,7 +765,12 @@ namespace EW.Framework.Audio
 
             protected void StopSource()
             {
-
+                int state;
+                AL.GetSource(Source, ALGetSourcei.SourceState, out state);
+                if(state == (int)ALSourceState.Playing || state == (int)ALSourceState.Paused)
+                {
+                    AL.SourceStop(Source);
+                }
             }
 
             public virtual void Stop()
