@@ -16,7 +16,7 @@ namespace EW.Mods.Common.Traits
             return new GrantConditionOnPrerequisite(init.Self,this);
         }
     }
-    public class GrantConditionOnPrerequisite:INotifyCreated,INotifyAddToWorld,INotifyRemovedFromWorld,INotifyOwnerChanged
+    public class GrantConditionOnPrerequisite:INotifyCreated,INotifyAddedToWorld,INotifyRemovedFromWorld,INotifyOwnerChanged
     {
         public GrantConditionOnPrerequisite(Actor self,GrantConditionOnPrerequisiteInfo info)
         {
@@ -29,7 +29,7 @@ namespace EW.Mods.Common.Traits
 
         }
 
-        void INotifyAddToWorld.AddedToWorld(Actor self) { }
+        void INotifyAddedToWorld.AddedToWorld(Actor self) { }
 
         void INotifyOwnerChanged.OnOwnerChanged(Actor self, Player oldOwner, Player newOwner) { }
 

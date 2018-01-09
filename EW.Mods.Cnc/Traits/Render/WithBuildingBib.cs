@@ -9,7 +9,7 @@ namespace EW.Mods.Cnc.Traits.Render
     }
 
 
-    public class WithBuildingBib : INotifyAddToWorld, INotifyRemovedFromWorld
+    public class WithBuildingBib : INotifyAddedToWorld, INotifyRemovedFromWorld
     {
 
         public WithBuildingBib(Actor self,WithBuildingBibInfo info)

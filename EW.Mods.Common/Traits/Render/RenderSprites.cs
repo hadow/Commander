@@ -1,11 +1,10 @@
 using System;
-using System.Linq;
+using System.Drawing;
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
 using EW.Traits;
 using EW.Graphics;
 using EW.Primitives;
-using EW.Framework;
 namespace EW.Mods.Common.Traits
 {
 
@@ -107,6 +106,9 @@ namespace EW.Mods.Common.Traits
 
             public PaletteReference PaletteReference { get; private set; }
 
+            bool cachedVisible;
+            WVec cachedOffset;
+            ISpriteSequence cachedSequence;
 
             public AnimationWrapper(AnimationWithOffset animation,string palette,bool isPlayerPalette)
             {
@@ -136,6 +138,26 @@ namespace EW.Mods.Common.Traits
                     PaletteReference = null;
             }
 
+            public bool Tick()
+            {
+                //Tick the animation;
+
+                Animation.Animation.Tick();
+
+
+                //Return to the caller whether the renderable position or size has changed.
+                var visible = IsVisible;
+                var offset = Animation.OffsetFunc != null ? Animation.OffsetFunc() : WVec.Zero;
+                var sequence = Animation.Animation.CurrentSequence;
+
+                var updated = visible != cachedVisible || offset != cachedOffset || sequence != cachedSequence;
+                cachedVisible = visible;
+                cachedOffset = offset;
+                cachedSequence = sequence;
+
+                return updated;
+            }
+
         }
 
         string cachedImage;
@@ -159,13 +181,30 @@ namespace EW.Mods.Common.Traits
                 return () => 0;
             return () => facing.Facing;
         }
+
+
+        void ITick.Tick(Actor self)
+        {
+            Tick(self);
+        }
         public virtual void Tick(Actor self)
         {
-            foreach(var a in anims)
-            {
-                a.Animation.Animation.Tick();
-            }
+            //foreach(var a in anims)
+            //{
+            //    a.Animation.Animation.Tick();
+            //}
+            var updated = false;
+            foreach (var a in anims)
+                updated |= a.Tick();
 
+            if (updated)
+                self.World.ScreenMap.AddOrUpdate(self);
+
+        }
+
+        public void Remove(AnimationWithOffset anim)
+        {
+            anims.RemoveAll(a => a.Animation == anim);
         }
 
 
@@ -209,6 +248,14 @@ namespace EW.Mods.Common.Traits
             }
         }
 
+
+        public virtual IEnumerable<Rectangle> ScreenBounds(Actor self,WorldRenderer wr)
+        {
+            foreach (var a in anims)
+                if (a.IsVisible)
+                    yield return a.Animation.ScreenBounds(self, wr, info.Scale);
+        }
+
         public virtual void OnOwnerChanged(Actor self,Player oldOwner,Player newOwner)
         {
             UpdatePalette();
@@ -228,12 +275,12 @@ namespace EW.Mods.Common.Traits
 
 
         //Required by WithSpriteBody and WithInfantryBody
-        public Int2 AutoSelectionSize(Actor self)
-        {
-            return anims.Where(b => b.IsVisible &&
-                                b.Animation.Animation.CurrentSequence != null).
-                                Select(a => (a.Animation.Animation.Image.Size.XY * info.Scale).ToInt2()).FirstOrDefault();
-        }
+        //public Int2 AutoSelectionSize(Actor self)
+        //{
+        //    return anims.Where(b => b.IsVisible &&
+        //                        b.Animation.Animation.CurrentSequence != null).
+        //                        Select(a => (a.Animation.Animation.Image.Size.XY * info.Scale).ToInt2()).FirstOrDefault();
+        //}
 
 
         public static string NormalizeSequence(Animation anim,DamageState state,string sequence)
@@ -250,6 +297,7 @@ namespace EW.Mods.Common.Traits
 
         public static string UnnormalizeSequence(string sequence)
         {
+            //Remove existing damage prefix
             foreach(var s in DamagePrefixes)
             {
                 if (sequence.StartsWith(s.Second, StringComparison.Ordinal))

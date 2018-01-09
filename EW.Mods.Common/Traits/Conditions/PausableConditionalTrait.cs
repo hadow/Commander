@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EW.Traits;
 using EW.Support;
 namespace EW.Mods.Common.Traits
@@ -7,6 +8,9 @@ namespace EW.Mods.Common.Traits
     {
         public bool PausedByDefault { get; private set; }
 
+        /// <summary>
+        /// Boolean expression defining the condition to pause this trait.
+        /// </summary>
         [ConsumedConditionReference]
         public readonly BooleanExpression PauseCondition = null;
 
@@ -40,9 +44,31 @@ namespace EW.Mods.Common.Traits
             base.Created(self);
             if (Info.PauseCondition == null)
                 TraitResumed(self);
+        }
 
 
-                
+        public override IEnumerable<VariableObserver> GetVariableObservers()
+        {
+            foreach (var observer in base.GetVariableObservers())
+                yield return observer;
+
+            if (Info.PauseCondition != null)
+                yield return new VariableObserver(PauseConditionsChanged, Info.PauseCondition.Variables);
+        }
+
+
+        void PauseConditionsChanged(Actor self,IReadOnlyDictionary<string,int> conditions)
+        {
+            var wasPaused = IsTraitPaused;
+            IsTraitPaused = Info.PauseCondition.Evaluate(conditions);
+
+            if(IsTraitPaused != wasPaused)
+            {
+                if (wasPaused)
+                    TraitResumed(self);
+                else
+                    TraitPaused(self);
+            }
         }
 
 

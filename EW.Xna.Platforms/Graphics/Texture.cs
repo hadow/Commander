@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-
 namespace EW.Xna.Platforms.Graphics
 {
     /// <summary>
@@ -13,7 +12,6 @@ namespace EW.Xna.Platforms.Graphics
         internal int _levelCount;
 
         private static int _lastSortingKey;
-
         private readonly int _sortingKey = Interlocked.Increment(ref _lastSortingKey);
 
         /// <summary>

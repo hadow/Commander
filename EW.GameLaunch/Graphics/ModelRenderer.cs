@@ -60,7 +60,6 @@ namespace EW.Graphics
 
         public void SetPalette(ITexture palette)
         {
-            //shader.Parameters["Palette"].SetValue(palette);
             shader.SetTexture("Palette", palette);
         }
 
@@ -74,7 +73,6 @@ namespace EW.Graphics
                 -1, 1, 0, 1
 
                 };
-            //shader.Parameters["View"].SetValue(view);
             shader.SetMatrix("View", view);
 
         }
@@ -93,13 +91,6 @@ namespace EW.Graphics
         void Render(ModelRenderData renderData,IModelCache cache,float[] t,float[] lightDirection,
             float[] ambientLight,float[] diffuseLight,float colorPaletteTextureMidIndex,float normalsPaletteTextureMidIndex)
         {
-            //shader.Parameters["DiffuseTexture"].SetValue(renderData.Sheet.GetTexture());
-            //shader.Parameters["PaletteRows"].SetValue(new Vector2(colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex));
-            //shader.Parameters["TransformMatrix"].SetValue(new Matrix(t));
-            //shader.Parameters["LightDirection"].SetValue(new Vector4(lightDirection[0], lightDirection[1], lightDirection[2], lightDirection[3]));
-            //shader.Parameters["AmbientLight"].SetValue(new Vector3(ambientLight[0], ambientLight[1], ambientLight[2]));
-            //shader.Parameters["DiffuseLight"].SetValue(new Vector3(diffuseLight[0], diffuseLight[1], diffuseLight[2]));
-
             shader.SetTexture("DiffuseTexture", renderData.Sheet.GetTexture());
             shader.SetVec("PaletteRows", colorPaletteTextureMidIndex, normalsPaletteTextureMidIndex);
             shader.SetMatrix("TransformMatrix", t);
@@ -409,8 +400,6 @@ namespace EW.Graphics
                 kvp.Key.Dispose();
                 kvp.Value.Dispose();
             }
-
-
             mappedBuffers.Clear();
             unmappedBuffers.Clear();
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using EW.Support;
 
 namespace EW.Graphics
@@ -33,6 +34,8 @@ namespace EW.Graphics
 
         public Animation(World world,string name, Func<int> facingFunc) : this(world, name, facingFunc, null) { }
 
+        public Animation(World world,string name,Func<bool> paused) : this(world, name, () => 0, paused) { }
+
         public Animation(World world,string name,Func<int> facingFunc,Func<bool> paused)
         {
             sequenceProvider = world.Map.Rules.Sequences;
@@ -50,7 +53,7 @@ namespace EW.Graphics
         public void Tick()
         {
             if (paused == null || !paused())
-                Tick(40);
+                Tick(40);// tick one frame.
         }
 
         public void Tick(int t)
@@ -89,6 +92,13 @@ namespace EW.Graphics
                 if (frame >= CurrentSequence.Length)
                     frame = 0;
             };
+        }
+
+
+        public void PlayBackwardsThen(string sequenceName,Action after)
+        {
+            PlayThen(sequenceName, after);
+            backwards = true;
         }
 
 
@@ -152,6 +162,12 @@ namespace EW.Graphics
 
         public Sprite Image { get { return CurrentSequence.GetSprite(CurrentFrame, facingFunc()); } }
 
+
+        public IEnumerable<IRenderable> Render(WPos pos,PaletteReference palette)
+        {
+            return Render(pos, WVec.Zero, 0, palette, 1f);
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -163,7 +179,7 @@ namespace EW.Graphics
         /// <returns></returns>
         public IEnumerable<IRenderable> Render(WPos pos,WVec offset,int zOffset,PaletteReference palette,float scale)
         {
-            var imageRenderable = new SpriteRenderable(Image, pos,offset, CurrentSequence.ZOffset + zOffset, palette, scale, true);
+            var imageRenderable = new SpriteRenderable(Image, pos,offset, CurrentSequence.ZOffset + zOffset, palette, scale, IsDecoration);
 
             if(CurrentSequence.ShadowStart >= 0)
             {
@@ -172,6 +188,31 @@ namespace EW.Graphics
                 return new IRenderable[] { shadowRenderable, imageRenderable };
             }
             return new IRenderable[] { imageRenderable };
+        }
+
+        public Rectangle ScreenBounds(WorldRenderer wr,WPos pos,WVec offset,float scale)
+        {
+
+            var xy = wr.ScreenPxPosition(pos) + wr.ScreenPxOffset(offset);
+
+            var cb = CurrentSequence.Bounds;
+
+            return Rectangle.FromLTRB(xy.X + (int)(cb.Left * scale),
+                                        xy.Y + (int)(cb.Top * scale),
+                                        xy.X + (int)(cb.Right * scale),
+                                        xy.Y + (int)(cb.Bottom * scale));
+        }
+
+
+        public bool ReplaceAnim(string sequenceName)
+        {
+            if (!HasSequence(sequenceName))
+                return false;
+
+            CurrentSequence = GetSequence(sequenceName);
+            timeUntilNextFrame = Math.Min(CurrentSequenceTickOrDefault(), timeUntilNextFrame);
+            frame %= CurrentSequence.Length;
+            return true;
         }
 
     }

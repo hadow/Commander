@@ -101,5 +101,8 @@ namespace EW.Mods.Common.Traits
             if (progress > 0)
                 progress--;
         }
+
+
+        bool IRenderAboveShroudWhenSelected.SpatiallyPartitionable { get { return false; } }
     }
 }

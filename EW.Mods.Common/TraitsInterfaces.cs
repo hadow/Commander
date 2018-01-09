@@ -7,9 +7,30 @@ using EW.Graphics;
 using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
+    public enum VisibilityType { Footprint,CenterPosition,GroundPosition}
+
+
+    public interface IPlaceBuildingDecorationInfo : ITraitInfo
+    {
+        IEnumerable<IRenderable> Render(WorldRenderer wr, World w, ActorInfo ai, WPos centerPosition);
+    }
 
     #region Notify
 
+    public interface INotifyDeployComplete
+    {
+        void FinishedDeploy(Actor self);
+
+        void FinishedUndeploy(Actor self);
+    }
+
+
+    public interface INotifyDeployTriggered
+    {
+        void Deploy(Actor self, bool skipMakeAnim);
+
+        void Undeploy(Actor self, bool skipMakeAnim);
+    }
     public interface INotifyProduction { void UnitProduced(Actor self, Actor other, CPos exit); }
 
     public interface INotifyOtherProduction { void UnitProducedByOther(Actor self, Actor producer, Actor produced, string productionType); }
@@ -26,10 +47,14 @@ namespace EW.Mods.Common.Traits
     }
 
 #endregion
+    [RequireExplicitImplementation]
     public interface IBlocksProjectiles{
 
         WDist BlockingHeight { get; }
     }
+
+    [RequireExplicitImplementation]
+    public interface IBlocksProjectilesInfo : ITraitInfoInterface { }
 
     interface IWallConnector
     {
@@ -72,6 +97,7 @@ namespace EW.Mods.Common.Traits
     {
         IEnumerable<VariableObserver> GetVariableObservers();
     }
+    [RequireExplicitImplementation]
     public interface IObservesVariablesInfo : ITraitInfo
     {
 

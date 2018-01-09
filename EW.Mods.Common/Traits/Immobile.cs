@@ -21,7 +21,7 @@ namespace EW.Mods.Common.Traits
         bool IOccupySpaceInfo.SharesCell { get { return false; } }
 
     }
-    class Immobile:IOccupySpace,ISync,INotifyAddToWorld,INotifyRemovedFromWorld
+    class Immobile:IOccupySpace,ISync,INotifyAddedToWorld,INotifyRemovedFromWorld
     {
 
         [Sync]

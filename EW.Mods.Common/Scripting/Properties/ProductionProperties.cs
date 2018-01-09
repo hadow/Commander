@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using EW.Scripting;
+﻿using EW.Scripting;
 using EW.Traits;
 using EW.Mods.Common.Traits;
 using EW.Mods.Common.Activities;
 using Eluant;
+using EW.Primitives;
 namespace EW.Mods.Common.Scripting
 {
     [ScriptPropertyGroup("Production")]
@@ -23,7 +22,7 @@ namespace EW.Mods.Common.Scripting
         /// <param name="actorType"></param>
         /// <param name="factionVariant"></param>
         [ScriptActorPropertyActivity]
-        public void Produce(string actorType,string factionVariant = null)
+        public void Produce(string actorType,string factionVariant = null,string productionType = null)
         {
             ActorInfo actorInfo;
 
@@ -31,8 +30,14 @@ namespace EW.Mods.Common.Scripting
                 throw new LuaException("Unknown actor type '{0}'".F(actorType));
 
 
-            var faction = factionVariant ?? BuildableInfo.GetInitialFaction(actorInfo,p)
-            Self.QueueActivity(new WaitFor(() => p.Produce(Self, actorInfo, factionVariant)));
+            var faction = factionVariant ?? BuildableInfo.GetInitialFaction(actorInfo, p.Faction);
+
+            var inits = new TypeDictionary
+            {
+                new OwnerInit(Self.Owner),
+                new FactionInit(faction),
+            };
+            Self.QueueActivity(new WaitFor(() => p.Produce(Self, actorInfo, productionType,inits)));
 
         }
 

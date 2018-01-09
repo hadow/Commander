@@ -271,6 +271,11 @@ namespace EW
             return int.Parse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);
         }
 
+        public static T RandomOrDefault<T>(this IEnumerable<T> ts,MersenneTwister r)
+        {
+            return Random(ts, r, false);
+        }
+
 
         public static T Random<T>(this IEnumerable<T> ts,MersenneTwister r)
         {
@@ -436,7 +441,14 @@ namespace EW
         }
 
 
-        
+        public static T FirstEnabledTraitOrDefault<T>(this T[] ts)
+        {
+            foreach (var t in ts)
+                if (t.IsTraitEnabled())
+                    return t;
+
+            return default(T);
+        }
     }
     
 }

@@ -10,6 +10,7 @@ using Android.Util;
 using Android.OS;
 using EW.Xna.Platforms.Graphics;
 using EW.Xna.Platforms.Content;
+using Android.Opengl;
 namespace EW.Xna.Platforms
 {
     /// <summary>
@@ -17,11 +18,10 @@ namespace EW.Xna.Platforms
     /// </summary>
 	public class XnAndroidGameView:AndroidGameView,View.IOnTouchListener,ISurfaceHolderCallback
 	{
-
         private readonly Game _game;
 		private readonly AndroidGameWindow _gameWindow;
 		private readonly AndroidTouchEventManager _touchManager;
-
+        
 		public bool isResuming { get; private set; }
 
 		private bool _lostContext;

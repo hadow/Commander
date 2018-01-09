@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Eluant;
 using EW.Activities;
 using EW.Effects;
-using EW.Mods.Common.Activities;
 using EW.Mods.Common.Traits;
 using EW.Primitives;
 using EW.Scripting;
@@ -15,9 +13,12 @@ namespace EW.Mods.Common.Scripting
     public class ReinforcementsGlobal:ScriptGlobal
     {
 
+        readonly DomainIndex domainIndex;
 
-
-        public ReinforcementsGlobal(ScriptContext context) : base(context) { }
+        public ReinforcementsGlobal(ScriptContext context) : base(context)
+        {
+            domainIndex = context.World.WorldActor.Trait<DomainIndex>();
+        }
 
 
         Actor CreateActor(Player owner,string actorType,bool addToWorld,CPos? entryLocation = null,CPos? nextLocation = null)
@@ -60,7 +61,7 @@ namespace EW.Mods.Common.Scripting
         public Actor[] Reinforce(Player owner,string[] actorTypes,CPos[] entryPath,int interval = 25,LuaFunction actionFunc = null)
         {
             var actors = new List<Actor>();
-
+            Console.WriteLine("actor types:" + actorTypes.Length);
             for(var i = 0; i < actorTypes.Length; i++)
             {
                 var af = actionFunc != null ? (LuaFunction)actionFunc.CopyReference() : null;
@@ -68,7 +69,7 @@ namespace EW.Mods.Common.Scripting
                 var actor = CreateActor(owner, actorTypes[i], false, entryPath[0], entryPath.Length > 1 ? entryPath[1] : (CPos?)null);
 
                 actors.Add(actor);
-
+                Console.WriteLine("Reinforce: create actor:" + actor.Info.Name + "  location:"+entryPath[0] + " dest:"+entryPath[1]);
                 var actionDelay = i * interval;
 
                 Action actorAction = () =>

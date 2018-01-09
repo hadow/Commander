@@ -13,7 +13,7 @@ namespace EW.Mods.Common.Traits
         public object Create(ActorInitializer init) { return new ChangesTerrain(this); }
     }
 
-    class ChangesTerrain:INotifyAddToWorld,INotifyRemovedFromWorld
+    class ChangesTerrain:INotifyAddedToWorld,INotifyRemovedFromWorld
     {
 
         readonly ChangesTerrainInfo info;
@@ -26,7 +26,7 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        void INotifyAddToWorld.AddedToWorld(Actor self)
+        void INotifyAddedToWorld.AddedToWorld(Actor self)
         {
             var cell = self.Location;
             var map = self.World.Map;

@@ -16,6 +16,13 @@ namespace EW.Traits
         public static readonly Target[] None = { };
         public static readonly Target Invalid = new Target { type = TargetT.Invalid };
 
+
+        public static Target FromPos(WPos p)
+        {
+            return new Target { pos = p, type = TargetT.Terrain };
+        }
+
+
         public static Target FromCell(World w,CPos c,SubCell subCell= SubCell.FullCell)
         {
             return new Target { pos = w.Map.CenterOfSubCell(c, subCell), type = TargetT.Terrain };

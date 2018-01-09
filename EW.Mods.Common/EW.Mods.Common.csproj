@@ -52,12 +52,10 @@
     <Reference Include="Eluant">
       <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
     </Reference>
-    <Reference Include="EW.GameLaunch">
-      <HintPath>..\EW.GameLaunch\bin\Debug\EW.GameLaunch.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\Air\FlyAttack.cs" />
+    <Compile Include="Activities\Drag.cs" />
     <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
@@ -77,9 +75,11 @@
     <Compile Include="AudioLoaders\WavLoader.cs" />
     <Compile Include="ColorValidator.cs" />
     <Compile Include="Commands\ChatCommands.cs" />
+    <Compile Include="Commands\DebugVisualizationCommands.cs" />
     <Compile Include="Commands\DevCommands.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
+    <Compile Include="Effects\RallyPointIndicator.cs" />
     <Compile Include="FileFormats\AudReader.cs" />
     <Compile Include="FileFormats\ImaAdpcmReader.cs" />
     <Compile Include="FileFormats\InstallShieldCABCompression.cs" />
@@ -116,6 +116,7 @@
     <Compile Include="Projectiles\InstantHit.cs" />
     <Compile Include="Projectiles\LaserZap.cs" />
     <Compile Include="Projectiles\Missile.cs" />
+    <Compile Include="Projectiles\Railgun.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Activities\Attack.cs" />
@@ -211,11 +212,13 @@
     <Compile Include="Traits\Conditions\GrantConditionOnDeploy.cs" />
     <Compile Include="Traits\Conditions\GrantConditionOnDisabled.cs" />
     <Compile Include="Traits\Conditions\GrantConditionOnLineBuildDirection.cs" />
+    <Compile Include="Traits\Conditions\GrantConditionOnPowerState.cs" />
     <Compile Include="Traits\Conditions\GrantConditionOnPrerequisite.cs" />
     <Compile Include="Traits\Conditions\GrantConditionOnTerrain.cs" />
     <Compile Include="Traits\Conditions\LineBuildSegmentExternalCondition.cs" />
     <Compile Include="Traits\Conditions\PausableConditionalTrait.cs" />
     <Compile Include="Traits\Conditions\ProximityExternalCondition.cs" />
+    <Compile Include="Traits\Conditions\ToggleConditionOnOrder.cs" />
     <Compile Include="Traits\Crates\Crate.cs" />
     <Compile Include="Traits\Crates\CrateAction.cs" />
     <Compile Include="Traits\Crates\ExplodeCrateAction.cs" />
@@ -286,7 +289,6 @@
     <Compile Include="Traits\Player\ConquestVictoryConditions.cs" />
     <Compile Include="Traits\Player\DeveloperMode.cs" />
     <Compile Include="Traits\Player\EnemyWatcher.cs" />
-    <Compile Include="Traits\Player\FrozenActorLayer.cs" />
     <Compile Include="Traits\Player\GlobalUpgradeManager.cs" />
     <Compile Include="Traits\Player\HarvesterAttackNotifier.cs" />
     <Compile Include="Traits\Player\MissionObjectives.cs" />
@@ -326,6 +328,7 @@
     <Compile Include="Traits\Render\RenderRangeCircle.cs" />
     <Compile Include="Traits\Render\RenderSprites.cs" />
     <Compile Include="Traits\Render\RenderSpritesEditorOnly.cs" />
+    <Compile Include="Traits\Render\RenderUtils.cs" />
     <Compile Include="Traits\Render\RenderVoxels.cs" />
     <Compile Include="Traits\Render\SelectionDecorations.cs" />
     <Compile Include="Traits\Render\SupportPowerChargeBar.cs" />
@@ -356,6 +359,7 @@
     <Compile Include="Traits\Render\WithMakeAnimation.cs" />
     <Compile Include="Traits\Render\WithMoveAnimation.cs" />
     <Compile Include="Traits\Render\WithMuzzleOverlay.cs" />
+    <Compile Include="Traits\Render\WithNukeLaunchOverlay.cs" />
     <Compile Include="Traits\Render\WithPermanentInjury.cs" />
     <Compile Include="Traits\Render\WithProductionDoorOverlay.cs" />
     <Compile Include="Traits\Render\WithRangeCircle.cs" />
@@ -424,6 +428,7 @@
     <Compile Include="Traits\World\JumpjetActorLayer.cs" />
     <Compile Include="Traits\World\LegacyBridgeLayer.cs" />
     <Compile Include="Traits\World\LoadWidgetAtGameStart.cs" />
+    <Compile Include="Traits\World\LobbyPrerequisiteCheckbox.cs" />
     <Compile Include="Traits\World\MapBuildRadius.cs" />
     <Compile Include="Traits\World\MapCreeps.cs" />
     <Compile Include="Traits\World\MapOptions.cs" />
@@ -470,7 +475,6 @@
     <Compile Include="Graphics\ActorPreview.cs" />
     <Compile Include="Traits\QuantizeFacingsFromSequence.cs" />
     <Compile Include="Traits\Conditions\ConditionalTrait.cs" />
-    <Compile Include="Traits\Render\AutoSelectionSize.cs" />
     <Compile Include="Traits\Modifiers\HiddenUnderFog.cs" />
     <Compile Include="Traits\Modifiers\HiddenUnderShroud.cs" />
     <Compile Include="Lint\CheckPalettes.cs" />
@@ -478,7 +482,7 @@
     <Compile Include="Pathfinder\PathCacheStorage.cs" />
     <Compile Include="Traits\Buildings\GivesBuildableArea.cs" />
     <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
-    <Compile Include="Traits\Effects\SpriteEffect.cs" />
+    <Compile Include="Effects\SpriteEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -490,6 +494,10 @@
     <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
       <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
       <Name>EW.Framework.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EW.GameLaunch\EW.GameLaunch.csproj">
+      <Project>{9f9d263c-b62e-4f93-b18a-0aa9376dcee4}</Project>
+      <Name>EW.GameLaunch</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

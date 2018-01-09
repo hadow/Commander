@@ -43,7 +43,7 @@ namespace EW.Mods.Common.Traits
         readonly string forceAttackOrderName = "ForceAttack";
 
         [Sync]
-        public bool IsAttacking { get; internal set; }
+        public bool IsAniming { get; internal set; }
 
         protected IFacing facing;
 

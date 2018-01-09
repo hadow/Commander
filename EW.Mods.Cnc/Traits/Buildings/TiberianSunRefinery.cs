@@ -15,9 +15,8 @@ namespace EW.Mods.Cnc.Traits
     class TiberianSunRefinery:Refinery
     {
 
-        public TiberianSunRefinery(Actor self ,RefineryInfo info) : base(self, info)
-        {
+        public TiberianSunRefinery(Actor self ,RefineryInfo info) : base(self, info) { }
 
-        }
+
     }
 }

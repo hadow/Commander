@@ -68,5 +68,19 @@ namespace EW.Mods.Common
         {
             return Target.Invalid;
         }
+
+        public static void NotifyBlocker(this Actor self,CPos position)
+        {
+            NotifyBlocker(self, self.World.ActorMap.GetActorsAt(position));
+        }
+
+        public static void NotifyBlocker(this Actor self,IEnumerable<Actor> blockers)
+        {
+            foreach(var blocker in blockers)
+            {
+                foreach (var moveBlocked in blocker.TraitsImplementing<INotifyBlockingMove>())
+                    moveBlocked.OnNotifyBlockingMove(blocker, self);
+            }
+        }
     }
 }

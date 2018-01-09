@@ -115,5 +115,16 @@ namespace EW.Mods.Common.Traits
             var sequence = NormalizeSequence(self, name);
             DefaultAnimation.PlayThen(sequence, () => PlayCustomAnimationRepeating(self, sequence));
         }
+
+
+        public void PlayCustomAnimationBackwards(Actor self,string name,Action after = null)
+        {
+            DefaultAnimation.PlayBackwardsThen(NormalizeSequence(self, name), () =>
+            {
+                CancelCustomAnimation(self);
+                if (after != null)
+                    after();
+            });
+        }
     }
 }

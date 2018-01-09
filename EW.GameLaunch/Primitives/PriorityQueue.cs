@@ -94,7 +94,7 @@ namespace EW.Primitives
             BubbleInto(0,0,Last());
 
             if (--index < 0)
-                index = (1 << --index) - 1;
+                index = (1 << --level) - 1;
             
             return ret;
         }
@@ -109,7 +109,7 @@ namespace EW.Primitives
             var lastIndex = index;
 
             if (--lastIndex < 0)
-                lastIndex = (1 << --lastIndex) - 1;
+                lastIndex = (1 << --lastLevel) - 1;
 
             return At(lastLevel, lastIndex);
         }

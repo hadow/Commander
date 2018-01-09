@@ -19,11 +19,30 @@ namespace EW.Traits
 
     public class Shroud:ISync,INotifyCreated
     {
+        public enum SourceType : byte { PassiveVisibility,Shroud,Visibility}
+
+        class ShroudSource
+        {
+            public readonly SourceType Type;
+            public readonly PPos[] ProjectedCells;
+
+            public ShroudSource(SourceType type,PPos[] projectedCells)
+            {
+                Type = type;
+                ProjectedCells = projectedCells;
+            }
+        }
+
         enum ShroudCellType : byte { Shroud,Fog,Visible}
         readonly Actor self;
         readonly ShroudInfo info;
         readonly Map map;
 
+        //Individual shroud modifier sources(type and area)
+        readonly Dictionary<object, ShroudSource> sources = new Dictionary<object, ShroudSource>();
+
+        //Per-cell count of each source type,used to resolve the final cell type
+        readonly CellLayer<short> passiveVisibleCount;
         readonly CellLayer<short> visibleCount;
         readonly CellLayer<short> generatedShroudCount;
         readonly CellLayer<bool> explored;
@@ -57,12 +76,17 @@ namespace EW.Traits
 
         public int Hash { get; private set; }
 
+        //Enabled at runtime on first use
+        bool shroudGenerationEnabled;
+        bool passiveVisibilityEnabled;
+
         public Shroud(Actor self,ShroudInfo info)
         {
             this.self = self;
             this.info = info;
             map = this.self.World.Map;
 
+            passiveVisibleCount = new CellLayer<short>(map);
             visibleCount = new CellLayer<short>(map);
             generatedShroudCount = new CellLayer<short>(map);
             explored = new CellLayer<bool>(map);
@@ -73,7 +97,69 @@ namespace EW.Traits
 
         void INotifyCreated.Created(Actor self)
         {
+        }
 
+
+        public void AddSource(object key,SourceType type,PPos[] projectedCells)
+        {
+            if (sources.ContainsKey(key))
+                throw new InvalidOperationException("Attempting to add duplicate shroud source");
+
+            sources[key] = new ShroudSource(type, projectedCells);
+
+            foreach(var puv in projectedCells)
+            {
+                //Force cells outside the visible bounds invisible
+                if (!map.Contains(puv))
+                    continue;
+
+                var uv = (MPos)puv;
+                switch (type)
+                {
+                    case SourceType.PassiveVisibility:
+                        passiveVisibilityEnabled = true;
+                        passiveVisibleCount[uv]++;
+                        explored[uv] = true;
+                        break;
+                    case SourceType.Visibility:
+                        visibleCount[uv]++;
+                        explored[uv] = true;
+                        break;
+                    case SourceType.Shroud:
+                        shroudGenerationEnabled = true;
+                        generatedShroudCount[uv]++;
+                        break;
+                }
+            }
+        }
+
+
+        public void RemoveSource(object key)
+        {
+            ShroudSource state;
+            if (!sources.TryGetValue(key, out state))
+                return;
+
+            foreach(var puv in state.ProjectedCells)
+            {
+                if (map.Contains(puv))
+                {
+                    var uv = (MPos)puv;
+                    switch (state.Type)
+                    {
+                        case SourceType.PassiveVisibility:
+                            passiveVisibleCount[uv]--;
+                            break;
+                        case SourceType.Visibility:
+                            visibleCount[uv]--;
+                            break;
+                        case SourceType.Shroud:
+                            generatedShroudCount[uv]--;
+                            break;
+                    }
+                }
+            }
+            sources.Remove(key);
         }
 
         public bool IsVisible(CPos cell)
@@ -115,6 +201,35 @@ namespace EW.Traits
 
             var uv = (MPos)puv;
             return resolvedType.Contains(uv) && resolvedType[uv] > ShroudCellType.Shroud;
+        }
+
+
+        public static IEnumerable<PPos> ProjectedCellsInRange(Map map,CPos cell,WDist range,int maxHeightDelta = -1)
+        {
+            return ProjectedCellsInRange(map, map.CenterOfCell(cell), range, maxHeightDelta);
+        }
+
+        public static IEnumerable<PPos> ProjectedCellsInRange(Map map,WPos pos,WDist range,int maxHeightDelta = -1)
+        {
+            var r = (range.Length + 1023 + 512) / 1024;
+            var limit = range.LengthSquared;
+
+
+            //Project actor position into the shroud plane
+            var projectedPos = pos - new WVec(0, pos.Z, pos.Z);
+            var projectedCell = map.CellContaining(projectedPos);
+            var projectedHeight = pos.Z / 512;
+
+            foreach(var c in map.FindTilesInCircle(projectedCell, r, true))
+            {
+                if((map.CenterOfCell(c) - projectedPos).HorizontalLengthSquared<= limit)
+                {
+                    var puv = (PPos)c.ToMPos(map);
+                    if (maxHeightDelta < 0 || map.ProjectedHeight(puv) < projectedHeight + maxHeightDelta)
+                        yield return puv;
+                }
+            }
+
         }
     }
 }

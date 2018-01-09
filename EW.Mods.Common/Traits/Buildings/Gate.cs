@@ -8,14 +8,19 @@ namespace EW.Mods.Common.Traits
     /// Will open and be passable for actors that appear friendly when there are no enemies in range.
     /// 
     /// </summary>
-    public class GateInfo:PausableConditionalTraitInfo,Requires<BuildingInfo>
+    public class GateInfo:PausableConditionalTraitInfo,IBlocksProjectilesInfo,Requires<BuildingInfo>
     {
         public readonly string OpeningSound = null;
 
         public readonly string ClosingSound = null;
-
+        /// <summary>
+        /// Ticks until the gate closes.
+        /// </summary>
         public readonly int CloseDelay = 150;
 
+        /// <summary>
+        /// Ticks untile the gate is considered open.
+        /// </summary>
         public readonly int TransitionDelay = 33;
 
         /// <summary>
@@ -33,8 +38,12 @@ namespace EW.Mods.Common.Traits
     }
 
     public class Gate :PausableConditionalTrait<GateInfo>,
-    ITick,ISync,
-    INotifyAddedToWorld,INotifyRemovedFromWorld,ITemporaryBlocker,IBlocksProjectiles
+    ITick,
+        ISync,
+    INotifyAddedToWorld,
+        INotifyRemovedFromWorld,
+        ITemporaryBlocker,
+        IBlocksProjectiles
     {
 
         readonly GateInfo info;

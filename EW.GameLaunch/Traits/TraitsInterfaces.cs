@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Activities;
@@ -156,10 +157,14 @@ namespace EW.Traits
     public interface IRenderAboveShroud
     {
         IEnumerable<IRenderable> RenderAboveShroud(Actor self, WorldRenderer wr);
+
+        bool SpatiallyPartitionable { get; }
     }
     public interface IRenderAboveShroudWhenSelected
     {
         IEnumerable<IRenderable> RenderAboveShroud(Actor self, WorldRenderer wr);
+
+        bool SpatiallyPartitionable { get; }
     }
     public interface IRenderAboveWorld { void RenderAboveWorld(Actor self, WorldRenderer wr); }
 
@@ -171,11 +176,15 @@ namespace EW.Traits
     public interface IRender
     {
         IEnumerable<IRenderable> Render(Actor self, WorldRenderer wr);
+
+        IEnumerable<Rectangle> ScreenBounds(Actor self, WorldRenderer wr);
     }
 
     public interface IRenderModifier
     {
         IEnumerable<IRenderable> ModifyRender(Actor self, WorldRenderer wr, IEnumerable<IRenderable> r);
+
+        IEnumerable<Rectangle> ModifyScreenBounds(Actor self, WorldRenderer wr, IEnumerable<Rectangle> bounds);
     }
 
     public interface IPostRenderSelection
@@ -495,6 +504,11 @@ namespace EW.Traits
 
         IEnumerable<Actor> ActorsInBox(WPos a, WPos b);
            
+    }
+
+    public interface IStoreResources
+    {
+        int Capacity { get; }
     }
 
 

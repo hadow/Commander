@@ -60,7 +60,7 @@ namespace EW
                 if (LengthSquared == 0)
                     return WAngle.Zero;
 
-                return WAngle.Zero;
+                return WAngle.ArcTan(-Y, X) - new WAngle(256);
             }
         }
 
@@ -73,10 +73,20 @@ namespace EW
         public WVec Rotate(int[] rotationMatrix){
 
             var mtx = rotationMatrix;
-
-            return new WVec(1, 1, 1);
+            var lx = (long)X;
+            var ly = (long)Y;
+            var lz = (long)Z;
+            return new WVec(
+                (int)((lx * mtx[0] + ly * mtx[4] + lz * mtx[8]) / mtx[15]),
+                (int)((lx * mtx[1] + ly * mtx[5] + lz * mtx[9]) / mtx[15]),
+                (int)((lx * mtx[2] + ly * mtx[6] + lz * mtx[10]) / mtx[15]));
         }
 
+
+        public override string ToString()
+        {
+            return X + "," + Y + "," + Z;
+        }
 
 
 

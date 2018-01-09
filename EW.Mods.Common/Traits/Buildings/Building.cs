@@ -15,7 +15,7 @@ namespace EW.Mods.Common.Traits
         OccupiedUntargetable='X'   // means blocked but not counting as targetable  
     }
 
-    public class BuildingInfo : ITraitInfo,IOccupySpaceInfo,UsesInit<LocationInit>
+    public class BuildingInfo : ITraitInfo,IOccupySpaceInfo,IPlaceBuildingDecorationInfo,UsesInit<LocationInit>
     {
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EW.Framework.Graphics;
 using EW.FileSystem;
 namespace EW.Graphics
@@ -15,6 +16,11 @@ namespace EW.Graphics
         float[] Bounds(uint frame);
 
         ModelRenderData RenderData(uint section);
+
+        /// <summary>
+        /// Returns the smallest rectangle that covers all rotations of all frames in a model.
+        /// </summary>
+        Rectangle AggregateBounds { get; }
     }
 
     public interface IModelCache : IDisposable
@@ -51,36 +57,36 @@ namespace EW.Graphics
     }
 
 
-    public class PlaceholderModelSequenceLoader : IModelSequenceLoader
-    {
-        public Action<string> OnMissingModelError { get; set; }
+    //public class PlaceholderModelSequenceLoader : IModelSequenceLoader
+    //{
+    //    public Action<string> OnMissingModelError { get; set; }
 
-        class PlaceholderModelCache : IModelCache
-        {
-            public IVertexBuffer<Vertex> VertexBuffer { get { throw new NotImplementedException(); } }
+    //    class PlaceholderModelCache : IModelCache
+    //    {
+    //        public IVertexBuffer<Vertex> VertexBuffer { get { throw new NotImplementedException(); } }
 
-            public void Dispose() { }
+    //        public void Dispose() { }
 
-            public IModel GetModelSequence(string model,string sequence)
-            {
-                throw new NotImplementedException();
-            }
-
-
-            public bool HasModelSequence(string model,string sequence)
-            {
-                throw new NotImplementedException();
-            }
-
-        }
-
-        public PlaceholderModelSequenceLoader(ModData modData) { }
+    //        public IModel GetModelSequence(string model,string sequence)
+    //        {
+    //            throw new NotImplementedException();
+    //        }
 
 
-        public IModelCache CachModels(IReadOnlyFileSystem fileSystem,ModData modData,IReadOnlyDictionary<string,MiniYamlNode> modelDefinitions)
-        {
-            return new PlaceholderModelCache();
-        }
-    }
+    //        public bool HasModelSequence(string model,string sequence)
+    //        {
+    //            throw new NotImplementedException();
+    //        }
+
+    //    }
+
+    //    public PlaceholderModelSequenceLoader(ModData modData) { }
+
+
+    //    public IModelCache CachModels(IReadOnlyFileSystem fileSystem,ModData modData,IReadOnlyDictionary<string,MiniYamlNode> modelDefinitions)
+    //    {
+    //        return new PlaceholderModelCache();
+    //    }
+    //}
 
 }

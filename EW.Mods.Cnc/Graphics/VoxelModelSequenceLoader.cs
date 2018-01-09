@@ -12,10 +12,7 @@ namespace EW.Mods.Cnc.Graphics
 
         public Action<string> OnMissingModelError { get; set; }
 
-        public VoxelModelSequenceLoader(ModData modData)
-        {
-
-        }
+        public VoxelModelSequenceLoader(ModData modData){}
 
         public IModelCache CachModels(IReadOnlyFileSystem fileSystem,ModData modData,IReadOnlyDictionary<string,MiniYamlNode> modelSequences)
         {
@@ -77,6 +74,9 @@ namespace EW.Mods.Cnc.Graphics
                 var fields = info.Value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                 if (fields.Length >= 1)
                     vxl = hva = fields[0].Trim();
+
+                if (fields.Length >= 2)
+                    hva = fields[1].Trim();
             }
 
             return loader.Load(vxl, hva);

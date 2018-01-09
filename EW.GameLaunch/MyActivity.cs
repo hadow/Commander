@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Android.OS;
 using Android.Views;
 using Android.App;
-using Android.Content;
 using Android.Content.PM;
+using EW.Framework.Mobile;
 namespace EW
 {
 
@@ -45,10 +45,11 @@ namespace EW
             RequestWindowFeature(WindowFeatures.NoTitle);
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             var wg = new WarGame();
-            
-            SetContentView(wg.Services.GetService<View>());
+
+            var gameView = (AndroidGameView)wg.Services.GetService<View>();
+            SetContentView(gameView);
             wg.Run();
-            
+            //gameView.TouchEnabled = true;
         }
     }
 }

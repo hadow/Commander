@@ -96,5 +96,7 @@ namespace EW.Mods.Common.Traits
 
             return RangeCircleRenderables(wr);
         }
+
+        bool IRenderAboveShroudWhenSelected.SpatiallyPartitionable { get { return false; } }
     }
 }

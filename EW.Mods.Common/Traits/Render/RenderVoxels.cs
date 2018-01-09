@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using EW.Traits;
 using EW.Graphics;
 using EW.Mods.Common.Graphics;
@@ -62,11 +63,35 @@ namespace EW.Mods.Common.Traits.Render
     }
 
 
-    public class RenderVoxels : IRender, INotifyOwnerChanged
+    public class RenderVoxels : IRender, INotifyOwnerChanged,ITick
     {
+
+        class AnimationWrapper
+        {
+            readonly ModelAnimation model;
+            bool cachedVisible;
+            WVec cachedOffset;
+
+            public AnimationWrapper(ModelAnimation model)
+            {
+                this.model = model;
+            }
+
+            public bool Tick()
+            {
+                var visible = model.IsVisible;
+                var offset = model.OffsetFunc != null ? model.OffsetFunc() : WVec.Zero;
+
+                var updated = visible != cachedVisible || offset != cachedOffset;
+                cachedVisible = visible;
+                cachedOffset = offset;
+                return updated;
+            }
+        }
+
         readonly List<ModelAnimation> components = new List<ModelAnimation>();
         readonly Actor self;
-        readonly RenderVoxelsInfo info;
+        public readonly RenderVoxelsInfo Info;
         readonly BodyOrientation body;
         readonly WRot camera;
         readonly WRot lightSource;
@@ -75,31 +100,54 @@ namespace EW.Mods.Common.Traits.Render
 
         protected PaletteReference colorPalette, normalsPalette, shadowPalette;
 
+        readonly Dictionary<ModelAnimation, AnimationWrapper> wrappers = new Dictionary<ModelAnimation, AnimationWrapper>();
         public RenderVoxels(Actor self, RenderVoxelsInfo info)
         {
             this.self = self;
-            this.info = info;
+            Info = info;
             body = self.Trait<BodyOrientation>();
 
             camera = new WRot(WAngle.Zero, body.CameraPitch - new WAngle(256), new WAngle(256));
             lightSource = new WRot(WAngle.Zero, new WAngle(256) - info.LightPitch, info.LightYaw);
         }
 
+
+        void ITick.Tick(Actor self)
+        {
+            var updated = false;
+            foreach (var w in wrappers.Values)
+                updated |= w.Tick();
+
+            if (updated)
+                self.World.ScreenMap.AddOrUpdate(self);
+        }
+
         public IEnumerable<IRenderable> Render(Actor self, WorldRenderer wr)
         {
             if (initializePalettes)
             {
-                var paletteName = info.Palette ?? info.PlayerPalette + self.Owner.InternalName;
+                var paletteName = Info.Palette ?? Info.PlayerPalette + self.Owner.InternalName;
                 colorPalette = wr.Palette(paletteName);
-                normalsPalette = wr.Palette(info.NormalsPalette);
-                shadowPalette = wr.Palette(info.ShadowPalette);
+                normalsPalette = wr.Palette(Info.NormalsPalette);
+                shadowPalette = wr.Palette(Info.ShadowPalette);
                 initializePalettes = false;
             }
 
             return new IRenderable[]
             {
-                new ModelRenderable(components,self.CenterPosition,0,camera,info.Scale,lightSource,info.LightAmbientColor,info.LightDiffuseColor,colorPalette,normalsPalette,shadowPalette)
+                new ModelRenderable(components,self.CenterPosition,0,camera,Info.Scale,lightSource,Info.LightAmbientColor,Info.LightDiffuseColor,colorPalette,normalsPalette,shadowPalette)
             };
+        }
+
+
+        IEnumerable<Rectangle> IRender.ScreenBounds(Actor self, WorldRenderer wr)
+        {
+            var pos = self.CenterPosition;
+            foreach(var c in components)
+            {
+                if (c.IsVisible)
+                    yield return c.ScreenBounds(pos, wr, Info.Scale);
+            }
         }
 
         public void OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)
@@ -107,9 +155,13 @@ namespace EW.Mods.Common.Traits.Render
             initializePalettes = true;
         }
 
-        public string Image { get { return info.Image ?? self.Info.Name; } }
+        public string Image { get { return Info.Image ?? self.Info.Name; } }
 
-        public void Add(ModelAnimation ma) { components.Add(ma); }
+        public void Add(ModelAnimation ma)
+        {
+            components.Add(ma);
+            wrappers.Add(ma, new AnimationWrapper(ma));
+        }
     }
     
 }

@@ -215,6 +215,7 @@ namespace EW
 
                 ActorsWithTrait<ITick>().DoTimed(x => x.Trait.Tick(x.Actor), "Trait");
 
+                effects.DoTimed(e => e.Tick(this), "Effect");
             }
 
             //Ö¡½áÊø»Øµ÷
@@ -229,6 +230,7 @@ namespace EW
         public void TickRender(WorldRenderer wr)
         {
             ActorsWithTrait<ITickRender>().DoTimed(x => x.Trait.TickRender(wr, x.Actor), "Render");
+            ScreenMap.TickRender();
         }
 
         public event Action GameOver = () => { };
@@ -361,6 +363,10 @@ namespace EW
         {
             effects.Add(e);
 
+            var sp = e as ISpatiallyPartitionable;
+            if (sp == null)
+                unpartitionedEffects.Add(e);
+
             var se = e as ISync;
             if (se != null)
                 syncedEffects.Add(se);
@@ -384,6 +390,11 @@ namespace EW
         public void Remove(IEffect e)
         {
             effects.Remove(e);
+
+            var sp = e as ISpatiallyPartitionable;
+            if (sp != null)
+                unpartitionedEffects.Remove(e);
+
             var se = e as ISync;
             if (se != null)
             {
@@ -427,7 +438,7 @@ namespace EW
             //Hash fields marked with the ISync interface.
             foreach (var actor in ActorsHavingTrait<ISync>())
                 foreach (var syncHash in actor.SyncHashes)
-                    ret += n++ * (int)(1 + actor.ActorID) * syncHash.Hash;
+                    ret += n++ * (int)(1 + actor.ActorID) * syncHash.Hash();
 
 
             //Hash game state relevant effects such as projectiles.

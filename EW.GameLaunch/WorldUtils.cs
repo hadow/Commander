@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using EW.Support;
+using EW.Traits;
 namespace EW
 {
     public static class WorldUtils
@@ -49,6 +50,25 @@ namespace EW
         public static Actor ClosestTo(this IEnumerable<Actor> actors,WPos pos)
         {
             return actors.MinByOrDefault(a => (a.CenterPosition - pos).LengthSquared);
+        }
+
+
+        public static bool ContainsTemporaryBlocker(this World world,CPos cell,Actor ignoreActor = null)
+        {
+            var temporaryBlockers = world.ActorMap.GetActorsAt(cell);
+            foreach(var temporaryBlocker in temporaryBlockers)
+            {
+                if (temporaryBlocker == ignoreActor)
+                    continue;
+
+                var temporaryBlockerTraits = temporaryBlocker.TraitsImplementing<ITemporaryBlocker>();
+                foreach(var temporaryBlockerTrait in temporaryBlockerTraits)
+                {
+                    if (temporaryBlockerTrait.IsBlocking(temporaryBlocker, cell))
+                        return true;
+                }
+            }
+            return false;
         }
     }
 }

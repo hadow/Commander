@@ -27,6 +27,9 @@ namespace EW
         {
             return !(a == b);
         }
+        public static WRot operator +(WRot a,WRot b) { return new WRot(a.Roll + b.Roll, a.Pitch + b.Pitch, a.Yaw + b.Yaw); }
+        public static WRot operator -(WRot a,WRot b) { return new WRot(a.Roll - b.Roll, a.Pitch - b.Pitch, a.Yaw - b.Yaw); }
+        public static WRot operator -(WRot a) { return new WRot(-a.Roll, -a.Pitch, -a.Yaw); }
 
         public static WRot FromFacing(int facing)
         {

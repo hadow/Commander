@@ -38,6 +38,9 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -185,6 +188,7 @@
     <Compile Include="Traits\ActivityUtils.cs" />
     <Compile Include="Traits\DebugPauseState.cs" />
     <Compile Include="Traits\DrawLineToTarget.cs" />
+    <Compile Include="Traits\Interactable.cs" />
     <Compile Include="Traits\LintAttributes.cs" />
     <Compile Include="Traits\Player\FixedColorPalette.cs" />
     <Compile Include="Traits\Player\FrozenActorLayer.cs" />
@@ -194,6 +198,7 @@
     <Compile Include="Traits\Selectable.cs" />
     <Compile Include="Traits\Target.cs" />
     <Compile Include="Traits\TraitsInterfaces.cs" />
+    <Compile Include="Traits\World\DebugVisualizations.cs" />
     <Compile Include="Traits\World\Faction.cs" />
     <Compile Include="Traits\World\ResourceType.cs" />
     <Compile Include="Traits\World\ScreenMap.cs" />
@@ -508,9 +513,10 @@
     <AndroidAsset Include="Content\mods\ts\speech02.mix" />
     <AndroidAsset Include="Content\mods\ts\tem.mix" />
     <AndroidAsset Include="Content\mods\ts\temperat.mix" />
+    <AndroidAsset Include="Content\mods\ts\bits\assaultmove.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\attackmove.shp" />
+    <AndroidAsset Include="Content\mods\ts\bits\jugger1-single.aud" />
     <None Include="Resources\AboutResources.txt" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -559,7 +565,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
-    <Folder Include="Content\mods\common\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

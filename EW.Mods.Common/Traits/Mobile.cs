@@ -414,13 +414,35 @@ namespace EW.Mods.Common.Traits
             return TilesetMovementClass[tileset];
         }
 
+
+        public SubCell GetAvailableSubCell(World world,Actor self,CPos cell,
+            SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,CellConditions check = CellConditions.All)
+        {
+            if (MovementCostForCell(world, cell) == int.MaxValue)
+                return SubCell.Invalid;
+
+            if (check.HasCellCondition(CellConditions.TransientActors))
+            {
+                Func<Actor, bool> checkTransient = otherActor => IsBlockedBy(self, otherActor, ignoreActor, check);
+
+                if (!SharesCell)
+                    return world.ActorMap.AnyActorsAt(cell, SubCell.FullCell, checkTransient) ? SubCell.Invalid : SubCell.FullCell;
+
+                return world.ActorMap.FreeSubCell(cell, preferredSubCell, checkTransient);
+            }
+
+            if (!SharesCell)
+                return world.ActorMap.AnyActorsAt(cell, SubCell.FullCell) ? SubCell.Invalid : SubCell.FullCell;
+            return world.ActorMap.FreeSubCell(cell, preferredSubCell);
+        }
+
         
     }
 
     public class Mobile:ConditionalTrait<MobileInfo>,
         INotifyCreated,
         IPositionable,
-        INotifyAddToWorld,
+        INotifyAddedToWorld,
         INotifyRemovedFromWorld,
         IMove,
         IFacing,
@@ -502,7 +524,6 @@ namespace EW.Mods.Common.Traits
 
         protected override void Created(Actor self)
         {
-
             conditionManager = self.TraitOrDefault<ConditionManager>();
             base.Created(self);
         }
@@ -522,6 +543,13 @@ namespace EW.Mods.Common.Traits
         public bool CanEnterCell(CPos cell,Actor ignoreActor = null,bool checkTransientActors = true)
         {
             return Info.CanEnterCell(self.World, self, cell,ignoreActor, checkTransientActors);
+        }
+
+        public void EnteringCell(Actor self)
+        {
+            //Only make actor crush if it is on the ground.
+            if (!self.IsAtGroundLevel())
+                return;
         }
 
         /// <summary>
@@ -707,18 +735,52 @@ namespace EW.Mods.Common.Traits
 
         public Activity MoveIntoWorld(Actor self,CPos cell,SubCell subCell = SubCell.Any)
         {
-            throw new NotImplementedException();
+            var pos = self.CenterPosition;
+
+            if (subCell == SubCell.Any)
+                subCell = Info.SharesCell ? self.World.ActorMap.FreeSubCell(cell, subCell) : SubCell.FullCell;
+
+            if (subCell == SubCell.Invalid)
+                subCell = self.World.Map.Grid.DefaultSubCell;
+
+            //Reserve the exit cell
+            SetPosition(self, cell, subCell);
+            SetVisualPosition(self, pos);
+
+            return VisualMove(self, pos, self.World.Map.CenterOfSubCell(cell, subCell), cell);
         }
 
         public Activity VisualMove(Actor self,WPos fromPos,WPos toPos)
         {
-            throw new NotImplementedException();
+            return VisualMove(self, fromPos, toPos, self.Location);
         }
         public Activity VisualMove(Actor self,WPos fromPos,WPos toPos,CPos cell)
         {
-            throw new NotImplementedException();
+            var speed = MovementSpeedForCell(self, cell);
+            var length = speed > 0 ? (toPos - fromPos).Length / speed : 0;
+
+            var delta = toPos - fromPos;
+            var facing = delta.HorizontalLengthSquared != 0 ? delta.Yaw.Facing : Facing;
+
+            return ActivityUtils.SequenceActivities(new Turn(self, facing), new Drag(self, fromPos, toPos, length));
         }
         
+
+        public int MovementSpeedForCell(Actor self,CPos cell)
+        {
+            var index = cell.Layer == 0 ? self.World.Map.GetTerrainIndex(cell) : self.World.GetCustomMovementLayers()[cell.Layer].GetTerrainIndex(cell);
+
+            if (index == byte.MaxValue)
+                return 0;
+
+            var terrainSpeed = Info.TilesetTerrainInfo[self.World.Map.Rules.TileSet][index].Speed;
+            if (terrainSpeed == 0)
+                return 0;
+
+            var modifiers = speedModifiers.Value.Append(terrainSpeed);
+
+            return Util.ApplyPercentageModifiers(Info.Speed, modifiers);
+        }
         
         #endregion
 
@@ -739,7 +801,7 @@ namespace EW.Mods.Common.Traits
 
         public SubCell GetAvailableSubCell(CPos a,SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,bool checkTransientActors = true)
         {
-            throw new NotImplementedException();
+            return Info.GetAvailableSubCell(self.World, self, a, preferredSubCell, ignoreActor, checkTransientActors ? CellConditions.All : CellConditions.None);
         }
     }
 }

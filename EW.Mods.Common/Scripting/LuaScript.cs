@@ -33,7 +33,7 @@ namespace EW.Mods.Common.Scripting
         }
 
 
-        public void Tick(Actor actor)
+        void ITick.Tick(Actor actor)
         {
             context.Tick(actor);
         }
@@ -48,7 +48,7 @@ namespace EW.Mods.Common.Scripting
 
         }
 
-        public void Disposing(Actor self)
+        void INotifyActorDisposing.Disposing(Actor self)
         {
             if (disposed)
                 return;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using EW.Scripting;
 using System.Linq;
 using Eluant;
@@ -19,6 +18,7 @@ namespace EW.Mods.Common.Scripting
         /// <returns></returns>
         public Player GetPlayer(string name)
         {
+            Console.WriteLine("GetPlayer:" + name);
             return Context.World.Players.FirstOrDefault(p => p.InternalName == name);
         }
 

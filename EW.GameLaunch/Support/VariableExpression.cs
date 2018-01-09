@@ -279,7 +279,33 @@ namespace EW.Support
                 case '!':
                 case '%':
                 case '^':
+                case '&':
+                case '*':
+                case '(':
+                case ')':
+                case '+':
+                case '=':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '|':
+                case ':':
+                case ';':
+                case '\'':
+                case '"':
+                case '<':
+                case '>':
+                case '?':
+                case ',':
+                case '/':
                     return CharClass.Operator;
+
+                case '.':
+                case '$':
+                case '-':
+                case '@':
+                    return CharClass.Mixed;
                 case '0':
                 case '1':
                 case '2':
@@ -325,9 +351,11 @@ namespace EW.Support
                 var token = Token.GetNext(Expression, ref i, lastToken != null ? lastToken.Type : TokenType.Invalid);
                 if(token == null)
                 {
+                    //Sanity check parsed tree
                     if (lastToken == null)
                         throw new InvalidDataException("Empty expression");
-
+                    //Expressions can't end with a binary or unary prefix operation
+                    //表达式不能以二进制或一元前缀操作结束 
                     if (lastToken.RightOperand)
                         throw new InvalidDataException("Missing value or sub-expression at end for '{0}' operator".F(lastToken.Symbol));
                     break;
@@ -346,6 +374,7 @@ namespace EW.Support
 
                 if(lastToken  == null)
                 {
+                    //Expressions can't end with a binary or unary prefix operation
                     if (token.LeftOperand)
                     {
                         throw new InvalidDataException("Missing value or sub-expression at beginning for '{0}' operator".F(token.Symbol));

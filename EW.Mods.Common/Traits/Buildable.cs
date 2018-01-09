@@ -16,6 +16,10 @@ namespace EW.Mods.Common.Traits
 
         public readonly int BuildDuration = -1;
 
+
+        /// <summary>
+        /// Percentage modifier to apply to the build duration.
+        /// </summary>
         public readonly int BuildDurationModifier = 60;
 
 

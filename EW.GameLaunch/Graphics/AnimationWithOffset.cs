@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Drawing;
 namespace EW.Graphics
 {
     public class AnimationWithOffset
@@ -31,6 +31,14 @@ namespace EW.Graphics
             return Animation.Render(center, offset, z, pal, scale);
         }
 
+
+        public Rectangle ScreenBounds(Actor self,WorldRenderer wr,float scale)
+        {
+            var center = self.CenterPosition;
+            var offset = OffsetFunc != null ? OffsetFunc() : WVec.Zero;
+
+            return Animation.ScreenBounds(wr, center, offset, scale);
+        }
 
 
         public static implicit operator AnimationWithOffset(Animation a)

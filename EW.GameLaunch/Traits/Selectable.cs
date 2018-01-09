@@ -3,7 +3,7 @@ using System;
 
 namespace EW.Traits
 {
-    public class SelectableInfo : ITraitInfo
+    public class SelectableInfo : InteractableInfo
     {
         public readonly int Priority = 10;
 
@@ -15,10 +15,10 @@ namespace EW.Traits
         [VoiceReference]
         public readonly string Voice = "Select";
 
-        public object Create(ActorInitializer init) { return new Selectable(init.Self, this); }
+        public override  object Create(ActorInitializer init) { return new Selectable(init.Self, this); }
 
     }
-    public class Selectable
+    public class Selectable:Interactable
     {
         public readonly string Class = null;
 

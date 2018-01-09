@@ -23,8 +23,14 @@ namespace EW
         internal struct SyncHash
         {
             public readonly ISync Trait;
-            public readonly int Hash;
-            public SyncHash(ISync trait,int hash) { Trait = trait; Hash = hash; }
+            
+            readonly Func<object, int> hashFunction;
+            public SyncHash(ISync trait) { Trait = trait; hashFunction = Sync.GetHashFunction(trait); }
+
+            public int Hash()
+            {
+                return hashFunction(Trait);
+            }
         }
         public readonly ActorInfo Info;
 
@@ -39,7 +45,7 @@ namespace EW
 
         public int Generation;
         
-        public Rectangle Bounds { get; private set; }
+        //public Rectangle Bounds { get; private set; }
 
         public Rectangle VisualBounds { get; private set; }
 
@@ -74,7 +80,7 @@ namespace EW
         /// 
         /// 
         /// </summary>
-        internal IEnumerable<SyncHash> SyncHashes { get; private set; }
+        internal SyncHash[] SyncHashes { get; private set; }
         public Player Owner { get; internal set; }
 
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
@@ -130,12 +136,13 @@ namespace EW
             visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
             defaultVisibility = Trait<IDefaultVisibility>();
             Targetables = TraitsImplementing<ITargetable>().ToArray();
-            Bounds = DetermineBounds();
+            //Bounds = DetermineBounds();
 
-            SyncHashes = TraitsImplementing<ISync>()
-                .Select(sync => Pair.New(sync, Sync.GetHashFunction(sync)))
-                .ToArray()
-                .Select(pair => new SyncHash(pair.First, pair.Second(pair.First)));
+            //SyncHashes = TraitsImplementing<ISync>()
+            //    .Select(sync => Pair.New(sync, Sync.GetHashFunction(sync)))
+            //    .ToArray()
+            //    .Select(pair => new SyncHash(pair.First, pair.Second(pair.First)));
+            SyncHashes = TraitsImplementing<ISync>().Select(sync => new SyncHash(sync)).ToArray();
         }
 
 
@@ -156,6 +163,23 @@ namespace EW
                 offset += new Int2(si.Bounds[2], si.Bounds[3]);
 
             return new Rectangle(offset.X, offset.Y, size.X, size.Y);
+        }
+
+
+        IEnumerable<Rectangle> Bounds(WorldRenderer wr)
+        {
+            foreach (var render in renders)
+                foreach (var r in render.ScreenBounds(this, wr))
+                    if (!r.IsEmpty)
+                        yield return r;
+        }
+
+        public IEnumerable<Rectangle> ScreenBounds(WorldRenderer wr)
+        {
+            var bounds = Bounds(wr);
+            foreach (var modifier in renderModifiers)
+                bounds = modifier.ModifyScreenBounds(this, wr, bounds);
+            return bounds;
         }
         
 
@@ -208,6 +232,12 @@ namespace EW
         public bool Equals(Actor other)
         {
             return ActorID == other.ActorID;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var o = obj as Actor;
+            return o != null && Equals(o);
         }
 
         /// <summary>
@@ -331,7 +361,27 @@ namespace EW
         /// <param name="newOwner"></param>
         public void ChangeOwner(Player newOwner)
         {
+            World.AddFrameEndTask(_ => ChangeOwnerSync(newOwner));
+        }
 
+        public void ChangeOwnerSync(Player newOwner)
+        {
+            if (Disposed)
+                return;
+
+            var oldOwner = Owner;
+            var wasInWorld = IsInWorld;
+
+            if (wasInWorld)
+                World.Remove(this);
+
+            Owner = newOwner;
+            Generation++;
+            foreach (var t in TraitsImplementing<INotifyOwnerChanged>())
+                t.OnOwnerChanged(this, oldOwner, newOwner);
+
+            if (wasInWorld)
+                World.Add(this);
         }
 
         #endregion
@@ -352,9 +402,7 @@ namespace EW
                 CurrentActivity = nextActivity;
             else
                 CurrentActivity.Queue(nextActivity);
-
-
-
+            
         }
 
 
@@ -367,6 +415,11 @@ namespace EW
                 return CurrentActivity.RootActivity.Cancel(this);
 
             return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return (int)ActorID;
         }
 
         #endregion

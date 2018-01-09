@@ -81,7 +81,7 @@ namespace EW.Graphics
 
         public Rectangle ScreenBounds(WorldRenderer wr)
         {
-            var screenOffset = ScreenPosition(wr);
+            var screenOffset = ScreenPosition(wr) + sprite.Offset;
 
             return new Rectangle((int)screenOffset.X, (int)screenOffset.Y, (int)sprite.Size.X, (int)sprite.Size.Y);
         }

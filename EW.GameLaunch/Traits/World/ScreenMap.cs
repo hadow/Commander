@@ -125,6 +125,76 @@ namespace EW.Traits
         }
 
 
+        public void TickRender()
+        {
+            foreach(var a in addOrUpdateActors)
+            {
+                var screenBounds = AggregateBounds(a.ScreenBounds(worldRenderer));
+                if (!screenBounds.Size.IsEmpty)
+                {
+                    if (partitionedRenderableActors.Contains(a))
+                        partitionedRenderableActors.Update(a, screenBounds);
+                    else
+                        partitionedRenderableActors.Add(a, screenBounds);
+                }
+                else
+                    partitionedRenderableActors.Remove(a);
+            }
+
+
+            foreach(var a in removeActors)
+            {
+                partitionedMouseActors.Remove(a);
+                partitionedMouseActorBounds.Remove(a);
+                partitionedRenderableActors.Remove(a);
+            }
+
+            addOrUpdateActors.Clear();
+            removeActors.Clear();
+
+            foreach(var kv in addOrUpdateFrozenActors)
+            {
+                foreach(var fa in kv.Value)
+                {
+                    var screenBounds = AggregateBounds(fa.ScreenBounds);
+                    if (!screenBounds.Size.IsEmpty)
+                    {
+                        if (partitionedRenderableFrozenActors[kv.Key].Contains(fa))
+                            partitionedRenderableFrozenActors[kv.Key].Update(fa, screenBounds);
+                        else
+                            partitionedRenderableFrozenActors[kv.Key].Add(fa, screenBounds);
+                    }
+                    else
+                        partitionedRenderableFrozenActors[kv.Key].Remove(fa);
+                }
+
+                kv.Value.Clear();
+            }
+
+            foreach(var kv in removeFrozenActors)
+            {
+                foreach(var fa in kv.Value)
+                {
+                    partitionedMouseFrozenActors[kv.Key].Remove(fa);
+                    partitionedRenderableFrozenActors[kv.Key].Remove(fa);
+                }
+
+                kv.Value.Clear();
+            }
+        }
+
+        Rectangle AggregateBounds(IEnumerable<Rectangle> screenBounds)
+        {
+            if (!screenBounds.Any())
+                return Rectangle.Empty;
+
+            var bounds = screenBounds.First();
+            foreach (var b in screenBounds.Skip(1))
+                bounds = Rectangle.Union(bounds, b);
+            return bounds;
+        }
+
+
         public IEnumerable<IEffect> RenderableEffectsInBox(Int2 a,Int2 b){
             return partitionedRenderableEffects.InBox(RectWithCorners(a, b));
 
@@ -137,13 +207,13 @@ namespace EW.Traits
 
         }
 
-        Rectangle ActorBounds(Actor a)
-        {
-            var pos = worldRenderer.ScreenPxPosition(a.CenterPosition);
-            var bounds = a.Bounds;
-            bounds.Offset(pos.X, pos.Y);
-            return bounds;
-        }
+        //Rectangle ActorBounds(Actor a)
+        //{
+        //    var pos = worldRenderer.ScreenPxPosition(a.CenterPosition);
+        //    var bounds = a.Bounds;
+        //    bounds.Offset(pos.X, pos.Y);
+        //    return bounds;
+        //}
 
         public void AddOrUpdate(Player viewer,FrozenActor fa){
 
@@ -246,6 +316,12 @@ namespace EW.Traits
             Remove(effect);
             Add(effect,position,size);
 
+        }
+
+        public void Update(IEffect effect,WPos position,Sprite sprite)
+        {
+            var size = new Size((int)sprite.Size.X, (int)sprite.Size.Y);
+            Update(effect, position, size);
         }
         //public void Update(Actor a)
         //{

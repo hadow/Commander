@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Drawing;
 using EW.Graphics;
 using EW.Mods.Cnc.FileFormats;
 namespace EW.Mods.Cnc.Graphics
@@ -115,6 +116,34 @@ namespace EW.Mods.Cnc.Graphics
             }
 
             return ret;
+        }
+
+        public Rectangle AggregateBounds
+        {
+            get
+            {
+                // Corner offsets
+                var ix = new uint[] { 0, 0, 0, 0, 3, 3, 3, 3 };
+                var iy = new uint[] { 1, 1, 4, 4, 1, 1, 4, 4 };
+                var iz = new uint[] { 2, 5, 2, 5, 2, 5, 2, 5 };
+
+                // Calculate the smallest sphere that covers the model limbs
+                var rSquared = 0f;
+                for (var f = 0U; f < frames; f++)
+                {
+                    var bounds = Bounds(f);
+                    for (var i = 0; i < 8; i++)
+                    {
+                        var x = bounds[ix[i]];
+                        var y = bounds[iy[i]];
+                        var z = bounds[iz[i]];
+                        rSquared = Math.Max(rSquared, x * x + y * y + z * z);
+                    }
+                }
+
+                var r = (int)Math.Sqrt(rSquared) + 1;
+                return Rectangle.FromLTRB(-r, -r, r, r);
+            }
         }
     }
 }

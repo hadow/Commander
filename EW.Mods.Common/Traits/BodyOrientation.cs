@@ -39,15 +39,17 @@ namespace EW.Mods.Common.Traits
             if (facings == 0)
                 return orientation;
 
+            //Map yaw to the closest facing.
             var facing = QuantizeFacing(orientation.Yaw.Angle / 4, facings);
 
+            //Roll and pitch are always zero if yaw is quantized.
             return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facings));
 
         }
 
         public int QuantizeFacing(int facing, int facings){
 
-            return Util.QuantizeFacing(facing, facings) * (256 / facing);
+            return Util.QuantizeFacing(facing, facings,UseClassicFacingFudge) * (256 / facings);
         }
 
         public object Create(ActorInitializer init){
@@ -73,14 +75,18 @@ namespace EW.Mods.Common.Traits
 
             quantizedFacings = Exts.Lazy(() =>
             {
-
+                // Override value is set
                 if (info.QuantizedFacings >= 0)
                     return info.QuantizedFacings;
 
-                var qboi = self.TraitOrDefault<IQuantizeBodyOrientationInfo>();
+                var qboi = self.Info.TraitInfoOrDefault<IQuantizeBodyOrientationInfo>();
 
+                //If a sprite actor has neither custom QuantizedFacings nor a trait implementing IQuantizeBodyOrientationInfo,throw
                 if(qboi == null){
-                    
+                    if (self.Info.HasTraitInfo<WithSpriteBodyInfo>())
+                        throw new InvalidOperationException("Actor '" + self.Info.Name + "' has a sprite body but no facing quantization." + " Either and the QuantizeFacingsFromSequence trait or set custom QuantizedFacings on BodyOrientation.");
+                    else
+                        throw new InvalidOperationException("Actor type '" + self.Info.Name + "' does not define a quantized body orientation.");
                 }
 
                 return qboi.QuantizedBodyFacings(self.Info, self.World.Map.Rules.Sequences, faction);
@@ -104,6 +110,15 @@ namespace EW.Mods.Common.Traits
             return info.QuantizeOrientation(orientation, quantizedFacings.Value);
         }
 
+        public int QuantizeFacing(int facing)
+        {
+            return info.QuantizeFacing(facing, quantizedFacings.Value);
+        }
+
+        public int QuantizeFacing(int facing,int facings)
+        {
+            return info.QuantizeFacing(facing, facings);
+        }
 
     }
 }

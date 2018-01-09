@@ -39,7 +39,19 @@ namespace EW
             return obj is WAngle && Equals((WAngle)obj);
         }
 
+        public static WAngle Lerp(WAngle a, WAngle b, int mul, int div)
+        {
+            // Map 1024 <-> 0 wrapping into linear space
+            var aa = a.Angle;
+            var bb = b.Angle;
+            if (aa > bb && aa - bb > 512)
+                aa -= 1024;
 
+            if (bb > aa && bb - aa > 512)
+                bb -= 1024;
+
+            return new WAngle(aa + (bb - aa) * mul / div);
+        }
 
         public static WAngle FromDegrees(int degrees)
         {
@@ -68,6 +80,44 @@ namespace EW
                 return -CosineTable[512 - Angle];
 
             return -new WAngle(Angle - 512).Cos();
+        }
+
+        public static WAngle ArcTan(int y, int x) { return ArcTan(y, x, 1); }
+        public static WAngle ArcTan(int y, int x, int stride)
+        {
+            if (y == 0)
+                return new WAngle(x >= 0 ? 0 : 512);
+
+            if (x == 0)
+                return new WAngle(Math.Sign(y) * 256);
+
+            var ay = Math.Abs(y);
+            var ax = Math.Abs(x);
+
+            // Find the closest angle that satisfies y = x*tan(theta)
+            // Uses a long to store bestVal to eliminate integer overflow issues in the common cases
+            // (may still fail for unrealistically large ax and ay)
+            var bestVal = long.MaxValue;
+            var bestAngle = 0;
+            for (var i = 0; i < 256; i += stride)
+            {
+                var val = Math.Abs(1024 * ay - (long)ax * TanTable[i]);
+                if (val < bestVal)
+                {
+                    bestVal = val;
+                    bestAngle = i;
+                }
+            }
+
+            // Calculate quadrant
+            if (x < 0 && y > 0)
+                bestAngle = 512 - bestAngle;
+            else if (x < 0 && y < 0)
+                bestAngle = 512 + bestAngle;
+            else if (x > 0 && y < 0)
+                bestAngle = 1024 - bestAngle;
+
+            return new WAngle(bestAngle);
         }
 
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using EW.Primitives;
 using EW.FileSystem;
 namespace EW.Graphics
@@ -31,6 +32,8 @@ namespace EW.Graphics
         int ShadowZOffset { get; }
 
         int[] Frames { get; }
+
+        Rectangle Bounds { get; }
 
         Sprite GetSprite(int frame);
 

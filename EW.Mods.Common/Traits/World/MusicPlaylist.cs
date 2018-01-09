@@ -106,7 +106,7 @@ namespace EW.Mods.Common.Traits
                 if (!CurrentSongIsBackground && !WarGame.Settings.Sound.Repeat)
                     currentSong = GetNextSong();
 
-                Play();
+                //Play();
             });
         }
 
@@ -161,7 +161,8 @@ namespace EW.Mods.Common.Traits
         }
         public void Disposing(Actor self)
         {
-            
+            if (currentSong != null)
+                WarGame.Sound.StopMusic();
 
             WarGame.Sound.DisableWorldSounds = false;
         }

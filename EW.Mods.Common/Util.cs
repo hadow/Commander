@@ -48,6 +48,29 @@ namespace EW.Mods.Common
             }
         }
 
+        public static int RandomDelay(World world,int[] range)
+        {
+            if (range.Length == 0)
+                return 0;
+
+            if (range.Length == 1)
+                return range[0];
+
+            return world.SharedRandom.Next(range[0], range[1]);
+        }
+
+
+        public static int GetNearestFacing(int facing,int desiredFacing)
+        {
+            var turn = desiredFacing - facing;
+            if (turn > 128)
+                turn -= 256;
+
+            if (turn < -128)
+                turn += 256;
+
+            return facing + turn;
+        }
 
         public static int TickFacing(int facing,int desiredFacing,int rot)
         {
@@ -68,6 +91,20 @@ namespace EW.Mods.Common
             foreach (var p in percentages)
                 a *= p / 100m;
             return (int)a;
+        }
+
+        /// <summary>
+        /// Wraps an arbitrary integer facing value into the range 0-255
+        /// </summary>
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public static int NormalizeFacing(int f)
+        {
+            if (f >= 0)
+                return f & 0xFF;
+
+            var negative = -f & 0xFF;
+            return negative == 0 ? 0 : 256 - negative;
         }
 
         /// <summary>

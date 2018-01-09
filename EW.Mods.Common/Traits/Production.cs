@@ -8,6 +8,11 @@ namespace EW.Mods.Common.Traits
 
     public class ProductionInfo : PausableConditionalTraitInfo
     {
+        /// <summary>
+        /// e.g. Infantry, Vehicles,Aircraft,Buildings
+        /// </summary>
+        [FieldLoader.Require]
+        public readonly string[] Produces = { };
 
         public override object Create(ActorInitializer init)
         {
@@ -32,13 +37,13 @@ namespace EW.Mods.Common.Traits
 
         }
 
-        public virtual void DoProduction(Actor self,ActorInfo producee,ExitInfo exitinfo,string productionType,TypeDictionary inits){
-
-
+        public virtual void DoProduction(Actor self,ActorInfo producee,ExitInfo exitinfo,string productionType,TypeDictionary inits)
+        {
             var exit = CPos.Zero;
             var exitLocation = CPos.Zero;
             var target = Target.Invalid;
 
+            //Clone the initializer dictionary for the new actor.
             var td = new TypeDictionary();
             foreach (var init in inits)
                 td.Add(init);
@@ -53,11 +58,20 @@ namespace EW.Mods.Common.Traits
                 var initialFacing = exitinfo.Facing;
 
                 if(exitinfo.Facing<0){
-                    
+
+                    var delta = to - spawn;
+
+                    if (delta.HorizontalLengthSquared == 0)
+                    {
+                        var fi = producee.TraitInfoOrDefault<IFacingInfo>();
+                        initialFacing = fi != null ? fi.GetInitialFacing() : 0;
+                    }
+                    else
+                        initialFacing = delta.Yaw.Facing;
                 }
 
-
-
+                exitLocation = rp.Value != null ? rp.Value.Location : exit;
+                target = Target.FromCell(self.World, exitLocation);
 
                 td.Add(new LocationInit(exit));
                 td.Add(new CenterPositionInit(spawn));
@@ -102,8 +116,6 @@ namespace EW.Mods.Common.Traits
 
             });
 
-
-
         }
 
 
@@ -127,11 +139,10 @@ namespace EW.Mods.Common.Traits
 
         public virtual bool Produce(Actor self,ActorInfo producee,string productionType,TypeDictionary inits)
         {
-
-
-            if (IsTraitDisabled || IsTraitPaused)
+            if (IsTraitDisabled || IsTraitPaused || (building != null && building.Locked))
                 return false;
 
+            //Pick a spawn/exit point pair.
             var exit = SelectExit(self, producee, productionType);
 
             if(exit != null || self.OccupiesSpace != null)
@@ -147,6 +158,7 @@ namespace EW.Mods.Common.Traits
 
             var mobileInfo = producee.TraitInfoOrDefault<MobileInfo>();
 
+            self.NotifyBlocker(self.Location + s.ExitCell);
             return mobileInfo == null || mobileInfo.CanEnterCell(self.World, self, self.Location + s.ExitCell, self);
         }
     }

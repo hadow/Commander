@@ -572,6 +572,11 @@ namespace EW
             return inverseCellProjection[uv];
         }
 
+        public byte ProjectedHeight(PPos puv)
+        {
+            return projectedHeight[(MPos)puv];
+        }
+
         /// <summary>
         /// 
         /// </summary>

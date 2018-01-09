@@ -45,6 +45,11 @@ namespace EW.Traits
 
         public IRenderable[] Renderables = NoRenderables;
         static readonly IRenderable[] NoRenderables = new IRenderable[0];
+
+        static readonly Rectangle[] NoBounds = new Rectangle[0];
+        public Rectangle[] ScreenBounds = NoBounds;
+
+        public Rectangle MouseBounds = Rectangle.Empty;
         public IEnumerable<IRenderable> Render(WorldRenderer wr)
         {
             if (Shrouded)
@@ -125,6 +130,13 @@ namespace EW.Traits
             //return world.ScreenMap.FrozenActorsInBox(owner, wr.ViewPort.TopLeft, wr.ViewPort.BottomRight).Where(f=>f.Visible).SelectMany(ff=>ff.Render(wr));
             return world.ScreenMap.RenderableFrozenActorsInBox(owner, wr.ViewPort.TopLeft, wr.ViewPort.BottomRight)
                         .Where(f=>f.Visible).SelectMany(ff=>ff.Render(wr));
+        }
+
+
+        public IEnumerable<Rectangle> ScreenBounds(Actor self,WorldRenderer wr)
+        {
+            //Player-actor render traits don't require screen bounds;
+            yield break;
         }
 
         public FrozenActor FromID(uint id)

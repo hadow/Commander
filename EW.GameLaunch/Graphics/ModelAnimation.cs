@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Primitives;
+using System.Drawing;
 namespace EW.Graphics
 {
     public struct ModelAnimation
@@ -29,5 +30,28 @@ namespace EW.Graphics
         }
 
 
+        public Rectangle ScreenBounds(WPos pos,WorldRenderer wr,float scale)
+        {
+            var r = Model.AggregateBounds;
+            var offset = OffsetFunc != null ? OffsetFunc() : WVec.Zero;
+
+            var xy = wr.ScreenPxPosition(pos) + wr.ScreenPxOffset(offset);
+
+            return Rectangle.FromLTRB(
+                xy.X + (int)(r.Left * scale),
+                xy.Y + (int)(r.Top * scale),
+                xy.X + (int)(r.Right * scale),
+                xy.Y + (int)(r.Bottom * scale)
+                );
+        }
+
+
+        public bool IsVisible
+        {
+            get
+            {
+                return DisableFunc == null || !DisableFunc();
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using EW.Traits;
 using EW.Graphics;
@@ -144,6 +145,11 @@ namespace EW.Mods.Common.Traits
         void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
         {
 
+        }
+
+        IEnumerable<Rectangle> IRenderModifier.ModifyScreenBounds(Actor self, WorldRenderer wr, IEnumerable<Rectangle> bounds)
+        {
+            return bounds;
         }
     }
 }

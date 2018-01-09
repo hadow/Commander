@@ -134,17 +134,29 @@ namespace EW.Primitives
             MutateBins(item, bounds, addItem);
         }
 
-        public void Remove(T item)
-        {
-            MutateBins(item, itemBounds[item], removeItem);
-            itemBounds.Remove(item);
-        }
+        //public void Remove(T item)
+        //{
+        //    MutateBins(item, itemBounds[item], removeItem);
+        //    itemBounds.Remove(item);
+        //}
 
         public void Update(T item,Rectangle bounds)
         {
             ValidateBounds(item, bounds);
             MutateBins(item, itemBounds[item], removeItem);
             MutateBins(item, itemBounds[item] = bounds, addItem);
+        }
+
+
+        public bool Remove(T item)
+        {
+            Rectangle bounds;
+            if (!itemBounds.TryGetValue(item, out bounds))
+                return false;
+
+            MutateBins(item, bounds, removeItem);
+            itemBounds.Remove(item);
+            return true;
         }
 
 
@@ -164,6 +176,12 @@ namespace EW.Primitives
             get{
                 return itemBounds.Values;
             }
+        }
+
+
+        public bool Contains(T item)
+        {
+            return itemBounds.ContainsKey(item);
         }
     }
 }

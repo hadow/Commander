@@ -99,6 +99,13 @@ namespace EW
             }
         }
 
+
+        public void StopSound(ISound sound)
+        {
+            if (sound != null)
+                soundEngine.StopSound(sound);
+        }
+
         public void StopMusic()
         {
             if(music != null)
@@ -161,6 +168,13 @@ namespace EW
             video = null;
         }
 
+
+        public ISound PlayLooped(SoundType type,string name) { return Play(type, null, name, true, Vector3.Zero, 1f, true); }
+
+        public ISound PlayLooped(SoundType type,string name,WPos pos) { return Play(type, null, name, false, pos.ToVector3(), 1f, true); }
+
+
+        public ISound Play(SoundType type,string name) { return Play(type, null, name, true, Vector3.Zero, 1f); }
 
         public ISound Play(SoundType type,string name,WPos pos)
         {

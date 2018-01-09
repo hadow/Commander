@@ -113,6 +113,8 @@ namespace EW.Mods.Common.Graphics
 
         public int[] Frames { get; private set; }
 
+
+        public Rectangle Bounds { get; private set; }
         public DefaultSpriteSequence(ModData modData,TileSet tileSet,SpriteCache cache,ISpriteSequenceLoader loader,string sequence,string animation,MiniYaml info)
         {
             Name = animation;
@@ -259,10 +261,39 @@ namespace EW.Mods.Common.Graphics
                 {
                     throw new InvalidOperationException("{5}:Sequence {0}.{1}'s shadow frames use frames [{2}...{3}],but only [0..{4}] actually exist".F(sequence, animation, ShadowStart, ShadowStart + Facings * Stride - 1, sprites.Length - 1, info.Nodes[0].Location));
                 }
+
+                var boundSprites = SpriteBounds(sprites, Frames, Start, Facings, Length);
+                if (ShadowStart > 0)
+                    boundSprites = boundSprites.Concat(SpriteBounds(sprites, Frames, ShadowStart, Facings, Length));
+
+                if (boundSprites.Any())
+                {
+                    Bounds = boundSprites.First();
+                    foreach (var b in boundSprites.Skip(1))
+                        Bounds = Rectangle.Union(Bounds, b);
+                }
             }
             catch(FormatException f)
             {
                 throw new FormatException("Failed to parse sequences for {0}.{1} at {2}:\n{3}".F(sequence, animation, info.Nodes[0].Location, f));
+            }
+        }
+
+
+        static IEnumerable<Rectangle> SpriteBounds(Sprite[] sprites,int[] frames,int start,int facings,int length)
+        {
+            for(var facing = 0; facing < facings; facing++)
+            {
+                for(var frame = 0; frame < length; frame++)
+                {
+                    var i = frame * facings + facing;
+                    var s = frames != null ? sprites[frames[i]] : sprites[start + i];
+                    if (!s.Bounds.IsEmpty)
+                        yield return new Rectangle(
+                            (int)(s.Offset.X - s.Size.X / 2),
+                            (int)(s.Offset.Y - s.Size.Y / 2),
+                            s.Bounds.Width, s.Bounds.Height);
+                }
             }
         }
 
@@ -304,7 +335,8 @@ namespace EW.Mods.Common.Graphics
             if (reverseFacings)
                 f = (Facings - f) % Facings;
 
-            var i = transpose ? (frame % Length) * Facings + f:(f*Stride)+(frame%Length);
+            var i = transpose ? (frame % Length) * Facings + f
+                :(f*Stride)+(frame%Length);
 
             if (Frames != null)
                 return sprites[Frames[i]];

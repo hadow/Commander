@@ -20,7 +20,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public class Husk:IPositionable,IFacing,ISync,INotifyCreated,INotifyAddToWorld,INotifyRemovedFromWorld,IDeathActorInitModifier
+    public class Husk:IPositionable,IFacing,ISync,INotifyCreated,INotifyAddedToWorld,INotifyRemovedFromWorld,IDeathActorInitModifier
     {
 
 

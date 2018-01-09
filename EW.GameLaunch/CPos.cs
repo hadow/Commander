@@ -60,6 +60,12 @@ namespace EW
         }
         #endregion
 
+        public override string ToString()
+        {
+            return "X:" + X + ",Y:" + Y;
+        }
+
+
         public override bool Equals(object obj)
         {
             return obj is CPos && Equals((CPos)obj);

@@ -28,6 +28,8 @@ namespace EW.Graphics
 
         readonly TerrainRenderer terrainRenderer;
 
+        readonly Lazy<DebugVisualizations> debugVis;
+
         readonly Dictionary<string, PaletteReference> palettes = new Dictionary<string, PaletteReference>();
 
         readonly Func<string, PaletteReference> createPaletteReference;
@@ -64,6 +66,8 @@ namespace EW.Graphics
             Theater = new Theater(world.Map.Rules.TileSet);
 
             terrainRenderer = new TerrainRenderer(world, this);
+
+            debugVis = Exts.Lazy(() => world.WorldActor.TraitOrDefault<DebugVisualizations>());
         }
 
 
@@ -130,38 +134,53 @@ namespace EW.Graphics
 
             WarGame.Renderer.DisableScissor();
 
-            var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>().Where(a => a.Actor.IsInWorld && !a.Actor.Disposed).SelectMany(a => a.Trait.RenderAboveShroud(a.Actor, this));
+            var finalOverlayRenderables = GenerateOverlayRenderables(onScreenActors);
+            //var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>().Where(a => a.Actor.IsInWorld && !a.Actor.Disposed).SelectMany(a => a.Trait.RenderAboveShroud(a.Actor, this));
 
-            var aboveShroudSelected = World.Selection.Actors.Where(a => !a.Disposed)
-                                           .SelectMany(a => a.TraitsImplementing<IRenderAboveShroudWhenSelected>()
-                                                       .SelectMany(t => t.RenderAboveShroud(a, this)));
+            //var aboveShroudSelected = World.Selection.Actors.Where(a => !a.Disposed)
+            //                               .SelectMany(a => a.TraitsImplementing<IRenderAboveShroudWhenSelected>()
+            //                                           .SelectMany(t => t.RenderAboveShroud(a, this)));
 
 
-            var aboveShroudEffects = World.Effects.Select(e => e as IEffectAboveShroud).Where(e => e != null).SelectMany(e => e.RenderAboveShroud(this));
+            //var aboveShroudEffects = World.Effects.Select(e => e as IEffectAboveShroud).Where(e => e != null).SelectMany(e => e.RenderAboveShroud(this));
 
-            var aboveShroudOrderGenerator = SpriteRenderable.None;
+            //var aboveShroudOrderGenerator = SpriteRenderable.None;
 
-            if (World.OrderGenerator != null)
-                aboveShroudOrderGenerator = World.OrderGenerator.RenderAboveShroud(this, World);
+            //if (World.OrderGenerator != null)
+            //    aboveShroudOrderGenerator = World.OrderGenerator.RenderAboveShroud(this, World);
 
-            WarGame.Renderer.WorldModelRenderer.BeginFrame();
+            //WarGame.Renderer.WorldModelRenderer.BeginFrame();
 
-            var finalOverlayRenderables = aboveShroud.
-                                                     Concat(aboveShroudSelected).
-                                                     Concat(aboveShroudEffects).
-                                                     Concat(aboveShroudOrderGenerator).
-                                                     Select(r => r.PrepareRender(this)).ToList();
+            //var finalOverlayRenderables = aboveShroud.
+            //                                         Concat(aboveShroudSelected).
+            //                                         Concat(aboveShroudEffects).
+            //                                         Concat(aboveShroudOrderGenerator).
+            //                                         Select(r => r.PrepareRender(this)).ToList();
 
-            WarGame.Renderer.WorldModelRenderer.EndFrame();
+            //WarGame.Renderer.WorldModelRenderer.EndFrame();
+
+            
+
 
             ////HACK:Keep old grouping behaviour
-            foreach (var g in finalOverlayRenderables.GroupBy(prs => prs.GetType()))
+            var groupedOverlayRenderables = finalOverlayRenderables.GroupBy(prs => prs.GetType());
+            foreach (var g in groupedOverlayRenderables)
             {
 
                 foreach (var r in g)
                 {
                     r.Render(this);
                 }
+            }
+
+            if (debugVis.Value != null && debugVis.Value.RenderGeometry)
+            {
+                for (var i = 0; i < renderables.Count; i++)
+                    renderables[i].RenderDebugGeometry(this);
+
+                foreach (var g in groupedOverlayRenderables)
+                    foreach (var r in g)
+                        r.RenderDebugGeometry(this);
             }
             WarGame.Renderer.Flush();
 
@@ -229,6 +248,40 @@ namespace EW.Graphics
             WarGame.Renderer.WorldModelRenderer.EndFrame();
 
             return renderables;
+        }
+
+
+        List<IFinalizedRenderable> GenerateOverlayRenderables(HashSet<Actor> actorsInBox)
+        {
+
+            var aboveShroud = World.ActorsWithTrait<IRenderAboveShroud>()
+                .Where(a => a.Actor.IsInWorld && !a.Actor.Disposed && (!a.Trait.SpatiallyPartitionable || actorsInBox.Contains(a.Actor)))
+                .SelectMany(a => a.Trait.RenderAboveShroud(a.Actor, this));
+
+            var aboveShroudSelected = World.Selection.Actors.Where(a => a.IsInWorld && !a.Disposed)
+                .SelectMany(a => a.TraitsImplementing<IRenderAboveShroudWhenSelected>()
+                .Where(t => !t.SpatiallyPartitionable || actorsInBox.Contains(a))
+                .SelectMany(t => t.RenderAboveShroud(a, this)));
+
+            var aboveShroudEffects = World.Effects.Select(e => e as IEffectAboveShroud)
+                .Where(e => e != null)
+                .SelectMany(e => e.RenderAboveShroud(this));
+
+            var aboveShroudOrderGenerator = SpriteRenderable.None;
+
+            if (World.OrderGenerator != null)
+                aboveShroudOrderGenerator = World.OrderGenerator.RenderAboveShroud(this, World);
+
+            var overlayRenderables = aboveShroud
+                .Concat(aboveShroudSelected)
+                .Concat(aboveShroudEffects)
+                .Concat(aboveShroudOrderGenerator);
+
+            WarGame.Renderer.WorldModelRenderer.BeginFrame();
+            var finalOverlayRenderables = overlayRenderables.Select(r => r.PrepareRender(this)).ToList();
+            WarGame.Renderer.WorldModelRenderer.EndFrame();
+
+            return finalOverlayRenderables;
         }
 
         /// <summary>
@@ -316,7 +369,7 @@ namespace EW.Graphics
         public Vector3 Screen3DPosition(WPos pos)
         {
             var z = ZPosition(pos, 0) *(float) TileSize.Height / TileScale;
-            return new Vector3(TileSize.Width * pos.X / TileScale, TileSize.Height * (pos.Y - pos.Z) / TileScale, z);
+            return new Vector3((float)TileSize.Width * pos.X / TileScale, (float)TileSize.Height * (pos.Y - pos.Z) / TileScale, z);
         }
 
         public Vector3 Screen3DPxPosition(WPos pos)
