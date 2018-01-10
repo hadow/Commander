@@ -8,7 +8,7 @@ namespace EW.Primitives
     /// </summary>
     public class ActionQueue
     {
-        readonly List<DelayedAction> actions = new List<DelayedAction>();
+        readonly List<DelayedBehaviour> actions = new List<DelayedBehaviour>();
 
         public void Add(Action a,long desiredTime)
         {
@@ -17,14 +17,14 @@ namespace EW.Primitives
 
             lock (actions)
             {
-                var action = new DelayedAction(a, desiredTime);
+                var action = new DelayedBehaviour(a, desiredTime);
                 var index = Index(action);
                 actions.Insert(index, action);
             }
         }
 
 
-        int Index(DelayedAction action)
+        int Index(DelayedBehaviour action)
         {
             var index = actions.BinarySearch(action);
             if (index < 0)
@@ -37,15 +37,15 @@ namespace EW.Primitives
 
         public void PerformActions(long currentTime)
         {
-            DelayedAction[] pendingActions;
+            DelayedBehaviour[] pendingActions;
             lock (actions)
             {
-                var dummyAction = new DelayedAction(null, currentTime);
+                var dummyAction = new DelayedBehaviour(null, currentTime);
                 var index = Index(dummyAction);
                 if (index <= 0)
                     return;
 
-                pendingActions = new DelayedAction[index];
+                pendingActions = new DelayedBehaviour[index];
                 actions.CopyTo(0, pendingActions, 0, index);
                 actions.RemoveRange(0, index);
             }
@@ -56,20 +56,20 @@ namespace EW.Primitives
 
     }
 
-    struct DelayedAction : IComparable<DelayedAction>
+    struct DelayedBehaviour : IComparable<DelayedBehaviour>
     {
         public readonly long Time;
 
         public readonly Action Action;
 
-        public DelayedAction(Action action,long time)
+        public DelayedBehaviour(Action action,long time)
         {
             Action = action;
             Time = time;
         }
 
 
-        public int CompareTo(DelayedAction other)
+        public int CompareTo(DelayedBehaviour other)
         {
             return Time.CompareTo(other.Time);
         }

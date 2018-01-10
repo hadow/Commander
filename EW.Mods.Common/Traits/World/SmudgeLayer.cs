@@ -144,13 +144,14 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        public void TickRender(WorldRenderer wr,Actor self)
+        void ITickRender.TickRender(WorldRenderer wr,Actor self)
         {
             var remove = new List<CPos>();
             foreach(var kv in dirty)
             {
                 if (!self.World.FogObscures(kv.Key))
                 {
+                    //a null Sprite indicates a deleted smudge.
                     if (kv.Value.Sprite == null)
                         tiles.Remove(kv.Key);
                     else
@@ -169,7 +170,7 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        public void Render(WorldRenderer wr)
+        void IRenderOverlay.Render(WorldRenderer wr)
         {
             render.Draw(wr.ViewPort);
         }
@@ -215,7 +216,7 @@ namespace EW.Mods.Common.Traits
 
         }
 
-        public void Disposing(Actor self)
+        void INotifyActorDisposing.Disposing(Actor self)
         {
             if (disposed)
                 return;

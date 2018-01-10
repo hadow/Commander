@@ -42,85 +42,85 @@ namespace EW
 
             var assemblyList = new List<Assembly>() { typeof(WarGame).Assembly };
 
-            foreach(var path in manifest.Assemblies)
-            {
-                var resolvedPath = FileSystem.FileSystem.ResolveAssemblyPath(path, manifest, mods);
-                if (resolvedPath == null)
-                    throw new FileNotFoundException("Assembly '{0}' not found.".F(path));
+//            foreach(var path in manifest.Assemblies)
+//            {
+//                var resolvedPath = FileSystem.FileSystem.ResolveAssemblyPath(path, manifest, mods);
+//                if (resolvedPath == null)
+//                    throw new FileNotFoundException("Assembly '{0}' not found.".F(path));
 
-                var data = Android.App.Application.Context.Assets.Open(resolvedPath);
+//                var data = Android.App.Application.Context.Assets.Open(resolvedPath);
 
-                MemoryStream memStream = new MemoryStream();
-                data.CopyTo(memStream);
-                memStream.Seek(0, SeekOrigin.Begin);
-                data.Close();
-                data = memStream;
+//                MemoryStream memStream = new MemoryStream();
+//                data.CopyTo(memStream);
+//                memStream.Seek(0, SeekOrigin.Begin);
+//                data.Close();
+//                data = memStream;
 
-                var bytes = data.ReadAllBytes();
+//                var bytes = data.ReadAllBytes();
 
-                var hash = CryptoUtil.SHA1Hash(bytes);
+//                var hash = CryptoUtil.SHA1Hash(bytes);
 
-                Assembly assembly;
-                if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
-                {
-#if DEBUG
-                    //var pdbPath = path.Replace(".dll", ".pdb");
-                    //var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
+//                Assembly assembly;
+//                if(!ResolvedAssemblies.TryGetValue(hash,out assembly))
+//                {
+//#if DEBUG
+//                    //var pdbPath = path.Replace(".dll", ".pdb");
+//                    //var pdbData = modeFiles.Open(pdbPath).ReadAllBytes();
 
-                    //assembly = Assembly.Load(data, pdbData);
-                    //assembly = Assembly.ReflectionOnlyLoad(data);
-                    assembly = Assembly.Load(bytes);
-                   // var filepath = new FileInfo(Assembly.GetExecutingAssembly().Location);
-                   // Console.WriteLine("Assembly load name:" + filepath.FullName);
-                   // string filepath2 = "/storage/emulated/0/Android/data/com.eastwood.command/files/.__override__/EW.GameCenter.dll";
-                   // if (File.Exists(filepath2))
-                   // {
-                   //     var centerDll = Assembly.LoadFile(filepath2);
-                   // }
+//                    //assembly = Assembly.Load(data, pdbData);
+//                    //assembly = Assembly.ReflectionOnlyLoad(data);
+//                    assembly = Assembly.Load(bytes);
+//                   // var filepath = new FileInfo(Assembly.GetExecutingAssembly().Location);
+//                   // Console.WriteLine("Assembly load name:" + filepath.FullName);
+//                   // string filepath2 = "/storage/emulated/0/Android/data/com.eastwood.command/files/.__override__/EW.GameCenter.dll";
+//                   // if (File.Exists(filepath2))
+//                   // {
+//                   //     var centerDll = Assembly.LoadFile(filepath2);
+//                   // }
 
-                   // var strs = Android.App.Application.Context.GetExternalFilesDir("Content").Path;
-                   // strs = Path.Combine(strs, "test.txt");
-                   // var file = Android.App.Application.Context.GetExternalFilesDir("Content");
-                   // var fl = Android.App.Application.Context.FileList();
-                   // fl = Android.App.Application.Context.ApplicationContext.FileList();
-                   // if (file.Exists())
-                   // {
-                   //     Console.WriteLine(file.Path);
-                   // }
-                   // if (File.Exists(strs))
-                   // {
-                   //     Console.WriteLine("success");
-                   // }
+//                   // var strs = Android.App.Application.Context.GetExternalFilesDir("Content").Path;
+//                   // strs = Path.Combine(strs, "test.txt");
+//                   // var file = Android.App.Application.Context.GetExternalFilesDir("Content");
+//                   // var fl = Android.App.Application.Context.FileList();
+//                   // fl = Android.App.Application.Context.ApplicationContext.FileList();
+//                   // if (file.Exists())
+//                   // {
+//                   //     Console.WriteLine(file.Path);
+//                   // }
+//                   // if (File.Exists(strs))
+//                   // {
+//                   //     Console.WriteLine("success");
+//                   // }
                     
-                   //assembly = Assembly.LoadFile(filepath2);
-                    //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
-                    //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    //var fileName = System.IO.Path.Combine(path2, "Content/mods/common/"+path.Split('|')[1]);
-                    //var assembly2 = Assembly.LoadFrom(fileName);
+//                   //assembly = Assembly.LoadFile(filepath2);
+//                    //var path2 = "file:///android_asset/Content/mods/common/" + path.Split('|')[1];
+//                    //var path2 = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+//                    //var fileName = System.IO.Path.Combine(path2, "Content/mods/common/"+path.Split('|')[1]);
+//                    //var assembly2 = Assembly.LoadFrom(fileName);
 
-                    //assembly = Assembly.Load(data);
+//                    //assembly = Assembly.Load(data);
 
-                    //string path2 = Android.OS.Environment.ExternalStorageDirectory.Path;    
-                    //string path2 = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                    //string path2 = Android.App.Application.Context.GetExternalFilesDir("").Path;
-                    //string filePath = System.IO.Path.Combine(path2, path.Split('|')[1]);
-                    //string filePath2 = System.IO.Path.Combine(path2, path.Split('|')[1].Replace(".dll", ".pdb"));
-                    //System.IO.File.WriteAllBytes(filePath, data);
-                    //System.IO.File.WriteAllBytes(filePath2, pdbData);
-                    //if (System.IO.File.Exists(filePath))
-                    //{
-                    //    Android.Util.Log.Debug("", "");
-                    //    assembly = Assembly.LoadFile(filePath);
-                    //}
+//                    //string path2 = Android.OS.Environment.ExternalStorageDirectory.Path;    
+//                    //string path2 = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+//                    //string path2 = Android.App.Application.Context.GetExternalFilesDir("").Path;
+//                    //string filePath = System.IO.Path.Combine(path2, path.Split('|')[1]);
+//                    //string filePath2 = System.IO.Path.Combine(path2, path.Split('|')[1].Replace(".dll", ".pdb"));
+//                    //System.IO.File.WriteAllBytes(filePath, data);
+//                    //System.IO.File.WriteAllBytes(filePath2, pdbData);
+//                    //if (System.IO.File.Exists(filePath))
+//                    //{
+//                    //    Android.Util.Log.Debug("", "");
+//                    //    assembly = Assembly.LoadFile(filePath);
+//                    //}
 
-#else
-                    assembly = Assembly.Load(data);
-#endif
-                    ResolvedAssemblies.Add(hash, assembly);
-                }
+//#else
+//                    assembly = Assembly.Load(data);
+//#endif
+//                    ResolvedAssemblies.Add(hash, assembly);
+//                }
 
-                assemblyList.Add(assembly);
-            }
+//                assemblyList.Add(assembly);
+//            }
 
             AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             assemblies = assemblyList.SelectMany(asm => asm.GetNamespaces().Select(ns => Pair.New(asm, ns))).ToArray();

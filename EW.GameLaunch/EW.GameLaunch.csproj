@@ -66,6 +66,1389 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\EW.Mods.Cnc\CncLoadScreen.cs">
+      <Link>External_CnC\CncLoadScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\Blowfish.cs">
+      <Link>External_CnC\FileFormats\Blowfish.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\BlowfishKeyProvider.cs">
+      <Link>External_CnC\FileFormats\BlowfishKeyProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\CRC32.cs">
+      <Link>External_CnC\FileFormats\CRC32.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\HvaReader.cs">
+      <Link>External_CnC\FileFormats\HvaReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\IdxEntry.cs">
+      <Link>External_CnC\FileFormats\IdxEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\IdxReader.cs">
+      <Link>External_CnC\FileFormats\IdxReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\VxlReader.cs">
+      <Link>External_CnC\FileFormats\VxlReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\XccGlobalDatabase.cs">
+      <Link>External_CnC\FileFormats\XccGlobalDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileFormats\XccLocalDatabase.cs">
+      <Link>External_CnC\FileFormats\XccLocalDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileSystem\BagFile.cs">
+      <Link>External_CnC\FileSystem\BagFile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileSystem\BigFile.cs">
+      <Link>External_CnC\FileSystem\BigFile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileSystem\MixFile.cs">
+      <Link>External_CnC\FileSystem\MixFile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileSystem\PackageEntry.cs">
+      <Link>External_CnC\FileSystem\PackageEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\FileSystem\Pak.cs">
+      <Link>External_CnC\FileSystem\Pak.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Graphics\Voxel.cs">
+      <Link>External_CnC\Graphics\Voxel.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Graphics\VoxelLoader.cs">
+      <Link>External_CnC\Graphics\VoxelLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Graphics\VoxelModelSequenceLoader.cs">
+      <Link>External_CnC\Graphics\VoxelModelSequenceLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\SpriteLoaders\TmpTSLoader.cs">
+      <Link>External_CnC\SpriteLoaders\TmpTSLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Buildings\TiberianSunRefinery.cs">
+      <Link>External_CnC\Traits\Buildings\TiberianSunRefinery.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Disguise.cs">
+      <Link>External_CnC\Traits\Disguise.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\EnergyWall.cs">
+      <Link>External_CnC\Traits\EnergyWall.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Infiltration\InfiltrateForExploration.cs">
+      <Link>External_CnC\Traits\Infiltration\InfiltrateForExploration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Infiltration\InfiltrateForPowerOutage.cs">
+      <Link>External_CnC\Traits\Infiltration\InfiltrateForPowerOutage.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Infiltration\Infiltrates.cs">
+      <Link>External_CnC\Traits\Infiltration\Infiltrates.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithBuildingBib.cs">
+      <Link>External_CnC\Traits\Render\WithBuildingBib.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithDeliveryAnimation.cs">
+      <Link>External_CnC\Traits\Render\WithDeliveryAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithDisguisingInfantryBody.cs">
+      <Link>External_CnC\Traits\Render\WithDisguisingInfantryBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithDockingOverlay.cs">
+      <Link>External_CnC\Traits\Render\WithDockingOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithVoxelUnloadBody.cs">
+      <Link>External_CnC\Traits\Render\WithVoxelUnloadBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\Render\WithVoxelWalkerBody.cs">
+      <Link>External_CnC\Traits\Render\WithVoxelWalkerBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\SupportPowers\AttackOrderPower.cs">
+      <Link>External_CnC\Traits\SupportPowers\AttackOrderPower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\SupportPowers\IonCannonPower.cs">
+      <Link>External_CnC\Traits\SupportPowers\IonCannonPower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\World\TSShroudPalette.cs">
+      <Link>External_CnC\Traits\World\TSShroudPalette.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Traits\World\VoxelNormalsPalette.cs">
+      <Link>External_CnC\Traits\World\VoxelNormalsPalette.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FlyAttack.cs">
+      <Link>External_Common\Activities\Air\FlyAttack.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Attack.cs">
+      <Link>External_Common\Activities\Attack.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Drag.cs">
+      <Link>External_Common\Activities\Drag.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Move\AttackMoveActivity.cs">
+      <Link>External_Common\Activities\Move\AttackMoveActivity.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Move\Follow.cs">
+      <Link>External_Common\Activities\Move\Follow.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Move\Move.cs">
+      <Link>External_Common\Activities\Move\Move.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Move\MoveAdjacentTo.cs">
+      <Link>External_Common\Activities\Move\MoveAdjacentTo.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Move\MoveWithinRange.cs">
+      <Link>External_Common\Activities\Move\MoveWithinRange.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\SimpleTeleport.cs">
+      <Link>External_Common\Activities\SimpleTeleport.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Turn.cs">
+      <Link>External_Common\Activities\Turn.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\UnloadCargo.cs">
+      <Link>External_Common\Activities\UnloadCargo.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Wait.cs">
+      <Link>External_Common\Activities\Wait.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ActorExts.cs">
+      <Link>External_Common\ActorExts.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ActorInitializer.cs">
+      <Link>External_Common\ActorInitializer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\HackyAI.cs">
+      <Link>External_Common\AI\HackyAI.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\Squad.cs">
+      <Link>External_Common\AI\Squad.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\StateBase.cs">
+      <Link>External_Common\AI\StateBase.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\StateMachine.cs">
+      <Link>External_Common\AI\StateMachine.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AudioLoaders\AudLoader.cs">
+      <Link>External_Common\AudioLoaders\AudLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AudioLoaders\WavLoader.cs">
+      <Link>External_Common\AudioLoaders\WavLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ColorValidator.cs">
+      <Link>External_Common\ColorValidator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Commands\ChatCommands.cs">
+      <Link>External_Common\Commands\ChatCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Commands\DebugVisualizationCommands.cs">
+      <Link>External_Common\Commands\DebugVisualizationCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Commands\DevCommands.cs">
+      <Link>External_Common\Commands\DevCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Commands\HelpCommand.cs">
+      <Link>External_Common\Commands\HelpCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Commands\PlayerCommands.cs">
+      <Link>External_Common\Commands\PlayerCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\RallyPointIndicator.cs">
+      <Link>External_Common\Effects\RallyPointIndicator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\SpriteEffect.cs">
+      <Link>External_Common\Effects\SpriteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\AudReader.cs">
+      <Link>External_Common\FileFormats\AudReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\ImaAdpcmReader.cs">
+      <Link>External_Common\FileFormats\ImaAdpcmReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\InstallShieldCABCompression.cs">
+      <Link>External_Common\FileFormats\InstallShieldCABCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\LCWCompression.cs">
+      <Link>External_Common\FileFormats\LCWCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\LZOCompression.cs">
+      <Link>External_Common\FileFormats\LZOCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\MSCabCompression.cs">
+      <Link>External_Common\FileFormats\MSCabCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\RLEZerosCompression.cs">
+      <Link>External_Common\FileFormats\RLEZerosCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\WavReader.cs">
+      <Link>External_Common\FileFormats\WavReader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\FileFormats\XORDeltaCompression.cs">
+      <Link>External_Common\FileFormats\XORDeltaCompression.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\ActorPreview.cs">
+      <Link>External_Common\Graphics\ActorPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\DefaultSpriteSequence.cs">
+      <Link>External_Common\Graphics\DefaultSpriteSequence.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\ModelPreview.cs">
+      <Link>External_Common\Graphics\ModelPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\ModelRenderable.cs">
+      <Link>External_Common\Graphics\ModelRenderable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\RangeCircleRenderable.cs">
+      <Link>External_Common\Graphics\RangeCircleRenderable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\SpriteActorPreview.cs">
+      <Link>External_Common\Graphics\SpriteActorPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\TilesetSpecificSpriteSequenceLoader.cs">
+      <Link>External_Common\Graphics\TilesetSpecificSpriteSequenceLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\HitShapes\CircleShape.cs">
+      <Link>External_Common\HitShapes\CircleShape.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\HitShapes\IHitShape.cs">
+      <Link>External_Common\HitShapes\IHitShape.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\HitShapes\Rectangle.cs">
+      <Link>External_Common\HitShapes\Rectangle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Lint\CheckConditions.cs">
+      <Link>External_Common\Lint\CheckConditions.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Lint\CheckPalettes.cs">
+      <Link>External_Common\Lint\CheckPalettes.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Lint\LintExts.cs">
+      <Link>External_Common\Lint\LintExts.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\LoadScreens\BlankLoadScreen.cs">
+      <Link>External_Common\LoadScreens\BlankLoadScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\LoadScreens\LogoStripeLoadScreen.cs">
+      <Link>External_Common\LoadScreens\LogoStripeLoadScreen.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ModContent.cs">
+      <Link>External_Common\ModContent.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\DeployOrderTargeter.cs">
+      <Link>External_Common\Orders\DeployOrderTargeter.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\BasePathSearch.cs">
+      <Link>External_Common\Pathfinder\BasePathSearch.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\CellInfo.cs">
+      <Link>External_Common\Pathfinder\CellInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\CellInfoLayerPool.cs">
+      <Link>External_Common\Pathfinder\CellInfoLayerPool.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\Constants.cs">
+      <Link>External_Common\Pathfinder\Constants.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\PathCacheStorage.cs">
+      <Link>External_Common\Pathfinder\PathCacheStorage.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\PathFinderUnitPathCacheDecorator.cs">
+      <Link>External_Common\Pathfinder\PathFinderUnitPathCacheDecorator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\PathGraph.cs">
+      <Link>External_Common\Pathfinder\PathGraph.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Pathfinder\PathSearch.cs">
+      <Link>External_Common\Pathfinder\PathSearch.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\AreaBeam.cs">
+      <Link>External_Common\Projectiles\AreaBeam.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\Bullet.cs">
+      <Link>External_Common\Projectiles\Bullet.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\GravityBomb.cs">
+      <Link>External_Common\Projectiles\GravityBomb.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\InstantHit.cs">
+      <Link>External_Common\Projectiles\InstantHit.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\LaserZap.cs">
+      <Link>External_Common\Projectiles\LaserZap.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\Missile.cs">
+      <Link>External_Common\Projectiles\Missile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Projectiles\Railgun.cs">
+      <Link>External_Common\Projectiles\Railgun.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\CallLuaFunc.cs">
+      <Link>External_Common\Scripting\CallLuaFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\ActorGlobal.cs">
+      <Link>External_Common\Scripting\Global\ActorGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\CameraGlobal.cs">
+      <Link>External_Common\Scripting\Global\CameraGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\CoordinateClobals.cs">
+      <Link>External_Common\Scripting\Global\CoordinateClobals.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\DataTimeGlobal.cs">
+      <Link>External_Common\Scripting\Global\DataTimeGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\DateGlobal.cs">
+      <Link>External_Common\Scripting\Global\DateGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\FacingGlobal.cs">
+      <Link>External_Common\Scripting\Global\FacingGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\LightingGlobal.cs">
+      <Link>External_Common\Scripting\Global\LightingGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\MapGlobal.cs">
+      <Link>External_Common\Scripting\Global\MapGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\PlayerGlobal.cs">
+      <Link>External_Common\Scripting\Global\PlayerGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\ReinforcementsGlobal.cs">
+      <Link>External_Common\Scripting\Global\ReinforcementsGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\TriggerGlobal.cs">
+      <Link>External_Common\Scripting\Global\TriggerGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Global\UtilsGlobal.cs">
+      <Link>External_Common\Scripting\Global\UtilsGlobal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\LuaScript.cs">
+      <Link>External_Common\Scripting\LuaScript.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\GeneralProperties.cs">
+      <Link>External_Common\Scripting\Properties\GeneralProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\HealthProperties.cs">
+      <Link>External_Common\Scripting\Properties\HealthProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\MobileProperties.cs">
+      <Link>External_Common\Scripting\Properties\MobileProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\ProductionProperties.cs">
+      <Link>External_Common\Scripting\Properties\ProductionProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\TransportProperties.cs">
+      <Link>External_Common\Scripting\Properties\TransportProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\ScriptTriggers.cs">
+      <Link>External_Common\Scripting\ScriptTriggers.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\SpriteLoaders\ShpD2Loader.cs">
+      <Link>External_Common\SpriteLoaders\ShpD2Loader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\SpriteLoaders\ShpTDLoader.cs">
+      <Link>External_Common\SpriteLoaders\ShpTDLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\SpriteLoaders\ShpTSLoader.cs">
+      <Link>External_Common\SpriteLoaders\ShpTSLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\SpriteLoaders\TmpRALoader.cs">
+      <Link>External_Common\SpriteLoaders\TmpRALoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\SpriteLoaders\TmpTDLoader.cs">
+      <Link>External_Common\SpriteLoaders\TmpTDLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\TraitsInterfaces.cs">
+      <Link>External_Common\TraitsInterfaces.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AcceptsDeliveredCash.cs">
+      <Link>External_Common\Traits\AcceptsDeliveredCash.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AffectsShroud.cs">
+      <Link>External_Common\Traits\AffectsShroud.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\Aircraft.cs">
+      <Link>External_Common\Traits\Air\Aircraft.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\AttackBomber.cs">
+      <Link>External_Common\Traits\Air\AttackBomber.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\AttackHeli.cs">
+      <Link>External_Common\Traits\Air\AttackHeli.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\AttackPlane.cs">
+      <Link>External_Common\Traits\Air\AttackPlane.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\FallsToEarth.cs">
+      <Link>External_Common\Traits\Air\FallsToEarth.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\FlyAwayOnIdle.cs">
+      <Link>External_Common\Traits\Air\FlyAwayOnIdle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Air\ReturnOnIdle.cs">
+      <Link>External_Common\Traits\Air\ReturnOnIdle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AmmoPool.cs">
+      <Link>External_Common\Traits\AmmoPool.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Armament.cs">
+      <Link>External_Common\Traits\Armament.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Armor.cs">
+      <Link>External_Common\Traits\Armor.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AttackPopupTurreted.cs">
+      <Link>External_Common\Traits\AttackPopupTurreted.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackBase.cs">
+      <Link>External_Common\Traits\Attack\AttackBase.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackCharge.cs">
+      <Link>External_Common\Traits\Attack\AttackCharge.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackFollow.cs">
+      <Link>External_Common\Traits\Attack\AttackFollow.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackFrontal.cs">
+      <Link>External_Common\Traits\Attack\AttackFrontal.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackMove.cs">
+      <Link>External_Common\Traits\Attack\AttackMove.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackOmni.cs">
+      <Link>External_Common\Traits\Attack\AttackOmni.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackSuicides.cs">
+      <Link>External_Common\Traits\Attack\AttackSuicides.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackTurrete.cs">
+      <Link>External_Common\Traits\Attack\AttackTurrete.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Attack\AttackWander.cs">
+      <Link>External_Common\Traits\Attack\AttackWander.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AutoTarget.cs">
+      <Link>External_Common\Traits\AutoTarget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\AutoTargetPriority.cs">
+      <Link>External_Common\Traits\AutoTargetPriority.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\BlocksProjectiles.cs">
+      <Link>External_Common\Traits\BlocksProjectiles.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\BodyOrientation.cs">
+      <Link>External_Common\Traits\BodyOrientation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildable.cs">
+      <Link>External_Common\Traits\Buildable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BaseBuilding.cs">
+      <Link>External_Common\Traits\Buildings\BaseBuilding.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BaseProvider.cs">
+      <Link>External_Common\Traits\Buildings\BaseProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Bib.cs">
+      <Link>External_Common\Traits\Buildings\Bib.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Bridge.cs">
+      <Link>External_Common\Traits\Buildings\Bridge.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BridgeHut.cs">
+      <Link>External_Common\Traits\Buildings\BridgeHut.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BridgePlaceholder.cs">
+      <Link>External_Common\Traits\Buildings\BridgePlaceholder.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Building.cs">
+      <Link>External_Common\Traits\Buildings\Building.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BuildingInfluence.cs">
+      <Link>External_Common\Traits\Buildings\BuildingInfluence.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Exit.cs">
+      <Link>External_Common\Traits\Buildings\Exit.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\FreeActor.cs">
+      <Link>External_Common\Traits\Buildings\FreeActor.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Gate.cs">
+      <Link>External_Common\Traits\Buildings\Gate.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\GivesBuildableArea.cs">
+      <Link>External_Common\Traits\Buildings\GivesBuildableArea.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\GroundLevelBridge.cs">
+      <Link>External_Common\Traits\Buildings\GroundLevelBridge.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\LegacyBridgeHut.cs">
+      <Link>External_Common\Traits\Buildings\LegacyBridgeHut.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\LineBuild.cs">
+      <Link>External_Common\Traits\Buildings\LineBuild.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\LineBuildNode.cs">
+      <Link>External_Common\Traits\Buildings\LineBuildNode.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\PrimaryBuilding.cs">
+      <Link>External_Common\Traits\Buildings\PrimaryBuilding.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\ProductionAirdrop.cs">
+      <Link>External_Common\Traits\Buildings\ProductionAirdrop.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\RallyPoint.cs">
+      <Link>External_Common\Traits\Buildings\RallyPoint.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Refinery.cs">
+      <Link>External_Common\Traits\Buildings\Refinery.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\RepairableBuilding.cs">
+      <Link>External_Common\Traits\Buildings\RepairableBuilding.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\RepairsUnits.cs">
+      <Link>External_Common\Traits\Buildings\RepairsUnits.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\RequiresBuildableArea.cs">
+      <Link>External_Common\Traits\Buildings\RequiresBuildableArea.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\Reservable.cs">
+      <Link>External_Common\Traits\Buildings\Reservable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Burns.cs">
+      <Link>External_Common\Traits\Burns.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Capturable.cs">
+      <Link>External_Common\Traits\Capturable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Captures.cs">
+      <Link>External_Common\Traits\Captures.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Cargo.cs">
+      <Link>External_Common\Traits\Cargo.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Carryable.cs">
+      <Link>External_Common\Traits\Carryable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Carryall.cs">
+      <Link>External_Common\Traits\Carryall.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\CashTrickler.cs">
+      <Link>External_Common\Traits\CashTrickler.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ChangesTerrain.cs">
+      <Link>External_Common\Traits\ChangesTerrain.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Cloak.cs">
+      <Link>External_Common\Traits\Cloak.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\CombatDebugOverlay.cs">
+      <Link>External_Common\Traits\CombatDebugOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\CommandBarBlacklist.cs">
+      <Link>External_Common\Traits\CommandBarBlacklist.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\ConditionalTrait.cs">
+      <Link>External_Common\Traits\Conditions\ConditionalTrait.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\ConditionManager.cs">
+      <Link>External_Common\Traits\Conditions\ConditionManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\DisableOnCondition.cs">
+      <Link>External_Common\Traits\Conditions\DisableOnCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\ExternalCondition.cs">
+      <Link>External_Common\Traits\Conditions\ExternalCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantCondition.cs">
+      <Link>External_Common\Traits\Conditions\GrantCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnDamageState.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnDamageState.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnDeploy.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnDeploy.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnDisabled.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnDisabled.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnLineBuildDirection.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnLineBuildDirection.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnPowerState.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnPowerState.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnPrerequisite.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnPrerequisite.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\GrantConditionOnTerrain.cs">
+      <Link>External_Common\Traits\Conditions\GrantConditionOnTerrain.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\LineBuildSegmentExternalCondition.cs">
+      <Link>External_Common\Traits\Conditions\LineBuildSegmentExternalCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\PausableConditionalTrait.cs">
+      <Link>External_Common\Traits\Conditions\PausableConditionalTrait.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\ProximityExternalCondition.cs">
+      <Link>External_Common\Traits\Conditions\ProximityExternalCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Conditions\ToggleConditionOnOrder.cs">
+      <Link>External_Common\Traits\Conditions\ToggleConditionOnOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\Crate.cs">
+      <Link>External_Common\Traits\Crates\Crate.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\CrateAction.cs">
+      <Link>External_Common\Traits\Crates\CrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\ExplodeCrateAction.cs">
+      <Link>External_Common\Traits\Crates\ExplodeCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\GiveCashCrateAction.cs">
+      <Link>External_Common\Traits\Crates\GiveCashCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\GiveMcvCrateAction.cs">
+      <Link>External_Common\Traits\Crates\GiveMcvCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\GiveUnitCrateAction.cs">
+      <Link>External_Common\Traits\Crates\GiveUnitCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\GrantConditionOnPrerequisiteManager.cs">
+      <Link>External_Common\Traits\Crates\GrantConditionOnPrerequisiteManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\GrantExternalConditionCrateAction.cs">
+      <Link>External_Common\Traits\Crates\GrantExternalConditionCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\HealUnitsCrateAction.cs">
+      <Link>External_Common\Traits\Crates\HealUnitsCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\HideMapCrateAction.cs">
+      <Link>External_Common\Traits\Crates\HideMapCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\LevelUpCrateAction.cs">
+      <Link>External_Common\Traits\Crates\LevelUpCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crates\RevealMapCrateAction.cs">
+      <Link>External_Common\Traits\Crates\RevealMapCrateAction.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Crushable.cs">
+      <Link>External_Common\Traits\Crushable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\CustomSelectionSize.cs">
+      <Link>External_Common\Traits\CustomSelectionSize.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\CustomSellValue.cs">
+      <Link>External_Common\Traits\CustomSellValue.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\DamagedByTerrain.cs">
+      <Link>External_Common\Traits\DamagedByTerrain.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\DeliversCash.cs">
+      <Link>External_Common\Traits\DeliversCash.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Demolishable.cs">
+      <Link>External_Common\Traits\Demolishable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Demolition.cs">
+      <Link>External_Common\Traits\Demolition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\DetectCloaked.cs">
+      <Link>External_Common\Traits\DetectCloaked.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\EditorTilesetFilter.cs">
+      <Link>External_Common\Traits\EditorTilesetFilter.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Effects\Contrail.cs">
+      <Link>External_Common\Traits\Effects\Contrail.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\EmitInfantryOnSell.cs">
+      <Link>External_Common\Traits\EmitInfantryOnSell.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\EngineerRepair.cs">
+      <Link>External_Common\Traits\EngineerRepair.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\EngineerRepairable.cs">
+      <Link>External_Common\Traits\EngineerRepairable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\EntersTunnels.cs">
+      <Link>External_Common\Traits\EntersTunnels.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ExitsDebugOverlay.cs">
+      <Link>External_Common\Traits\ExitsDebugOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Explodes.cs">
+      <Link>External_Common\Traits\Explodes.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ExplosionOnDamageTransition.cs">
+      <Link>External_Common\Traits\ExplosionOnDamageTransition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\GainsExperience.cs">
+      <Link>External_Common\Traits\GainsExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\GivesExperience.cs">
+      <Link>External_Common\Traits\GivesExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\GlobalUpgradable.cs">
+      <Link>External_Common\Traits\GlobalUpgradable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Guard.cs">
+      <Link>External_Common\Traits\Guard.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Guardable.cs">
+      <Link>External_Common\Traits\Guardable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Harvester.cs">
+      <Link>External_Common\Traits\Harvester.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Health.cs">
+      <Link>External_Common\Traits\Health.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\HitShape.cs">
+      <Link>External_Common\Traits\HitShape.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Huntable.cs">
+      <Link>External_Common\Traits\Huntable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Husk.cs">
+      <Link>External_Common\Traits\Husk.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ICommonTraits.cs">
+      <Link>External_Common\Traits\ICommonTraits.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Immobile.cs">
+      <Link>External_Common\Traits\Immobile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Infantry\ScaredyCat.cs">
+      <Link>External_Common\Traits\Infantry\ScaredyCat.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Infantry\TakeCover.cs">
+      <Link>External_Common\Traits\Infantry\TakeCover.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Infantry\TerrainModifiesDamage.cs">
+      <Link>External_Common\Traits\Infantry\TerrainModifiesDamage.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\KillsSelf.cs">
+      <Link>External_Common\Traits\KillsSelf.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Mobile.cs">
+      <Link>External_Common\Traits\Mobile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\AlwaysVisible.cs">
+      <Link>External_Common\Traits\Modifiers\AlwaysVisible.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\DisabledOverlay.cs">
+      <Link>External_Common\Traits\Modifiers\DisabledOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\FrozenUnderFog.cs">
+      <Link>External_Common\Traits\Modifiers\FrozenUnderFog.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\HiddenUnderFog.cs">
+      <Link>External_Common\Traits\Modifiers\HiddenUnderFog.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\HiddenUnderShroud.cs">
+      <Link>External_Common\Traits\Modifiers\HiddenUnderShroud.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Modifiers\WithColoredOverlay.cs">
+      <Link>External_Common\Traits\Modifiers\WithColoredOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\DamageMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\DamageMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\FirepowerMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\FirepowerMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\InaccuracyMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\InaccuracyMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\PowerMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\PowerMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\ReloadDelayMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\ReloadDelayMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\SpeedMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\SpeedMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\UpgradableMultiplier.cs">
+      <Link>External_Common\Traits\Multipliers\UpgradableMultiplier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\MustBeDestroyed.cs">
+      <Link>External_Common\Traits\MustBeDestroyed.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PaletteEffects\CloakPaletteEffect.cs">
+      <Link>External_Common\Traits\PaletteEffects\CloakPaletteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PaletteEffects\FlashPaletteEffect.cs">
+      <Link>External_Common\Traits\PaletteEffects\FlashPaletteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PaletteEffects\GlobalLightingPaletteEffect.cs">
+      <Link>External_Common\Traits\PaletteEffects\GlobalLightingPaletteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PaletteEffects\MenuPaletteEffect.cs">
+      <Link>External_Common\Traits\PaletteEffects\MenuPaletteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PaletteEffects\RotationPaletteEffect.cs">
+      <Link>External_Common\Traits\PaletteEffects\RotationPaletteEffect.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Passenger.cs">
+      <Link>External_Common\Traits\Passenger.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ActorGroupProxy.cs">
+      <Link>External_Common\Traits\Player\ActorGroupProxy.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\AllyRepair.cs">
+      <Link>External_Common\Traits\Player\AllyRepair.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\BaseAttackNotifier.cs">
+      <Link>External_Common\Traits\Player\BaseAttackNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ClassicProductionQueue.cs">
+      <Link>External_Common\Traits\Player\ClassicProductionQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ConquestVictoryConditions.cs">
+      <Link>External_Common\Traits\Player\ConquestVictoryConditions.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\DeveloperMode.cs">
+      <Link>External_Common\Traits\Player\DeveloperMode.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\EnemyWatcher.cs">
+      <Link>External_Common\Traits\Player\EnemyWatcher.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\GlobalUpgradeManager.cs">
+      <Link>External_Common\Traits\Player\GlobalUpgradeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\HarvesterAttackNotifier.cs">
+      <Link>External_Common\Traits\Player\HarvesterAttackNotifier.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\MissionObjectives.cs">
+      <Link>External_Common\Traits\Player\MissionObjectives.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlaceBeacon.cs">
+      <Link>External_Common\Traits\Player\PlaceBeacon.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlaceBuilding.cs">
+      <Link>External_Common\Traits\Player\PlaceBuilding.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlaceSimpleBeacon.cs">
+      <Link>External_Common\Traits\Player\PlaceSimpleBeacon.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlayerExperience.cs">
+      <Link>External_Common\Traits\Player\PlayerExperience.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlayerResources.cs">
+      <Link>External_Common\Traits\Player\PlayerResources.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PlayerStatistics.cs">
+      <Link>External_Common\Traits\Player\PlayerStatistics.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\PowerManager.cs">
+      <Link>External_Common\Traits\Player\PowerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ProductionQueue.cs">
+      <Link>External_Common\Traits\Player\ProductionQueue.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ProvidesPrerequisite.cs">
+      <Link>External_Common\Traits\Player\ProvidesPrerequisite.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ProvidesTechPrerequisite.cs">
+      <Link>External_Common\Traits\Player\ProvidesTechPrerequisite.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\ResourceStorageWarning.cs">
+      <Link>External_Common\Traits\Player\ResourceStorageWarning.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\TechTree.cs">
+      <Link>External_Common\Traits\Player\TechTree.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Plug.cs">
+      <Link>External_Common\Traits\Plug.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Pluggable.cs">
+      <Link>External_Common\Traits\Pluggable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\PowerTooltip.cs">
+      <Link>External_Common\Traits\PowerTooltip.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Power\AffectedByPowerOutage.cs">
+      <Link>External_Common\Traits\Power\AffectedByPowerOutage.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Power\CanPowerDown.cs">
+      <Link>External_Common\Traits\Power\CanPowerDown.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Power\Power.cs">
+      <Link>External_Common\Traits\Power\Power.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Power\RequiresPower.cs">
+      <Link>External_Common\Traits\Power\RequiresPower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Power\ScalePowerWithHealth.cs">
+      <Link>External_Common\Traits\Power\ScalePowerWithHealth.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ProducibleWithLevel.cs">
+      <Link>External_Common\Traits\ProducibleWithLevel.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Production.cs">
+      <Link>External_Common\Traits\Production.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ProductionQueueFromSelection.cs">
+      <Link>External_Common\Traits\ProductionQueueFromSelection.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ProvidesRadar.cs">
+      <Link>External_Common\Traits\ProvidesRadar.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\QuantizeFacingsFromSequence.cs">
+      <Link>External_Common\Traits\QuantizeFacingsFromSequence.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Radar\AppearsOnRadar.cs">
+      <Link>External_Common\Traits\Radar\AppearsOnRadar.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Radar\RadarColorFromTerrain.cs">
+      <Link>External_Common\Traits\Radar\RadarColorFromTerrain.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\RejectsOrders.cs">
+      <Link>External_Common\Traits\RejectsOrders.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\CustomTerrainDebugOverlay.cs">
+      <Link>External_Common\Traits\Render\CustomTerrainDebugOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\Hovers.cs">
+      <Link>External_Common\Traits\Render\Hovers.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\LeavesTrails.cs">
+      <Link>External_Common\Traits\Render\LeavesTrails.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\ProductionBar.cs">
+      <Link>External_Common\Traits\Render\ProductionBar.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderDebugState.cs">
+      <Link>External_Common\Traits\Render\RenderDebugState.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderDetectionCircle.cs">
+      <Link>External_Common\Traits\Render\RenderDetectionCircle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderRangeCircle.cs">
+      <Link>External_Common\Traits\Render\RenderRangeCircle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderSprites.cs">
+      <Link>External_Common\Traits\Render\RenderSprites.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderSpritesEditorOnly.cs">
+      <Link>External_Common\Traits\Render\RenderSpritesEditorOnly.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderUtils.cs">
+      <Link>External_Common\Traits\Render\RenderUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\RenderVoxels.cs">
+      <Link>External_Common\Traits\Render\RenderVoxels.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\SelectionDecorations.cs">
+      <Link>External_Common\Traits\Render\SelectionDecorations.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\SupportPowerChargeBar.cs">
+      <Link>External_Common\Traits\Render\SupportPowerChargeBar.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\TimedConditionBar.cs">
+      <Link>External_Common\Traits\Render\TimedConditionBar.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithAttackAnimation.cs">
+      <Link>External_Common\Traits\Render\WithAttackAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithBridgeSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithBridgeSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithBuildingExplosion.cs">
+      <Link>External_Common\Traits\Render\WithBuildingExplosion.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithBuildingPlacedAnimation.cs">
+      <Link>External_Common\Traits\Render\WithBuildingPlacedAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithBuildingPlacedOverlay.cs">
+      <Link>External_Common\Traits\Render\WithBuildingPlacedOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithCargo.cs">
+      <Link>External_Common\Traits\Render\WithCargo.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithChargeAnimation.cs">
+      <Link>External_Common\Traits\Render\WithChargeAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithChargeOverlay.cs">
+      <Link>External_Common\Traits\Render\WithChargeOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithCrateBody.cs">
+      <Link>External_Common\Traits\Render\WithCrateBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDamageOverlay.cs">
+      <Link>External_Common\Traits\Render\WithDamageOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDeadBridgeSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithDeadBridgeSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDeathAnimation.cs">
+      <Link>External_Common\Traits\Render\WithDeathAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDecoration.cs">
+      <Link>External_Common\Traits\Render\WithDecoration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDockedOverlay.cs">
+      <Link>External_Common\Traits\Render\WithDockedOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithDockingAnimation.cs">
+      <Link>External_Common\Traits\Render\WithDockingAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithFacingSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithFacingSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithGateSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithGateSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithGunboatBody.cs">
+      <Link>External_Common\Traits\Render\WithGunboatBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithHarvestAnimation.cs">
+      <Link>External_Common\Traits\Render\WithHarvestAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithHarvestOverlay.cs">
+      <Link>External_Common\Traits\Render\WithHarvestOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithIdleAnimation.cs">
+      <Link>External_Common\Traits\Render\WithIdleAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithIdleOverlay.cs">
+      <Link>External_Common\Traits\Render\WithIdleOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithInfantryBody.cs">
+      <Link>External_Common\Traits\Render\WithInfantryBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithMakeAnimation.cs">
+      <Link>External_Common\Traits\Render\WithMakeAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithMoveAnimation.cs">
+      <Link>External_Common\Traits\Render\WithMoveAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithMuzzleOverlay.cs">
+      <Link>External_Common\Traits\Render\WithMuzzleOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithNukeLaunchOverlay.cs">
+      <Link>External_Common\Traits\Render\WithNukeLaunchOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithPermanentInjury.cs">
+      <Link>External_Common\Traits\Render\WithPermanentInjury.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithProductionDoorOverlay.cs">
+      <Link>External_Common\Traits\Render\WithProductionDoorOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithRangeCircle.cs">
+      <Link>External_Common\Traits\Render\WithRangeCircle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithRankDecoration.cs">
+      <Link>External_Common\Traits\Render\WithRankDecoration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithReloadingSpriteTurret.cs">
+      <Link>External_Common\Traits\Render\WithReloadingSpriteTurret.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithRepairAnimation.cs">
+      <Link>External_Common\Traits\Render\WithRepairAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithRepairOverlay.cs">
+      <Link>External_Common\Traits\Render\WithRepairOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithResources.cs">
+      <Link>External_Common\Traits\Render\WithResources.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithRoof.cs">
+      <Link>External_Common\Traits\Render\WithRoof.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithShadow.cs">
+      <Link>External_Common\Traits\Render\WithShadow.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithSiloAnimation.cs">
+      <Link>External_Common\Traits\Render\WithSiloAnimation.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithSpriteControlGroupDecoration.cs">
+      <Link>External_Common\Traits\Render\WithSpriteControlGroupDecoration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithSpriteTurret.cs">
+      <Link>External_Common\Traits\Render\WithSpriteTurret.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithTextControlGroupDecoration.cs">
+      <Link>External_Common\Traits\Render\WithTextControlGroupDecoration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithTextDecoration.cs">
+      <Link>External_Common\Traits\Render\WithTextDecoration.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithTurretedSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithTurretedSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithVoxelBarrel.cs">
+      <Link>External_Common\Traits\Render\WithVoxelBarrel.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithVoxelBody.cs">
+      <Link>External_Common\Traits\Render\WithVoxelBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithVoxelTurret.cs">
+      <Link>External_Common\Traits\Render\WithVoxelTurret.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Render\WithWallSpriteBody.cs">
+      <Link>External_Common\Traits\Render\WithWallSpriteBody.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Repairable.cs">
+      <Link>External_Common\Traits\Repairable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\RepairsBridges.cs">
+      <Link>External_Common\Traits\RepairsBridges.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\RevealOnFire.cs">
+      <Link>External_Common\Traits\RevealOnFire.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\RevealsShroud.cs">
+      <Link>External_Common\Traits\RevealsShroud.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ScriptTags.cs">
+      <Link>External_Common\Traits\ScriptTags.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SeedsResource.cs">
+      <Link>External_Common\Traits\SeedsResource.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SelfHealing.cs">
+      <Link>External_Common\Traits\SelfHealing.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sellable.cs">
+      <Link>External_Common\Traits\Sellable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ShakeOnDeath.cs">
+      <Link>External_Common\Traits\ShakeOnDeath.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\ActorLostNotification.cs">
+      <Link>External_Common\Traits\Sound\ActorLostNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\AmbientSound.cs">
+      <Link>External_Common\Traits\Sound\AmbientSound.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\AnnounceOnBuild.cs">
+      <Link>External_Common\Traits\Sound\AnnounceOnBuild.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\AnnounceOnKill.cs">
+      <Link>External_Common\Traits\Sound\AnnounceOnKill.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\AnnounceOnSeen.cs">
+      <Link>External_Common\Traits\Sound\AnnounceOnSeen.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\CaptureNotification.cs">
+      <Link>External_Common\Traits\Sound\CaptureNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\DeathSounds.cs">
+      <Link>External_Common\Traits\Sound\DeathSounds.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Sound\SoundOnDamageTransition.cs">
+      <Link>External_Common\Traits\Sound\SoundOnDamageTransition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SpawnActorOnDeath.cs">
+      <Link>External_Common\Traits\SpawnActorOnDeath.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\StoresResources.cs">
+      <Link>External_Common\Traits\StoresResources.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SupportPowers\AirstrikePower.cs">
+      <Link>External_Common\Traits\SupportPowers\AirstrikePower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SupportPowers\NukePower.cs">
+      <Link>External_Common\Traits\SupportPowers\NukePower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SupportPowers\ProduceActorPower.cs">
+      <Link>External_Common\Traits\SupportPowers\ProduceActorPower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SupportPowers\SupportPower.cs">
+      <Link>External_Common\Traits\SupportPowers\SupportPower.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\SupportPowers\SupportPowerManager.cs">
+      <Link>External_Common\Traits\SupportPowers\SupportPowerManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Targetable.cs">
+      <Link>External_Common\Traits\Targetable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ThrowsParticle.cs">
+      <Link>External_Common\Traits\ThrowsParticle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ThrowsShrapnel.cs">
+      <Link>External_Common\Traits\ThrowsShrapnel.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ToolTip.cs">
+      <Link>External_Common\Traits\ToolTip.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\TransformOnCapture.cs">
+      <Link>External_Common\Traits\TransformOnCapture.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Transforms.cs">
+      <Link>External_Common\Traits\Transforms.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\TunnelEntrance.cs">
+      <Link>External_Common\Traits\TunnelEntrance.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Turreted.cs">
+      <Link>External_Common\Traits\Turreted.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Upgrades\UpgradableTrait.cs">
+      <Link>External_Common\Traits\Upgrades\UpgradableTrait.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Upgrades\UpgradeManager.cs">
+      <Link>External_Common\Traits\Upgrades\UpgradeManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Valued.cs">
+      <Link>External_Common\Traits\Valued.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Voiced.cs">
+      <Link>External_Common\Traits\Voiced.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Wanders.cs">
+      <Link>External_Common\Traits\Wanders.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ActorMap.cs">
+      <Link>External_Common\Traits\World\ActorMap.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\BridgeLayer.cs">
+      <Link>External_Common\Traits\World\BridgeLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\CliffBackImpassabilityLayer.cs">
+      <Link>External_Common\Traits\World\CliffBackImpassabilityLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\CrateSpawner.cs">
+      <Link>External_Common\Traits\World\CrateSpawner.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\CreateMPPlayers.cs">
+      <Link>External_Common\Traits\World\CreateMPPlayers.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\DomainIndex.cs">
+      <Link>External_Common\Traits\World\DomainIndex.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ExitsDebugOverlayManager.cs">
+      <Link>External_Common\Traits\World\ExitsDebugOverlayManager.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\JumpjetActorLayer.cs">
+      <Link>External_Common\Traits\World\JumpjetActorLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\LegacyBridgeLayer.cs">
+      <Link>External_Common\Traits\World\LegacyBridgeLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\LoadWidgetAtGameStart.cs">
+      <Link>External_Common\Traits\World\LoadWidgetAtGameStart.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\LobbyPrerequisiteCheckbox.cs">
+      <Link>External_Common\Traits\World\LobbyPrerequisiteCheckbox.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MapBuildRadius.cs">
+      <Link>External_Common\Traits\World\MapBuildRadius.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MapCreeps.cs">
+      <Link>External_Common\Traits\World\MapCreeps.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MapOptions.cs">
+      <Link>External_Common\Traits\World\MapOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MPStartLocations.cs">
+      <Link>External_Common\Traits\World\MPStartLocations.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MPStartUnits.cs">
+      <Link>External_Common\Traits\World\MPStartUnits.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\MusicPlaylist.cs">
+      <Link>External_Common\Traits\World\MusicPlaylist.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PaletteFromCurrentTileset.cs">
+      <Link>External_Common\Traits\World\PaletteFromCurrentTileset.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PaletteFromFile.cs">
+      <Link>External_Common\Traits\World\PaletteFromFile.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PaletteFromPaletteWithAlpha.cs">
+      <Link>External_Common\Traits\World\PaletteFromPaletteWithAlpha.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PaletteFromPlayerPaletteWithAlpha.cs">
+      <Link>External_Common\Traits\World\PaletteFromPlayerPaletteWithAlpha.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PaletteFromRGBA.cs">
+      <Link>External_Common\Traits\World\PaletteFromRGBA.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PathFinder.cs">
+      <Link>External_Common\Traits\World\PathFinder.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\PlayerPaletteFromCurrentTileset.cs">
+      <Link>External_Common\Traits\World\PlayerPaletteFromCurrentTileset.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\RadarPings.cs">
+      <Link>External_Common\Traits\World\RadarPings.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ResourceClaimLayer.cs">
+      <Link>External_Common\Traits\World\ResourceClaimLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ResourceLayer.cs">
+      <Link>External_Common\Traits\World\ResourceLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ScreenShaker.cs">
+      <Link>External_Common\Traits\World\ScreenShaker.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ShroudPalette.cs">
+      <Link>External_Common\Traits\World\ShroudPalette.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ShroudRenderer.cs">
+      <Link>External_Common\Traits\World\ShroudRenderer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\SmudgeLayer.cs">
+      <Link>External_Common\Traits\World\SmudgeLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\SpawnMapActors.cs">
+      <Link>External_Common\Traits\World\SpawnMapActors.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\SpawnMPUnits.cs">
+      <Link>External_Common\Traits\World\SpawnMPUnits.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\StartGameNotification.cs">
+      <Link>External_Common\Traits\World\StartGameNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\SubterraneanActorLayer.cs">
+      <Link>External_Common\Traits\World\SubterraneanActorLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\TerrainGeometryOverlay.cs">
+      <Link>External_Common\Traits\World\TerrainGeometryOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\TerrainTunnel.cs">
+      <Link>External_Common\Traits\World\TerrainTunnel.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\TerrainTunnelLayer.cs">
+      <Link>External_Common\Traits\World\TerrainTunnelLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\ValidateOrder.cs">
+      <Link>External_Common\Traits\World\ValidateOrder.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\World\WarheadDebugOverlay.cs">
+      <Link>External_Common\Traits\World\WarheadDebugOverlay.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Util.cs">
+      <Link>External_Common\Util.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\CreateEffectWarhead.cs">
+      <Link>External_Common\Warheads\CreateEffectWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\CreateResourceWarhead.cs">
+      <Link>External_Common\Warheads\CreateResourceWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\DamageWarhead.cs">
+      <Link>External_Common\Warheads\DamageWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\DestroyResourceWarhead.cs">
+      <Link>External_Common\Warheads\DestroyResourceWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\GrantExternalConditionWarhead.cs">
+      <Link>External_Common\Warheads\GrantExternalConditionWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\LeaveSmudgeWarhead.cs">
+      <Link>External_Common\Warheads\LeaveSmudgeWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\SpreadDamageWarhead.cs">
+      <Link>External_Common\Warheads\SpreadDamageWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\TargetDamageWarhead.cs">
+      <Link>External_Common\Warheads\TargetDamageWarhead.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Warheads\Warhead.cs">
+      <Link>External_Common\Warheads\Warhead.cs</Link>
+    </Compile>
     <Compile Include="Activities\Activity.cs" />
     <Compile Include="Activities\CallFunc.cs" />
     <Compile Include="Actor.cs" />
@@ -564,13 +1947,8 @@
     <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\mods\common\" />
     <Folder Include="FileFormats\" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Cnc.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\common\EW.Mods.Common.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

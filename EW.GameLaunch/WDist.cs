@@ -68,7 +68,7 @@ namespace EW
 
         public static bool operator <=(WDist a,WDist b) { return a.Length <= b.Length; }
 
-
+        public static WDist operator -(WDist a) { return new WDist(-a.Length); }
         #endregion
 
         public static bool TryParse(string s,out WDist result)

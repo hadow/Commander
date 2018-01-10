@@ -113,11 +113,13 @@ namespace EW
 
             var root = 0UL;
 
-            var remainder = root;
+            var remainder = number;
 
+            //Find the highest term in the divisor
             while (divisor > number)
                 divisor >>= 2;
 
+            //Evaluate the root,two bits at a time.
             while(divisor != 0){
                 if(root+divisor<= remainder){
                     remainder -= root + divisor;
@@ -129,7 +131,7 @@ namespace EW
                 divisor >>= 2;
 
             }
-
+            //Adjust for other rounding modes
             if (round == ISqrtRoundMode.Nearest && remainder > root)
                 root += 1;
             else if (round == ISqrtRoundMode.Ceiling && root * root < number)

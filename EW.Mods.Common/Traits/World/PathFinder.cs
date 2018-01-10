@@ -74,6 +74,14 @@ namespace EW.Mods.Common.Traits
 
         }
 
+        /// <summary>
+        /// Searches from both ends toward each other.This is used to prevent blockings in case we find
+        /// units in the middle of the path that prevent us to continue;
+        /// 从两端搜索对方，这是用来防止堵塞的情况下，我们发现单位在路径中，阻止我们继续
+        /// </summary>
+        /// <param name="fromSrc"></param>
+        /// <param name="fromDest"></param>
+        /// <returns></returns>
         public List<CPos> FindBidiPath(IPathSearch fromSrc,IPathSearch fromDest)
         {
 
@@ -82,6 +90,7 @@ namespace EW.Mods.Common.Traits
             while(fromSrc.CanExpand && fromDest.CanExpand)
             {
                 //make some progress on the first search
+                //在第一个搜索上取得一些进展
                 var p = fromSrc.Expand();
 
                 if(fromDest.Graph[p].Status == CellStatus.Closed && fromDest.Graph[p].CostSoFar < int.MaxValue)

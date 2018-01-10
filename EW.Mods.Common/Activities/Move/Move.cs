@@ -195,6 +195,9 @@ namespace EW.Mods.Common.Activities
             //var move = new MoveFirstHalf(this, from, to, mobile.Facing, mobile.Facing, 0);
             QueueChild(new MoveFirstHalf(this, from, to, mobile.Facing, mobile.Facing, 0));
 
+            //While carrying out one Move order,MoveSecondHalf finishes its work from time to time and returns null.
+            //That causes the ChildActivity to be null and makes us return to this part of code.
+            //If we only queue the activity and not run it ,units will lose one tick and pause briefly!
             ChildActivity = ActivityUtils.RunActivity(self, ChildActivity);
             return this;
         }
@@ -211,12 +214,53 @@ namespace EW.Mods.Common.Activities
             //Next cell in the move is blocked by another actor.
             if(containsTemporaryBlocker || !mobile.CanEnterCell(nextCell, ignoreActor, true))
             {
+                //Are we close enough?
+                var cellRange = nearEnough.Length / 1024;
+                if(!containsTemporaryBlocker && (mobile.ToCell - destination.Value).LengthSquard <= cellRange * cellRange)
+                {
+                    path.Clear();
+                    return null;
+                }
 
+                //See if they will move
+                if (!hasNotifiedBlocker)
+                {
+                    self.NotifyBlocker(nextCell);
+                    hasNotifiedBlocker = true;
+                }
+
+                //Wait a bit to see if they leave
+                if (!hasWaited)
+                {
+                    waitTicksRemaining = mobile.Info.WaitAverage + self.World.SharedRandom.Next(-mobile.Info.WaitSpread, mobile.Info.WaitSpread);
+                    hasWaited = true;
+                }
+
+                if (--waitTicksRemaining >= 0)
+                    return null;
+
+
+                if(mobile.TicksBeforePathing > 0)
+                {
+                    mobile.TicksBeforePathing--;
+                    return null;
+                }
+
+                //Calculate a new path
+                mobile.RemoveInfluence();
+                var newPath = EvalPath();
+                mobile.AddInfluence();
+
+                if (newPath.Count != 0)
+                    path = newPath;
+
+                return null;
             }
 
             hasNotifiedBlocker = false;
             hasWaited = false;
             path.RemoveAt(path.Count - 1);
+
             var subCell = mobile.GetAvailableSubCell(nextCell, SubCell.Any, ignoreActor);
             return Pair.New(nextCell, subCell);
         }
@@ -290,11 +334,25 @@ namespace EW.Mods.Common.Activities
                 MoveFractionTotal = (to - from).Length;
                 IsInterruptible = false;
 
-                //
+                //Calculate an elliptical arc that joins from and to
                 var delta = Util.NormalizeFacing(fromFacing - toFacing);
                 if(delta != 0&&delta != 128)
                 {
+                    //The center of rotation is where the normal vectors cross
+                    //旋转的中心是法线向量交叉的地方
+                    var u = new WVec(1024, 0, 0).Rotate(WRot.FromFacing(fromFacing));
+                    var v = new WVec(1024, 0, 0).Rotate(WRot.FromFacing(toFacing));
 
+                    var w = from - to;
+                    var s = (v.Y * w.X - v.X * w.Y) * 1024 / (v.X * u.Y - v.Y * u.X);
+                    var x = from.X + s * u.X / 1024;
+                    var y = from.Y + s * u.Y / 1024;
+
+                    ArcCenter = new WPos(x, y, 0);
+                    ArcFromLength = (ArcCenter - from).HorizontalLength;
+                    ArcFromAngle = (ArcCenter - from).Yaw;
+                    ArcToLength = (ArcCenter - to).HorizontalLength;
+                    ArcToAngle = (ArcCenter - to).Yaw;
                     EnableArc = true;
                 }
 
@@ -328,6 +386,10 @@ namespace EW.Mods.Common.Activities
                     WPos pos = WPos.Zero;
                     if (EnableArc)
                     {
+                        var angle = WAngle.Lerp(ArcFromAngle, ArcToAngle, moveFraction, MoveFractionTotal);
+                        var length = Int2.Lerp(ArcFromLength, ArcToLength, moveFraction, MoveFractionTotal);
+                        var height = Int2.Lerp(From.Z, To.Z, moveFraction, MoveFractionTotal);
+                        pos = ArcCenter + new WVec(0, length, length).Rotate(WRot.FromYaw(angle));
 
                     }
                     else

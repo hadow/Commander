@@ -33,7 +33,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-        public void Tick(Actor self){
+        void ITick.Tick(Actor self){
             
         }
     }

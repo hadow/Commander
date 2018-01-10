@@ -20,7 +20,7 @@ namespace EW.Mods.Common.Traits
     public static class CustomMovementLayerType
     {
         public const byte Tunnel = 1;           //遂道
-        public const byte Subterranean = 2;
+        public const byte Subterranean = 2;     //地下
         public const byte Jumpjet = 3;          //垂直起降喷气机
         public const byte ElevatedBridge = 4;   //高架桥
     }
@@ -260,6 +260,7 @@ namespace EW.Mods.Common.Traits
             if (SharesCell && world.ActorMap.HasFreeSubCell(cell))
                 return true;
 
+            //PERF:Avoid LINQ
             foreach (var otherActor in world.ActorMap.GetActorsAt(cell))
                 if (IsBlockedBy(self, otherActor, ignoreActor, check))
                     return false;
@@ -281,13 +282,20 @@ namespace EW.Mods.Common.Traits
             if (otherActor == ignoreActor)
                 return false;
 
+
+            //If self is null,we don't have a real actor - we're just checking what would happen theoretically.
+            //In such a scenario - we'll just assume any other actor in the cell will block us by default.
+            //If we have a real actor,we can then perform the extra checks that allow us to avoid being blocked.
             if (self == null)
                 return true;
+            
+            //If the check allows:we are not blocked by allied units moving in our direction.
             if (!check.HasCellCondition(CellConditions.BlockedByMovers) &&
                 self.Owner.Stances[otherActor.Owner] == Stance.Ally &&
                 IsMovingInMyDirection(self,otherActor))
                 return false;
 
+            //if there is a temporary blocker in our path,but we can remove it,we are not blocked.
             var temporaryBlocker = otherActor.TraitOrDefault<ITemporaryBlocker>();
             if (temporaryBlocker != null && temporaryBlocker.CanRemoveBlockage(otherActor, self))
                 return false;
@@ -297,24 +305,43 @@ namespace EW.Mods.Common.Traits
                 return true;
 
             var crushables = otherActor.TraitsImplementing<ICrushable>();
-            var lacksCrushability = true;
+            //var lacksCrushability = true;
 
+            //If the other actor in our way,we are blocked.
+            //PERF:Avoid LINQ
             foreach(var crushable in crushables)
             {
-                lacksCrushability = false;
+                //lacksCrushability = false;
                 if (!crushable.CrushableBy(otherActor, self, Crushes))
                     return true;
             }
 
-            if (lacksCrushability)
-                return true;
+            //if (lacksCrushability)
+            //    return true;
             //We are not blocked by the other actor.
-            return false;
+            return true;
         }
 
+        /// <summary>
+        /// 是否相向
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="other"></param>
+        /// <returns></returns>
         static bool IsMovingInMyDirection(Actor self,Actor other)
         {
-            return false;
+            var otherMobile = other.TraitOrDefault<Mobile>();
+            if (otherMobile == null || !otherMobile.IsMoving)
+                return false;
+
+            var selfMobile = self.TraitOrDefault<Mobile>();
+            if (selfMobile == null)
+                return false;
+
+            //Moving in the same direction if the facing delta is between +/- 90 degrees
+            var delta = Util.NormalizeFacing(otherMobile.Facing - selfMobile.Facing);
+
+            return delta<64|| delta>192;
         }
 
         /// <summary>
@@ -328,7 +355,7 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public int MovementCostToEnterCell(WorldMovementInfo worldMovementInfo,Actor self,CPos cell,Actor ignoreActor = null,CellConditions check = CellConditions.All)
         {
-            var cost = MovementCostForCell(worldMovementInfo.World.Map, worldMovementInfo.TerrainInfos, cell);
+            var cost = MovementCostForCell(worldMovementInfo.World, worldMovementInfo.TerrainInfos, cell);
             if (cost == int.MaxValue || !CanMoveFreelyInto(worldMovementInfo.World, self, cell, ignoreActor, check))
                 return int.MaxValue;
             return cost;
@@ -341,7 +368,7 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public int MovementCostForCell(World world,CPos cell)
         {
-            return MovementCostForCell(world.Map, TilesetTerrainInfo[world.Map.Rules.TileSet], cell);
+            return MovementCostForCell(world, TilesetTerrainInfo[world.Map.Rules.TileSet], cell);
         }
 
         /// <summary>
@@ -351,12 +378,14 @@ namespace EW.Mods.Common.Traits
         /// <param name="terrainInfos"></param>
         /// <param name="cell"></param>
         /// <returns></returns>
-        int MovementCostForCell(Map map,TerrainInfo[] terrainInfos,CPos cell)
+        int MovementCostForCell(World world,TerrainInfo[] terrainInfos,CPos cell)
         {
-            if (map.Contains(cell))
+            if (!world.Map.Contains(cell))
                 return int.MaxValue;
 
-            var index = map.GetTerrainIndex(cell);
+            var index = cell.Layer == 0 ? world.Map.GetTerrainIndex(cell) :
+                world.GetCustomMovementLayers()[cell.Layer].GetTerrainIndex(cell);
+
             if (index == byte.MaxValue)
                 return int.MaxValue;
             return terrainInfos[index].Cost;
@@ -651,6 +680,27 @@ namespace EW.Mods.Common.Traits
             FromSubCell = fromSub;
             ToSubCell = toSub;
             AddInfluence();
+
+            if (toCell.Layer == CustomMovementLayerType.Tunnel && conditionManager != null &&
+                !string.IsNullOrEmpty(Info.TunnelCondition) && tunnelToken == ConditionManager.InvalidConditionToken)
+                tunnelToken = conditionManager.GrantCondition(self, Info.TunnelCondition);
+            else if (toCell.Layer != CustomMovementLayerType.Tunnel && tunnelToken != ConditionManager.InvalidConditionToken)
+                tunnelToken = conditionManager.RevokeCondition(self, tunnelToken);
+
+            if(toCell.Layer == CustomMovementLayerType.Subterranean && fromCell.Layer != CustomMovementLayerType.Subterranean)
+            {
+                if (!string.IsNullOrEmpty(Info.SubterraneanTransitionSequence))
+                    self.World.AddFrameEndTask(w => w.Add(new SpriteEffect(self.World.Map.CenterOfCell(fromCell), self.World, Info.SubterraneanTransitionImage, Info.SubterraneanTransitionSequence, Info.SubterraneanTransitionPalette)));
+
+                if (!string.IsNullOrEmpty(Info.SubterraneanTransitionSound))
+                    WarGame.Sound.Play(SoundType.World, Info.SubterraneanTransitionSound);
+            }
+
+            if (toCell.Layer == CustomMovementLayerType.Jumpjet && conditionManager != null &&
+                !string.IsNullOrEmpty(Info.JumpjetCondition) && jumpjetToken == ConditionManager.InvalidConditionToken)
+                jumpjetToken = conditionManager.GrantCondition(self, Info.JumpjetCondition);
+
+
         }
 
         public void RemoveInfluence()
@@ -703,8 +753,24 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public CPos NearestMoveableCell(CPos target)
         {
-            throw new NotImplementedException();
+            //Limit search to a radius of 10 tiles.
+            return NearestMoveableCell(target, 1, 10);
         }
+
+        public CPos NearestMoveableCell(CPos target,int minRange,int maxRange)
+        {
+
+            if (CanEnterCell(target))
+                return target;
+
+            foreach (var tile in self.World.Map.FindTilesInAnnulus(target, minRange, maxRange))
+                if (CanEnterCell(tile))
+                    return tile;
+
+            //Couldn't find a cell
+            return target;
+        }
+
 
         public Activity MoveTo(CPos cell,int nearEnough) { return new Move(self, cell, WDist.FromCells(nearEnough)); }
 

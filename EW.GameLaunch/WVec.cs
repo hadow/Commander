@@ -40,6 +40,8 @@ namespace EW
 
         public long LengthSquared { get { return (long)X * X + (long)Y * Y + (long)Z * Z; } }
 
+        public int HorizontalLength { get { return (int)Exts.ISqrt(HorizontalLengthSquared); } }
+
         public long HorizontalLengthSquared { get { return (long)X * X + (long)Y * Y; } }
 
         public bool Equals(WVec other) { return other == this; }

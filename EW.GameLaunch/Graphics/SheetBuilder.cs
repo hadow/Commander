@@ -119,7 +119,7 @@ namespace EW.Graphics
                 p = new System.Drawing.Point(0, 0);
             }
 
-            var rect = new Sprite(current, new Rectangle(p.X, p.Y, imageSize.Width, imageSize.Height), zRamp, spriteOffset, channel, BlendMode.Alpha);
+            var rect = new Sprite(current, new Rectangle(p, imageSize), zRamp, spriteOffset, channel, BlendMode.Alpha);
             p.X += imageSize.Width;
 
             return rect;

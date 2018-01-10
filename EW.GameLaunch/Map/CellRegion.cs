@@ -36,6 +36,12 @@ namespace EW
             
         }
 
+        public bool Contains(CPos cell)
+        {
+            var uv = cell.ToMPos(gridT);
+            return uv.U >= mapTopLeft.U && uv.U <= mapBottomRight.U && uv.V >= mapTopLeft.V && uv.V <= mapBottomRight.V;
+        }
+
         /// <summary>
         /// 为了提供性能，新增枚举map-coords
         /// </summary>
