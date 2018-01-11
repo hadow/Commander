@@ -11,10 +11,11 @@ using Android.Runtime;
 using EW.Framework.Touch;
 using Javax.Microedition.Khronos.Egl;
 using EW.Framework.Graphics;
+using EW.Framework.Input;
 namespace EW.Framework.Mobile
 {
     [CLSCompliant(false)]//indicates whether a program element is compliant with the Common Language Specification(CLS).This class not be inherited.
-    public class AndroidGameView : SurfaceView, ISurfaceHolderCallback, View.IOnTouchListener,View.IOnClickListener,View.IOnDragListener
+    public class AndroidGameView : SurfaceView, ISurfaceHolderCallback, View.IOnTouchListener
     {
 
         public class BackgroundContext
@@ -310,8 +311,6 @@ namespace EW.Framework.Mobile
             {
                 _touchManager.Enabled = value;
                 SetOnTouchListener(value ? this : null);
-                SetOnClickListener(value ? this : null);
-                SetOnDragListener(value ? this : null);
             }
         }
 
@@ -322,15 +321,39 @@ namespace EW.Framework.Mobile
             _touchManager.OnTouchEvent(e);
             return true;
         }
+        
 
-        public bool OnDrag(View v,DragEvent e)
+        #region Key and Motion
+
+        public override bool OnKeyDown([GeneratedEnum] Keycode keyCode, KeyEvent e)
         {
+
+            if (GamePad.OnKeyUp(keyCode, e))
+                return true;
+            Keyboard.KeyDown(keyCode);
+            if (keyCode == Keycode.Back)
+                GamePad.Back = true;
+
+
             return true;
         }
-        public void OnClick(View v)
-        {
 
+        public override bool OnKeyUp([GeneratedEnum] Keycode keyCode, KeyEvent e)
+        {
+            if (GamePad.OnKeyUp(keyCode, e))
+                return true;
+            Keyboard.KeyUp(keyCode);
+            return true;
         }
+
+
+        public override bool OnGenericMotionEvent(MotionEvent e)
+        {
+            if (GamePad.OnGenericMotionEvent(e))
+                return true;
+            return base.OnGenericMotionEvent(e);
+        }
+        #endregion
 
 
         public virtual void SwapBuffers()

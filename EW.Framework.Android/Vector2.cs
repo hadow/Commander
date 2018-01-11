@@ -178,5 +178,13 @@ namespace EW.Framework
         {
             return new Vector2(Constrain(X, min.X, max.X), Constrain(Y, min.Y, max.Y));
         }
+
+
+        public void Normalize()
+        {
+            float val = 1.0f / (float)Math.Sqrt((X * X) + (Y * Y));
+            X *= val;
+            Y *= val;
+        }
     }
 }
