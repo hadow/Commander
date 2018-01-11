@@ -64,6 +64,11 @@ namespace EW.Graphics
             DrawSprite(s, location, 0, s.Size);
         }
 
+        public void DrawSprite(Sprite s,Vector3 location,Vector3 size)
+        {
+            DrawSprite(s, location, 0, size);
+        }
+
         public void DrawSprite(Sprite s,Vector3 location,PaletteReference pal){
             
             DrawSprite(s,location,pal.TextureIndex,s.Size);

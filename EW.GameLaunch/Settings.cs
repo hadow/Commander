@@ -16,7 +16,7 @@ namespace EW
 
     public class GraphicsSettings
     {
-        public int SheetSize = 4096;
+        public int SheetSize = 2048;
         public int BatchSize = 8192;
 
         public string Language = "english";

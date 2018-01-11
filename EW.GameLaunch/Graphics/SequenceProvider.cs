@@ -164,12 +164,8 @@ namespace EW.Graphics
         {
             SpriteCache.SheetBuilder.Current.CreateBuffer();
             foreach(var unitSeq in sequences.Value.Values)
-            {
                 foreach(var seq in unitSeq.Value.Values)
-                {
-
-                }
-            }
+           
 
             SpriteCache.SheetBuilder.Current.ReleaseBuffer();
         }

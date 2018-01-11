@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Linq;
 using EW.Graphics;
+using EW.Support;
 using EW.Framework;
 using EW.Framework.Graphics;
 namespace EW
@@ -62,6 +63,9 @@ namespace EW
         readonly Stack<Rectangle> scissorState = new Stack<Rectangle>();
 
         public Size Resolution { get { return new Size(Device.Viewport.Width,Device.Viewport.Height); } }
+
+        public IReadOnlyDictionary<string, SpriteFont> Fonts;
+        SheetBuilder fontSheetBuilder;
         public Renderer(GraphicsSettings graphicSettings,IGraphicsDevice device)
         {
             this.Device = device;
@@ -86,6 +90,27 @@ namespace EW
         {
             this.depthScale = mapGrid == null || !mapGrid.EnableDepthBuffer ? 0 : (float)Resolution.Height / (Resolution.Height + mapGrid.TileSize.Height * mapGrid.MaximumTerrainHeight);
             this.depthOffset = this.depthScale / 2;
+        }
+
+
+        /// <summary>
+        /// 初始化字体
+        /// </summary>
+        /// <param name="modData"></param>
+        public void InitializeFont(ModData modData)
+        {
+            if (Fonts != null)
+                foreach (var font in Fonts.Values)
+                    font.Dispose();
+
+            using (new PerfTimer("SpriteFonts"))
+            {
+                if (fontSheetBuilder != null)
+                    fontSheetBuilder.Dispose();
+                fontSheetBuilder = new SheetBuilder(SheetT.BGRA, 512);
+                Fonts = modData.Manifest.Fonts.ToDictionary(x => x.Key, x => new SpriteFont(x.Value.First, modData.DefaultFileSystem.Open(x.Value.First).ReadAllBytes(),
+                       x.Value.Second, 1.0f, fontSheetBuilder)).AsReadOnly();
+            }
         }
 
         public void BeginFrame(Int2 scroll,float zoom)

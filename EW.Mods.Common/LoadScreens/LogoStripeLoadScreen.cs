@@ -51,9 +51,12 @@ namespace EW.Mods.Common.LoadScreens
             //Update text at most every 0.5 seconds
             if (lastUpdate.Elapsed.TotalSeconds < 0.5)
                 return;
+            if (r.Fonts == null)
+                return;
 
             lastUpdate.Restart();
             var text = messages.Random(WarGame.CosmeticRandom);
+            var textSize = r.Fonts["Bold"].Measure(text);
 
             r.BeginFrame(Int2.Zero, 1f);
             if (stripe != null)
@@ -63,6 +66,8 @@ namespace EW.Mods.Common.LoadScreens
 
             if (logo != null)
                 r.RgbaSpriteRenderer.DrawSprite(logo, logoPos);
+
+            r.Fonts["Bold"].DrawText(text, new Vector2(r.Resolution.Width - textSize.X - 20, r.Resolution.Height - textSize.Y - 20), Color.White);
 
             r.EndFrame();
         }

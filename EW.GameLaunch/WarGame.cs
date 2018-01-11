@@ -151,7 +151,7 @@ namespace EW
                 ModData.MapCache.LoadMaps();
 
             ModData.InitializeLoaders(ModData.DefaultFileSystem);
-
+            Renderer.InitializeFont(ModData);
             var grid = ModData.Manifest.Contains<MapGrid>() ? ModData.Manifest.Get<MapGrid>() : null;
             Renderer.InitializeDepthBuffer(grid);
             ModData.LoadScreen.StartGame(args);

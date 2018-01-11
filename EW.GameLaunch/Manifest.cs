@@ -69,6 +69,8 @@ namespace EW
 
         public readonly string[] SoundFormats = { };
 
+        public readonly Dictionary<string, Pair<string, int>> Fonts;
+
         readonly Dictionary<string, MiniYaml> yaml;
 
         public readonly string[] Rules, 
@@ -128,6 +130,11 @@ namespace EW
             Missions = YamlList(yaml, "Missions");
             ServerTraits = YamlList(yaml, "ServerTraits");
 
+            Fonts = yaml["Fonts"].ToDictionary(my =>
+            {
+                var nd = my.ToDictionary();
+                return Pair.New(nd["Font"].Value, Exts.ParseIntegerInvariant(nd["Size"].Value));
+            });
             if (!yaml.TryGetValue("LoadScreen", out LoadScreen))
                 throw new InvalidDataException("'LoadScreen' section is not defined.");
 

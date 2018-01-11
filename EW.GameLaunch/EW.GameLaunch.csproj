@@ -9,7 +9,7 @@
     <RootNamespace>EW</RootNamespace>
     <AssemblyName>EW.GameLaunch</AssemblyName>
     <AndroidApplication>true</AndroidApplication>
-    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -54,13 +54,17 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpFont">
+      <HintPath>..\packages\SharpFont\SharpFont.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Android" />
-    <Reference Include="ICSharpCode.SharpZipLib">
-      <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
     <Reference Include="Eluant">
       <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
     </Reference>
@@ -1487,6 +1491,7 @@
     <Compile Include="Graphics\Sheet.cs" />
     <Compile Include="Graphics\SheetBuilder.cs" />
     <Compile Include="Graphics\Sprite.cs" />
+    <Compile Include="Graphics\SpriteFont.cs" />
     <Compile Include="Graphics\SpriteLoader.cs" />
     <Compile Include="Graphics\SpriteRenderable.cs" />
     <Compile Include="Graphics\SpriteRenderer.cs" />
@@ -1899,6 +1904,11 @@
     <AndroidAsset Include="Content\mods\ts\bits\assaultmove.shp" />
     <AndroidAsset Include="Content\mods\ts\bits\attackmove.shp" />
     <AndroidAsset Include="Content\mods\ts\bits\jugger1-single.aud" />
+    <AndroidAsset Include="Content\mods\common\FreeSans.ttf" />
+    <AndroidAsset Include="Content\mods\common\FreeSansBold.ttf" />
+    <AndroidNativeLibrary Include="lib\x86\libfreetype.so" />
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\libfreetype.so" />
+    <AndroidNativeLibrary Include="lib\x86_64\libfreetype.so" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -1947,7 +1957,6 @@
     <AndroidAsset Include="Content\mods\ts\uibits\loadscreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\mods\common\" />
     <Folder Include="FileFormats\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
