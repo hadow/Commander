@@ -93,5 +93,12 @@ namespace EW.Mods.Common.Traits
             angle -= RotationSpeed;
             return true;
         }
+
+        public IEnumerable<Vector2> Points(Vector2 center)
+        {
+            yield return center + radius * Vector2.FromAngle(angle);
+            yield return center + radius * Vector2.FromAngle((float)(angle + 2 * Math.PI / 3));
+            yield return center + radius * Vector2.FromAngle((float)(angle + 4 * Math.PI / 3));
+        }
     }
 }

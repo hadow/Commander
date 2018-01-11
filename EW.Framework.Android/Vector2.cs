@@ -186,5 +186,7 @@ namespace EW.Framework
             X *= val;
             Y *= val;
         }
+
+        public static Vector2 FromAngle(float a) { return new Vector2((float)Math.Sin(a), (float)Math.Cos(a)); }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using EW.Graphics;
 using EW.FileSystem;
 using System.Linq;
+using EW.Widgets;
 namespace EW
 {
 
@@ -23,7 +24,7 @@ namespace EW
         public readonly Manifest Manifest;
 
         public readonly ObjectCreator ObjectCreator;
-
+        public readonly WidgetLoader WidgetLoader;
         public readonly MapCache MapCache;
 
         public readonly IPackageLoader[] PackageLoaders;
@@ -76,7 +77,7 @@ namespace EW
                 LoadScreen.Display();
             }
 
-
+            WidgetLoader = new WidgetLoader(this);
             MapCache = new MapCache(this);
 
             SoundLoaders = ObjectCreator.GetLoaders<ISoundLoader>(Manifest.SoundFormats, "sound");

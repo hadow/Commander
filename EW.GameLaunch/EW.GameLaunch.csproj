@@ -1453,6 +1453,12 @@
     <Compile Include="..\EW.Mods.Common\Warheads\Warhead.cs">
       <Link>External_Common\Warheads\Warhead.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\RadarWidget.cs">
+      <Link>External_Common\Widgets\RadarWidget.cs</Link>
+    </Compile>
     <Compile Include="Activities\Activity.cs" />
     <Compile Include="Activities\CallFunc.cs" />
     <Compile Include="Actor.cs" />
@@ -1593,6 +1599,8 @@
     <Compile Include="Traits\World\Shroud.cs" />
     <Compile Include="WAngle.cs" />
     <Compile Include="WarGame.cs" />
+    <Compile Include="Widgets\Widget.cs" />
+    <Compile Include="Widgets\WidgetLoader.cs" />
     <Compile Include="World.cs" />
     <Compile Include="WDist.cs" />
     <Compile Include="WorldUtils.cs" />
@@ -1909,6 +1917,45 @@
     <AndroidNativeLibrary Include="lib\x86\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\x86_64\libfreetype.so" />
+    <AndroidAsset Include="Content\mods\common\assetbrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\color-picker.yaml" />
+    <AndroidAsset Include="Content\mods\common\confirmation-dialogs.yaml" />
+    <AndroidAsset Include="Content\mods\common\connection.yaml" />
+    <AndroidAsset Include="Content\mods\common\credits.yaml" />
+    <AndroidAsset Include="Content\mods\common\dropdowns.yaml" />
+    <AndroidAsset Include="Content\mods\common\editor.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-chat.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-debug.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-fmvplayer.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-info.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-infobriefing.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-infochat.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-infoobjectives.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-infoscripterror.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-infostats.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-menu.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-observer.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-observerstats.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame-perf.yaml" />
+    <AndroidAsset Include="Content\mods\common\ingame.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-kickdialogs.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-mappreview.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-music.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-options.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-players.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby-servers.yaml" />
+    <AndroidAsset Include="Content\mods\common\lobby.yaml" />
+    <AndroidAsset Include="Content\mods\common\mainmenu.yaml" />
+    <AndroidAsset Include="Content\mods\common\map-chooser.yaml" />
+    <AndroidAsset Include="Content\mods\common\missionbrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\multiplayer-browser.yaml" />
+    <AndroidAsset Include="Content\mods\common\multiplayer-browserpanels.yaml" />
+    <AndroidAsset Include="Content\mods\common\multiplayer-createserver.yaml" />
+    <AndroidAsset Include="Content\mods\common\multiplayer-directconnect.yaml" />
+    <AndroidAsset Include="Content\mods\common\musicplayer.yaml" />
+    <AndroidAsset Include="Content\mods\common\replaybrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\settings.yaml" />
+    <AndroidAsset Include="Content\mods\common\tooltips.yaml" />
     <None Include="Resources\AboutResources.txt" />
   </ItemGroup>
   <ItemGroup>

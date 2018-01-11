@@ -469,6 +469,7 @@
     <Compile Include="Warheads\SpreadDamageWarhead.cs" />
     <Compile Include="Warheads\TargetDamageWarhead.cs" />
     <Compile Include="Warheads\Warhead.cs" />
+    <Compile Include="Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
     <Compile Include="Traits\BodyOrientation.cs" />
     <Compile Include="TraitsInterfaces.cs" />
@@ -483,6 +484,7 @@
     <Compile Include="Traits\Buildings\GivesBuildableArea.cs" />
     <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
     <Compile Include="Effects\SpriteEffect.cs" />
+    <Compile Include="Widgets\RadarWidget.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

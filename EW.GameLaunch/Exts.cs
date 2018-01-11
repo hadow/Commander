@@ -451,6 +451,9 @@ namespace EW
 
             return default(T);
         }
+
+
+        public static Size NextPowerOf2(this Size s) { return new Size(NextPowerOf2(s.Width), NextPowerOf2(s.Height)); }
     }
     
 }
