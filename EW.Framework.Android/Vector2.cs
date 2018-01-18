@@ -188,5 +188,12 @@ namespace EW.Framework
         }
 
         public static Vector2 FromAngle(float a) { return new Vector2((float)Math.Sin(a), (float)Math.Cos(a)); }
+
+        public static float Distance(Vector2 v1, Vector2 v2){
+
+            float x = v1.X - v2.X, y = v1.Y - v2.Y;
+
+            return (float)Math.Sqrt((x * x) + (y * y));
+        }
     }
 }

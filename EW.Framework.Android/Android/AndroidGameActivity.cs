@@ -13,12 +13,9 @@ namespace EW.Framework.Mobile
 	{
         internal Game Game { private get; set; }
 
-		public AndroidGameActivity()
-		{
-		}
 
         public bool RenderOnUIThread = true;
-		private ScreenReciever _screenReciever;
+        private ScreenReceiver _screenReciever;
 		private OrientationListener _orientationListener;
 
 		public static event EventHandler Paused;
@@ -37,7 +34,7 @@ namespace EW.Framework.Mobile
 			filter.AddAction(Intent.ActionScreenOff);
 			filter.AddAction(Intent.ActionUserPresent);
 
-			_screenReciever = new ScreenReciever();
+            _screenReciever = new ScreenReceiver();
 			RegisterReceiver(_screenReciever, filter);
 
 			_orientationListener = new OrientationListener(this);
@@ -84,7 +81,7 @@ namespace EW.Framework.Mobile
 		protected override void OnDestroy()
 		{
             UnregisterReceiver(_screenReciever);
-            ScreenReciever.ScreenLocked = false;
+            ScreenReceiver.ScreenLocked = false;
             _orientationListener = null;
             if (Game != null)
                 Game.Dispose();
@@ -92,4 +89,18 @@ namespace EW.Framework.Mobile
 			base.OnDestroy();
 		}
 	}
+
+    [CLSCompliant(false)]
+    public static class ActivityExtensions
+    {
+        public static ActivityAttribute GetActivityAttribute(this AndroidGameActivity obj)
+        {
+            var attr = obj.GetType().GetCustomAttributes(typeof(ActivityAttribute), true);
+            if (attr != null)
+            {
+                return ((ActivityAttribute)attr[0]);
+            }
+            return null;
+        }
+    }
 }

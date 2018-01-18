@@ -179,7 +179,7 @@ namespace EW.Framework.Mobile
             }
             catch(Exception ex)
             {
-                Android.Util.Log.Error("Error in swap buffers", ex.ToString());
+                //Android.Util.Log.Error("Error in swap buffers", ex.ToString());
             }
         }
 
