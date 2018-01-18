@@ -5,6 +5,8 @@ using EW.Graphics;
 using EW.Primitives;
 using EW.Activities;
 using EW.Framework;
+using EW.NetWork;
+
 namespace EW.Traits
 {
     public sealed class RequireExplicitImplementationAttribute : Attribute { }
@@ -43,6 +45,16 @@ namespace EW.Traits
         }
     }
 
+
+    public class AttackInfo{
+
+        public Damage Damage;
+        public Actor attacker;
+        public DamageState DamageState;
+        public DamageState PreviousDamageState;
+
+    }
+
     public enum TargetModifiers
     {
         None = 0,
@@ -69,6 +81,17 @@ namespace EW.Traits
         public readonly int Value;
 
         public readonly HashSet<string> DamageTypes;
+
+        public Damage(int damage,HashSet<string> damageTypes){
+            Value = damage;
+            DamageTypes = damageTypes;
+
+        }
+
+        public Damage(int damage){
+            Value = damage;
+            DamageTypes = new HashSet<string>();
+        }
     }
 
     public interface IGameOver
@@ -115,9 +138,6 @@ namespace EW.Traits
     #region Notify Interface
 
     public interface INotifyIdle { void TickIdle(Actor self); }
-
-    public interface INotifyDamage { }
-
     
     public interface INotifyCreated { void Created(Actor self); }
 
@@ -199,7 +219,7 @@ namespace EW.Traits
     public interface IDefaultVisibility { bool IsVisible(Actor self, Player byPlayer); }
     public interface IVisibilityModifier { bool IsVisible(Actor self, Player byPlayer); }
 
-    public interface IDamageModifier { int GetDamageModifier(Actor attacker, IWarHead warhead); }
+    public interface IDamageModifier { int GetDamageModifier(Actor attacker, Damage damage); }
 
     public interface ISpeedModifier { int GetSpeedModifier(); }
 
@@ -210,6 +230,11 @@ namespace EW.Traits
         bool IsVisible(Actor actor);
         bool HasFogVisibility();
     }
+
+    public interface IInaccuracyModifier { int GetInaccuracyModifier(); }
+
+    [RequireExplicitImplementation]
+    public interface IFirepowerModifier { int GetFirepowerModifier(); }
     #endregion
 
     public interface IAutoSelectionSize { Int2 SelectionSize(Actor self); }
@@ -511,5 +536,7 @@ namespace EW.Traits
         int Capacity { get; }
     }
 
+
+    public interface IValidateOrder { bool OrderValidation(OrderManager orderManager, World world, int clientId, Order order); }
 
 }

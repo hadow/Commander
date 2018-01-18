@@ -66,6 +66,14 @@ namespace EW.Mods.Common
         /// <returns></returns>
         public static Target ResolveFrozenActorOrder(this Actor self,Order order,Color targetLine)
         {
+
+            if (order.Target.Type != TargetT.FrozenActor)
+                return order.Target;
+
+            var frozen = order.Target.FrozenActor;
+
+            self.SetTargetLine(frozen,targetLine,true);
+
             return Target.Invalid;
         }
 

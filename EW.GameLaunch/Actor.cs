@@ -50,6 +50,7 @@ namespace EW
         public Rectangle VisualBounds { get; private set; }
 
         public ITargetable[] Targetables { get; private set; }
+
         public bool IsInWorld { get; internal set; }
 
         public bool IsIdle { get { return CurrentActivity == null; } }
@@ -81,6 +82,7 @@ namespace EW
         /// 
         /// </summary>
         internal SyncHash[] SyncHashes { get; private set; }
+
         public Player Owner { get; internal set; }
 
         public CPos Location { get { return OccupiesSpace.TopLeft; } }
@@ -285,6 +287,18 @@ namespace EW
                 return DamageState.Dead;
             return (health == null) ? DamageState.Undamaged : health.DamageState;
         }
+
+        public bool IsTargetableBy(Actor byActor){
+
+            //PERF:Avoid LINQ
+            foreach(var targetable in Targetables){
+                if (targetable.IsTraitEnabled() && targetable.TargetableBy(this, byActor))
+                    return true;
+                
+            }
+            return false;
+        }
+
 
         #region Trait
 

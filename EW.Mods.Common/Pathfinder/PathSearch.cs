@@ -33,6 +33,15 @@ namespace EW.Mods.Common.Pathfinder
         }
 
 
+        public static IPathSearch Search(World world,MobileInfo mi,Actor self,bool checkForBlocked,Func<CPos,bool> goalCondition){
+
+            var graph = new PathGraph(LayerPoolForWorld(world), mi, self, world, checkForBlocked);
+            var search = new PathSearch(graph);
+            search.isGoal = goalCondition;
+            search.heuristic = loc => 0;
+            return search;
+        }
+
         public static IPathSearch FromPoint(World world,MobileInfo mi,Actor self,CPos from,CPos target,bool checkForBlocked)
         {
             var graph = new PathGraph(LayerPoolForWorld(world), mi, self, world, checkForBlocked);

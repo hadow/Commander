@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Warheads;
-using EW.Framework;
 using System.Drawing;
 namespace EW.Mods.Common.Traits
 {
-    public abstract class AttackBaseInfo:ConditionalTraitInfo
+    public abstract class AttackBaseInfo:PausableConditionalTraitInfo
     {
         public readonly string[] Armaments = { "primary", "secondary" };
 
@@ -37,7 +36,7 @@ namespace EW.Mods.Common.Traits
     /// <summary>
     /// 攻击
     /// </summary>
-    public abstract class AttackBase:ConditionalTrait<AttackBaseInfo>,IIssueOrder,IResolveOrder,IOrderVoice
+    public abstract class AttackBase:PausableConditionalTrait<AttackBaseInfo>,IIssueOrder,IResolveOrder,IOrderVoice
     {
         readonly string attackOrderName = "Attack";
         readonly string forceAttackOrderName = "ForceAttack";
@@ -73,6 +72,11 @@ namespace EW.Mods.Common.Traits
             base.Created(self);
         }
 
+        /// <summary>
+        /// 初始化武器
+        /// </summary>
+        /// <returns>The get armaments.</returns>
+        /// <param name="self">Self.</param>
         protected virtual Func<IEnumerable<Armament>> InitializeGetArmaments(Actor self)
         {
             var armaments = self.TraitsImplementing<Armament>().Where(a => Info.Armaments.Contains(a.Info.Name)).ToArray();
@@ -80,14 +84,14 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 
+        /// 检查当前可否攻击目标
         /// </summary>
         /// <param name="self"></param>
         /// <param name="target"></param>
         /// <returns></returns>
         protected virtual bool CanAttack(Actor self,Target target)
         {
-            if (!self.IsInWorld || IsTraitDisabled || self.IsDisabled())
+            if (!self.IsInWorld || IsTraitDisabled || IsTraitPaused)
                 return false;
 
             if (!target.IsValidFor(self))
@@ -96,10 +100,16 @@ namespace EW.Mods.Common.Traits
             if (!HasAnyValidWeapons(target))
                 return false;
 
+            var mobile = self.TraitOrDefault<Mobile>();
+            if (mobile != null && !mobile.CanInteractWithGroundLayer(self))
+                return false;
+            
+                
+            //Building is under construction or is being sold.
             if (building != null && !building.BuildComplete)
                 return false;
 
-            if (Armaments.All(a => a.IsReloading))
+            if (Armaments.All(a => a.IsReloading))//武器正在重载
                 return false;
 
             return true;
@@ -133,7 +143,7 @@ namespace EW.Mods.Common.Traits
                 if (armament.IsTraitDisabled)
                     continue;
 
-                if (armament.OutOfAmo)
+                if (armament.IsTraitPaused)
                     continue;
 
                 if (!armament.Weapon.IsValidAgainst(target, self.World, self))
@@ -172,24 +182,30 @@ namespace EW.Mods.Common.Traits
         /// <param name="target"></param>
         /// <param name="queued"></param>
         /// <returns></returns>
-        public Order IssueOrder(Actor self,IOrderTargeter order,Target target,bool queued)
+        Order IIssueOrder.IssueOrder(Actor self,IOrderTargeter order,Target target,bool queued)
         {
             if(order is AttackOrderTargeter)
             {
-                switch (target.Type)
-                {
-                    case TargetT.Actor:
-                        return new Order(order.OrderID, self, queued) { TargetActor = target.Actor };
-                    case TargetT.FrozenActor:
-                        return new Order(order.OrderID, self, queued) { ExtraData = target.FrozenActor.ID };
-                    case TargetT.Terrain:
-                        return new Order(order.OrderID, self, queued) { TargetLocation = self.World.Map.CellContaining(target.CenterPosition) };
-                }
+                return new Order(order.OrderID, self, target, queued);
+                //switch (target.Type)
+                //{
+                //    case TargetT.Actor:
+                //        return new Order(order.OrderID, self, queued) { TargetActor = target.Actor };
+                //    case TargetT.FrozenActor:
+                //        return new Order(order.OrderID, self, queued) { ExtraData = target.FrozenActor.ID };
+                //    case TargetT.Terrain:
+                //        return new Order(order.OrderID, self, queued) { TargetLocation = self.World.Map.CellContaining(target.CenterPosition) };
+                //}
             }
             return null;
         }
 
-        public virtual void ResolveOrder(Actor self,Order order)
+        /// <summary>
+        /// EWs the . traits. IR esolve order. resolve order.
+        /// </summary>
+        /// <param name="self">Self.</param>
+        /// <param name="order">Order.</param>
+        void IResolveOrder.ResolveOrder(Actor self,Order order)
         {
             var forceAttack = order.OrderString == forceAttackOrderName;
 
@@ -200,8 +216,16 @@ namespace EW.Mods.Common.Traits
                     return;
 
                 self.SetTargetLine(target, Color.Red);
-
+                AttackTarget(target,order.Queued,true,forceAttack);
             }
+
+            if (order.OrderString == "Stop")
+                OnStopOrder(self);
+        }
+
+
+        protected virtual void OnStopOrder(Actor self){
+            self.CancelActivity();
         }
 
         public void AttackTarget(Target target,bool queued,bool allowMove,bool forceAttack = false)
@@ -241,7 +265,7 @@ namespace EW.Mods.Common.Traits
             //PERF: Avoid LINQ
             foreach(var armament in Armaments)
             {
-                var checkIsValid = checkForCenterTargetingWeapons ? armament.Weapon.TargetActorCenter : !armament.OutOfAmo;
+                var checkIsValid = checkForCenterTargetingWeapons ? armament.Weapon.TargetActorCenter : !armament.IsTraitPaused;
                 if (checkIsValid && !armament.IsTraitDisabled && armament.Weapon.IsValidAgainst(t, self.World, self))
                     return true;
             }
@@ -272,7 +296,7 @@ namespace EW.Mods.Common.Traits
                 if (armament.IsTraitDisabled)
                     continue;
 
-                if (armament.OutOfAmo)
+                if (armament.IsTraitPaused)
                     continue;
 
                 var range = armament.MaxRange();
@@ -294,7 +318,7 @@ namespace EW.Mods.Common.Traits
             {
                 if (armament.IsTraitDisabled)
                     continue;
-                if (armament.OutOfAmo)
+                if (armament.IsTraitPaused)
                     continue;
 
                 var range = armament.Weapon.MinRange;
@@ -305,6 +329,9 @@ namespace EW.Mods.Common.Traits
 
             return min != WDist.MaxValue ? min : WDist.Zero;
         }
+
+
+
 
         /// <summary>
         /// 为目标挑选武器
@@ -325,6 +352,7 @@ namespace EW.Mods.Common.Traits
             }
             else if(t.Type == TargetT.Actor)
             {
+                owner = t.Actor.EffectiveOwner != null && t.Actor.EffectiveOwner.Owner != null ? t.Actor.EffectiveOwner.Owner : t.Actor.Owner;
 
             }
 

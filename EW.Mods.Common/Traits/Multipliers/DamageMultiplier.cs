@@ -4,18 +4,24 @@ using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-    public class DamageMultiplierInfo : UpgradeMultiplierTraitInfo
+    public class DamageMultiplierInfo : ConditionalTraitInfo
     {
+
+        [FieldLoader.Require]
+        public readonly int Modifier = 100;
         public override object Create(ActorInitializer init)
         {
-            return new DamageMultiplier(this, init.Self.Info.Name);
+            return new DamageMultiplier(this);
         }
     }
 
-    public class DamageMultiplier:UpgradeMultiplierTrait,IDamageModifier
+    public class DamageMultiplier:ConditionalTrait<DamageMultiplierInfo>,IDamageModifier
     {
-        public DamageMultiplier(DamageMultiplierInfo info,string actorType) : base(info, "DamageMultiplier", actorType) { }
+        public DamageMultiplier(DamageMultiplierInfo info) : base(info) { }
 
-        public int GetDamageModifier(Actor attacker,IWarHead warhead) { return GetModifier(); }
+        int IDamageModifier.GetDamageModifier(Actor attacker,Damage damage){
+            return IsTraitDisabled ? 100 : Info.Modifier;
+        }
+
     }
 }

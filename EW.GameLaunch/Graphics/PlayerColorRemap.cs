@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Framework;
 using EW.Primitives;
 using System.Linq;
 using System.Drawing;

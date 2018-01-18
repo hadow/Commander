@@ -275,7 +275,6 @@
     <Compile Include="Traits\Multipliers\PowerMultiplier.cs" />
     <Compile Include="Traits\Multipliers\ReloadDelayMultiplier.cs" />
     <Compile Include="Traits\Multipliers\SpeedMultiplier.cs" />
-    <Compile Include="Traits\Multipliers\UpgradableMultiplier.cs" />
     <Compile Include="Traits\MustBeDestroyed.cs" />
     <Compile Include="Traits\PaletteEffects\FlashPaletteEffect.cs" />
     <Compile Include="Traits\PaletteEffects\GlobalLightingPaletteEffect.cs" />
@@ -485,6 +484,12 @@
     <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
     <Compile Include="Effects\SpriteEffect.cs" />
     <Compile Include="Widgets\RadarWidget.cs" />
+    <Compile Include="Traits\Multipliers\RangeMultiplier.cs" />
+    <Compile Include="Graphics\ContrailRenderable.cs" />
+    <Compile Include="Traits\Buildings\BuildingUtils.cs" />
+    <Compile Include="AI\BaseBuilder.cs" />
+    <Compile Include="AI\States\GroundStates.cs" />
+    <Compile Include="AI\AttackOrFleeFuzzy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -503,5 +508,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="AI\States\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

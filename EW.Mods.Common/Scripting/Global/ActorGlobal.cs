@@ -56,6 +56,12 @@ namespace EW.Mods.Common.Scripting
             return a;
         }
 
+        /// <summary>
+        /// Builds the time.
+        /// </summary>
+        /// <returns>The time.</returns>
+        /// <param name="type">Type.</param>
+        /// <param name="queue">Queue.</param>
         public int BuildTime(string type,string queue = null)
         {
             ActorInfo ai;
@@ -68,6 +74,35 @@ namespace EW.Mods.Common.Scripting
             var time = bi.BuildDuration;
             if(time == -1)
             {
+                var valued = ai.TraitInfoOrDefault<ValuedInfo>();
+                if (valued == null)
+                    return 0;
+                else
+                    time = valued.Cost;
+
+
+            }
+
+            int pbi;
+            if(queue != null){
+
+                var pqueue = Context.World.Map.Rules.Actors.Values.SelectMany(a => a.TraitInfos<ProductionQueueInfo>())
+                                    .Where(x=>x.Type == queue).FirstOrDefault();
+                if (pqueue == null)
+                    throw new LuaException("The specified queue '{0}' does not exist".F(queue));
+                pbi = pqueue.BuildDurationModifier;
+
+
+            }
+            else{
+
+                var pqueue = Context.World.Map.Rules.Actors.Values.SelectMany(a => a.TraitInfos<ProductionQueueInfo>()
+                                                                              .Where(x => bi.Queue.Contains(x.Type))).FirstOrDefault();
+
+                if (pqueue == null)
+                    throw new LuaException("No actors can produce actor '{0}' ".F(type));
+
+                pbi = pqueue.BuildDurationModifier;
 
             }
             return time;

@@ -1,15 +1,32 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Linq;
 namespace EW.NetWork
 {
     public class Session
     {
+        public List<Client> Clients = new List<Client>();
 
         public Global GlobalSettings = new Global();
 
 
+
+        public Client ClientWithIndex(int clientID){
+            return Clients.SingleOrDefault(c => c.Index == clientID);
+        }
+
+        public enum ClientState{
+            NotReady,
+            Invalid,
+            Ready,
+            Disconnected = 1000,
+        }
+
         public class Client
         {
+
+            public ClientState State = ClientState.Invalid;
+
             public int Index;
 
             public string Faction;
@@ -22,11 +39,17 @@ namespace EW.NetWork
 
             public string Slot;
 
-            public string Bot;
+            public string Bot;//Bot type,null for real client.
 
             public bool IsAdmin;
 
+            public int BotControllerClientIndex;//who added the bot to the slot
 
+            public bool IsReady{ get { return State == ClientState.Ready; }}
+
+            public bool IsInvalid{ get { return State == ClientState.Invalid; }}
+
+            public bool IsObserver{ get { return Slot == null; }}
         }
         public class ClientPing
         {

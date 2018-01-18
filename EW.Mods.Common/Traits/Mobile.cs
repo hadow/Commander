@@ -557,6 +557,23 @@ namespace EW.Mods.Common.Traits
             base.Created(self);
         }
 
+        /// <summary>
+        /// Cans the interact with ground layer.
+        /// </summary>
+        /// <returns><c>true</c>, if interact with ground layer was caned, <c>false</c> otherwise.</returns>
+        /// <param name="self">Self.</param>
+        public bool CanInteractWithGroundLayer(Actor self){
+
+            if (toCell.Layer == 0)
+                return true;
+
+            ICustomMovementLayer layer;
+            if (self.World.GetCustomMovementLayers().TryGetValue(toCell.Layer, out layer))
+                return layer.InteractsWithDefaultLayer;
+            
+            return true;
+        }
+
         public IEnumerable<Pair<CPos,SubCell>> OccupiedCells()
         {
             if (FromCell == ToCell)

@@ -8,6 +8,7 @@ using EW.Support;
 using EW.Graphics;
 using EW.NetWork;
 using EW.Primitives;
+using EW.Framework.Touch;
 namespace EW
 {
     /// <summary>
@@ -42,13 +43,26 @@ namespace EW
                 return stopwatch.ElapsedMilliseconds;
             }
         }
-
+        public static bool IsHost{
+            get{
+                var id = orderManager.Connection.LocalClientId;
+                var client = orderManager.LobbyInfo.ClientWithIndex(id);
+                return client != null && client.IsAdmin;
+            }
+        }
         public static Sound Sound;
         public static Renderer Renderer;
         static WorldRenderer worldRenderer;
         internal static OrderManager orderManager;
         static volatile ActionQueue delayedActions = new ActionQueue();
 
+        public static event Action<OrderManager> ConnectionStateChanged = _ => { };
+        static ConnectionState lastConnectionState = ConnectionState.PreConnecting;
+        public static int LocalClientId{
+            get{
+                return orderManager.Connection.LocalClientId;
+            }
+        }
         public static void RunAfterTick(Action a)
         {
             delayedActions.Add(a, RunTime);
@@ -67,6 +81,12 @@ namespace EW
 
 
         public static int RenderFrame = 0;
+
+
+        TouchCollection currentTouchState;
+
+        bool _pinching = false;
+        float _pinchInitialDistance;
         public WarGame() {
 
             IsFixedTimeStep = true;
@@ -81,9 +101,17 @@ namespace EW
 
         protected override void Initialize()
         {
+            TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag;
             base.Initialize();
-            //Initialize(new Arguments());
+
         }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+            Initialize(new Arguments());
+        }
+
         
 
         /// <summary>
@@ -154,6 +182,9 @@ namespace EW
             Renderer.InitializeFont(ModData);
             var grid = ModData.Manifest.Contains<MapGrid>() ? ModData.Manifest.Get<MapGrid>() : null;
             Renderer.InitializeDepthBuffer(grid);
+
+            JoinLocal();
+
             ModData.LoadScreen.StartGame(args);
             //LoadShellMap();
         }
@@ -207,18 +238,92 @@ namespace EW
             orderManager.StartGame();
             worldRenderer.RefreshPalette();
             GC.Collect();
-            CustomRun();
+            //CustomRun();
         }
-        
+
+        static void JoinLocal(){
+            JoinInner(new OrderManager("<no server>",-1,"",new EchoConnection()));
+        }
+
+
+        static void JoinInner(OrderManager om){
+
+            if (orderManager != null) orderManager.Dispose();
+            orderManager = om;
+            lastConnectionState = ConnectionState.PreConnecting;
+            ConnectionStateChanged(orderManager);
+        }
 
         protected override void Update(GameTime gameTime)
         {
-            //LogicTick(gameTime);
+            currentTouchState = TouchPanel.GetState();
+            while(TouchPanel.IsGestureAvailable){
+               
+                var gesture = TouchPanel.ReadGesture();
+
+                switch(gesture.GestureType){
+                    case GestureType.Pinch:
+                        //Console.WriteLine("pinch:" + Vector2.Distance(gesture.Position,gesture.Position2));
+                        float dist = Vector2.Distance(gesture.Position, gesture.Position2);
+
+                        Vector2 aOld = gesture.Position - gesture.Delta;
+                        Vector2 bOld = gesture.Position2 - gesture.Delta2;
+                        float distOld = Vector2.Distance(aOld, bOld);
+                        if(!_pinching)
+                        {
+                            _pinchInitialDistance = distOld;
+                            _pinching = true;
+                        }
+
+                        float scale = (distOld - dist) * 0.05f;
+                        Console.WriteLine("scale:"+scale +" zoom:"+(dist/_pinchInitialDistance));
+                        Zoom(scale);
+                        break;
+                    case GestureType.PinchComplete:
+                        Console.WriteLine("pinch complete");
+                        _pinching = false;
+                        break;
+                    case GestureType.FreeDrag:
+                        Console.WriteLine("Free drag");
+                        worldRenderer.ViewPort.Scroll(gesture.Delta*-1,false);
+                        break;
+
+                }
+
+            }
+            LogicTick(gameTime);
+
+        }
+
+
+        void Zoom(float direction){
+
+            var zoomSteps = worldRenderer.ViewPort.AvailableZoomSteps;
+            var currentZoom = worldRenderer.ViewPort.Zoom;
+            var nextIndex = zoomSteps.IndexOf(currentZoom);
+
+            if (direction < 0)
+                nextIndex--;
+            else
+                nextIndex++;
+
+            if (nextIndex < 0 || nextIndex >= zoomSteps.Count())
+                return;
+
+            var zoom = zoomSteps.ElementAt(nextIndex);
+            if (!IsZoomAllowed(zoom))
+                return;
+            worldRenderer.ViewPort.Zoom = zoom;
+        }
+
+        bool IsZoomAllowed(float zoom){
+
+            return zoom >= 1.0f;
         }
         protected override void Draw(GameTime gameTime)
         {
             //Console.WriteLine("gametime:" + gameTime.ElapsedGameTime.TotalMilliseconds);
-            //RenderTick();
+            RenderTick();
             //GraphicsDevice.Clear(Color.Yellow);
         }
 
@@ -287,29 +392,27 @@ namespace EW
                     var integralTickTimestep = (worldTickDelta / worldTimestep) * worldTimestep;
                     orderManager.LastTickTime += integralTickTimestep >= TimestepJankThreshold ? integralTickTimestep : worldTimestep;
                     Sound.Tick();
+                    Sync.CheckSyncUnchanged(world,orderManager.TickImmediate);
                     if (world == null) return;
-                    //Don't tick when the shellmap is disabled
-                    if (world.ShouldTick)
+
+                    var isNetTick = LocalTick % NetTickScale == 0;
+                    if (!isNetTick || orderManager.IsReadyForNextFrame)
                     {
-                        var isNetTick = LocalTick % NetTickScale == 0;
-                        if (!isNetTick || orderManager.IsReadyForNextFrame)
-                        {
-                            ++orderManager.LocalFrameNumber;
+                        ++orderManager.LocalFrameNumber;
 
-                            if (isNetTick)
-                                orderManager.Tick();
+                        if (isNetTick)
+                            orderManager.Tick();
 
-                            world.Tick();
-                            PerfHistory.Tick();
-                        }
-                        else if (orderManager.NetFrameNumber == 0)
-                            orderManager.LastTickTime = RunTime;
-
-                        //Wait until we have done our first world Tick before TickRendering
-
-                        if (orderManager.LocalFrameNumber > 0)
-                            Sync.CheckSyncUnchanged(world, () => world.TickRender(worldRenderer));
+                        world.Tick();
+                        PerfHistory.Tick();
                     }
+                    else if (orderManager.NetFrameNumber == 0)
+                        orderManager.LastTickTime = RunTime;
+
+                    //Wait until we have done our first world Tick before TickRendering
+
+                    if (orderManager.LocalFrameNumber > 0)
+                        Sync.CheckSyncUnchanged(world, () => world.TickRender(worldRenderer));
                 }
             }
         }

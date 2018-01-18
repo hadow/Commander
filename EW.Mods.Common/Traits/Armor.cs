@@ -4,7 +4,9 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Traits
 {
-
+    /// <summary>
+    /// 盔甲
+    /// </summary>
     public class ArmorInfo : UpgradableTraitInfo
     {
         public readonly string Type = null;

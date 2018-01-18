@@ -49,8 +49,6 @@ namespace EW
 
         public Player(World world,Session.Client client,PlayerReference pr)
         {
-            string botT;
-
             World = world;
             InternalName = pr.Name;
             PlayerReference = pr;
@@ -86,14 +84,28 @@ namespace EW
                 NonCombatant = pr.NonCombatant;
                 Playable = pr.Playable;
                 Spectating = pr.Spectating;
-                botT = pr.Bot;
+                BotType = pr.Bot;
                 Faction = ChooseFaction(world, pr.Faction, false);
                 DisplayFaction = ChooseDisplayFaction(world, pr.Faction);
             }
 
             PlayerActor = world.CreateActor("Player", new TypeDictionary() { new OwnerInit(this)});
             Shroud = PlayerActor.Trait<Shroud>();
-            fogVisibilities = PlayerActor.TraitsImplementing<IFogVisibilityModifier>().ToArray();
+            //fogVisibilities = PlayerActor.TraitsImplementing<IFogVisibilityModifier>().ToArray();
+            IsBot = BotType != null;
+
+            //Enable the bot logic on the host
+            if(IsBot && WarGame.IsHost){
+
+                var logic = PlayerActor.TraitsImplementing<IBot>().FirstOrDefault(b => b.Info.Type == BotType);
+                if(logic == null)
+                {
+                    
+                }
+                else{
+                    logic.Activate(this);
+                }
+            }
         }
 
 

@@ -19,15 +19,15 @@ namespace EW.Widgets
 
         }
 
-        public static Widget OpenWindow(string id)
-        {
+        //public static Widget OpenWindow(string id)
+        //{
 
-        }
+        //}
 
-        public static Widget OpenWindow(string id,WidgetArgs args)
-        {
-            var window = WarGame.ModData.wi
-        }
+        //public static Widget OpenWindow(string id,WidgetArgs args)
+        //{
+        //    var window = WarGame.ModData.WidgetLoader
+        //}
     }
 
     public class ContainerWidget : Widget

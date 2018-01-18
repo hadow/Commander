@@ -7,7 +7,7 @@ using EW.Graphics;
 using EW.Mods.Common.Traits.Render;
 namespace EW.Mods.Common.Traits
 {
-    public enum VisibilityType { Footprint,CenterPosition,GroundPosition}
+    public enum VisibilityType { Footprint, CenterPosition, GroundPosition }
 
 
     public interface IPlaceBuildingDecorationInfo : ITraitInfo
@@ -38,6 +38,8 @@ namespace EW.Mods.Common.Traits
     [RequireExplicitImplementation]
     public interface INotifyBuildComplete { void BuildingComplete(Actor self); }
 
+
+    public interface INotifyBurstComplete { void FiredBurst(Actor self, Target target, Armament a); }
     [RequireExplicitImplementation]
     public interface INotifyAttack
     {
@@ -46,9 +48,22 @@ namespace EW.Mods.Common.Traits
         void Attacking(Actor self, Target target, Armament a, Barrel barrel);
     }
 
-#endregion
+    public interface INotifyDamage{
+        void Damaged(Actor self, AttackInfo attackInfo);
+    }
+
+    public interface INotifyKilled{
+        void Killed(Actor self, AttackInfo attackInfo);
+    }
+
+    public interface INotifyAppliedDamage{
+        void AppliedDamage(Actor self, Actor damaged, AttackInfo attackInfo);
+    }
+
+    #endregion
     [RequireExplicitImplementation]
-    public interface IBlocksProjectiles{
+    public interface IBlocksProjectiles
+    {
 
         WDist BlockingHeight { get; }
     }
@@ -103,10 +118,10 @@ namespace EW.Mods.Common.Traits
 
     }
 
-	public interface IRenderActorPreviewInfo : ITraitInfo
-	{
+    public interface IRenderActorPreviewInfo : ITraitInfo
+    {
         IEnumerable<IActorPreview> RenderPreview(ActorPreviewInitializer init);
-	}
+    }
 
     public interface IRenderActorPreviewVoxelsInfo : ITraitInfo
     {
@@ -115,7 +130,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public interface IConditionConsumerInfo:ITraitInfo{}
+    public interface IConditionConsumerInfo : ITraitInfo { }
 
     public interface IDeathActorInitModifier
     {
@@ -149,11 +164,25 @@ namespace EW.Mods.Common.Traits
 
         public IEnumerable<string> Variables;
 
-        public VariableObserver(VariableObserverNotifier notifier,IEnumerable<string> variables)
+        public VariableObserver(VariableObserverNotifier notifier, IEnumerable<string> variables)
         {
             Notifier = notifier;
             Variables = variables;
         }
     }
+
+
+    #region Modifier
+    [RequireExplicitImplementation]
+    public interface IRangeModifier { int GetRangeModifier(); }
+
+    [RequireExplicitImplementation]
+    public interface IRangeModifierInfo : ITraitInfoInterface { int GetRangeModifierDefault(); }
+
+    [RequireExplicitImplementation]
+    public interface IPowerModifier { int GetPowerModifier(); }
+
+
+    #endregion
 
 }

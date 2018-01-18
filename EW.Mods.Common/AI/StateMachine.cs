@@ -7,7 +7,7 @@ namespace EW.Mods.Common.AI
     {
         void Activate(Squad bot);
         void Tick(Squad bot);
-        void Deactive(Squad bot);
+        void Deactivate(Squad bot);
     }
     class StateMachine
     {
@@ -19,5 +19,27 @@ namespace EW.Mods.Common.AI
             if (currentState != null)
                 currentState.Tick(squad);
         }
+
+        public void ChangeState(Squad squad,IState newState,bool rememberPrevious){
+
+            if (rememberPrevious)
+                previousState = currentState;
+
+            if (currentState != null)
+                currentState.Deactivate(squad);
+
+            if (newState != null)
+                currentState = newState;
+
+            if (currentState != null)
+                currentState.Activate(squad);
+
+        }
+
+        public void RevertToPreviousState(Squad squad,bool saveCurrentState){
+
+            ChangeState(squad,previousState,saveCurrentState);
+        }
+
     }
 }

@@ -6,7 +6,9 @@ namespace EW.Mods.Common.Traits
 {
     public class BuildableInfo : TraitInfo<Buildable>
     {
-
+        /// <summary>
+        /// Production queue(s) that can produce this.
+        /// </summary>
         public readonly HashSet<string> Queue = new HashSet<string>();
 
         /// <summary>

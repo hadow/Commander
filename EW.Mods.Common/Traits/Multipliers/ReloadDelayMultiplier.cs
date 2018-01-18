@@ -4,18 +4,21 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Traits
 {
-    public class ReloadDelayMultiplierInfo : UpgradeMultiplierTraitInfo
+    public class ReloadDelayMultiplierInfo : ConditionalTraitInfo
     {
+        [FieldLoader.Require]
+        public readonly int Modifier = 100;
         public override object Create(ActorInitializer init)
         {
-            return new ReloadDelayMultiplier(this, init.Self.Info.Name);
+            return new ReloadDelayMultiplier(this);
         }
     }
-    public class ReloadDelayMultiplier:UpgradeMultiplierTrait,IReloadModifier
+    public class ReloadDelayMultiplier:ConditionalTrait<ReloadDelayMultiplierInfo>,IReloadModifier
     {
-        public ReloadDelayMultiplier(ReloadDelayMultiplierInfo info,string actorType) : base(info, "ReloadDelayMultiplier", actorType) { }
+        public ReloadDelayMultiplier(ReloadDelayMultiplierInfo info) : base(info) { }
 
-        public int GetReloadModifier() { return GetModifier(); }
-
+        int IReloadModifier.GetReloadModifier(){
+            return IsTraitDisabled ? 100 : Info.Modifier;
+        }
     }
 }

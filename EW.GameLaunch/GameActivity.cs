@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Android.OS;
 using Android.Views;
 using Android.App;
@@ -20,11 +18,11 @@ namespace EW
     /// 
     [Activity(MainLauncher =true,
         Icon ="@drawable/icon",
-        AlwaysRetainTaskState =true,LaunchMode =LaunchMode.SingleInstance,
+        //AlwaysRetainTaskState =true,LaunchMode =LaunchMode.SingleInstance,
         ScreenOrientation =ScreenOrientation.SensorLandscape,
         ConfigurationChanges =ConfigChanges.Orientation|ConfigChanges.Keyboard|ConfigChanges.KeyboardHidden)]
     //[IntentFilter(new[] { Intent.ActionView},Categories =new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },DataScheme ="file",DataMimeType ="*/*",DataPathPattern =".*\\.md")]
-    public class MyActivity: EW.Framework.Mobile.AndroidGameActivity
+    public class GameActivity: AndroidGameActivity
     {
         
         protected override void OnCreate(Bundle savedInstanceState)
@@ -45,7 +43,6 @@ namespace EW
             RequestWindowFeature(WindowFeatures.NoTitle);
             Window.SetFlags(WindowManagerFlags.Fullscreen, WindowManagerFlags.Fullscreen);
             var wg = new WarGame();
-
             var gameView = (AndroidGameView)wg.Services.GetService<View>();
             SetContentView(gameView);
             wg.Run();

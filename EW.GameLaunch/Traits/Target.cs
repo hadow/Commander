@@ -41,6 +41,15 @@ namespace EW.Traits
             };
         }
 
+        public static Target FromFrozenActor(FrozenActor a){
+            return new Target()
+            {
+                frozen = a,
+                type = TargetT.FrozenActor,
+
+            };
+        }
+
 
         TargetT type;
         Actor actor;
@@ -51,10 +60,18 @@ namespace EW.Traits
 
         public FrozenActor FrozenActor { get { return frozen; } }
         WPos pos;
+        CPos? cell;
         int generation;
 
         public bool IsValidFor(Actor targeter)
         {
+
+            if (targeter == null || Type == TargetT.Invalid)
+                return false;
+
+            if (actor != null && !actor.IsTargetableBy(targeter))
+                return false;
+            
             return true;
         }
 
@@ -131,5 +148,11 @@ namespace EW.Traits
 
             return Positions.Any(t => (t - origin).HorizontalLengthSquared <= range.LengthSquared);
         }
+
+
+        //Expose internal state for serialization by the orders code.
+        internal TargetT SerializableType{ get { return type; }}
+        internal Actor SerializableActor{ get { return actor; }}
+        internal CPos? SerializableCell{ get { return cell; }}
     }
 }

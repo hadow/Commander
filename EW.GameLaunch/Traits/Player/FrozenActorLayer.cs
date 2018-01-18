@@ -27,6 +27,8 @@ namespace EW.Traits
 
         readonly Actor actor;
 
+        readonly Player viewer;
+
         readonly Shroud shroud;
 
         public bool Visible = true;
@@ -43,6 +45,7 @@ namespace EW.Traits
 
         public Actor Actor { get { return !actor.IsDead ? actor : null; } }
 
+        public Player Viewer{ get { return viewer; }}
         public IRenderable[] Renderables = NoRenderables;
         static readonly IRenderable[] NoRenderables = new IRenderable[0];
 
@@ -50,12 +53,29 @@ namespace EW.Traits
         public Rectangle[] ScreenBounds = NoBounds;
 
         public Rectangle MouseBounds = Rectangle.Empty;
+
+        int flashTicks;
+
+
+        public FrozenActor(Actor actor,PPos[] footprint,Player viewer,bool startsRevealed){
+
+            this.actor = actor;
+            this.viewer = viewer;
+
+        }
+
+
         public IEnumerable<IRenderable> Render(WorldRenderer wr)
         {
             if (Shrouded)
                 return NoRenderables;
 
             return Renderables;
+        }
+
+
+        public void Flash(){
+            flashTicks = 5;
         }
     }
     public class FrozenActorLayer:IRender,ITick,ISync

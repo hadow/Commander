@@ -31,7 +31,12 @@ namespace EW.Mods.Common.Traits
 
         public readonly int CloakDelay = 30;
 
+        /// <summary>
+        /// Events leading to the actor getting uncloaked.
+        /// Possible values are :Attack,Move,Unload,Infiltrate,Demolish,Dock,Damage,Heal and SelfHeal.
+        /// </summary>
         public readonly UncloakType UncloakOn = UncloakType.Attack | UncloakType.Unload | UncloakType.Infiltrate | UncloakType.Demolish | UncloakType.Dock;
+
 
         public readonly string CloakSound = null;
         public readonly string UncloakSound = null;
@@ -40,8 +45,13 @@ namespace EW.Mods.Common.Traits
 
         [PaletteReference("IsPlayerPalette")]
         public readonly string Palette = "cloak";
+
         public readonly bool IsPlayerPalette = false;
 
+        /// <summary>
+        /// The condition to grant to self while cloaked.
+        /// </summary>
+        [GrantedConditionReference]
         public readonly string CloakedCondition = null;
 
 
@@ -54,7 +64,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public class Cloak:ConditionalTrait<CloakInfo>,IRenderModifier,INotifyAttack,ITick
+    public class Cloak:ConditionalTrait<CloakInfo>,IRenderModifier,INotifyDamage, INotifyAttack,ITick,IVisibilityModifier,INotifyCreated
     {
         [Sync]
         int remainingTime;
@@ -63,6 +73,9 @@ namespace EW.Mods.Common.Traits
         ConditionManager conditionManager;
 
         CPos? lastPos;
+
+        Cloak[] otherCloaks;
+
 
         bool wasCloaked = false;
 
@@ -75,23 +88,55 @@ namespace EW.Mods.Common.Traits
             remainingTime = info.InitialDelay;
         }
 
+        public bool Cloaked{ get { return !IsTraitDisabled && remainingTime <= 0; }}
+
+        protected override void Created(Actor self)
+        {
+            conditionManager = self.TraitOrDefault<ConditionManager>();
+            otherCloaks = self.TraitsImplementing<Cloak>().Where(c => c != this).ToArray();
+
+            if(Cloaked)
+            {
+                wasCloaked = true;
+
+                if (conditionManager != null && cloakedToken == ConditionManager.InvalidConditionToken && !string.IsNullOrEmpty(Info.CloakedCondition))
+                    cloakedToken = conditionManager.GrantCondition(self, Info.CloakedCondition);
+                
+            }
+
+            base.Created(self);
+        }
+
         void ITick.Tick(Actor self)
         {
             if (!IsTraitDisabled)
             {
                 if (remainingTime > 0 && !isDocking)
                     remainingTime--;
+                
 
-                if (self.IsDisabled())
+                if(Info.UncloakOn.HasFlag(UncloakType.Move) && (lastPos == null || lastPos.Value != self.Location))
+                {
                     Uncloak();
+                    lastPos = self.Location;
+
+                }
+
+                //if (self.IsDisabled())
+                    //Uncloak();
 
             }
+
+            var isCloaked = Cloaked;
+
+            if(isCloaked && !wasCloaked){
+                
+            }
+
+            wasCloaked = isCloaked;
+            firstTick = false;
         }
 
-        public bool Cloaked
-        {
-            get { return !IsTraitDisabled && remainingTime <= 0; }
-        }
 
         public void Uncloak()
         {
@@ -150,6 +195,17 @@ namespace EW.Mods.Common.Traits
         IEnumerable<Rectangle> IRenderModifier.ModifyScreenBounds(Actor self, WorldRenderer wr, IEnumerable<Rectangle> bounds)
         {
             return bounds;
+        }
+
+
+        void INotifyDamage.Damaged(Actor self,AttackInfo attackInfo){
+            if (attackInfo.Damage.Value == 0)
+                return;
+
+            var type = attackInfo.Damage.Value < 0 ? (attackInfo.attacker == self ? UncloakType.SelfHeal : UncloakType.Heal) : UncloakType.Damage;
+
+            if (Info.UncloakOn.HasFlag(type))
+                Uncloak();
         }
     }
 }

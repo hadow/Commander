@@ -1,5 +1,4 @@
-﻿using System;
-using EW.Graphics;
+﻿using EW.Graphics;
 using EW.Effects;
 using System.Collections.Generic;
 

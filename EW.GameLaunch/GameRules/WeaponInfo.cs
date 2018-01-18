@@ -45,12 +45,20 @@ namespace EW
         /// </summary>
         public readonly WDist Range = WDist.Zero;
 
-        public readonly WDist MinRange = WDist.Zero;
+        public readonly WDist MinRange = WDist.Zero;//The minimum range the weapon can fire.
 
         /// <summary>
         /// The sound played when the weapon is fired.
         /// </summary>
         public readonly string[] Report = null;
+
+        public readonly string[] StartBurstReport = null;
+
+        public readonly string[] AfterFireSound = null;
+
+        public readonly int AfterFireSoundDelay = 0;
+
+
 
         /// <summary>
         /// 重新装载弹药之间的延迟
@@ -67,9 +75,9 @@ namespace EW
         /// </summary>
         public readonly HashSet<string> InvalidTargets = new HashSet<string>();
 
-        public readonly int Burst = 1;
+        public readonly int Burst = 1;//爆破
 
-        public readonly int BurstDelay = 5;
+        public readonly int[] BurstDelays = { 5 };
 
         [FieldLoader.LoadUsing("LoadProjectile")]
         public readonly IProjectileInfo Projectile;
@@ -81,6 +89,8 @@ namespace EW
         /// Does the weapon aim at the target's center regardless of other targetable offsets?
         /// </summary>
         public readonly bool TargetActorCenter = false;
+
+
         public WeaponInfo(string name, MiniYaml content)
         {
             FieldLoader.Load(this, content);
@@ -171,10 +181,13 @@ namespace EW
                 var cellInfo = world.Map.GetTerrainInfo(cell);
                 if (!IsValidTarget(cellInfo.TargetTypes))
                     return false;
+
+                return true;
             }
 
             return false;
         }
+
 
         public bool IsValidAgainst(Actor victim,Actor firedBy)
         {

@@ -28,7 +28,12 @@ namespace EW.Traits
 
         public void SetTarget(Actor self,Target target,Color c,bool display)
         {
+            targets = new List<Target>() { target };
+            this.c = c;
 
+            if (display)
+                lifetime = info.Delay;
+            
         }
 
         public void SetTargets(Actor self,List<Target> targets,Color c,bool display)
@@ -105,6 +110,25 @@ namespace EW.Traits
                 {
                     line.SetTarget(self, target, color, display);
                 }
+            });
+        }
+
+
+        public static void SetTargetLine(this Actor self,FrozenActor target,Color color,bool display){
+
+            if (self.Owner != self.World.LocalPlayer)
+                return;
+
+            self.World.AddFrameEndTask(w=>{
+
+                if (self.Disposed)
+                    return;
+
+                target.Flash();
+
+                var line = self.TraitOrDefault<DrawLineToTarget>();
+                if (line != null)
+                    line.SetTarget(self, Target.FromPos(target.CenterPosition), color, display);
             });
         }
     }

@@ -25,7 +25,13 @@ namespace EW.Effects
         }
         public void Tick(World world)
         {
+            if (--delay <= 0)
+                world.AddFrameEndTask(w =>
+                {
 
+                    w.Remove(this);
+                    wh.DoImpact(target, firedBy, damageModifiers);
+                });
         }
 
         public IEnumerable<IRenderable> Render(WorldRenderer wr)

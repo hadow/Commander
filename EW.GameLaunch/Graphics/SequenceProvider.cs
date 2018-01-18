@@ -177,11 +177,5 @@ namespace EW.Graphics
 
         }
 
-        //protected override void Dispose(bool disposing)
-        //{
-        //    base.Dispose(disposing);
-        //    if (spriteCache.IsValueCreated)
-        //        spriteCache.Value.SheetBuilder.Dispose();
-        //}
     }
 }

@@ -143,6 +143,14 @@ namespace EW
 
         }
 
+
+        public Actor GetActorById(uint actorID){
+            Actor a;
+            if (actors.TryGetValue(actorID, out a))
+                return a;
+            return null;
+        }
+
         public void SetPlayers(IEnumerable<Player> players,Player localPlayer)
         {
             if (Players.Length > 0)
@@ -425,7 +433,10 @@ namespace EW
 
         }
 
-
+        /// <summary>
+        /// Syncs the hash.
+        /// </summary>
+        /// <returns>The hash.</returns>
         public int SyncHash()
         {
             var n = 0;

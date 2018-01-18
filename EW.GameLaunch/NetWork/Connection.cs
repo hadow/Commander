@@ -34,4 +34,43 @@ namespace EW.NetWork
     class Connection
     {
     }
+
+
+    class EchoConnection:IConnection{
+
+        protected struct ReceivedPacket{
+            public int FromClient;
+            public byte[] data;
+
+        }
+
+        public virtual int LocalClientId{ get { return 1; }}
+
+        public virtual ConnectionState ConnectionState{ get { return ConnectionState.PreConnecting; }}
+
+        public virtual void Send(int frame,List<byte[]> orders){
+            
+        }
+
+        public virtual void SendImmediate(List<byte[]> orders){
+            
+        }
+
+        public virtual void SendSync(int frame,byte[] syncData){
+            
+        }
+
+        protected virtual void Send(byte[] packet){
+
+
+        }
+
+        public virtual void Receive(Action<int,byte[]> packetFn){
+            
+        }
+
+        public void Dispose(){
+            
+        }
+    }
 }

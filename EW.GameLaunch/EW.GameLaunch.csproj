@@ -19,6 +19,7 @@
     <AndroidTlsProvider>
     </AndroidTlsProvider>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -32,25 +33,21 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
-    <AndroidSupportedAbis>armeabi,armeabi-v7a,x86</AndroidSupportedAbis>
     <PlatformTarget>x86</PlatformTarget>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
+    <DefineConstants>ANDROID;OPENGL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
@@ -67,6 +64,15 @@
     <Reference Include="Mono.Android" />
     <Reference Include="Eluant">
       <HintPath>..\..\Eluant\Eluant\bin\Debug\Eluant.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpFont">
+      <HintPath>..\packages\SharpFont\SharpFont.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="FuzzyLogicLibrary">
+      <HintPath>..\packages\FuzzyLogicLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -868,9 +874,6 @@
     <Compile Include="..\EW.Mods.Common\Traits\Multipliers\SpeedMultiplier.cs">
       <Link>External_Common\Traits\Multipliers\SpeedMultiplier.cs</Link>
     </Compile>
-    <Compile Include="..\EW.Mods.Common\Traits\Multipliers\UpgradableMultiplier.cs">
-      <Link>External_Common\Traits\Multipliers\UpgradableMultiplier.cs</Link>
-    </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\MustBeDestroyed.cs">
       <Link>External_Common\Traits\MustBeDestroyed.cs</Link>
     </Compile>
@@ -1535,7 +1538,7 @@
     <Compile Include="NetWork\Session.cs" />
     <Compile Include="NetWork\SyncReport.cs" />
     <Compile Include="ObjectCreator.cs" />
-    <Compile Include="MyActivity.cs" />
+    <Compile Include="GameActivity.cs" />
     <Compile Include="Orders\IOrderGenerator.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
@@ -1609,6 +1612,9 @@
     <Compile Include="WVec.cs" />
     <Compile Include="Graphics\Renderable.cs" />
     <Compile Include="CacheStorage.cs" />
+    <Compile Include="NetWork\OrderIO.cs" />
+    <Compile Include="NetWork\FrameData.cs" />
+    <Compile Include="NetWork\UnitOrders.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />
@@ -1917,46 +1923,46 @@
     <AndroidNativeLibrary Include="lib\x86\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\x86_64\libfreetype.so" />
-    <AndroidAsset Include="Content\mods\common\assetbrowser.yaml" />
-    <AndroidAsset Include="Content\mods\common\color-picker.yaml" />
-    <AndroidAsset Include="Content\mods\common\confirmation-dialogs.yaml" />
-    <AndroidAsset Include="Content\mods\common\connection.yaml" />
-    <AndroidAsset Include="Content\mods\common\credits.yaml" />
-    <AndroidAsset Include="Content\mods\common\dropdowns.yaml" />
-    <AndroidAsset Include="Content\mods\common\editor.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-chat.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-debug.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-fmvplayer.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-info.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-infobriefing.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-infochat.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-infoobjectives.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-infoscripterror.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-infostats.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-menu.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-observer.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-observerstats.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame-perf.yaml" />
-    <AndroidAsset Include="Content\mods\common\ingame.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-kickdialogs.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-mappreview.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-music.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-options.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-players.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby-servers.yaml" />
-    <AndroidAsset Include="Content\mods\common\lobby.yaml" />
-    <AndroidAsset Include="Content\mods\common\mainmenu.yaml" />
-    <AndroidAsset Include="Content\mods\common\map-chooser.yaml" />
-    <AndroidAsset Include="Content\mods\common\missionbrowser.yaml" />
-    <AndroidAsset Include="Content\mods\common\multiplayer-browser.yaml" />
-    <AndroidAsset Include="Content\mods\common\multiplayer-browserpanels.yaml" />
-    <AndroidAsset Include="Content\mods\common\multiplayer-createserver.yaml" />
-    <AndroidAsset Include="Content\mods\common\multiplayer-directconnect.yaml" />
-    <AndroidAsset Include="Content\mods\common\musicplayer.yaml" />
-    <AndroidAsset Include="Content\mods\common\replaybrowser.yaml" />
-    <AndroidAsset Include="Content\mods\common\settings.yaml" />
-    <AndroidAsset Include="Content\mods\common\tooltips.yaml" />
     <None Include="Resources\AboutResources.txt" />
+    <AndroidAsset Include="Content\mods\common\chrome\assetbrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\color-picker.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\tooltips.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\settings.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\replaybrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\musicplayer.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\multiplayer-directconnect.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\multiplayer-createserver.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\multiplayer-browserpanels.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\confirmation-dialogs.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\connection.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\credits.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\dropdowns.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\editor.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-chat.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-debug.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-fmvplayer.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-info.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-infobriefing.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-infochat.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-infoobjectives.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-infoscripterror.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-infostats.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-menu.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-observer.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-observerstats.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame-perf.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-kickdialogs.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-mappreview.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-music.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-options.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-players.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\lobby-servers.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\mainmenu.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\map-chooser.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\missionbrowser.yaml" />
+    <AndroidAsset Include="Content\mods\common\chrome\multiplayer-browser.yaml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -2005,6 +2011,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
+    <Folder Include="Content\mods\common\chrome\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

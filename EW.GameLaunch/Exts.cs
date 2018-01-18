@@ -454,6 +454,12 @@ namespace EW
 
 
         public static Size NextPowerOf2(this Size s) { return new Size(NextPowerOf2(s.Width), NextPowerOf2(s.Height)); }
+
+
+        public static int IndexOf<T>(this T[] array,T value){
+
+            return Array.IndexOf(array, value);
+        }
     }
     
 }

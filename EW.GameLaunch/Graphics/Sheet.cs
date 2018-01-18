@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using EW.Framework.Graphics;
 using System.Drawing;
 namespace EW.Graphics
