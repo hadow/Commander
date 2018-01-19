@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
 using EW.Support;
+using EW.NetWork;
 using EW.Mods.Common.Traits;
 using EW.Mods.Common.Pathfinder;
 namespace EW.Mods.Common.AI
@@ -543,7 +544,10 @@ namespace EW.Mods.Common.AI
             var mobileInfo = actor.Info.TraitInfo<MobileInfo>();
             var passable = (uint)mobileInfo.GetMovementClass(World.Map.Rules.TileSet);
 
-            Func<CPos, bool> isValidResource;
+            Func<CPos, bool> isValidResource = cell=>
+                domainIndex.IsPassable(actor.Location,cell,mobileInfo,passable) &&
+                harv.CanHarvestCell(actor,cell) &&
+                claimLayer.CanClaimCell(actor,cell);
             var path = pathfinder.FindPath(
                 PathSearch.Search(World, mobileInfo, actor, true, isValidResource)
                 .WithCustomCost(loc => World.FindActorsInCircle(World.Map.CenterOfCell(loc), Info.HarvesterEnemyAvoidanceRadius)
@@ -624,10 +628,10 @@ namespace EW.Mods.Common.AI
         }
         public void Damaged(Actor self,AttackInfo e){
 
-            if (!IsEnabled || e.attacker == null)
+            if (!IsEnabled || e.Attacker == null)
                 return;
 
-            if (e.attacker.Owner.Stances[self.Owner] == Stance.Neutral)
+            if (e.Attacker.Owner.Stances[self.Owner] == Stance.Neutral)
                 return;
 
             var rb = self.TraitOrDefault<RepairableBuilding>();
@@ -637,17 +641,17 @@ namespace EW.Mods.Common.AI
 
             }
 
-            if (e.attacker.Disposed)
+            if (e.Attacker.Disposed)
                 return;
 
-            if (!e.attacker.Info.HasTraitInfo<ITargetableInfo>())
+            if (!e.Attacker.Info.HasTraitInfo<ITargetableInfo>())
                 return;
 
             if((self.Info.HasTraitInfo<HarvesterInfo>() ||
                 self.Info.HasTraitInfo<BuildingInfo>() || self.Info.HasTraitInfo<BaseBuildingInfo>())
-               && Player.Stances[e.attacker.Owner] == Stance.Enemy)
+               && Player.Stances[e.Attacker.Owner] == Stance.Enemy)
             {
-                defenseCenter = e.attacker.Location;
+                defenseCenter = e.Attacker.Location;
 
             }
             

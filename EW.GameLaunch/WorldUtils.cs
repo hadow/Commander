@@ -70,5 +70,10 @@ namespace EW
             }
             return false;
         }
+
+        public static WPos PositionClosestTo(this IEnumerable<WPos> positions,WPos pos)
+        {
+            return positions.MinByOrDefault(p => (p - pos).LengthSquared);
+        }
     }
 }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Scripting;
@@ -55,6 +57,17 @@ namespace EW
         public static WPos Lerp(WPos a,WPos b,int mul,int div)
         {
             return a + (b - a) * mul / div;
+        }
+
+        public static WPos Lerp(WPos a,WPos b,long mul,long div)
+        {
+            // The intermediate variables may need more precision than
+            // an int can provide, so we can't use WPos.
+            var x = (int)(a.X + (b.X - a.X) * mul / div);
+            var y = (int)(a.Y + (b.Y - a.Y) * mul / div);
+            var z = (int)(a.Z + (b.Z - a.Z) * mul / div);
+
+            return new WPos(x, y, z);
         }
 
         #region operator
@@ -148,5 +161,33 @@ namespace EW
 
 
         #endregion
+    }
+
+    public static class IEnumerableExtensions
+    {
+
+        public static WPos Average(this IEnumerable<WPos> source)
+        {
+            var length = source.Count();
+            if (length == 0)
+                return WPos.Zero;
+
+            var x = 0L;
+            var y = 0L;
+            var z = 0L;
+
+            foreach(var pos in source)
+            {
+                x += pos.X;
+                y += pos.Y;
+                z += pos.Z;
+            }
+
+            x /= length;
+            y /= length;
+            z /= length;
+
+            return new WPos((int)x, (int)y, (int)z);
+        }
     }
 }

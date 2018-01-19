@@ -97,13 +97,14 @@ namespace EW.Mods.Common.Traits
         /// <param name="damage"></param>
         /// <param name="warhead"></param>
         /// <param name="ignoreModifiers"></param>
-        public void InflictDamage(Actor self,Actor attacker,int damage,IWarHead warhead,bool ignoreModifiers)
+        public void InflictDamage(Actor self,Actor attacker,Damage damage,bool ignoreModifiers)
         {
             if (IsDead)
                 return;
 
             var oldState = DamageState;
-            if(!ignoreModifiers && damage > 0)
+            //Apply any damage modifiers
+            if(!ignoreModifiers && damage.Value > 0)
             {
 
             }
@@ -111,7 +112,7 @@ namespace EW.Mods.Common.Traits
 
         public void Kill(Actor self,Actor attacker)
         {
-
+            InflictDamage(self, attacker, new Damage(MaxHP), true);
         }
 
 

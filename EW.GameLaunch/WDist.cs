@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Scripting;
@@ -71,6 +72,9 @@ namespace EW
         public static WDist operator -(WDist a) { return new WDist(-a.Length); }
 
         public static WDist operator /(WDist a, int b) { return new WDist(a.Length / b); }
+
+
+        public static WDist operator *(int a,WDist b) { return new WDist(a * b.Length); }
         #endregion
 
         public static bool TryParse(string s,out WDist result)
@@ -107,7 +111,15 @@ namespace EW
 
         public static WDist FromCells(int cells) { return new WDist(1024 * cells); }
 
-
+        //Sampled a N-sample probability density function in the range[-1024...1024]
+        //1 sample produces a rectangular probability
+        //2 sample produces a triangular probability.
+        //
+        //N samples approximates a true Gaussian.
+        public static WDist FromPDF(MersenneTwister r,int samples)
+        {
+            return new WDist(Exts.MakeArray(samples, _ => r.Next(-1024, 1024)).Sum() / samples);
+        }
         #region Scripting interface
 
         public LuaValue Add(LuaRuntime runtime,LuaValue left,LuaValue right)

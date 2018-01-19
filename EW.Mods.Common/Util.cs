@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Support;
 using EW.Mods.Common.Traits;
 using System.Linq;
+using EW.Traits;
 namespace EW.Mods.Common
 {
     public static class Util
@@ -85,6 +86,16 @@ namespace EW.Mods.Common
                 return (facing - rot) & 0xFF;
         }
 
+
+        public static bool FacingWithinTolerance(int facing,int desiredFacing,int facingTolerance)
+        {
+            if (facingTolerance == 0 && facing == desiredFacing)
+                return true;
+
+            var delta = Util.NormalizeFacing(desiredFacing - facing);
+            return delta <= facingTolerance || delta >= 256 - facingTolerance;
+        }
+
         public static int ApplyPercentageModifiers(int number,IEnumerable<int> percentages)
         {
             var a = (decimal)number;
@@ -155,6 +166,42 @@ namespace EW.Mods.Common
             var toPos = to.Layer == 0 ? w.Map.CenterOfCell(to) : w.GetCustomMovementLayers()[to.Layer].CenterOfCell(to);
 
             return WPos.Lerp(fromPos, toPos, 1, 2);
+        }
+
+
+        public static WDist MinimumRequiredBlockerScanRadius(Ruleset rules)
+        {
+            return rules.Actors.Where(a => a.Value.HasTraitInfo<IBlocksProjectilesInfo>())
+                .SelectMany(a => a.Value.TraitInfos<HitShapeInfo>()).Max(h => h.Type.OuterRadius);
+        }
+
+
+        public static IEnumerable<CPos> AdjacentCells(World w,Target target)
+        {
+            var cells = target.Positions.Select(p => w.Map.CellContaining(p)).Distinct();
+            return ExpandFootprint(cells, true);
+        }
+
+        public static IEnumerable<CPos> ExpandFootprint(IEnumerable<CPos> cells,bool allowDiagonal)
+        {
+            return cells.SelectMany(c => Neighbours(c, allowDiagonal)).Distinct();
+        }
+
+        static IEnumerable<CPos> Neighbours(CPos c,bool allowDiagonal)
+        {
+            yield return c;
+            yield return new CPos(c.X - 1, c.Y);
+            yield return new CPos(c.X + 1, c.Y);
+            yield return new CPos(c.X, c.Y - 1);
+            yield return new CPos(c.X, c.Y + 1);
+
+            if (allowDiagonal)
+            {
+                yield return new CPos(c.X - 1, c.Y - 1);
+                yield return new CPos(c.X + 1, c.Y - 1);
+                yield return new CPos(c.X - 1, c.Y + 1);
+                yield return new CPos(c.X + 1, c.Y + 1);
+            }
         }
     }
 }

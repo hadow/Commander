@@ -378,6 +378,17 @@ namespace EW
             }
         }
 
+
+        public static T FirstEnabledTraitOrDefault<T>(this IEnumerable<T> ts)
+        {
+            //PERF:Avoid LINQ
+            foreach (var t in ts)
+                if (t.IsTraitEnabled())
+                    return t;
+
+            return default(T);
+        }
+
         public static bool IsTraitEnabled(this object trait)
         {
             return trait as IDisabledTrait == null || !(trait as IDisabledTrait).IsTraitDisabled;

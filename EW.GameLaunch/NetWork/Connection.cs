@@ -40,16 +40,24 @@ namespace EW.NetWork
 
         protected struct ReceivedPacket{
             public int FromClient;
-            public byte[] data;
+            public byte[] Data;
 
         }
+
+        readonly List<ReceivedPacket> receivedPackets = new List<ReceivedPacket>();
 
         public virtual int LocalClientId{ get { return 1; }}
 
         public virtual ConnectionState ConnectionState{ get { return ConnectionState.PreConnecting; }}
 
-        public virtual void Send(int frame,List<byte[]> orders){
-            
+        public virtual void Send(int frame,List<byte[]> orders)
+        {
+            var ms = new MemoryStream();
+            ms.Write(BitConverter.GetBytes(frame));
+            foreach (var o in orders)
+                ms.Write(o);
+            Send(ms.ToArray());
+
         }
 
         public virtual void SendImmediate(List<byte[]> orders){
@@ -57,16 +65,35 @@ namespace EW.NetWork
         }
 
         public virtual void SendSync(int frame,byte[] syncData){
-            
+
+            var ms = new MemoryStream(4 + syncData.Length);
+            ms.Write(BitConverter.GetBytes(frame));
+            ms.Write(syncData);
+            Send(ms.GetBuffer());
         }
 
         protected virtual void Send(byte[] packet){
 
+            if (packet.Length == 0)
+                throw new NotImplementedException();
+
+            AddPacket(new ReceivedPacket { FromClient = LocalClientId, Data = packet });
+            
+        }
+
+        protected void AddPacket(ReceivedPacket packet)
+        {
+            lock (receivedPackets)
+                receivedPackets.Add(packet);
 
         }
 
         public virtual void Receive(Action<int,byte[]> packetFn){
             
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
         public void Dispose(){

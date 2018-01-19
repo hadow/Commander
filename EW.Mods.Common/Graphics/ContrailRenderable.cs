@@ -5,8 +5,13 @@ using System.Linq;
 namespace EW.Mods.Common.Graphics
 {
     
+    /// <summary>
+    /// 
+    /// </summary>
     public struct ContrailRenderable:IRenderable,IFinalizedRenderable
     {
+
+        public int Length { get { return trail.Length; } }
         readonly World world;
         readonly Color color;
         readonly int zOffset;
@@ -42,8 +47,24 @@ namespace EW.Mods.Common.Graphics
                 return;
 
             var screenWidth = wr.ScreenVector(new WVec(width, WDist.Zero, WDist.Zero))[0];
-
             var wcr = WarGame.Renderer.WorldRgbaColorRenderer;
+
+            //Start of the first line segment is the tail of the list - don't smooth it.
+            var curPos = trail[Index(next - skip - 1)];
+            var curColor = color;
+
+            for(var i =0;i<length - skip - 4; i++)
+            {
+                var j = next - skip - i - 2;
+                var nextPos = Average(trail[Index(j)], trail[Index(j - 1)], trail[Index(j - 2)], trail[Index(j - 3)]);
+                var nextColor = Exts.ColorLerp(i * 1f / (length - 4), color, Color.Transparent);
+
+                if (!world.FogObscures(curPos) && !world.FogObscures(nextPos))
+                    wcr.DrawLine(wr.Screen3DPosition(curPos), wr.Screen3DPosition(nextPos), screenWidth, curColor, nextColor);
+
+                curPos = nextPos;
+                curColor = nextColor;
+            }
 
 
         }
@@ -80,6 +101,26 @@ namespace EW.Mods.Common.Graphics
 
             var j = i % trail.Length;
             return j < 0 ? j + trail.Length : j;
+        }
+
+
+        public void Update(WPos pos)
+        {
+            trail[next] = pos;
+            next = Index(next + 1);
+            if (length < trail.Length)
+                length++;
+        }
+
+        public static Color ChooseColor(Actor self)
+        {
+            var ownerColor = Color.FromArgb(255, self.Owner.Color.RGB);
+            return Exts.ColorLerp(0.5f, ownerColor, Color.White);
+        }
+
+        static WPos Average(params WPos[] list)
+        {
+            return list.Average();
         }
     }
 }

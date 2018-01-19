@@ -32,6 +32,7 @@ namespace EW
         internal readonly TraitDictionary TraitDict = new TraitDictionary();
         internal readonly OrderManager OrderManager;
 
+        public Session LobbyInfo { get { return OrderManager.LobbyInfo; } }
         readonly List<IEffect> effects = new List<IEffect>();
         readonly List<ISync> syncedEffects = new List<ISync>();
 

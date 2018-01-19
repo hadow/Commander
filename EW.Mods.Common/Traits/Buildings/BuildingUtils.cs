@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-namespace EW.Mods.Common.Traits.Buildings
+namespace EW.Mods.Common.Traits
 {
     public static class BuildingUtils
     {

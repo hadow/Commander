@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
-using EW.Framework;
 using System.Drawing;
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
 
@@ -140,7 +140,7 @@ namespace EW.Mods.Common.Traits
                 ab.AttackTarget(target, false, allowMove);
         }
 
-        public void Tick(Actor self)
+        void ITick.Tick(Actor self)
         {
             if (IsTraitDisabled)
                 return;
@@ -215,7 +215,7 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 
+        /// 选择攻击目标
         /// </summary>
         /// <param name="self"></param>
         /// <param name="ab"></param>
@@ -229,7 +229,10 @@ namespace EW.Mods.Common.Traits
             var chosenTargetPriority = int.MinValue;
             int chosenTargetRange = 0;
 
-            var activePriorities = targetPriorities.Where(Exts.IsTraitEnabled).Select(at => at.Info).OrderByDescending(ati => ati.Priority).ToList();
+            var activePriorities = targetPriorities.Where(Exts.IsTraitEnabled)
+                .Select(at => at.Info)
+                .OrderByDescending(ati => ati.Priority)
+                .ToList();
 
             if (!activePriorities.Any())
                 return null;
@@ -237,6 +240,11 @@ namespace EW.Mods.Common.Traits
             var actorsInRange = self.World.FindActorsInCircle(self.CenterPosition, scanRange);
             foreach(var actor in actorsInRange)
             {
+                //PERF:Most units can only attack enemy units.If this is the case but the target is not an enemy,
+                //We can bail early and avoid the more expensive targeting checks and armaments selection.
+                //For groups of allied units.this helps significantly reduce the cost of auto target scans.
+                //This is important as these groups will continuously rescan their allies until an enemy finally comes into range.
+                //
                 if (attackStances == EW.Traits.Stance.Enemy && !actor.AppearsHostileTo(self))
                     continue;
 
@@ -245,6 +253,7 @@ namespace EW.Mods.Common.Traits
                 var target = Target.FromActor(actor);
                 var validPriorities = activePriorities.Where(ati =>
                 {
+                    //Already have a higher priority target.
                     if (ati.Priority < chosenTargetPriority)
                         return false;
 
@@ -255,9 +264,10 @@ namespace EW.Mods.Common.Traits
 
                 }).ToList();
 
-                if (!validPriorities.Any() ||!self.Owner.CanTargetActor(actor))
+                if (!validPriorities.Any() || PreventsAutoTarget(self,actor) || !actor.CanBeViewedByPlayer(self.Owner))
                     continue;
-                //
+
+                //Make sure that we can actually fire on the actor.
                 var armaments = ab.ChooseArmamentsForTarget(target,false);
 
                 if (!allowMove)
@@ -266,6 +276,7 @@ namespace EW.Mods.Common.Traits
                 if (!armaments.Any())
                     continue;
 
+                //Evaluate whether we want to target this actor.
                 var targetRange = (target.CenterPosition - self.CenterPosition).Length;
                 foreach(var ati in validPriorities)
                 {
@@ -281,6 +292,54 @@ namespace EW.Mods.Common.Traits
             return chosenTarget;
 
         }
+
+        bool PreventsAutoTarget(Actor attacker,Actor target)
+        {
+            foreach (var pat in target.TraitsImplementing<IPreventsAutoTarget>())
+                if (pat.PreventsAutoTarget(target, attacker))
+                    return true;
+
+            return false;
+        }
+
+
+        void INotifyDamage.Damaged(Actor self, AttackInfo attackInfo)
+        {
+            if (IsTraitDisabled || !self.IsIdle || Stance < UnitStance.ReturnFire)
+                return;
+
+            if (attackInfo.Damage.Value < 0)
+                return;
+
+            var attacker = attackInfo.Attacker;
+            if (attacker.Disposed)
+                return;
+
+            if (!attacker.IsInWorld)
+            {
+                //If the aggressor is in a transport,then attack the transport instead.
+                //如果攻击者在交通工具上，那就攻击交通工具
+                var passenger = attacker.TraitOrDefault<Passenger>();
+                if (passenger != null && passenger.Transport != null)
+                    attacker = passenger.Transport;
+            }
+
+            var attackerAsTarget = Target.FromActor(attacker);
+
+            if (!activeAttackBases.Any(a => a.HasAnyValidWeapons(attackerAsTarget)))
+                return;
+
+            //Don't retaliate against own units force-firing on us.It's usually not what the player wanted.
+            //不要对自己的部队进行报复，这通常不是玩家想要的结果
+            if (attacker.AppearsFriendlyTo(self))
+                return;
+
+            Aggressor = attacker;
+
+            bool allowMove;
+            if (ShouldAttack(out allowMove))
+                Attack(self, Aggressor, allowMove);
+        }
     }
 
 
@@ -295,6 +354,7 @@ namespace EW.Mods.Common.Traits
     //}
 
     public enum UnitStance { HoldFire,ReturnFire,Defend,AttackAnything}
+
     public class StanceInit : IActorInit<UnitStance>
     {
         [FieldFromYamlKey]

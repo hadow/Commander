@@ -32,7 +32,7 @@ namespace EW.Mods.Common.Activities
 
 
         readonly Mobile mobile;
-        List<CPos> path;
+        List<CPos> path;            //移动路径
         CPos? destination;          //目的地
 
         //Scriptable move order
@@ -65,7 +65,8 @@ namespace EW.Mods.Common.Activities
                 if (!this.destination.HasValue)
                     return NoPath;
 
-                return self.World.WorldActor.Trait<IPathFinder>().FindUnitPath(mobile.ToCell, this.destination.Value, self, ignoreActor);
+                return self.World.WorldActor.Trait<IPathFinder>()
+                .FindUnitPath(mobile.ToCell, this.destination.Value, self, ignoreActor);
             };
 
             //Note:Will be recalculated from OnFirstRun if evaluateNearestMovableCell is true
@@ -75,11 +76,7 @@ namespace EW.Mods.Common.Activities
             this.ignoreActor = ignoreActor;
             this.evaluateNearestMovableCell = evaluateNearestMovableCell;
         }
-
-        public Move(Actor self,CPos destination,Actor ignoredActor)
-        {
-
-        }
+        
 
         public Move(Actor self,Func<List<CPos>> getPath)
         {

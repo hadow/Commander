@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.Traits;
 using EW.Mods.Common.Graphics;
+using System.Drawing;
 namespace EW.Mods.Common.Projectiles
 {
 
@@ -101,7 +102,7 @@ namespace EW.Mods.Common.Projectiles
         public readonly string TrailPalette = "effect";
 
 
-        public readonly WDist AirburstAltitude = WDist.Zero;//垂直高度
+        public readonly WDist AirburstAltitude = WDist.Zero;//空中高度
 
         /// <summary>
         /// Use the Player Palette to render the trail sequence.
@@ -111,6 +112,7 @@ namespace EW.Mods.Common.Projectiles
         //轨迹
         public readonly int ContrailLength = 0;
         public readonly int ContrailZOffset = 2047;
+        public readonly Color ContrailColor = Color.White;
         public readonly bool ContrailUsePlayerColor = false;
         public readonly int ContrailDelay = 1;
         public readonly WDist ContrailWidth = new WDist(64);
@@ -189,7 +191,7 @@ namespace EW.Mods.Common.Projectiles
             }
 
             if(info.AirburstAltitude>WDist.Zero){
-                
+                target += new WVec(WDist.Zero, WDist.Zero, info.AirburstAltitude);
             }
 
             facing = (target - pos).Yaw.Facing;
@@ -202,7 +204,8 @@ namespace EW.Mods.Common.Projectiles
 
             if(info.ContrailLength>0){
 
-
+                var color = info.ContrailUsePlayerColor ? ContrailRenderable.ChooseColor(args.SourceActor) : info.ContrailColor;
+                contrail = new ContrailRenderable(world, color, info.ContrailWidth, info.ContrailLength, info.ContrailDelay, info.ContrailZOffset);
             }
 
             trailPalette = info.TrailPalette;
@@ -219,6 +222,13 @@ namespace EW.Mods.Common.Projectiles
 
         int GetEffectiveFacing(){
 
+            var at = (float)ticks / (length - 1);
+            var attitude = angle.Tan() * (1 - 2 * at) / (4 * 1024);
+
+            var u = (facing % 128) / 128f;
+            var scale = 512 * u * (1 - u);
+
+            return (int)(facing < 128 ? facing - scale * attitude : facing + scale * attitude);
 
         }
         public void Tick(World world)

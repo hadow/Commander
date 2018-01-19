@@ -20,7 +20,7 @@ namespace EW.Mods.Common.Scripting
             get { return health.HP; }
             set
             {
-                health.InflictDamage(Self, Self, health.HP - value, null, true);
+                health.InflictDamage(Self, Self, new Damage(health.HP - value), true);
             }
         }
 
@@ -28,7 +28,7 @@ namespace EW.Mods.Common.Scripting
 
         public void Kill()
         {
-            health.InflictDamage(Self, Self, health.MaxHP, null, true);
+            health.InflictDamage(Self, Self,new Damage(health.MaxHP), true);
         }
 
 

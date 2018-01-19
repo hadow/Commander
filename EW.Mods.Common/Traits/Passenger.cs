@@ -11,7 +11,9 @@ namespace EW.Mods.Common.Traits
 
         [UpgradeGrantedReference]
         public readonly string[] GrantUpgrades = { };
-
+        
+        [VoiceReference]
+        public readonly string Voice = "Action";
         public object Create(ActorInitializer init)
         {
             return new Passenger(this);
@@ -21,7 +23,7 @@ namespace EW.Mods.Common.Traits
     {
         public readonly PassengerInfo Info;
 
-        public Actor Trasport;
+        public Actor Transport;
 
         public Passenger(PassengerInfo info)
         {

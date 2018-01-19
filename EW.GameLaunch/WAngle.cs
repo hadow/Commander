@@ -82,6 +82,15 @@ namespace EW
             return -new WAngle(Angle - 512).Cos();
         }
 
+        public int Tan()
+        {
+            if (Angle <= 256)
+                return TanTable[Angle];
+            if (Angle <= 512)
+                return -TanTable[512 - Angle];
+            return new WAngle(Angle - 512).Tan();
+        }
+
         public static WAngle ArcTan(int y, int x) { return ArcTan(y, x, 1); }
         public static WAngle ArcTan(int y, int x, int stride)
         {

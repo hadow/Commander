@@ -299,6 +299,21 @@ namespace EW
             return false;
         }
 
+        public void Kill(Actor attacker)
+        {
+            if (Disposed || health == null)
+                return;
+            health.Kill(this, attacker);
+        }
+
+        public void InflictDamage(Actor attacker,Damage damage)
+        {
+            if (Disposed || health == null)
+                return;
+
+            health.InflictDamage(this, attacker, damage, false);
+        }
+
 
         #region Trait
 

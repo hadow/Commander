@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
-using EW.Framework;
+using EW.NetWork;
 using EW.Mods.Common.Activities;
 using System.Drawing;
 namespace EW.Mods.Common.Traits

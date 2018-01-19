@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using EW.Traits;
+using EW.NetWork;
 using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.Traits
 {
@@ -40,7 +41,7 @@ namespace EW.Mods.Common.Traits
         public void ResolveOrder(Actor self,Order order)
         {
             if (order.OrderString == "Guard")
-                GuardTarget(self, Target.FromActor(order.TargetActor), order.Queued);
+                GuardTarget(self, Target.FromActor(order.Target.SerializableActor), order.Queued);
         }
 
 

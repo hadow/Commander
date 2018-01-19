@@ -17,6 +17,8 @@ namespace EW.Mods.Common.Traits
 
     #region Notify
 
+    public interface INotifyBlockingMove { void OnNotifyBlockingMove(Actor self, Actor blocking); }
+
     public interface INotifyDeployComplete
     {
         void FinishedDeploy(Actor self);
@@ -169,6 +171,11 @@ namespace EW.Mods.Common.Traits
             Notifier = notifier;
             Variables = variables;
         }
+    }
+
+    public interface IPreventsAutoTarget
+    {
+        bool PreventsAutoTarget(Actor self, Actor attacker);
     }
 
 

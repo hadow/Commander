@@ -8,11 +8,14 @@ namespace EW.NetWork
 {
     class SyncReport
     {
-        class Report{
+        class Report
+        {
+
             public int Frame;
             public int SyncedRandom;
             public int TotalCount;
-
+            public List<TraitReport> Traits = new List<TraitReport>();
+            public List<EffectReport> Effects = new List<EffectReport>();
         }
 
         struct TraitReport{
@@ -23,6 +26,13 @@ namespace EW.NetWork
             public int Hash;
             public Pair<string[], Values> NamesValues;
 
+        }
+
+        struct EffectReport
+        {
+            public string Name;
+            public int Hash;
+            public Pair<string[], Values> NamesValues;
         }
 
         struct Values{
@@ -144,12 +154,23 @@ namespace EW.NetWork
             }
 
         }
+
+
+        const int NumSyncReports = 5;
+
         readonly OrderManager orderManager;
-
-
+        
         static Cache<Type, TypeInfo> typeInfoCache = new Cache<Type, TypeInfo>(t=>new TypeInfo(t));
 
-        public SyncReport(OrderManager orderManager){
+        readonly Report[] syncReports = new Report[NumSyncReports];
+        public SyncReport(OrderManager orderManager)
+        {
+
+            this.orderManager = orderManager;
+            for(var i = 0; i < NumSyncReports; i++)
+            {
+                syncReports[i] = new Report();
+            }
             
         }
 

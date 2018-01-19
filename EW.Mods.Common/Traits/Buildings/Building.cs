@@ -255,7 +255,7 @@ namespace EW.Mods.Common.Traits
                 return;
 
             BuildComplete = true;
-
+            UnLock();
             foreach(var notify in self.TraitsImplementing<INotifyBuildComplete>()){
                 notify.BuildingComplete(self);
             }

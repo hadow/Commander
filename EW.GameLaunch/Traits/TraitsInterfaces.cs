@@ -49,7 +49,7 @@ namespace EW.Traits
     public class AttackInfo{
 
         public Damage Damage;
-        public Actor attacker;
+        public Actor Attacker;
         public DamageState DamageState;
         public DamageState PreviousDamageState;
 
@@ -111,7 +111,7 @@ namespace EW.Traits
 
         bool IsDead { get; }
 
-        void InflictDamage(Actor self, Actor attacker, int damage,IWarHead warhead, bool ignoreModifiers);
+        void InflictDamage(Actor self, Actor attacker, Damage damage, bool ignoreModifiers);
 
         void Kill(Actor self, Actor attacker);
 
@@ -149,7 +149,7 @@ namespace EW.Traits
 
     public interface INotifySold { void Selling(Actor self); void Sold(Actor self); }
 
-    public interface INotifyBlockingMove { void OnNotifyBlockingMove(Actor self, Actor blocking); }
+    
 
     public interface INotifyCrushed
     {

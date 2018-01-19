@@ -61,7 +61,7 @@ namespace EW.Framework
         }
 
 
-        private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667);//60 fps
+        private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667/2);//60 fps
 
         private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
         

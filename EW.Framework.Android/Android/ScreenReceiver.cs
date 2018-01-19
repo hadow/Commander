@@ -6,7 +6,7 @@ namespace EW.Framework.Mobile
     /// <summary>
     /// 
     /// </summary>
-	public class ScreenReciever:BroadcastReceiver
+	public class ScreenReceiver:BroadcastReceiver
 	{
         public static bool ScreenLocked;
         
@@ -31,12 +31,12 @@ namespace EW.Framework.Mobile
 
         private void OnLocked()
         {
-            ScreenReciever.ScreenLocked = true;
+            ScreenReceiver.ScreenLocked = true;
         }
 
         private void OnUnlocked()
         {
-            ScreenReciever.ScreenLocked = false;
+            ScreenReceiver.ScreenLocked = false;
             ((AndroidGameWindow)Game.Instance.Window).GameView.Resume();
         }
 

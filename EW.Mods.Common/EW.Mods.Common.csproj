@@ -56,6 +56,7 @@
   <ItemGroup>
     <Compile Include="Activities\Air\FlyAttack.cs" />
     <Compile Include="Activities\Drag.cs" />
+    <Compile Include="Activities\FindResources.cs" />
     <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Commands\DevCommands.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
+    <Compile Include="Effects\ContrailFader.cs" />
     <Compile Include="Effects\RallyPointIndicator.cs" />
     <Compile Include="FileFormats\AudReader.cs" />
     <Compile Include="FileFormats\ImaAdpcmReader.cs" />
@@ -259,6 +261,7 @@
     <Compile Include="Traits\Huntable.cs" />
     <Compile Include="Traits\Husk.cs" />
     <Compile Include="Traits\ICommonTraits.cs" />
+    <Compile Include="Traits\IgnoresDisguise.cs" />
     <Compile Include="Traits\Immobile.cs" />
     <Compile Include="Traits\Infantry\ScaredyCat.cs" />
     <Compile Include="Traits\Infantry\TakeCover.cs" />
@@ -490,6 +493,7 @@
     <Compile Include="AI\BaseBuilder.cs" />
     <Compile Include="AI\States\GroundStates.cs" />
     <Compile Include="AI\AttackOrFleeFuzzy.cs" />
+    <Compile Include="WorldExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -508,8 +512,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Folder Include="AI\States\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

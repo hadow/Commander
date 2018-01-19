@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
-using EW.Framework;
+using EW.NetWork;
 using System.Drawing;
+using EW.Mods.Common.Traits;
 namespace EW.Mods.Common
 {
     public static class ActorExts
@@ -39,6 +40,9 @@ namespace EW.Mods.Common
                 return true;
             }
 
+            if (self.EffectiveOwner != null && self.EffectiveOwner.Disguised && !toActor.Info.HasTraitInfo<IgnoresDisguiseInfo>())
+                return toActor.Owner.Stances[self.EffectiveOwner.Owner] == Stance.Ally;
+
             return stance == Stance.Ally;
         }
 
@@ -53,6 +57,9 @@ namespace EW.Mods.Common
             var stance = toActor.Owner.Stances[self.Owner];
             if (stance == Stance.Ally)
                 return false;
+
+            if (self.EffectiveOwner != null && self.EffectiveOwner.Disguised && !toActor.Info.HasTraitInfo<IgnoresDisguiseInfo>())
+                return toActor.Owner.Stances[self.EffectiveOwner.Owner] == Stance.Enemy;
 
             return stance == Stance.Enemy;
         }

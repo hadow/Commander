@@ -57,6 +57,25 @@ namespace EW
                 }
             }
 
+            foreach(var weapon in Weapons)
+            {
+                foreach(var warhead in weapon.Value.Warheads)
+                {
+                    var cacher = warhead as IRulesetLoaded<WeaponInfo>;
+                    if (cacher != null)
+                    {
+                        try
+                        {
+                            cacher.RulesetLoaded(this, weapon.Value);
+                        }
+                        catch(YamlException e)
+                        {
+                            throw new YamlException("Weapon type {0}:{1}".F(weapon.Key, e.Message));
+                        }
+                    }
+                }
+            }
+
         }
 
 

@@ -16,16 +16,22 @@ namespace EW.Mods.Common.Traits
 
         public readonly int Facing = -1;
 
+        /// <summary>
+        /// Type tags on this exit.
+        /// </summary>
         public readonly HashSet<string> ProductionTypes = new HashSet<string>();
 
+        /// <summary>
+        /// AttackMove to a RallyPoint or stay where you are spawned.
+        /// </summary>
         public readonly bool MoveIntoWorld = true;
-
+        /// <summary>
+        /// Number of ticks to wait before moving into the world.
+        /// </summary>
         public readonly int ExitDelay = 0;
 
     }
-    public class Exit
-    {
-    }
+    public class Exit{}
 
 
     public static class ExitExts{

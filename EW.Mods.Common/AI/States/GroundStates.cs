@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using EW.Traits;
+using EW.NetWork;
 namespace EW.Mods.Common.AI
 {
     abstract class GroundStatesBase:StateBase

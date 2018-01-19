@@ -9,10 +9,17 @@ namespace EW.NetWork
 
         public Global GlobalSettings = new Global();
 
+        //Keyed by the PlayerReference id that the slot corresponds to 
+        public Dictionary<string, Slot> Slots = new Dictionary<string, Slot>();
 
 
         public Client ClientWithIndex(int clientID){
             return Clients.SingleOrDefault(c => c.Index == clientID);
+        }
+
+        public Client ClientInSlot(string slot)
+        {
+            return Clients.SingleOrDefault(c => c.Slot == slot);
         }
 
         public enum ClientState{
@@ -58,7 +65,8 @@ namespace EW.NetWork
 
         public class Slot
         {
-
+            public string PlayerReference;
+            public bool Closed;
         }
 
 

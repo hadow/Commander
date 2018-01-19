@@ -2,6 +2,7 @@ using System;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Scripting;
+using EW.Support;
 namespace EW
 {
     public struct WVec:IScriptBindable,ILuaAdditionBinding,ILuaSubtractionBinding,ILuaUnaryMinusBinding,ILuaEqualityBinding,ILuaTableBinding,IEquatable<WVec>
@@ -82,6 +83,11 @@ namespace EW
                 (int)((lx * mtx[0] + ly * mtx[4] + lz * mtx[8]) / mtx[15]),
                 (int)((lx * mtx[1] + ly * mtx[5] + lz * mtx[9]) / mtx[15]),
                 (int)((lx * mtx[2] + ly * mtx[6] + lz * mtx[10]) / mtx[15]));
+        }
+
+        public static WVec FromPDF(MersenneTwister r,int samples)
+        {
+            return new WVec(WDist.FromPDF(r, samples), WDist.FromPDF(r, samples), WDist.Zero);
         }
 
 

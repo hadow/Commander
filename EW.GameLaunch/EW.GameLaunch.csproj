@@ -9,7 +9,7 @@
     <RootNamespace>EW</RootNamespace>
     <AssemblyName>EW.GameLaunch</AssemblyName>
     <AndroidApplication>true</AndroidApplication>
-    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -37,7 +37,11 @@
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <PlatformTarget>x86</PlatformTarget>
-    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -190,6 +194,9 @@
     <Compile Include="..\EW.Mods.Common\Activities\Drag.cs">
       <Link>External_Common\Activities\Drag.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
+      <Link>External_Common\Activities\FindResources.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Move\AttackMoveActivity.cs">
       <Link>External_Common\Activities\Move\AttackMoveActivity.cs</Link>
     </Compile>
@@ -223,6 +230,12 @@
     <Compile Include="..\EW.Mods.Common\ActorInitializer.cs">
       <Link>External_Common\ActorInitializer.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\AttackOrFleeFuzzy.cs">
+      <Link>External_Common\AI\AttackOrFleeFuzzy.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\BaseBuilder.cs">
+      <Link>External_Common\AI\BaseBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\AI\HackyAI.cs">
       <Link>External_Common\AI\HackyAI.cs</Link>
     </Compile>
@@ -234,6 +247,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\AI\StateMachine.cs">
       <Link>External_Common\AI\StateMachine.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\States\GroundStates.cs">
+      <Link>External_Common\AI\States\GroundStates.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\AudioLoaders\AudLoader.cs">
       <Link>External_Common\AudioLoaders\AudLoader.cs</Link>
@@ -258,6 +274,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Commands\PlayerCommands.cs">
       <Link>External_Common\Commands\PlayerCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\ContrailFader.cs">
+      <Link>External_Common\Effects\ContrailFader.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\RallyPointIndicator.cs">
       <Link>External_Common\Effects\RallyPointIndicator.cs</Link>
@@ -294,6 +313,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\ActorPreview.cs">
       <Link>External_Common\Graphics\ActorPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\ContrailRenderable.cs">
+      <Link>External_Common\Graphics\ContrailRenderable.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\DefaultSpriteSequence.cs">
       <Link>External_Common\Graphics\DefaultSpriteSequence.cs</Link>
@@ -571,6 +593,9 @@
     <Compile Include="..\EW.Mods.Common\Traits\Buildings\BuildingInfluence.cs">
       <Link>External_Common\Traits\Buildings\BuildingInfluence.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Buildings\BuildingUtils.cs">
+      <Link>External_Common\Traits\Buildings\BuildingUtils.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Buildings\Exit.cs">
       <Link>External_Common\Traits\Buildings\Exit.cs</Link>
     </Compile>
@@ -819,6 +844,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\ICommonTraits.cs">
       <Link>External_Common\Traits\ICommonTraits.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\IgnoresDisguise.cs">
+      <Link>External_Common\Traits\IgnoresDisguise.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Immobile.cs">
       <Link>External_Common\Traits\Immobile.cs</Link>
@@ -1462,6 +1490,9 @@
     <Compile Include="..\EW.Mods.Common\Widgets\RadarWidget.cs">
       <Link>External_Common\Widgets\RadarWidget.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\WorldExtensions.cs">
+      <Link>External_Common\WorldExtensions.cs</Link>
+    </Compile>
     <Compile Include="Activities\Activity.cs" />
     <Compile Include="Activities\CallFunc.cs" />
     <Compile Include="Actor.cs" />
@@ -2011,7 +2042,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
-    <Folder Include="Content\mods\common\chrome\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

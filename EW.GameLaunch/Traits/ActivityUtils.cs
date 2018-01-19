@@ -29,7 +29,7 @@ namespace EW.Traits
             while (act != null)
             {
                 var prev = act;
-                act = act.Tick(self);
+                act = act.TickOuter(self);
                 var current = Stopwatch.GetTimestamp();
                 if (current - start > longTickThresholdInStopwatchTicks)
                 {

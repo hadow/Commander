@@ -63,7 +63,13 @@ namespace EW.Mods.Common.Traits.Render
 
         void UpdateNeighbours(Actor self)
         {
+            var footprint = gate.Footprint.ToArray();
+            var adjacent = Util.ExpandFootprint(footprint, true).Except(footprint).Where(self.World.Map.Contains).ToList();
 
+            var adjacentActorTraits = adjacent.SelectMany(self.World.ActorMap.GetActorsAt).SelectMany(a => a.TraitsImplementing<IWallConnector>());
+
+            foreach (var rb in adjacentActorTraits)
+                rb.SetDirty();
         }
 
 

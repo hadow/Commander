@@ -1,0 +1,944 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FuzzyLogicLibrary</name>
+    </assembly>
+    <members>
+        <member name="T:AI.Fuzzy.Library.GenericFuzzySystem">
+            <summary>
+            Common functionality of Mamdani and Sugeno fuzzy systems
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.GenericFuzzySystem.Input">
+            <summary>
+            Input linguistic variables
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.GenericFuzzySystem.AndMethod">
+            <summary>
+            And method
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.GenericFuzzySystem.OrMethod">
+            <summary>
+            Or method
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzySystem.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzySystem.InputByName(System.String)">
+            <summary>
+            Get input linguistic variable by its name
+            </summary>
+            <param name="name">Variable's name</param>
+            <returns>Found variable</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzySystem.Fuzzify(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Fuzzify input
+            </summary>
+            <param name="inputValues"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzySystem.EvaluateCondition(AI.Fuzzy.Library.ICondition,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyTerm,System.Double}})">
+            <summary>
+            Evaluate fuzzy condition (or conditions)
+            </summary>
+            <param name="condition">Condition that should be evaluated</param>
+            <param name="fuzzifiedInput">Input in fuzzified form</param>
+            <returns>Result of evaluation</returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.ISugenoFunction">
+            <summary>
+            Interface that must be implemented by class to be used as output function in Sugeno Fuzzy System
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.ISugenoFunction.Evaluate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Calculate result of function
+            </summary>
+            <param name="inputValues">Input values</param>
+            <returns>Result of the calculation</returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.LinearSugenoFunction">
+            <summary>
+            Lenear function for Sugeno Fuzzy System (can be created via SugenoFuzzySystem::CreateSugenoFunction methods
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.LinearSugenoFunction.ConstValue">
+            <summary>
+            Get or set constant coefficient
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.LinearSugenoFunction.GetCoefficient(AI.Fuzzy.Library.FuzzyVariable)">
+            <summary>
+            Get coefficient by fuzzy variable
+            </summary>
+            <param name="var">Fuzzy variable</param>
+            <returns>Coefficient's value</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.LinearSugenoFunction.SetCoefficient(AI.Fuzzy.Library.FuzzyVariable,System.Double)">
+            <summary>
+            Set coefficient by fuzzy variable
+            </summary>
+            <param name="var">Fuzzy variable</param>
+            <param name="coeff">New value of the coefficient</param>
+        </member>
+        <member name="M:AI.Fuzzy.Library.LinearSugenoFunction.Evaluate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Calculate result of linear function
+            </summary>
+            <param name="inputValues">Input values</param>
+            <returns>Result of the calculation</returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.SugenoVariable">
+            <summary>
+            Used as an output variable in Sugeno fuzzy inference system.
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoVariable.#ctor(System.String)">
+            <summary>
+            Cnstructor
+            </summary>
+            <param name="name">Name of the variable</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SugenoVariable.Functions">
+            <summary>
+            List of functions that belongs to the variable
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SugenoVariable.Values">
+            <summary>
+            List of functions that belongs to the variable (implementation of INamedVariable)
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoVariable.GetFuncByName(System.String)">
+            <summary>
+            Find function by its name
+            </summary>
+            <param name="name">Name of the function</param>
+            <returns>Found function</returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.MamdaniFuzzySystem">
+            <summary>
+            Mamdani fuzzy inference system
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzySystem.Output">
+            <summary>
+            Output linguistic variables
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzySystem.Rules">
+            <summary>
+            Fuzzy rules
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzySystem.ImplicationMethod">
+            <summary>
+            Implication method
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzySystem.AggregationMethod">
+            <summary>
+            Aggregation method
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzySystem.DefuzzificationMethod">
+            <summary>
+            Defuzzification method
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.OutputByName(System.String)">
+            <summary>
+            Get output linguistic variable by its name
+            </summary>
+            <param name="name">Variable's name</param>
+            <returns>Found variable</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.EmptyRule">
+            <summary>
+            Create new empty rule
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.ParseRule(System.String)">
+            <summary>
+            Parse rule from the string
+            </summary>
+            <param name="rule">String containing the rule</param>
+            <returns></returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.Calculate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Calculate output values
+            </summary>
+            <param name="inputValues">Input values (format: variable - value)</param>
+            <returns>Output values (format: variable - value)</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.EvaluateConditions(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyTerm,System.Double}})">
+            <summary>
+            Evaluate conditions 
+            </summary>
+            <param name="fuzzifiedInput">Input in fuzzified form</param>
+            <returns>Result of evaluation</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.Implicate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.MamdaniFuzzyRule,System.Double})">
+            <summary>
+            Implicate rule results
+            </summary>
+            <param name="conditions">Rule conditions</param>
+            <returns>Implicated conclusion</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.Aggregate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.MamdaniFuzzyRule,AI.Fuzzy.Library.IMembershipFunction})">
+            <summary>
+            Aggregate results
+            </summary>
+            <param name="conclusions">Rules' results</param>
+            <returns>Aggregated fuzzy result</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzySystem.Defuzzify(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,AI.Fuzzy.Library.IMembershipFunction})">
+            <summary>
+            Calculate crisp result for each rule
+            </summary>
+            <param name="fuzzyResult"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.AndMethod">
+            <summary>
+            And evaluating method
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.AndMethod.Min">
+            <summary>
+            Minimum: min(a, b)
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.AndMethod.Production">
+            <summary>
+            Production: a * b
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.OrMethod">
+            <summary>
+            Or evaluating method
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.OrMethod.Max">
+            <summary>
+            Maximum: max(a, b)
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.OrMethod.Probabilistic">
+            <summary>
+            Probabilistic OR: a + b - a * b
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.ImplicationMethod">
+            <summary>
+            Fuzzy implication method
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.ImplicationMethod.Min">
+            <summary>
+            Truncation of output fuzzy set
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.ImplicationMethod.Production">
+            <summary>
+            Scaling of output fuzzy set
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.AggregationMethod">
+            <summary>
+            Aggregation method for membership functions
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.AggregationMethod.Max">
+            <summary>
+            Maximum of rule outpus
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.AggregationMethod.Sum">
+            <summary>
+            Sum of rule output
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.DefuzzificationMethod">
+            <summary>
+            Defuzzification method
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.DefuzzificationMethod.Centroid">
+            <summary>
+            Center of area of fuzzy result MF
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.DefuzzificationMethod.Bisector">
+            <summary>
+            Not implemented
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.DefuzzificationMethod.AverageMaximum">
+            <summary>
+            Not implemented
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.MfCompositionType">
+            <summary>
+            Types of membership functions' composition
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.MfCompositionType.Min">
+            <summary>
+            Minumum of functions
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.MfCompositionType.Max">
+            <summary>
+            Maximum of functions
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.MfCompositionType.Prod">
+            <summary>
+            Production of functions
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.MfCompositionType.Sum">
+            <summary>
+            Sum of functions
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.IMembershipFunction">
+            <summary>
+            Interface of membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.IMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.TriangularMembershipFunction">
+            <summary>
+            Triangular membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TriangularMembershipFunction.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TriangularMembershipFunction.#ctor(System.Double,System.Double,System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="x1">Point 1</param>
+            <param name="x2">Point 2</param>
+            <param name="x3">Point 3</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TriangularMembershipFunction.X1">
+            <summary>
+            Point 1
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TriangularMembershipFunction.X2">
+            <summary>
+            Point 2
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TriangularMembershipFunction.X3">
+            <summary>
+            Point 3
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TriangularMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TriangularMembershipFunction.ToNormalMF">
+            <summary>
+            Approximately converts to normal membership function
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.TrapezoidMembershipFunction">
+            <summary>
+            Trapezoid membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TrapezoidMembershipFunction.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TrapezoidMembershipFunction.#ctor(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="x1">Point 1</param>
+            <param name="x2">Point 2</param>
+            <param name="x3">Point 3</param>
+            <param name="x4">Point 4</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TrapezoidMembershipFunction.X1">
+            <summary>
+            Point 1
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TrapezoidMembershipFunction.X2">
+            <summary>
+            Point 2
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TrapezoidMembershipFunction.X3">
+            <summary>
+            Point 3
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.TrapezoidMembershipFunction.X4">
+            <summary>
+            Point 4
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.TrapezoidMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.NormalMembershipFunction">
+            <summary>
+            Normal membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NormalMembershipFunction.#ctor">
+            <summary>
+            Constructor
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NormalMembershipFunction.#ctor(System.Double,System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="b">Parameter b (center of MF)</param>
+            <param name="sigma">Sigma</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.NormalMembershipFunction.B">
+            <summary>
+            Parameter b (center of MF)
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.NormalMembershipFunction.Sigma">
+            <summary>
+            Sigma
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NormalMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.ConstantMembershipFunction">
+            <summary>
+            Constant membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.ConstantMembershipFunction.#ctor(System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="constValue">Constant value</param>
+        </member>
+        <member name="M:AI.Fuzzy.Library.ConstantMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.CompositeMembershipFunction">
+            <summary>
+            Composition of several membership functions represened as single membership function
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.CompositeMembershipFunction.#ctor(AI.Fuzzy.Library.MfCompositionType)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="composType">Membership functions composition type</param>
+        </member>
+        <member name="M:AI.Fuzzy.Library.CompositeMembershipFunction.#ctor(AI.Fuzzy.Library.MfCompositionType,AI.Fuzzy.Library.IMembershipFunction,AI.Fuzzy.Library.IMembershipFunction)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="composType">Membership functions composition type</param>
+            <param name="mf1">Membership function 1</param>
+            <param name="mf2">Membership function 2</param>
+        </member>
+        <member name="M:AI.Fuzzy.Library.CompositeMembershipFunction.#ctor(AI.Fuzzy.Library.MfCompositionType,System.Collections.Generic.List{AI.Fuzzy.Library.IMembershipFunction})">
+            <summary>
+            Constructor
+            </summary>
+            <param name="composType">Membership functions composition type</param>
+            <param name="mfs">Membership functions</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.CompositeMembershipFunction.MembershipFunctions">
+            <summary>
+            List of membership functions
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.CompositeMembershipFunction.CompositionType">
+            <summary>
+            Membership functions composition type
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.CompositeMembershipFunction.GetValue(System.Double)">
+            <summary>
+            Evaluate value of the membership function
+            </summary>
+            <param name="x">Argument (x axis value)</param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.FuzzyCondition">
+            <summary>
+            Condition of fuzzy rule for the both Mamdani and Sugeno systems
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyCondition.Hedge">
+            <summary>
+            Hedge modifier
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.OperatorType">
+            <summary>
+            And/Or operator type
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.OperatorType.And">
+            <summary>
+            And operator
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.OperatorType.Or">
+            <summary>
+            Or operator
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.HedgeType">
+            <summary>
+            Hedge modifiers
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.HedgeType.None">
+            <summary>
+            None
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.HedgeType.Slightly">
+            <summary>
+            Cube root
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.HedgeType.Somewhat">
+            <summary>
+            Square root
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.HedgeType.Very">
+            <summary>
+            Square
+            </summary>
+        </member>
+        <member name="F:AI.Fuzzy.Library.HedgeType.Extremely">
+            <summary>
+            Cube
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.ICondition">
+            <summary>
+            Interface of conditions used in the 'if' expression
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.SingleCondition`2">
+            <summary>
+            Single condition
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SingleCondition`2.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SingleCondition`2.#ctor(`0,`1)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="var">A linguistic variable to which the condition is related</param>
+            <param name="term">A term in expression 'var is term'</param>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SingleCondition`2.#ctor(`0,`1,System.Boolean)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="var">A linguistic variable to which the condition is related</param>
+            <param name="term">A term in expression 'var is term'</param>
+            <param name="not">Does condition contain 'not'</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SingleCondition`2.Var">
+            <summary>
+            A linguistic variable to which the condition is related
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SingleCondition`2.Not">
+            <summary>
+            Is MF inverted
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SingleCondition`2.Term">
+            <summary>
+            A term in expression 'var is term'
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.Conditions">
+            <summary>
+            Several conditions linked by or/and operators
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.Conditions.Not">
+            <summary>
+            Is MF inverted
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.Conditions.Op">
+            <summary>
+            Operator that links expressions (and/or)
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.Conditions.ConditionsList">
+            <summary>
+            A list of conditions (single or multiples)
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.IParsableRule`2">
+            <summary>
+            Interface used by rule parser
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.IParsableRule`2.Condition">
+            <summary>
+            Condition (IF) part of the rule
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.IParsableRule`2.Conclusion">
+            <summary>
+            Conclusion (THEN) part of the rule
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.GenericFuzzyRule">
+            <summary>
+            Implements common functionality of fuzzy rules
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.GenericFuzzyRule.Condition">
+            <summary>
+            Condition (IF) part of the rule
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzyRule.CreateCondition(AI.Fuzzy.Library.FuzzyVariable,AI.Fuzzy.Library.FuzzyTerm)">
+            <summary>
+            Create a single condition
+            </summary>
+            <param name="var">A linguistic variable to which the condition is related</param>
+            <param name="term">A term in expression 'var is term'</param>
+            <returns>Generated condition</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzyRule.CreateCondition(AI.Fuzzy.Library.FuzzyVariable,AI.Fuzzy.Library.FuzzyTerm,System.Boolean)">
+            <summary>
+            Create a single condition
+            </summary>
+            <param name="var">A linguistic variable to which the condition is related</param>
+            <param name="term">A term in expression 'var is term'</param>
+            <param name="not">Does condition contain 'not'</param>
+            <returns>Generated condition</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.GenericFuzzyRule.CreateCondition(AI.Fuzzy.Library.FuzzyVariable,AI.Fuzzy.Library.FuzzyTerm,System.Boolean,AI.Fuzzy.Library.HedgeType)">
+            <summary>
+            Create a single condition
+            </summary>
+            <param name="var">A linguistic variable to which the condition is related</param>
+            <param name="term">A term in expression 'var is term'</param>
+            <param name="not">Does condition contain 'not'</param>
+            <param name="hedge">Hedge modifier</param>
+            <returns>Generated condition</returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.MamdaniFuzzyRule">
+            <summary>
+            Fuzzy rule for Mamdani fuzzy system
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.MamdaniFuzzyRule.#ctor">
+            <summary>
+            Constructor. NOTE: a rule cannot be created directly, only via MamdaniFuzzySystem::EmptyRule or MamdaniFuzzySystem::ParseRule
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzyRule.Conclusion">
+            <summary>
+            Conclusion (THEN) part of the rule
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.MamdaniFuzzyRule.Weight">
+            <summary>
+            Weight of the rule
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.SugenoFuzzyRule">
+            <summary>
+            Fuzzy rule for Sugeno fuzzy system
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzyRule.#ctor">
+            <summary>
+            Constructor. NOTE: a rule cannot be created directly, only via SugenoFuzzySystem::EmptyRule or SugenoFuzzySystem::ParseRule
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SugenoFuzzyRule.Conclusion">
+            <summary>
+            Conclusion (THEN) part of the rule
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.FuzzyVariable">
+            <summary>
+            Linguistic variable
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.FuzzyVariable.#ctor(System.String,System.Double,System.Double)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Name of the variable</param>
+            <param name="min">Minimum value</param>
+            <param name="max">Maximum value</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyVariable.Terms">
+            <summary>
+            Terms
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyVariable.Values">
+            <summary>
+            Named values
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.FuzzyVariable.GetTermByName(System.String)">
+            <summary>
+            Get membership function (term) by name
+            </summary>
+            <param name="name">Term name</param>
+            <returns></returns>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyVariable.Max">
+            <summary>
+            Maximum value of the variable
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyVariable.Min">
+            <summary>
+            Minimum value of the variable
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.FuzzyTerm">
+            <summary>
+            Linguistic term
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.FuzzyTerm.#ctor(System.String,AI.Fuzzy.Library.IMembershipFunction)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Term name</param>
+            <param name="mf">Membership function initially associated with the term</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.FuzzyTerm.MembershipFunction">
+            <summary>
+            Membership function initially associated with the term
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.INamedValue">
+            <summary>
+            This interface must be implemented by values in parsable rules
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.INamedValue.Name">
+            <summary>
+            Name of the value
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.INamedVariable">
+            <summary>
+            This interface must be implemented by variable in parsable rules
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.INamedVariable.Name">
+            <summary>
+            Name of the variable
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.INamedVariable.Values">
+            <summary>
+            List of values that belongs to the variable
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.NamedVariableImpl">
+            <summary>
+            Named variable
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NamedVariableImpl.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Name of the variable</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.NamedVariableImpl.Name">
+            <summary>
+            Variable name
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.NamedVariableImpl.Values">
+            <summary>
+            Named values
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.NamedValueImpl">
+            <summary>
+            Named value of variable
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NamedValueImpl.#ctor(System.String)">
+            <summary>
+            Constructor
+            </summary>
+            <param name="name">Name of the value</param>
+        </member>
+        <member name="P:AI.Fuzzy.Library.NamedValueImpl.Name">
+            <summary>
+            Name of the term
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.NameHelper.IsValidName(System.String)">
+            <summary>
+            Check the name of variable/term.
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="T:AI.Fuzzy.Library.RuleParser`3">
+            <summary>
+            Class responsible for parsing
+            </summary>
+        </member>
+        <member name="T:AI.Fuzzy.Library.SugenoFuzzySystem">
+            <summary>
+            Sugeno fuzzy inference system
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SugenoFuzzySystem.Output">
+            <summary>
+            Output of the system
+            </summary>
+        </member>
+        <member name="P:AI.Fuzzy.Library.SugenoFuzzySystem.Rules">
+            <summary>
+            List of rules of the system
+            </summary>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.OutputByName(System.String)">
+            <summary>
+            Get the output variable of the system by name
+            </summary>
+            <param name="name">Name of the variable</param>
+            <returns>Found variable</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.CreateSugenoFunction(System.String,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double},System.Double)">
+            <summary>
+            Use this method to create a linear function for the Sugeno fuzzy system
+            </summary>
+            <param name="name">Name of the function</param>
+            <param name="coeffs">List of coefficients. List length must be less or equal to the input lenght.</param>
+            <param name="constValue"></param>
+            <returns>Created function</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.CreateSugenoFunction(System.String,System.Double[])">
+            <summary>
+            Use this method to create a linear function for the Sugeno fuzzy system
+            </summary>
+            <param name="name">Name of the function</param>
+            <param name="coeffs">List of coefficients. List length must be less or equal to the input lenght.</param>
+            <returns>Created function</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.EmptyRule">
+            <summary>
+            Use this method to create an empty rule for the system
+            </summary>
+            <returns>Created rule</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.ParseRule(System.String)">
+            <summary>
+            Use this method to create rule by its textual representation
+            </summary>
+            <param name="rule">Rule in text form</param>
+            <returns>Created rule</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.EvaluateConditions(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyTerm,System.Double}})">
+            <summary>
+            Evaluate conditions
+            </summary>
+            <param name="fuzzifiedInput">Input in fuzzified form</param>
+            <returns>Result of evaluation</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.EvaluateFunctions(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Calculate functions' results
+            </summary>
+            <param name="inputValues">Input values</param>
+            <returns>Results</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.CombineResult(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.SugenoFuzzyRule,System.Double},System.Collections.Generic.Dictionary{AI.Fuzzy.Library.SugenoVariable,System.Collections.Generic.Dictionary{AI.Fuzzy.Library.ISugenoFunction,System.Double}})">
+            <summary>
+            Combine results of functions and rule evaluation
+            </summary>
+            <param name="ruleWeights">Rule weights (results of evaluation)</param>
+            <param name="functionResults">Result of functions evaluation</param>
+            <returns>Result of calculations</returns>
+        </member>
+        <member name="M:AI.Fuzzy.Library.SugenoFuzzySystem.Calculate(System.Collections.Generic.Dictionary{AI.Fuzzy.Library.FuzzyVariable,System.Double})">
+            <summary>
+            Calculate output of fuzzy system
+            </summary>
+            <param name="inputValues">Input values</param>
+            <returns>Output values</returns>
+        </member>
+    </members>
+</doc>

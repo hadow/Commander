@@ -147,6 +147,52 @@ namespace EW.Mods.Common.Traits
 
         }
 
+
+        /// <summary>
+        /// Ç¹¿ÚÆ«ÒÆ
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public WVec MuzzleOffset(Actor self,Barrel b)
+        {
+            return CalculateMuzzleOffset(self, b);
+        }
+
+        protected virtual WVec CalculateMuzzleOffset(Actor self,Barrel b)
+        {
+            var bodyOrientation = coords.QuantizeOrientation(self, self.Orientation);
+            var localOffset = b.Offset + new WVec(-Recoil, WDist.Zero, WDist.Zero);
+            if(turret != null)
+            {
+                var turretOrientation = turret.WorldOrientation(self) - bodyOrientation;
+                localOffset = localOffset.Rotate(turretOrientation);
+                localOffset += turret.Offset;
+
+            }
+
+            return coords.LocalToWorld(localOffset.Rotate(bodyOrientation));
+        }
+
+        /// <summary>
+        /// Ç¹¿Ú³¯Ïò
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public WRot MuzzleOrientation(Actor self,Barrel b)
+        {
+            return CalculateMuzzleOrientation(self, b);
+        }
+
+        protected virtual WRot CalculateMuzzleOrientation(Actor self,Barrel b)
+        {
+            var orientation = turret != null ? turret.WorldOrientation(self) :
+                coords.QuantizeOrientation(self, self.Orientation);
+
+            return orientation + WRot.FromYaw(b.Yaw);
+        }
+
         void ITick.Tick(Actor self){
 
             Tick(self);
@@ -197,15 +243,187 @@ namespace EW.Mods.Common.Traits
             base.Created(self);
         }
 
-        public bool ShouldExplode(Actor self) { return false; }
-
-        public virtual bool IsReloading { get { return FireDelay > 0 || IsTraitDisabled; } }
-
 
         public virtual WDist MaxRange()
         {
             return new WDist(Util.ApplyPercentageModifiers(Weapon.Range.Length, rangeModifiers.ToArray()));
         }
+
+        protected virtual bool CanFire(Actor self,Target target)
+        {
+            if (IsReloading || IsTraitPaused)
+                return false;
+
+            if (turret != null && !turret.HasAchieveDesiredFacing)
+                return false;
+
+            if ((!target.IsInRange(self.CenterPosition, MaxRange())) ||
+                (Weapon.MinRange != WDist.Zero && target.IsInRange(self.CenterPosition, Weapon.MinRange)))
+                return false;
+
+            if (!Weapon.IsValidAgainst(target, self.World, self))
+                return false;
+
+            return true;
+        }
+
+        //Note:facing is only used by the legacy positioning code
+        //The world coordinate model uses Actor.Orientation.
+        public virtual Barrel CheckFire(Actor self,IFacing facing,Target target)
+        {
+
+            if (!CanFire(self, target))
+                return null;
+
+            if (ticksSinceLastShot >= Weapon.ReloadDelay)
+                Burst = Weapon.Burst;
+
+            ticksSinceLastShot = 0;
+
+            //If Weapon.Burst == 1,cycle through all LocalOffsets,otherwise use the offset corresponding to current Burst.
+            currentBarrel %= barrelCount;
+
+            var barrel = Weapon.Burst == 1 ? Barrels[currentBarrel] : Barrels[Burst % Barrels.Length];
+            currentBarrel++;
+
+            FireBarrel(self, facing, target, barrel);
+
+            UpdateBurst(self, target);
+
+            return barrel;
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="facing"></param>
+        /// <param name="target"></param>
+        /// <param name="barrel"></param>
+        protected virtual void FireBarrel(Actor self,IFacing facing,Target target,Barrel barrel)
+        {
+            Func<WPos> muzzlePosition = () => self.CenterPosition + MuzzleOffset(self, barrel);
+
+            var legacyFacing = MuzzleOrientation(self, barrel).Yaw.Angle / 4;
+
+            var passiveTarget = Weapon.TargetActorCenter ? target.CenterPosition : target.Positions.PositionClosestTo(muzzlePosition());
+            var initialOffset = Weapon.FirstBurstTargetOffset;
+
+            if(initialOffset != WVec.Zero)
+            {
+
+            }
+
+            var followingOffset = Weapon.FollowingBurstTargetOffset;
+            if(followingOffset!= WVec.Zero)
+            {
+
+            }
+
+            var args = new ProjectileArgs
+            {
+                Weapon = Weapon,
+                Facing = legacyFacing,
+
+                DamagedModifiers = damageModifiers.ToArray(),
+
+                InaccuracyModifiers = inaccuracyModifiers.ToArray(),
+
+                RangeModifiers = rangeModifiers.ToArray(),
+
+                Source = muzzlePosition(),
+
+                CurrentSource = muzzlePosition,
+
+                SourceActor = self,
+
+                PassiveTarget = passiveTarget,
+
+                GuidedTarget = target
+            };
+
+            foreach (var na in notifyAttacks)
+                na.PreparingAttack(self, target, this, barrel);
+
+            ScheduleDelayedAction(Info.FireDelay, () =>
+            {
+
+                if(args.Weapon.Projectile != null)
+                {
+                    var projectile = args.Weapon.Projectile.Create(args);
+                    if (projectile != null)
+                        self.World.Add(projectile);
+
+                    if (args.Weapon.Report != null && args.Weapon.Report.Any())
+                        WarGame.Sound.Play(SoundType.World, args.Weapon.Report.Random(self.World.SharedRandom), self.CenterPosition);
+
+                    if (Burst == args.Weapon.Burst && args.Weapon.StartBurstReport != null && args.Weapon.StartBurstReport.Any())
+                        WarGame.Sound.Play(SoundType.World, args.Weapon.StartBurstReport.Random(self.World.SharedRandom), self.CenterPosition);
+
+                    foreach (var na in notifyAttacks)
+                        na.Attacking(self, target, this, barrel);
+
+                    Recoil = Info.Recoil;
+                }
+
+            });
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="target"></param>
+        protected virtual void UpdateBurst(Actor self,Target target)
+        {
+            if(--Burst > 0)
+            {
+                if (Weapon.BurstDelays.Length == 1)
+                    FireDelay = Weapon.BurstDelays[0];
+                else
+                    FireDelay = Weapon.BurstDelays[Weapon.Burst - (Burst + 1)];
+            }
+            else
+            {
+                var modifiers = reloadModifiers.ToArray();
+                FireDelay = Util.ApplyPercentageModifiers(Weapon.ReloadDelay, modifiers);
+                Burst = Weapon.Burst;
+
+                if(Weapon.AfterFireSound != null && Weapon.AfterFireSound.Any())
+                {
+                    ScheduleDelayedAction(Weapon.AfterFireSoundDelay, () =>
+                    {
+                        WarGame.Sound.Play(SoundType.World, Weapon.AfterFireSound.Random(self.World.SharedRandom), self.CenterPosition);
+                    });
+                }
+
+                foreach (var nbc in notifyBurstComplete)
+                    nbc.FiredBurst(self, target, this);
+            }
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="a"></param>
+        protected void ScheduleDelayedAction(int t,Action a)
+        {
+            if (t > 0)
+                delayedActions.Add(Pair.New(t, a));
+            else
+                a();
+        }
+
+
+        public bool ShouldExplode(Actor self) { return false; }
+
+        public virtual bool IsReloading { get { return FireDelay > 0 || IsTraitDisabled; } }
+
        
     }
 }

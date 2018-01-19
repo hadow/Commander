@@ -24,6 +24,8 @@ namespace EW
         {
             return new CPos((int)a.X, (int)a.Y);
         }
+
+        public static  explicit operator CPos(Int2 a) { return new CPos(a.X, a.Y); }
         public bool Equals(CPos cPos)
         {
             return X == cPos.X && Y == cPos.Y;

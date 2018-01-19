@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
-using EW.Activities;
+using EW.NetWork;
 using EW.Mods.Common.Traits;
 using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.AI

@@ -119,18 +119,28 @@ namespace EW.Mods.Common.Traits
                 {
                     Uncloak();
                     lastPos = self.Location;
-
                 }
-
-                //if (self.IsDisabled())
-                    //Uncloak();
-
             }
 
             var isCloaked = Cloaked;
 
-            if(isCloaked && !wasCloaked){
-                
+            if(isCloaked && !wasCloaked)
+            {
+                if (conditionManager != null && cloakedToken == ConditionManager.InvalidConditionToken && !string.IsNullOrEmpty(Info.CloakedCondition))
+                    cloakedToken = conditionManager.GrantCondition(self, Info.CloakedCondition);
+
+                //Sounds shouldn't play if the actor starts cloaked.
+                if (!(firstTick && Info.InitialDelay == 0) && !otherCloaks.Any(a => a.Cloaked))
+                    WarGame.Sound.Play(SoundType.World, Info.CloakSound, self.CenterPosition);
+
+            }
+            else if(!isCloaked && wasCloaked)
+            {
+                if (cloakedToken != ConditionManager.InvalidConditionToken)
+                    cloakedToken = conditionManager.RevokeCondition(self, cloakedToken);
+
+                if (!(firstTick && Info.InitialDelay == 0) && !otherCloaks.Any(a => a.Cloaked))
+                    WarGame.Sound.Play(SoundType.World, Info.UncloakSound, self.CenterPosition);
             }
 
             wasCloaked = isCloaked;
@@ -181,16 +191,18 @@ namespace EW.Mods.Common.Traits
             && (self.CenterPosition - a.Actor.CenterPosition).LengthSquared <= a.Trait.Info.Range.LengthSquared);
         }
 
+        protected override void TraitDisabled(Actor self)
+        {
+            Uncloak();
+        }
+
         void INotifyAttack.Attacking(Actor self, Target target, Armament a, Barrel barrel)
         {
             if (Info.UncloakOn.HasFlag(UncloakType.Attack))
                 Uncloak();
         }
 
-        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
-        {
-
-        }
+        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel){}
 
         IEnumerable<Rectangle> IRenderModifier.ModifyScreenBounds(Actor self, WorldRenderer wr, IEnumerable<Rectangle> bounds)
         {
@@ -202,7 +214,7 @@ namespace EW.Mods.Common.Traits
             if (attackInfo.Damage.Value == 0)
                 return;
 
-            var type = attackInfo.Damage.Value < 0 ? (attackInfo.attacker == self ? UncloakType.SelfHeal : UncloakType.Heal) : UncloakType.Damage;
+            var type = attackInfo.Damage.Value < 0 ? (attackInfo.Attacker == self ? UncloakType.SelfHeal : UncloakType.Heal) : UncloakType.Damage;
 
             if (Info.UncloakOn.HasFlag(type))
                 Uncloak();

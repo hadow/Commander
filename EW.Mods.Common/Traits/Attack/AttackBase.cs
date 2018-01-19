@@ -5,6 +5,7 @@ using EW.Traits;
 using EW.Activities;
 using EW.Mods.Common.Warheads;
 using System.Drawing;
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
     public abstract class AttackBaseInfo:PausableConditionalTraitInfo
@@ -113,6 +114,14 @@ namespace EW.Mods.Common.Traits
                 return false;
 
             return true;
+        }
+
+        public virtual void DoAttack(Actor self,Target target,IEnumerable<Armament> armaments = null)
+        {
+            if (armaments == null && !CanAttack(self, target))
+                return;
+            foreach (var a in armaments ?? Armaments)
+                a.CheckFire(self, facing, target);
         }
 
         /// <summary>
@@ -244,6 +253,12 @@ namespace EW.Mods.Common.Traits
 
         public abstract Activity GetAttackActivity(Actor self, Target newTarget, bool allowMove, bool forceAttack);
 
+
+        public virtual WPos GetTargetPosition(WPos pos,Target target)
+        {
+            return HasAnyValidWeapons(target, true) ? target.CenterPosition : target.Positions.PositionClosestTo(pos);
+        }
+
         public string VoicePhraseForOrder(Actor self,Order order)
         {
             return order.OrderString == attackOrderName || order.OrderString == forceAttackOrderName ? Info.Voice : null;
@@ -284,9 +299,13 @@ namespace EW.Mods.Common.Traits
             return stance;
         }
 
+        /// <summary>
+        /// 获取武器最大攻击范围
+        /// </summary>
+        /// <returns></returns>
         public WDist GetMaximumRange()
         {
-            if (!IsTraitDisabled)
+            if (IsTraitDisabled)
                 return WDist.Zero;
 
             //PERF: Avoid LINQ;

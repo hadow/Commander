@@ -11,6 +11,9 @@ namespace EW
         public bool SanityCheckUnsyncedCode = false;
 
         public string UUID = System.Guid.NewGuid().ToString();
+
+
+        public bool StrictActivityChecking = false;
     }
 
 

@@ -216,6 +216,20 @@ namespace EW
                     return res;
                 return InvalidValueAction(value, fieldType, fieldName);
             }
+            else if(fieldType == typeof(float))
+            {
+                float res;
+                if (value != null && float.TryParse(value.Replace("%", ""), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out res))
+                    return res * (value.Contains('%') ? 0.01f : 1f);
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
+            else if(fieldType == typeof(decimal))
+            {
+                decimal res;
+                if (value != null && decimal.TryParse(value.Replace("%", ""), NumberStyles.Float, NumberFormatInfo.InvariantInfo, out res))
+                    return res * (value.Contains('%') ? 0.01m : 1m);
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             else if (fieldType == typeof(string))
             {
                 if (field != null && MemberHasTranslateAttribute[field] && value != null)

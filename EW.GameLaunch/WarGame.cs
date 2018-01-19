@@ -91,10 +91,10 @@ namespace EW
 
             IsFixedTimeStep = true;
             DeviceManager = new GraphicsDeviceManager(this);
-            DeviceManager.DeviceCreated += (object sender, EventArgs args) => {
+            //DeviceManager.DeviceCreated += (object sender, EventArgs args) => {
 
-                Initialize(new Arguments());
-            };
+            //    Initialize(new Arguments());
+            //};
             DeviceManager.IsFullScreen = true;
             DeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
         }
@@ -121,7 +121,6 @@ namespace EW
         internal void Initialize(Arguments args)
         {
             string customModPath = null;
-            orderManager = new OrderManager();
             InitializeSettings(args);
 
             customModPath = Android.App.Application.Context.FilesDir.Path;
@@ -186,7 +185,6 @@ namespace EW
             JoinLocal();
 
             ModData.LoadScreen.StartGame(args);
-            //LoadShellMap();
         }
 
         /// <summary>

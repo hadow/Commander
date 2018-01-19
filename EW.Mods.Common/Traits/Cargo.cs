@@ -48,7 +48,7 @@ namespace EW.Mods.Common.Traits
                     npe.OnPassengerEntered(self, a);
 
             var p = a.Trait<Passenger>();
-            p.Trasport = self;
+            p.Transport = self;
             foreach (var u in p.Info.GrantUpgrades)
                 upgradeManager.GrantUpgrade(self, u, p);
 

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using EW.Traits;
+using EW.Mods.Common.Traits;
 namespace EW.Mods.Common.Warheads
 {
     public abstract class DamageWarhead:Warhead
@@ -19,6 +21,38 @@ namespace EW.Mods.Common.Warheads
         {
             var nd = yaml.ToDictionary();
             return nd.ContainsKey("Versus") ? nd["Versus"].ToDictionary(my => FieldLoader.GetValue<int>("(value)", my.Value)) : new Dictionary<string, int>();
+        }
+
+        public int DamageVersus(Actor victim)
+        {
+            var armor = victim.TraitsImplementing<Armor>()
+                .Where(a => !a.IsTraitDisabled && a.Info.Type != null && Versus.ContainsKey(a.Info.Type))
+                .Select(a => Versus[a.Info.Type]);
+
+            return Util.ApplyPercentageModifiers(100, armor);
+        }
+
+
+        public abstract void DoImpact(WPos pos, Actor firedBy, IEnumerable<int> damageModifiers);
+
+        public virtual void DoImpact(Actor victim,Actor firedBy,IEnumerable<int> damageModifiers)
+        {
+            if (!IsValidAgainst(victim, firedBy))
+                return;
+
+            var damage = Util.ApplyPercentageModifiers(Damage, damageModifiers.Append(DamageVersus(victim)));
+            victim.InflictDamage(firedBy, new Damage(damage, DamageTypes));
+        }
+
+
+        public override void DoImpact(Target target, Actor firedBy, IEnumerable<int> damageModifiers)
+        {
+            //Used by traits that damage a single actor,rather than a position
+
+            if (target.Type == TargetT.Actor)
+                DoImpact(target.Actor, firedBy, damageModifiers);
+            else if (target.Type != TargetT.Invalid)
+                DoImpact(target.CenterPosition, firedBy, damageModifiers);
         }
 
     }

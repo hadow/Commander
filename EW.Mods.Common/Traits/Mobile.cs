@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using EW.Primitives;
 using EW.Traits;
 using EW.Activities;
@@ -733,13 +734,67 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 
+        /// 容強
         /// </summary>
         /// <param name="self"></param>
         /// <param name="nudger">容強宀</param>
         /// <param name="force"></param>
         public void Nudge(Actor self,Actor nudger,bool force)
         {
+            if (IsTraitDisabled)
+                return;
+
+            if (!force && self.Owner.Stances[nudger.Owner] != Stance.Ally)
+                return;
+
+            if (!force && !self.IsIdle)
+                return;
+
+            //pick an adjacent available cell.
+            var availCells = new List<CPos>();
+            var notStupidCells = new List<CPos>();
+
+            for(var i = -1; i < 2; i++)
+            {
+                for(var j = -1; j< 2; j++)
+                {
+                    var p = ToCell + new CVec(i, j);
+                    if (CanEnterCell(p))
+                        availCells.Add(p);
+                    else if (p != nudger.Location && p != ToCell)
+                        notStupidCells.Add(p);
+                }
+            }
+
+            var moveTo = availCells.Any() ? availCells.Random(self.World.SharedRandom) : (CPos?)null;
+
+            if (moveTo.HasValue)
+            {
+                self.CancelActivity();
+                self.SetTargetLine(Target.FromCell(self.World, moveTo.Value), Color.Green, false);
+                self.QueueActivity(new Move(self, moveTo.Value, WDist.Zero));
+
+            }
+            else
+            {
+                var cellInfo = notStupidCells
+                    .SelectMany(c => self.World.ActorMap.GetActorsAt(c)
+                    .Where(a => a.IsIdle && a.Info.HasTraitInfo<MobileInfo>()),
+                    (c, a) => new { Cell = c, Actor = a }).RandomOrDefault(self.World.SharedRandom);
+                    
+                if(cellInfo != null)
+                {
+                    self.CancelActivity();
+                    var notifyBlocking = new CallFunc(() => self.NotifyBlocker(cellInfo.Cell));
+                    var waitFor = new WaitFor(() => CanEnterCell(cellInfo.Cell));
+                    var move = new Move(self, cellInfo.Cell);
+                    self.QueueActivity(ActivityUtils.SequenceActivities(notifyBlocking, waitFor, move));
+                }
+                else
+                {
+
+                }
+            }
 
         }
         /// <summary>
@@ -791,7 +846,7 @@ namespace EW.Mods.Common.Traits
 
         public Activity MoveTo(CPos cell,int nearEnough) { return new Move(self, cell, WDist.FromCells(nearEnough)); }
 
-        public Activity MoveTo(CPos cell,Actor ignoredActor) { return new Move(self, cell, ignoredActor); }
+        public Activity MoveTo(CPos cell,Actor ignoredActor) { return new Move(self, cell, WDist.Zero,ignoredActor); }
 
         public Activity MoveWithinRange(Target target,WDist range) { return new MoveWithinRange(self, target, WDist.Zero, range); }
 
@@ -803,17 +858,22 @@ namespace EW.Mods.Common.Traits
 
         public Activity MoveToTarget(Actor self,Target target)
         {
-            throw new NotImplementedException();
+            if (target.Type == TargetT.Invalid)
+                return null;
+            return new MoveAdjacentTo(self, target);
         }
 
         public Activity MoveIntoTarget(Actor self,Target target)
         {
-            throw new NotImplementedException();
+            if (target.Type == TargetT.Invalid)
+                return null;
+
+            return VisualMove(self, self.CenterPosition, target.Positions.PositionClosestTo(self.CenterPosition));
         }
 
         public bool CanEnterTargetNow(Actor self,Target target)
         {
-            throw new NotImplementedException();
+            return self.Location == self.World.Map.CellContaining(target.CenterPosition) || Util.AdjacentCells(self.World, target).Any(c => c == self.Location);
         }
 
         public Activity MoveIntoWorld(Actor self,CPos cell,SubCell subCell = SubCell.Any)
@@ -879,7 +939,8 @@ namespace EW.Mods.Common.Traits
 
         public void OnNotifyBlockingMove(Actor self,Actor blocking)
         {
-
+            if (self.IsIdle && self.AppearsFriendlyTo(blocking))
+                Nudge(self, blocking, true);
         }
 
         public SubCell GetAvailableSubCell(CPos a,SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,bool checkTransientActors = true)

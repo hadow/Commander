@@ -8,7 +8,6 @@ namespace EW.Mods.Common.Warheads
     {
         public override void DoImpact(Target target, Actor firedBy, IEnumerable<int> damagedModifiers)
         {
-            throw new NotImplementedException();
         }
     }
 }

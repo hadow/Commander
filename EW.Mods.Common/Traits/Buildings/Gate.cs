@@ -43,7 +43,7 @@ namespace EW.Mods.Common.Traits
     INotifyAddedToWorld,
         INotifyRemovedFromWorld,
         ITemporaryBlocker,
-        IBlocksProjectiles
+        IBlocksProjectiles,INotifyBlockingMove
     {
 
         readonly GateInfo info;
@@ -150,6 +150,12 @@ namespace EW.Mods.Common.Traits
             get{
                 return new WDist(Info.BlocksProjectilesHeight.Length * (OpenPosition - Position) / OpenPosition);
             }
+        }
+
+        void INotifyBlockingMove.OnNotifyBlockingMove(Actor self, Actor blocking)
+        {
+            if (Position != OpenPosition && CanRemoveBlockage(self, blocking))
+                desiredPosition = OpenPosition;
         }
     }
 }

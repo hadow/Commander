@@ -41,7 +41,7 @@ namespace EW
         public bool Spectating; //旁观
         public bool HasObjectives = false;
 
-        readonly IFogVisibilityModifier[] fogVisibilities; 
+        //readonly IFogVisibilityModifier[] fogVisibilities; 
 
         
         public Dictionary<Player, Stance> Stances = new Dictionary<Player, Stance>();
@@ -109,16 +109,16 @@ namespace EW
         }
 
 
-        public bool CanTargetActor(Actor a)
-        {
-            //PERF:Avoid LINQ;
+        //public bool CanTargetActor(Actor a)
+        //{
+        //    //PERF:Avoid LINQ;
 
-            if (HasFogVisibility)
-                foreach (var fogVisibility in fogVisibilities)
-                    if (fogVisibility.IsVisible(a))
-                        return true;
-            return CanViewActor(a);
-        }
+        //    if (HasFogVisibility)
+        //        foreach (var fogVisibility in fogVisibilities)
+        //            if (fogVisibility.IsVisible(a))
+        //                return true;
+        //    return CanViewActor(a);
+        //}
 
         public bool CanViewActor(Actor a)
         {
@@ -126,18 +126,18 @@ namespace EW
         }
 
 
-        public bool HasFogVisibility
-        {
-            get
-            {
-                foreach(var fogVisibility in fogVisibilities)
-                {
-                    if (fogVisibility.HasFogVisibility())
-                        return true;
-                }
-                return false;
-            }
-        }
+        //public bool HasFogVisibility
+        //{
+        //    get
+        //    {
+        //        foreach(var fogVisibility in fogVisibilities)
+        //        {
+        //            if (fogVisibility.HasFogVisibility())
+        //                return true;
+        //        }
+        //        return false;
+        //    }
+        //}
 
         /// <summary>
         /// 选择派系

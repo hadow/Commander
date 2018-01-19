@@ -45,6 +45,16 @@ namespace EW
         /// </summary>
         public readonly WDist Range = WDist.Zero;
 
+        /// <summary>
+        /// First burst is aimed at this offset relative to target position.
+        /// </summary>
+        public readonly WVec FirstBurstTargetOffset = WVec.Zero;
+
+        /// <summary>
+        /// Each burst after the first lands by this offset away from the previous burst.
+        /// </summary>
+        public readonly WVec FollowingBurstTargetOffset = WVec.Zero;
+
         public readonly WDist MinRange = WDist.Zero;//The minimum range the weapon can fire.
 
         /// <summary>

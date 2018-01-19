@@ -2,7 +2,7 @@
 using System.IO;
 using EW.Traits;
 using EW.Framework;
-namespace EW
+namespace EW.NetWork
 {
 
     enum OrderFields : byte
@@ -191,7 +191,7 @@ namespace EW
                                     {
                                         
                                         if (world != null)
-                                            target = Target.FromCell(world, (CPos)r.ReadInt32());
+                                            target = Target.FromCell(world, (CPos)r.ReadInt2());
                                         break;
                                     }
 

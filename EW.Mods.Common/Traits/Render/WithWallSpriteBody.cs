@@ -24,8 +24,6 @@ namespace EW.Mods.Common.Traits
     }
     class WithWallSpriteBody:WithSpriteBody,INotifyRemovedFromWorld,IWallConnector,ITick
     {
-
-
         readonly WithWallSpriteBodyInfo wallInfo;
 
         int adjacent = 0;
@@ -52,14 +50,30 @@ namespace EW.Mods.Common.Traits
             if (!dirty)
                 return;
 
+            //Update connection to neighbours
             var adjacentActors = CVec.Directions.SelectMany(dir => self.World.ActorMap.GetActorsAt(self.Location + dir));
 
             adjacent = 0;
 
             foreach(var a in adjacentActors)
             {
+                CVec facing;
+                var wc = a.TraitsImplementing<IWallConnector>().FirstEnabledTraitOrDefault();
+                if (wc == null || !wc.AdjacentWallCanConnect(a, self.Location, wallInfo.Type, out facing))
+                    continue;
+
+                if (facing.Y > 0)
+                    adjacent |= 1;
+                else if (facing.X < 0)
+                    adjacent |= 2;
+                else if (facing.Y < 0)
+                    adjacent |= 4;
+                else if (facing.X > 0)
+                    adjacent |= 8;
 
             }
+
+            dirty = false;
         }
 
 
@@ -74,7 +88,11 @@ namespace EW.Mods.Common.Traits
 
         static void UpdateNeighbours(Actor self)
         {
+            var adjacentActorTraits = CVec.Directions.SelectMany(dir => self.World.ActorMap.GetActorsAt(self.Location + dir))
+                .SelectMany(a => a.TraitsImplementing<IWallConnector>());
 
+            foreach (var aat in adjacentActorTraits)
+                aat.SetDirty();
         }
 
         void INotifyRemovedFromWorld.RemovedFromWorld(Actor self)

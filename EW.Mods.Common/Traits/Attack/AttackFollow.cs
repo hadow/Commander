@@ -1,7 +1,7 @@
 ﻿using System;
 using EW.Activities;
 using EW.Traits;
-
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
     /// <summary>
@@ -21,13 +21,6 @@ namespace EW.Mods.Common.Traits
         {
 
         }
-        public override void ResolveOrder(Actor self, Order order)
-        {
-            base.ResolveOrder(self, order);
-
-            if (order.OrderString == "Stop")
-                Target = Target.Invalid;
-        }
 
         public override Activity GetAttackActivity(Actor self, Target newTarget, bool allowMove, bool forceAttack)
         {
@@ -36,7 +29,14 @@ namespace EW.Mods.Common.Traits
 
         public virtual void Tick(Actor self)
         {
+            if(IsTraitDisabled)
+            {
+                Target = Target.Invalid;
+                return;
+            }
 
+            DoAttack(self, Target);
+            IsAniming = Target.IsValidFor(self);
         }
 
         public void OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)

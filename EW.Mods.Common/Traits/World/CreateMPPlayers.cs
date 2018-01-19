@@ -42,8 +42,20 @@ namespace EW.Mods.Common.Traits
             Player localPlayer = null;
 
             //Create the regular playable players.
+            foreach(var kv in w.LobbyInfo.Slots)
+            {
+                var client = w.LobbyInfo.ClientInSlot(kv.Key);
+                if (client == null)
+                    continue;
 
+                var player = new Player(w, client, players[kv.Value.PlayerReference]);
+                worldPlayers.Add(player);
 
+                if (client.Index == WarGame.LocalClientId)
+                    localPlayer = player;
+            }
+
+            //Create a player that is allied with everyone for shared observer shroud.
             worldPlayers.Add(new Player(w, null, new PlayerReference
             {
                 Name = "Everyone",
@@ -75,6 +87,7 @@ namespace EW.Mods.Common.Traits
             if (q.Spectating && !p.NonCombatant && p.Playable)
                 return Stance.Ally;
 
+            //Stances set via PlayerReference
             if (p.PlayerReference.Allies.Contains(q.InternalName))
                 return Stance.Ally;
 

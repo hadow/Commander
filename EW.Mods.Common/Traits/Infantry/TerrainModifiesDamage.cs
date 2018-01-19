@@ -28,9 +28,10 @@ namespace EW.Mods.Common.Traits
             this.self = self;
         }
 
-        public int GetDamageModifier(Actor attacker,IWarHead warhead)
+        public int GetDamageModifier(Actor attacker,Damage damage)
         {
-            var damageWh = warhead as DamageWarhead;
+            if (attacker.Owner.IsAlliedWith(self.Owner) && damage.Value < 0 && !Info.ModifyHealing)
+                return FullDamage;
 
             var world = self.World;
             var map = world.Map;
@@ -41,6 +42,7 @@ namespace EW.Mods.Common.Traits
 
             if (!Info.TerrainModifier.ContainsKey(terrainType))
                 return FullDamage;
+
             return Info.TerrainModifier[terrainType];
         }
     }

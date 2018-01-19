@@ -113,6 +113,35 @@ namespace EW.Activities
         }
 
 
+        public Activity TickOuter(Actor self)
+        {
+            if (State == ActivityState.Done && WarGame.Settings.Debug.StrictActivityChecking)
+                throw new InvalidOperationException("Actor {0} attempted to tick activity {1} after it had already completed.".F(self, this.GetType()));
+
+            if(State == ActivityState.Queued)
+            {
+                OnFirstRun(self);
+                State = ActivityState.Active;
+            }
+
+            var ret = Tick(self);
+            if(ret == null || (ret!=this && ret.ParentActivity != this))
+            {
+                //Make sure that the Parent's ChildActivity pointer is moved forwards as the child queue advances.
+                //The Child's ParentActivity will be set automatically during assignment.
+                if (ParentActivity != null && ParentActivity != ret)
+                    ParentActivity.ChildActivity = ret;
+
+                if (State != ActivityState.Canceled)
+                    State = ActivityState.Done;
+
+                OnLastRun(self);
+            }
+
+            return ret;
+        }
+
+
         public abstract Activity Tick(Actor self);
 
         public virtual bool Cancel(Actor self, bool keepQueue = false)

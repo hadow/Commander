@@ -276,8 +276,9 @@ namespace EW.Mods.Common.Traits
             //缓存这个代理，不必重复分配
             actorShouldBeRemoved = removeActorPosition.Contains;
         }
-        public void Tick(Actor self)
+        void ITick.Tick(Actor self)
         {
+            //Position updates are done in one pass to ensure consistency during a tick.
             foreach(var bin in bins)
             {
                 var removed = bin.Actors.RemoveAll(actorShouldBeRemoved);
@@ -288,6 +289,20 @@ namespace EW.Mods.Common.Traits
                 }
             }
             removeActorPosition.Clear();
+
+            foreach(var a in addActorPosition)
+            {
+                var pos = a.CenterPosition;
+                var col = WorldCoordtoBinIndex(pos.X).Clamp(0, cols - 1);
+                var row = WorldCoordtoBinIndex(pos.Y).Clamp(0, rows - 1);
+                var bin = BinAt(row, col);
+
+                bin.Actors.Add(a);
+                foreach (var t in bin.ProximityTriggers)
+                    t.Dirty = true;
+            }
+
+            addActorPosition.Clear();
 
             foreach (var t in cellTriggers)
                 t.Value.Tick(this);
@@ -387,9 +402,10 @@ namespace EW.Mods.Common.Traits
                 if (!influence.Contains(uv))
                     continue;
 
-                influence[uv] = new InfluenceNode
+                var layer = c.First.Layer == 0 ? influence : customInfluence[c.First.Layer];
+                layer[uv] = new InfluenceNode
                 {
-                    Next = influence[uv],
+                    Next = layer[uv],
                     SubCell = c.Second,
                     Actor = self
                 };
@@ -479,6 +495,7 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public IEnumerable<Actor> ActorsInBox(WPos a,WPos b)
         {
+            //PERF:Inline BinsInBox here to avoid allocations as this method is called often.
             var left = Math.Min(a.X, b.X);
             var top = Math.Min(a.Y, b.Y);
             var right = Math.Max(a.X, b.X);
@@ -569,7 +586,15 @@ namespace EW.Mods.Common.Traits
 
         public SubCell FreeSubCell(CPos cell,SubCell preferredSubCell = SubCell.Any,bool checkTransient = true)
         {
+            if (preferredSubCell > SubCell.Any && !AnyActorsAt(cell, preferredSubCell, checkTransient))
+                return preferredSubCell;
 
+            if (!AnyActorsAt(cell))
+                return map.Grid.DefaultSubCell;
+
+            for (var i = (int)SubCell.First; i < map.Grid.SubCellOffsets.Length; i++)
+                if (i != (int)preferredSubCell && !AnyActorsAt(cell, (SubCell)i, checkTransient))
+                    return (SubCell)i;
             return SubCell.Invalid;
         }
         
@@ -617,6 +642,22 @@ namespace EW.Mods.Common.Traits
             var uv = a.ToMPos(map);
             if (!influence.Contains(uv))
                 return false;
+
+            var always = sub == SubCell.FullCell || sub == SubCell.Any;
+            var layer = a.Layer == 0 ? influence : customInfluence[a.Layer];
+            for(var i = layer[uv]; i != null; i = i.Next)
+            {
+                if(always || i.SubCell == sub || i.SubCell == SubCell.FullCell)
+                {
+                    if (checkTransient)
+                        return true;
+
+                    var pos = i.Actor.TraitOrDefault<IPositionable>();
+                    if (pos == null || !pos.IsLeavingCell(a, i.SubCell))
+                        return true;
+                }
+            }
+
 
             return false;
         }

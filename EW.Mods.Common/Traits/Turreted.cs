@@ -157,6 +157,15 @@ namespace EW.Mods.Common.Traits
         {
 
         }
+
+
+        public virtual bool HasAchieveDesiredFacing
+        {
+            get
+            {
+                return DesiredFacing == null || TurretFacing == DesiredFacing.Value;
+            }
+        }
     }
 
     public class TurretFacingInit : IActorInit<int>

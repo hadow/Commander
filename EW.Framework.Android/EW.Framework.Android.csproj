@@ -27,7 +27,8 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;ANDROID;OPENGL</DefineConstants>
@@ -48,6 +49,7 @@
     <Compile Include="Android\AndroidGamePlatform.cs" />
     <Compile Include="Android\AndroidGameView.cs" />
     <Compile Include="Android\AndroidGameWindow.cs" />
+    <Compile Include="Android\ScreenReceiver.cs" />
     <Compile Include="Audio\Microphone.cs" />
     <Compile Include="Audio\Microphone.OpenAL.cs" />
     <Compile Include="Audio\NoAudioHardwareException.cs" />
@@ -114,7 +116,6 @@
     <Compile Include="Point.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Android\ScreenReceiver.cs" />
     <Compile Include="Input\Touch\TouchLocation.cs" />
     <Compile Include="Input\Touch\TouchLocationState.cs" />
     <Compile Include="Input\Touch\TouchPanel.cs" />
