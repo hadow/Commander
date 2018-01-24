@@ -10,7 +10,7 @@ namespace EW
         public static readonly WRot Zero = new WRot(WAngle.Zero, WAngle.Zero, WAngle.Zero);
         public readonly WAngle Pitch, Roll, Yaw;
 
-        public WRot(WAngle pitch,WAngle roll,WAngle yaw)
+        public WRot(WAngle roll,WAngle pitch,WAngle yaw)
         {
             this.Pitch = pitch;
             this.Roll = roll;

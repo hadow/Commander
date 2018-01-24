@@ -260,6 +260,10 @@ namespace EW.Traits
 
         bool CanEnterCell(CPos location, Actor ignoreActor = null, bool checkTransientActors = true);
 
+        SubCell GetValidSubCell(SubCell preferred = SubCell.Any);
+
+        SubCell GetAvailableSubCell(CPos location, SubCell preferredSubCell = SubCell.Any, Actor ignoreActor = null, bool checkTransientActors = true);
+
         void SetPosition(Actor self, CPos cPos, SubCell subCell = SubCell.Any);
 
         void SetPosition(Actor self, WPos wPos);

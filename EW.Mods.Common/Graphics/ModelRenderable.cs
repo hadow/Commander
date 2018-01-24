@@ -97,7 +97,7 @@ namespace EW.Mods.Common.Graphics
             readonly ModelRenderProxy renderProxy;
 
 
-            static readonly uint[] CornerXIndex = new uint[] {0,0,0,0,3,3,3,3 };
+            static readonly uint[] CornerXIndex = new uint[] { 0, 0, 0, 0, 3, 3, 3, 3 };
             static readonly uint[] CornerYIndex = new uint[] { 1, 1, 4, 4, 1, 1, 4, 4 };
             static readonly uint[] CornerZIndex = new uint[] { 2, 5, 2, 5, 2, 5, 2, 5 };
             public FinalizedModelRenderable(WorldRenderer wr,ModelRenderable model)
@@ -105,7 +105,9 @@ namespace EW.Mods.Common.Graphics
                 this.model = model;
                 var draw = model.models.Where(v => v.DisableFunc == null || !v.DisableFunc());
 
-                renderProxy = WarGame.Renderer.WorldModelRenderer.RenderAsync(wr, draw, model.camera, model.scale, GroundNormal, model.lightSource, model.lightAmbientColor, model.lightDiffuseColor, model.palette, model.normalsPalette, model.shadowPalette);
+                renderProxy = WarGame.Renderer.WorldModelRenderer.RenderAsync(wr, draw, model.camera, model.scale, GroundNormal, model.lightSource,
+                    model.lightAmbientColor, model.lightDiffuseColor,
+                    model.palette, model.normalsPalette, model.shadowPalette);
             }
 
             public void Render(WorldRenderer wr)
@@ -207,7 +209,7 @@ namespace EW.Mods.Common.Graphics
             {
                 var pxOrigin = wr.ScreenPosition(model.pos);
 
-                var draw = model.models.Where(v => v.DisableFunc != null || !v.DisableFunc());
+                var draw = model.models.Where(v => v.IsVisible);
 
                 var scaleTransform = EW.Graphics.Util.ScaleMatrix(model.scale, model.scale, model.scale);
                 var cameraTransform = EW.Graphics.Util.MakeFloatMatrix(model.camera.AsMatrix());

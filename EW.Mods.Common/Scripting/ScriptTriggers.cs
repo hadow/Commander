@@ -30,9 +30,10 @@ namespace EW.Mods.Common.Scripting
             return new ScriptTriggers(init.World,init.Self);
         }
     }
-    public sealed class ScriptTriggers:INotifyActorDisposing,
+    public sealed class ScriptTriggers:INotifyActorDisposing,INotifyDamage,INotifyIdle,
     INotifyOtherProduction,
-    INotifyProduction
+    INotifyProduction,
+        INotifyPassengerExited,INotifyPassengerEntered,INotifyAddedToWorld,INotifyRemovedFromWorld
     {
         readonly List<Triggerable>[] triggerables = Exts.MakeArray(Enum.GetValues(typeof(Trigger)).Length, _ => new List<Triggerable>());
         struct Triggerable : IDisposable
@@ -70,6 +71,63 @@ namespace EW.Mods.Common.Scripting
             this.world = world;
             this.self = self;
 
+        }
+
+        void INotifyIdle.TickIdle(Actor self)
+        {
+            if (world.Disposing)
+                return;
+
+            foreach(var f in Triggerables(Trigger.OnIdle))
+            {
+                try
+                {
+                    f.Function.Call(f.Self).Dispose();
+                }
+                catch(Exception ex)
+                {
+                    f.Context.FatalError(ex.Message);
+                    return;
+                }
+            }
+        }
+
+        void INotifyAddedToWorld.AddedToWorld(Actor self)
+        {
+            if (world.Disposing)
+                return;
+
+            foreach(var f in Triggerables(Trigger.OnAddedToWorld))
+            {
+                try
+                {
+                    f.Function.Call(f.Self).Dispose();
+                }
+                catch(Exception ex)
+                {
+                    f.Context.FatalError(ex.Message);
+                    return;
+                }
+            }
+        }
+
+        void INotifyRemovedFromWorld.RemovedFromWorld(Actor self)
+        {
+            if (world.Disposing)
+                return;
+
+            foreach(var f in Triggerables(Trigger.OnRemovedFromWorld))
+            {
+                try
+                {
+                    f.Function.Call(f.Self).Dispose();
+                }
+                catch(Exception ex)
+                {
+                    f.Context.FatalError(ex.Message);
+                    return;
+                }
+            }
         }
 
         public void UnitProducedByOther(Actor self,Actor producee,Actor produced,string productionType){
@@ -118,6 +176,53 @@ namespace EW.Mods.Common.Scripting
             OnProducedInternal(self, other);
         }
 
+
+        void INotifyPassengerExited.OnPassengerExited(Actor self, Actor passenger)
+        {
+            if (world.Disposing)
+                return;
+
+            foreach(var f in Triggerables(Trigger.OnPassengerExited))
+            {
+                try
+                {
+                    using (var trans = self.ToLuaValue(f.Context))
+                    using (var pass = passenger.ToLuaValue(f.Context))
+                        f.Function.Call(trans, pass).Dispose();
+
+                }
+                catch(Exception ex)
+                {
+                    f.Context.FatalError(ex.Message);
+                    return;
+                }
+            }
+        }
+
+        public void Damaged(Actor self,AttackInfo attackInfo)
+        {
+            if (world.Disposing)
+                return;
+
+            foreach(var f in Triggerables(Trigger.OnDamaged))
+            {
+                try
+                {
+                    using (var b = attackInfo.Attacker.ToLuaValue(f.Context))
+                        f.Function.Call(f.Self, b).Dispose();
+                }
+                catch(Exception ex)
+                {
+                    f.Context.FatalError(ex.Message);
+                    return;
+                }
+            }
+        }
+
+        void INotifyPassengerEntered.OnPassengerEntered(Actor self, Actor passenger)
+        {
+
+        }
 
         public void RegisterCallback(Trigger trigger,LuaFunction func,ScriptContext context)
         {

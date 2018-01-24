@@ -52,6 +52,11 @@ namespace EW
             return actors.MinByOrDefault(a => (a.CenterPosition - pos).LengthSquared);
         }
 
+        public static Actor ClosestTo(this IEnumerable<Actor> actors,Actor a)
+        {
+            return actors.ClosestTo(a.CenterPosition);
+        }
+
 
         public static bool ContainsTemporaryBlocker(this World world,CPos cell,Actor ignoreActor = null)
         {

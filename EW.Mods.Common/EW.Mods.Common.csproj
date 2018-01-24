@@ -57,6 +57,7 @@
     <Compile Include="Activities\Air\FlyAttack.cs" />
     <Compile Include="Activities\Drag.cs" />
     <Compile Include="Activities\FindResources.cs" />
+    <Compile Include="Activities\Hunt.cs" />
     <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />
     <Compile Include="Activities\Move\Move.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Scripting\Global\TriggerGlobal.cs" />
     <Compile Include="Scripting\Global\UtilsGlobal.cs" />
     <Compile Include="Scripting\LuaScript.cs" />
+    <Compile Include="Scripting\Properties\CombatProperties.cs" />
     <Compile Include="Scripting\Properties\GeneralProperties.cs" />
     <Compile Include="Scripting\Properties\HealthProperties.cs" />
     <Compile Include="Scripting\Properties\MobileProperties.cs" />

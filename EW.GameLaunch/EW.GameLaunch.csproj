@@ -197,6 +197,9 @@
     <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
       <Link>External_Common\Activities\FindResources.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Hunt.cs">
+      <Link>External_Common\Activities\Hunt.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Move\AttackMoveActivity.cs">
       <Link>External_Common\Activities\Move\AttackMoveActivity.cs</Link>
     </Compile>
@@ -451,6 +454,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Scripting\LuaScript.cs">
       <Link>External_Common\Scripting\LuaScript.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\CombatProperties.cs">
+      <Link>External_Common\Scripting\Properties\CombatProperties.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Scripting\Properties\GeneralProperties.cs">
       <Link>External_Common\Scripting\Properties\GeneralProperties.cs</Link>
@@ -1989,6 +1995,7 @@
     <AndroidNativeLibrary Include="lib\x86\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\x86_64\libfreetype.so" />
+    <AndroidAsset Include="Content\mods\common\chrome\ingame.yaml" />
     <None Include="Resources\AboutResources.txt" />
     <AndroidAsset Include="Content\mods\common\chrome\assetbrowser.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\color-picker.yaml" />
@@ -2004,7 +2011,6 @@
     <AndroidAsset Include="Content\mods\common\chrome\credits.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\dropdowns.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\editor.yaml" />
-    <AndroidAsset Include="Content\mods\common\chrome\ingame.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\ingame-chat.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\ingame-debug.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\ingame-fmvplayer.yaml" />

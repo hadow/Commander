@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Primitives;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
@@ -24,6 +25,7 @@ namespace EW.Mods.Common.Traits
     {
 
 
+        readonly Actor self;
 
         public int TurnSpeed { get { return 0; } }
 
@@ -86,6 +88,20 @@ namespace EW.Mods.Common.Traits
         public void ModifyDeathActorInit(Actor self,TypeDictionary init)
         {
 
+        }
+
+        public SubCell GetValidSubCell(SubCell preferred = SubCell.Any) { return SubCell.FullCell; }
+
+        public SubCell GetAvailableSubCell(CPos cell,SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,bool checkTransientActors = true)
+        {
+            if (!self.World.Map.Contains(cell))
+                return SubCell.Invalid;
+
+
+            if (!checkTransientActors)
+                return SubCell.FullCell;
+
+            return self.World.ActorMap.GetActorsAt(cell).All(x => x == ignoreActor) ? SubCell.FullCell : SubCell.Invalid;
         }
 
     }

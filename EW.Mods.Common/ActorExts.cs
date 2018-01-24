@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 using EW.NetWork;
 using System.Drawing;
@@ -96,6 +97,11 @@ namespace EW.Mods.Common
                 foreach (var moveBlocked in blocker.TraitsImplementing<INotifyBlockingMove>())
                     moveBlocked.OnNotifyBlockingMove(blocker, self);
             }
+        }
+
+        public static void NotifyBlocker(this Actor self,IEnumerable<CPos> positions)
+        {
+            NotifyBlocker(self, positions.SelectMany(p => self.World.ActorMap.GetActorsAt(p)));
         }
     }
 }

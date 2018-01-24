@@ -32,7 +32,7 @@ namespace EW.Mods.Common.Scripting
 
         public void UnloadPassengers()
         {
-            Self.QueueActivity(new UnloadCargo());
+            Self.QueueActivity(new UnloadCargo(Self,true));
         }
     }
 }

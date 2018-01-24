@@ -133,6 +133,9 @@ namespace EW.Mods.Common.Scripting
             Self.QueueActivity(new Wait(ticks));
         }
 
+        /// <summary>
+        /// Attempt to cancel any active activities.
+        /// </summary>
         public void Stop()
         {
             Self.CancelActivity();

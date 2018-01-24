@@ -10,10 +10,34 @@ namespace EW.Mods.Common.Traits
     public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }
     public class CargoInfo : ITraitInfo, Requires<IOccupySpaceInfo>
     {
+        /// <summary>
+        /// The maximum sum of Passenger.Weight that this actor can support.
+        /// </summary>
+        public readonly int MaxWeight = 0;
 
         public readonly string[] InitialUnits = { };
 
-        public readonly string[] LoadingUpgrades = { };
+        [GrantedConditionReference]
+        public readonly string LoadingCondition = null;
+
+        /// <summary>
+        /// The condition to grant to self while passengers are loaded.
+        /// Condition can stack with multiple passengers.
+        /// </summary>
+        [GrantedConditionReference]
+        public readonly string LoadedCondition = null;
+
+        /// <summary>
+        /// Which direction the passenger will face (relative to the transport) when unloading.
+        /// </summary>
+        public readonly int PassengerFacing = 128;
+
+        /// <summary>
+        /// Conditions to grant when specified actors are loaded inside the transport.
+        /// A dictionary of [actor id]:[condition].
+        /// </summary>
+        public readonly Dictionary<string, string> PassengerConditions = new Dictionary<string, string>();
+
 
         public object Create(ActorInitializer init) { return new Cargo(init, this); }
     }
@@ -23,7 +47,8 @@ namespace EW.Mods.Common.Traits
         public readonly CargoInfo Info;
         readonly Stack<Actor> cargo = new Stack<Actor>();
         readonly HashSet<Actor> reserves = new HashSet<Actor>();
-
+        readonly Dictionary<string, Stack<int>> passengerTokens = new Dictionary<string, Stack<int>>();
+        Stack<int> loadedTokens = new Stack<int>();
         readonly Lazy<IFacing> facing;
         int totalWeight = 0;
         int reservedWeight = 0;
@@ -36,13 +61,14 @@ namespace EW.Mods.Common.Traits
         CPos currentCell;
         public IEnumerable<CPos> CurrentAdjacentCells { get; private set; }
 
+        public bool Unloading { get; internal set; }
         public IEnumerable<Actor> Passengers{ get { return cargo; }}
         public Cargo(ActorInitializer init,CargoInfo info)
         {
 
             self = init.Self;
             Info = info;
-
+            Unloading = false;
             if(init.Contains<RuntimeCargoInit>()){
                 cargo = new Stack<Actor>(init.Get<RuntimeCargoInit, Actor[]>());
             }
@@ -81,6 +107,18 @@ namespace EW.Mods.Common.Traits
 
             conditionManager = self.TraitOrDefault<ConditionManager>();
 
+            if(conditionManager!=null && cargo.Any())
+            {
+                foreach(var c in cargo)
+                {
+                    string passengerCondition;
+                    if (Info.PassengerConditions.TryGetValue(c.Info.Name, out passengerCondition))
+                        passengerTokens.GetOrAdd(c.Info.Name).Push(conditionManager.GrantCondition(self, passengerCondition));
+                }
+
+                if (!string.IsNullOrEmpty(Info.LoadedCondition))
+                    loadedTokens.Push(conditionManager.GrantCondition(self, Info.LoadedCondition));
+            }
         }
 
         void INotifyKilled.Killed(Actor self,AttackInfo info){
@@ -131,9 +169,51 @@ namespace EW.Mods.Common.Traits
         public Actor Unload(Actor self)
         {
             var a = cargo.Pop();
+
+            totalWeight -= GetWeight(a);
+
+            SetPassengerFacing(a);
+
+            foreach (var npe in self.TraitsImplementing<INotifyPassengerExited>())
+                npe.OnPassengerExited(self, a);
+
+            var p = a.Trait<Passenger>();
+            p.Transport = null;
+
+            Stack<int> passengerToken;
+            if (passengerTokens.TryGetValue(a.Info.Name, out passengerToken) && passengerToken.Any())
+                conditionManager.RevokeCondition(self, passengerToken.Pop());
+
+            if (loadedTokens.Any())
+                conditionManager.RevokeCondition(self, loadedTokens.Pop());
             return a;
         }
 
+        void SetPassengerFacing(Actor passenger)
+        {
+            if (facing.Value == null)
+                return;
+
+            var passengerFacing = passenger.TraitOrDefault<IFacing>();
+            if (passengerFacing != null)
+                passengerFacing.Facing = facing.Value.Facing + Info.PassengerFacing;
+
+            foreach (var t in passenger.TraitsImplementing<Turreted>())
+                t.TurretFacing = facing.Value.Facing + Info.PassengerFacing;
+
+
+        }
+
+        public bool HasSpace(int weight) { return totalWeight + reservedWeight + weight <= Info.MaxWeight; }
+
+
+        public bool IsEmpty(Actor self) { return cargo.Count == 0; }
+
+
+        public Actor Peek(Actor self)
+        {
+            return cargo.Peek();
+        }
     }
 
 

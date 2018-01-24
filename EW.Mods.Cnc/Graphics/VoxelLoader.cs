@@ -64,7 +64,12 @@ namespace EW.Mods.Cnc.Graphics
 
         public IVertexBuffer<Vertex> VertexBuffer
         {
-            get { return vertexBuffer; }
+            get
+            {
+                if (cachedVertexCount != totalVertexCount)
+                    RefreshBuffer();
+                return vertexBuffer;
+            }
         }
 
 

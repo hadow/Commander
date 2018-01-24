@@ -52,6 +52,8 @@ namespace EW.Graphics
 
         SheetBuilder sheetBuilder;
 
+        bool isInFrame;
+
         public ModelRenderer(Renderer renderer,IShader shader)
         {
             this.renderer = renderer;
@@ -119,6 +121,8 @@ namespace EW.Graphics
         public ModelRenderProxy RenderAsync(WorldRenderer wr,IEnumerable<ModelAnimation> models,WRot camera,float scale,
             float[] groundNormal,WRot lightSource,float[] lightAmbientColor,float[] lightDiffuseColor,PaletteReference color,PaletteReference normals,PaletteReference shadowPalette)
         {
+            if (!isInFrame)
+                throw new InvalidOperationException("BeginFrame has not been called.You cannot render until a frame has been started.");
 
             //Correct for inverted y-axis
             var scaleTransform = Util.ScaleMatrix(scale, scale, scale);
@@ -177,8 +181,8 @@ namespace EW.Graphics
             {
                 new[]{stl.X,stl.Y,0,1},
                 new[]{sbr.X,sbr.Y,0,1},
-                new[]{sbr.X,sbr.Y,0,1},
-                new[]{stl.X,stl.Y,0,1}
+                new[]{sbr.X,stl.Y,0,1},
+                new[]{stl.X,sbr.Y,0,1}
             };
 
             var shadowScreenTransform = Util.MatrixMultiply(cameraTransform, invShadowTransform);
@@ -206,6 +210,8 @@ namespace EW.Graphics
             CalculateSpriteGeometry(tl, br, 1, out spriteSize, out spriteOffset);
             CalculateSpriteGeometry(stl, sbr, 2, out shadowSpriteSize, out shadowSpriteOffset);
 
+            if (sheetBuilder == null)
+                sheetBuilder = new SheetBuilder(SheetT.BGRA, AllocateSheet);
             var sprite = sheetBuilder.Allocate(spriteSize, 0, spriteOffset);
             var shadowSprite = sheetBuilder.Allocate(shadowSpriteSize, 0, shadowSpriteOffset);
 
@@ -229,7 +235,8 @@ namespace EW.Graphics
                     var offsetVec = Util.MatrixVectorMultiply(invCameraTransform, wr.ScreenVector(m.OffsetFunc()));
                     var offsetTransform = Util.TranslationMatrix(offsetVec[0], offsetVec[1], offsetVec[2]);
 
-                    var rotations = m.RotationFunc().Aggregate(Util.IdentityMatrix(), (x, y) => Util.MatrixMultiply(Util.MakeFloatMatrix(y.AsMatrix()), x));
+                    var rotations = m.RotationFunc().Aggregate(Util.IdentityMatrix(),
+                        (x, y) => Util.MatrixMultiply(Util.MakeFloatMatrix(y.AsMatrix()), x));
 
                     var worldTransform = Util.MatrixMultiply(scaleTransform, rotations);
                     worldTransform = Util.MatrixMultiply(offsetTransform, worldTransform);
@@ -255,11 +262,13 @@ namespace EW.Graphics
                         // Transform light vector from shadow -> world -> limb coords
                         var lightDirection = ExtractRotationVector(Util.MatrixMultiply(it, lightTransform));
 
-                        Render(rd, wr.World.ModelCache, Util.MatrixMultiply(shadow, t), lightDirection, lightAmbientColor, lightDiffuseColor, color.TextureMidIndex, normals.TextureMidIndex);
+                        Render(rd, wr.World.ModelCache, Util.MatrixMultiply(transform, t), lightDirection, 
+                            lightAmbientColor, lightDiffuseColor, color.TextureMidIndex, normals.TextureMidIndex);
 
                         //Disable shadow normals by forcing zero diffuse and identity ambient light
                         if (m.ShowShadow)
-                            Render(rd, wr.World.ModelCache, Util.MatrixMultiply(shadow, t), lightDirection, ShadowAmbient, ShadowDiffuse, shadowPalette.TextureMidIndex, normals.TextureMidIndex);
+                            Render(rd, wr.World.ModelCache, Util.MatrixMultiply(shadow, t), lightDirection, 
+                                ShadowAmbient, ShadowDiffuse, shadowPalette.TextureMidIndex, normals.TextureMidIndex);
                     }
                 }
 
@@ -314,24 +323,29 @@ namespace EW.Graphics
             if ((height & 1) == 1)
                 height += 1;
             size = new Size(width, height);
-
-
         }
 
 
         public void BeginFrame()
         {
+            if (isInFrame)
+                throw new InvalidOperationException("BeginFrame has already been called.A new frame cannot be started until EndFrame has been called.");
+
+            isInFrame = true;
             foreach (var kv in mappedBuffers)
                 unmappedBuffers.Push(kv);
             mappedBuffers.Clear();
-
-            sheetBuilder = new SheetBuilder(SheetT.BGRA, AllocateSheet);
-            doRender.Clear();    
+            
         }
 
 
         public void EndFrame()
         {
+
+            if (!isInFrame)
+                throw new InvalidOperationException("BeginFrame has not been called,There is no frame to end.");
+            isInFrame = false;
+            sheetBuilder = null;
             if (doRender.Count == 0)
                 return;
 
@@ -354,6 +368,8 @@ namespace EW.Graphics
 
             if (fbo != null)
                 DisableFrameBuffer(fbo);
+
+            doRender.Clear();
         }
 
         IFrameBuffer EnableFrameBuffer(Sheet s)

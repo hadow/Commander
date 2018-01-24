@@ -62,6 +62,13 @@ namespace EW.Mods.Common.Traits
         void AppliedDamage(Actor self, Actor damaged, AttackInfo attackInfo);
     }
 
+    [RequireExplicitImplementation]
+    public interface INotifyUnload
+    {
+        void Unloading(Actor self);
+    }
+
+
     #endregion
     [RequireExplicitImplementation]
     public interface IBlocksProjectiles
