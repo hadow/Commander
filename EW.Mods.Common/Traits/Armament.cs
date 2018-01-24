@@ -313,13 +313,15 @@ namespace EW.Mods.Common.Traits
 
             if(initialOffset != WVec.Zero)
             {
-
+                initialOffset = new WVec(initialOffset.Y, -initialOffset.X, initialOffset.Z);
+                passiveTarget += initialOffset.Rotate(WRot.FromFacing(legacyFacing));
             }
 
             var followingOffset = Weapon.FollowingBurstTargetOffset;
             if(followingOffset!= WVec.Zero)
             {
-
+                followingOffset = new WVec(followingOffset.Y, -followingOffset.X, followingOffset.Z);
+                passiveTarget += ((Weapon.Burst - Burst) * followingOffset).Rotate(WRot.FromFacing(legacyFacing));
             }
 
             var args = new ProjectileArgs

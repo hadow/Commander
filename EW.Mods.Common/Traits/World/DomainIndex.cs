@@ -120,7 +120,7 @@ namespace EW.Mods.Common.Traits
         bool HasConnection(ushort d1,ushort d2)
         {
 
-
+            //Search our connections graph for a possible  route.
             var visited = new HashSet<ushort>();
             var toProcess = new Stack<ushort>();
             toProcess.Push(d1);
@@ -192,7 +192,11 @@ namespace EW.Mods.Common.Traits
             return (movementClass & (1 << terrainOffset)) > 0;
         }
         
-
+        /// <summary>
+        /// Builds the domains.
+        /// 构建域
+        /// </summary>
+        /// <param name="world">World.</param>
         void BuildDomains(World world){
             ushort domain = 1;
 
@@ -201,10 +205,15 @@ namespace EW.Mods.Common.Traits
             var toProcess = new Queue<CPos>();
             toProcess.Enqueue(MPos.Zero.ToCPos(map));
 
+            //Flood-fill over  each domain.
+            //填充每个域
             while(toProcess.Count != 0){
 
                 var start = toProcess.Dequeue();
 
+                //Technically redundant with the check in the inner loop,
+                //but prevents ballooning the domain counter
+                //技术上在内部循环检查冗余，防止膨胀域计数器
                 if (visited[start])
                     continue;
 
@@ -215,6 +224,8 @@ namespace EW.Mods.Common.Traits
                 var currentPassable = CanTraverseTile(world, start);
 
 
+                //Add all contiguous cells to our domain,and make a not of an non-contiguous cells for future domain.
+                //将所有连续的单元格添加到我们的域，并记录下未来域的非连续单元格
                 while(domainQueue.Count!=0){
 
                     var n = domainQueue.Dequeue();
@@ -236,6 +247,8 @@ namespace EW.Mods.Common.Traits
                     //PERF:Avoid LINQ
                     foreach(var direction in CVec.Directions){
 
+                        //Don't crawl off the map ,or add already-visited cells.
+                        //不要抓取地图，或添加已经访问的单元格
                         var neighbor = direction + n;
                         if (visited.Contains(neighbor) && !visited[neighbor])
                             domainQueue.Enqueue(neighbor);

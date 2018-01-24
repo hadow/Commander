@@ -50,6 +50,10 @@ namespace EW
         public bool ShowShellmap = true;
 
         public bool DrawTargetLine = true;
+
+        public int SelectionDeadzone = 24;
+
+
     }
 
     public class SoundSettings

@@ -135,6 +135,8 @@ namespace EW
         /// <param name="fileSystem"></param>
         public void InitializeLoaders(IReadOnlyFileSystem fileSystem)
         {
+
+            ChromeMetrics.Initialize(this);
             WarGame.Sound.Initialize(SoundLoaders, fileSystem);
         }
 

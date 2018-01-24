@@ -9,6 +9,7 @@ using EW.Graphics;
 using EW.NetWork;
 using EW.Primitives;
 using EW.Framework.Touch;
+using EW.Widgets;
 namespace EW
 {
     /// <summary>
@@ -101,7 +102,7 @@ namespace EW
 
         protected override void Initialize()
         {
-            TouchPanel.EnabledGestures = GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag;
+            TouchPanel.EnabledGestures =GestureType.Tap| GestureType.DoubleTap| GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag;
             base.Initialize();
 
         }
@@ -258,7 +259,7 @@ namespace EW
             while(TouchPanel.IsGestureAvailable){
                
                 var gesture = TouchPanel.ReadGesture();
-
+                UI.HandleInput(gesture);
                 switch(gesture.GestureType){
                     case GestureType.Pinch:
                         //Console.WriteLine("pinch:" + Vector2.Distance(gesture.Position,gesture.Position2));
@@ -278,11 +279,9 @@ namespace EW
                         Zoom(scale);
                         break;
                     case GestureType.PinchComplete:
-                        Console.WriteLine("pinch complete");
                         _pinching = false;
                         break;
                     case GestureType.FreeDrag:
-                        Console.WriteLine("Free drag");
                         worldRenderer.ViewPort.Scroll(gesture.Delta*-1,false);
                         break;
 
@@ -345,9 +344,12 @@ namespace EW
 
                 using(new PerfSample("render_widgets"))
                 {
-                    //Renderer.WorldModelRenderer.BeginFrame();
+                    Renderer.WorldModelRenderer.BeginFrame();
+                    UI.PrepareRenderables();
 
-                    //Renderer.WorldModelRenderer.EndFrame();
+                    Renderer.WorldModelRenderer.EndFrame();
+
+                    UI.Draw();
                 }
 
                 using (new PerfSample("render_flip"))
@@ -376,6 +378,17 @@ namespace EW
             var tick = RunTime;
 
             var world = orderManager.World;
+
+            var uiTickDelta = tick - UI.LastTickTime;
+
+            if(uiTickDelta>Timestep)
+            {
+                var integralTickTimestep = (uiTickDelta / Timestep) * Timestep;
+                UI.LastTickTime += integralTickTimestep >= TimestepJankThreshold ? integralTickTimestep : Timestep;
+
+                Sync.CheckSyncUnchanged(world,UI.Tick);
+
+            }
 
             var worldTimestep = world == null ? Timestep : world.Timestep;
 
@@ -512,6 +525,17 @@ namespace EW
 
 
 
+        }
+
+
+        public static Widget LoadWidget(World world,string id,Widget parent,WidgetArgs args){
+
+            return ModData.WidgetLoader.LoadWidget(new WidgetArgs(args){
+
+                {"world",world},
+                {"orderManager",orderManager},
+                {"worldRenderer",worldRenderer}
+            }, parent, id);
         }
     }
 }

@@ -5,10 +5,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class CreateMPPlayersInfo : TraitInfo<CreateMPPlayers>
-    {
-
-    }
+    public class CreateMPPlayersInfo : TraitInfo<CreateMPPlayers>{}
     /// <summary>
     /// 创建地图上的玩家
     /// </summary>
@@ -21,6 +18,7 @@ namespace EW.Mods.Common.Traits
             var worldPlayers = new List<Player>();
             var worldOwnerFound = false;
 
+            //Create the unplayable map players -neutral,shellmap,scripted.etc.
 
             foreach(var kv in players.Where(p => !p.Value.Playable))
             {
@@ -94,9 +92,12 @@ namespace EW.Mods.Common.Traits
             if (p.PlayerReference.Enemies.Contains(q.InternalName))
                 return Stance.Enemy;
 
+            if(p.PlayerReference.Playable && q.PlayerReference.Playable){
 
 
+            }
 
+            //Otherwise,default to neutral.
             return Stance.Neutral;
         }
     }

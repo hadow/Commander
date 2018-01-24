@@ -18,7 +18,6 @@ namespace EW.Mods.Common.Scripting
         /// <returns></returns>
         public Player GetPlayer(string name)
         {
-            Console.WriteLine("GetPlayer:" + name);
             return Context.World.Players.FirstOrDefault(p => p.InternalName == name);
         }
 

@@ -76,6 +76,9 @@ namespace EW
 
         readonly IDefaultVisibility defaultVisibility;
 
+        readonly IMouseBounds[] mouseBounds;
+
+
         /// <summary>
         /// Cache sync hash functions per actor for faster sync calculations.(缓存每个Actor 的哈希函数值，用于更快的同步计算
         /// 
@@ -138,6 +141,7 @@ namespace EW
             visibilityModifiers = TraitsImplementing<IVisibilityModifier>().ToArray();
             defaultVisibility = Trait<IDefaultVisibility>();
             Targetables = TraitsImplementing<ITargetable>().ToArray();
+            mouseBounds = TraitsImplementing<IMouseBounds>().ToArray();
             //Bounds = DetermineBounds();
 
             //SyncHashes = TraitsImplementing<ISync>()
@@ -149,23 +153,35 @@ namespace EW
 
 
 
+        public Rectangle MouseBounds(WorldRenderer wr){
 
+            foreach(var mb in mouseBounds){
+                var bounds = mb.MouseoverBounds(this, wr);
+
+                if (!bounds.IsEmpty)
+                    return bounds;
+                
+            }
+
+            return Rectangle.Empty;
+
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        Rectangle DetermineBounds()
-        {
-            var si = Info.TraitInfoOrDefault<SelectableInfo>();
-            var size = (si != null && si.Bounds != null) ? new Int2(si.Bounds[0], si.Bounds[1]) : TraitsImplementing<IAutoSelectionSize>().Select(x => x.SelectionSize(this)).FirstOrDefault();
+        //Rectangle DetermineBounds()
+        //{
+        //    var si = Info.TraitInfoOrDefault<SelectableInfo>();
+        //    var size = (si != null && si.Bounds != null) ? new Int2(si.Bounds[0], si.Bounds[1]) : TraitsImplementing<IAutoSelectionSize>().Select(x => x.SelectionSize(this)).FirstOrDefault();
 
-            var offset = -size / 2;
-            if (si != null && si.Bounds != null && si.Bounds.Length > 2)
-                offset += new Int2(si.Bounds[2], si.Bounds[3]);
+        //    var offset = -size / 2;
+        //    if (si != null && si.Bounds != null && si.Bounds.Length > 2)
+        //        offset += new Int2(si.Bounds[2], si.Bounds[3]);
 
-            return new Rectangle(offset.X, offset.Y, size.X, size.Y);
-        }
+        //    return new Rectangle(offset.X, offset.Y, size.X, size.Y);
+        //}
 
 
         IEnumerable<Rectangle> Bounds(WorldRenderer wr)

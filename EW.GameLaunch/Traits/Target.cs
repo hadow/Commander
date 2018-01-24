@@ -25,7 +25,13 @@ namespace EW.Traits
 
         public static Target FromCell(World w,CPos c,SubCell subCell= SubCell.FullCell)
         {
-            return new Target { pos = w.Map.CenterOfSubCell(c, subCell), type = TargetT.Terrain };
+            //return new Target { pos = w.Map.CenterOfSubCell(c, subCell), type = TargetT.Terrain };
+            return new Target
+            {
+                pos = w.Map.CenterOfSubCell(c, subCell),
+                cell = c,
+                type = TargetT.Terrain,
+            };
         }
 
         public static Target FromActor(Actor a)

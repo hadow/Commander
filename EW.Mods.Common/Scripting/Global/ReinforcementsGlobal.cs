@@ -61,7 +61,6 @@ namespace EW.Mods.Common.Scripting
         public Actor[] Reinforce(Player owner,string[] actorTypes,CPos[] entryPath,int interval = 25,LuaFunction actionFunc = null)
         {
             var actors = new List<Actor>();
-            Console.WriteLine("actor types:" + actorTypes.Length);
             for(var i = 0; i < actorTypes.Length; i++)
             {
                 var af = actionFunc != null ? (LuaFunction)actionFunc.CopyReference() : null;
@@ -69,7 +68,6 @@ namespace EW.Mods.Common.Scripting
                 var actor = CreateActor(owner, actorTypes[i], false, entryPath[0], entryPath.Length > 1 ? entryPath[1] : (CPos?)null);
 
                 actors.Add(actor);
-                Console.WriteLine("Reinforce: create actor:" + actor.Info.Name + "  location:"+entryPath[0] + " dest:"+entryPath[1]);
                 var actionDelay = i * interval;
 
                 Action actorAction = () =>

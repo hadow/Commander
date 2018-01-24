@@ -66,6 +66,9 @@ namespace EW
 
         public readonly string[] AfterFireSound = null;
 
+        /// <summary>
+        /// Delay in ticks to play reloading sound.
+        /// </summary>
         public readonly int AfterFireSoundDelay = 0;
 
 
@@ -87,6 +90,9 @@ namespace EW
 
         public readonly int Burst = 1;//±¬ÆÆ
 
+        /// <summary>
+        /// Delay in ticks between reloading ammo magazines.
+        /// </summary>
         public readonly int[] BurstDelays = { 5 };
 
         [FieldLoader.LoadUsing("LoadProjectile")]
@@ -103,6 +109,7 @@ namespace EW
 
         public WeaponInfo(string name, MiniYaml content)
         {
+            content.Nodes = MiniYaml.Merge(new[] { content.Nodes });
             FieldLoader.Load(this, content);
         }
 

@@ -72,8 +72,8 @@ namespace EW.Mods.Common.Traits
 
     public class AutoTarget:ConditionalTrait<AutoTargetInfo>,ITick,ISync,INotifyIdle,INotifyDamage,IResolveOrder,INotifyCreated
     {
-        //readonly AttackBase[] attackBases;
         readonly IEnumerable<AttackBase> activeAttackBases;
+
         readonly AttackFollow[] attackFollows;
 
         [Sync]
@@ -92,6 +92,10 @@ namespace EW.Mods.Common.Traits
 
         UnitStance stance;
 
+
+        public UnitStance PredictedStance;
+
+
         ConditionManager conditionManager;
 
         AutoTargetPriority[] targetPriorities;
@@ -103,6 +107,16 @@ namespace EW.Mods.Common.Traits
         {
             var self = init.Self;
             activeAttackBases = self.TraitsImplementing<AttackBase>().ToArray().Where(Exts.IsTraitEnabled);
+
+            if (init.Contains<StanceInit>())
+                stance = init.Get<StanceInit, UnitStance>();
+            else
+                stance = self.Owner.IsBot || !self.Owner.Playable ? info.InitialStanceAI : info.InitialStance;
+
+
+            PredictedStance = stance;
+
+            attackFollows = self.TraitsImplementing<AttackFollow>().ToArray();
         }
 
         void INotifyIdle.TickIdle(Actor self)
@@ -324,6 +338,7 @@ namespace EW.Mods.Common.Traits
                     attacker = passenger.Transport;
             }
 
+            //Not a lot we can do about things we can't hurt ... althrough maybe we should automatically run away
             var attackerAsTarget = Target.FromActor(attacker);
 
             if (!activeAttackBases.Any(a => a.HasAnyValidWeapons(attackerAsTarget)))
@@ -342,16 +357,6 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-
-    //class AutoTargetIgnoreInfo : TraitInfo<AutoTargetIgnore>
-    //{
-
-    //}
-
-    //class AutoTargetIgnore
-    //{
-
-    //}
 
     public enum UnitStance { HoldFire,ReturnFire,Defend,AttackAnything}
 

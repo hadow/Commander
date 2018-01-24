@@ -111,6 +111,13 @@ namespace EW.Traits
             var width = world.Map.MapSize.X * size.Width;
             var height = world.Map.MapSize.Y * size.Height;
 
+            partitionedMouseFrozenActors = new Cache<Player, SpatiallyPartitioned<FrozenActor>>(_ => new SpatiallyPartitioned<FrozenActor>(width, height, info.BinSize));
+
+            partitionedMouseActors = new SpatiallyPartitioned<Actor>(width, height, info.BinSize);
+
+            selectActorAndBounds = a => partitionedMouseActorBounds[a];
+
+
             partitionedRenderableFrozenActors = new Cache<Player, SpatiallyPartitioned<FrozenActor>>(_ => new SpatiallyPartitioned<FrozenActor>(width, height, info.BinSize));
             partitionedRenderableActors = new SpatiallyPartitioned<Actor>(width, height, info.BinSize);
             partitionedRenderableEffects = new SpatiallyPartitioned<IEffect>(width, height, info.BinSize);
@@ -129,6 +136,22 @@ namespace EW.Traits
         {
             foreach(var a in addOrUpdateActors)
             {
+
+                var mouseBounds = a.MouseBounds(worldRenderer);
+
+                if (!mouseBounds.Size.IsEmpty)
+                {
+                    if (partitionedMouseActors.Contains(a))
+                        partitionedMouseActors.Update(a, mouseBounds);
+                    else
+                        partitionedMouseActors.Add(a, mouseBounds);
+
+                    partitionedMouseActorBounds[a] = new ActorBoundsPair(a, mouseBounds);
+                }
+                else
+                    partitionedMouseActors.Remove(a);
+
+
                 var screenBounds = AggregateBounds(a.ScreenBounds(worldRenderer));
                 if (!screenBounds.Size.IsEmpty)
                 {
@@ -156,6 +179,19 @@ namespace EW.Traits
             {
                 foreach(var fa in kv.Value)
                 {
+                    var mouseBounds = fa.MouseBounds;
+                    if (!mouseBounds.Size.IsEmpty)
+                    {
+
+                        if (partitionedMouseFrozenActors[kv.Key].Contains(fa))
+                            partitionedMouseFrozenActors[kv.Key].Update(fa, mouseBounds);
+                        else
+                            partitionedMouseFrozenActors[kv.Key].Add(fa, mouseBounds);
+                    }
+                    else
+                        partitionedMouseFrozenActors[kv.Key].Remove(fa);
+
+
                     var screenBounds = AggregateBounds(fa.ScreenBounds);
                     if (!screenBounds.Size.IsEmpty)
                     {
@@ -329,6 +365,26 @@ namespace EW.Traits
         //}
 
 
+        public IEnumerable<ActorBoundsPair> ActorsAtMouse(Int2 worldPx){
+
+            return partitionedMouseActors.At(worldPx)
+                                         .Where(actorIsInWorld)
+                                         .Select(selectActorAndBounds)
+                                         .Where(x => x.Bounds.Contains(worldPx));
+        }
+
+        public IEnumerable<ActorBoundsPair> ActorsInMouseBox(Int2 a,Int2 b){
+
+            return ActorsInMouseBox(RectWithCorners(a, b));
+        }
+
+        public IEnumerable<ActorBoundsPair> ActorsInMouseBox(Rectangle r){
+
+            return partitionedMouseActors.InBox(r)
+                                         .Where(actorIsInWorld)
+                                         .Select(selectActorAndBounds)
+                                         .Where(x => r.IntersectsWith(x.Bounds));
+        }
         static bool ValidBounds(Rectangle bounds){
             
             return bounds.Width > 0 && bounds.Height > 0;

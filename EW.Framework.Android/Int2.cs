@@ -63,6 +63,10 @@ namespace EW.Framework
         }
 
 
+        public int LengthSquared{ get { return X * X + Y * Y; }}
+
+        public int Length{ get { return Exts.ISqrt(LengthSquared); }}
+
         public System.Drawing.Point ToPoint() { return new System.Drawing.Point(X, Y); }
     }
 }

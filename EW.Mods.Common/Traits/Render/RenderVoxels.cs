@@ -79,6 +79,8 @@ namespace EW.Mods.Common.Traits.Render
 
             public bool Tick()
             {
+
+                //Return to the caller whether the renderable position or size has changed.
                 var visible = model.IsVisible;
                 var offset = model.OffsetFunc != null ? model.OffsetFunc() : WVec.Zero;
 
@@ -135,7 +137,9 @@ namespace EW.Mods.Common.Traits.Render
 
             return new IRenderable[]
             {
-                new ModelRenderable(components,self.CenterPosition,0,camera,Info.Scale,lightSource,Info.LightAmbientColor,Info.LightDiffuseColor,colorPalette,normalsPalette,shadowPalette)
+                new ModelRenderable(components,self.CenterPosition,0
+                                    ,camera,Info.Scale,lightSource,Info.LightAmbientColor
+                                    ,Info.LightDiffuseColor,colorPalette,normalsPalette,shadowPalette)
             };
         }
 

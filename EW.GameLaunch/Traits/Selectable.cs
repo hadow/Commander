@@ -7,9 +7,6 @@ namespace EW.Traits
     {
         public readonly int Priority = 10;
 
-        
-        public readonly int[] Bounds = null;
-
         public readonly string Class = null;
 
         [VoiceReference]
@@ -24,7 +21,7 @@ namespace EW.Traits
 
         public SelectableInfo Info;
 
-        public Selectable(Actor self,SelectableInfo info)
+        public Selectable(Actor self,SelectableInfo info):base(info)
         {
             Class = string.IsNullOrEmpty(info.Class) ? self.Info.Name : info.Class;
             Info = info;

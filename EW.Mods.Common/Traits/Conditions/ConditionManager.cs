@@ -3,12 +3,7 @@ using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-    //public interface IConditionTimerWatcher
-    //{
-    //    string Condition { get; }
 
-    //    void Update(int duration, int remaining);
-    //}
 
     /// <summary>
     /// Attach this to a unit to enable dynamic conditions by warheads,experience,crates,support powers.

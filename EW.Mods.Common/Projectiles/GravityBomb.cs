@@ -10,11 +10,17 @@ namespace EW.Mods.Common.Projectiles
 
         public IProjectile Create(ProjectileArgs args)
         {
-            return new GravityBomb();
+            return new GravityBomb(this,args);
         }
     }
     public class GravityBomb:IProjectile,ISync
     {
+
+
+        public GravityBomb(GravityBombInfo info,ProjectileArgs args)
+        {
+            
+        }
         public void Tick(World world)
         {
 

@@ -7,7 +7,7 @@ namespace EW.Traits
     public class DebugVisualizations
     {
         public bool CombatGeometry;
-        public bool RenderGeometry;
+        public bool RenderGeometry = true;
         public bool ScreenMap;
         public bool DepthBuffer;
         public bool ActorTags;

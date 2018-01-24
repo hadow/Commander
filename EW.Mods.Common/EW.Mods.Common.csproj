@@ -494,6 +494,17 @@
     <Compile Include="AI\States\GroundStates.cs" />
     <Compile Include="AI\AttackOrFleeFuzzy.cs" />
     <Compile Include="WorldExtensions.cs" />
+    <Compile Include="Widgets\WorldInteractionControllerWidget.cs" />
+    <Compile Include="Widgets\ViewportControllerWidget.cs" />
+    <Compile Include="Widgets\Logic\Ingame\LoadIngamePerfLogic.cs" />
+    <Compile Include="Widgets\Logic\Ingame\LoadIngamePlayerOrObserverUILogic.cs" />
+    <Compile Include="Widgets\LogicKeyListenerWidget.cs" />
+    <Compile Include="Widgets\LogicTickerWidget.cs" />
+    <Compile Include="Widgets\LabelWidget.cs" />
+    <Compile Include="Widgets\StrategicProgressWidget.cs" />
+    <Compile Include="Widgets\TooltipContainerWidget.cs" />
+    <Compile Include="Widgets\Logic\Ingame\DisconnectWatcherLogic.cs" />
+    <Compile Include="Scripting\Properties\ConditionProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

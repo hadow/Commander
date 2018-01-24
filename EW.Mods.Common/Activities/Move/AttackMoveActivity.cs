@@ -40,7 +40,7 @@ namespace EW.Mods.Common.Activities
 
         public override bool Cancel(Actor self,bool keepQueue = false)
         {
-            if (!IsCanceled && inner != null && inner.Cancel(self))
+            if (!IsCanceled && inner != null && !inner.Cancel(self))
                 return false;
             return base.Cancel(self,keepQueue);
         }

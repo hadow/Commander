@@ -911,10 +911,14 @@ namespace EW
 
 
         /// <summary>
-        /// Bot ranges are inclusive because everything that calls it is designed for maxRange being inclusive.
-        /// it rounds the actual distance up to the next integer so that this call.
-        /// will return any cells that intersect with the requested range circel.
-        /// The returned positions are sorted by distance from the center.
+        // Both ranges are inclusive because everything that calls it is designed for maxRange being inclusive:
+        // it rounds the actual distance up to the next integer so that this call
+        // will return any cells that intersect with the requested range circle.
+        // The returned positions are sorted by distance from the center.
+        /// 这两个范围都是包含的，因为调用它的所有内容都是为包含的maxRange设计的：
+        /// 它将实际距离四舍五入到下一个整数，
+        /// 以便此调用将返回与请求的范围圆相交的任何单元格。返回的位置按距离中心的距离排序。
+
         /// </summary>
         /// <returns>The tiles in annulus.</returns>
         /// <param name="center">Center.</param>

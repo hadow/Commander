@@ -9,7 +9,7 @@
     <RootNamespace>EW</RootNamespace>
     <AssemblyName>EW.GameLaunch</AssemblyName>
     <AndroidApplication>true</AndroidApplication>
-    <TargetFrameworkVersion>v4.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.4</TargetFrameworkVersion>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
@@ -38,9 +38,6 @@
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <PlatformTarget>x86</PlatformTarget>
     <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -77,6 +74,9 @@
     </Reference>
     <Reference Include="FuzzyLogicLibrary">
       <HintPath>..\packages\FuzzyLogicLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="EW.Framework.Android">
+      <HintPath>..\EW.Framework.Android\bin\Debug\EW.Framework.Android.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -454,6 +454,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Scripting\Properties\GeneralProperties.cs">
       <Link>External_Common\Scripting\Properties\GeneralProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Scripting\Properties\ConditionProperties.cs">
+      <Link>External_Common\Scripting\Properties\ConditionProperties.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Scripting\Properties\HealthProperties.cs">
       <Link>External_Common\Scripting\Properties\HealthProperties.cs</Link>
@@ -1490,6 +1493,36 @@
     <Compile Include="..\EW.Mods.Common\Widgets\RadarWidget.cs">
       <Link>External_Common\Widgets\RadarWidget.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\WorldInteractionControllerWidget.cs">
+      <Link>External_Common\Widgets\WorldInteractionControllerWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ViewportControllerWidget.cs">
+      <Link>External_Common\Widgets\ViewportControllerWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\LogicKeyListenerWidget.cs">
+      <Link>External_Common\Widgets\LogicKeyListenerWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\LogicTickerWidget.cs">
+      <Link>External_Common\Widgets\LogicTickerWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\LabelWidget.cs">
+      <Link>External_Common\Widgets\LabelWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\StrategicProgressWidget.cs">
+      <Link>External_Common\Widgets\StrategicProgressWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\TooltipContainerWidget.cs">
+      <Link>External_Common\Widgets\TooltipContainerWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\LoadIngamePerfLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\LoadIngamePerfLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\LoadIngamePlayerOrObserverUILogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\LoadIngamePlayerOrObserverUILogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\DisconnectWatcherLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\DisconnectWatcherLogic.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\WorldExtensions.cs">
       <Link>External_Common\WorldExtensions.cs</Link>
     </Compile>
@@ -1540,7 +1573,6 @@
     <Compile Include="Graphics\TerrainSpriteLayer.cs" />
     <Compile Include="Graphics\Theater.cs" />
     <Compile Include="Graphics\Util.cs" />
-    <Compile Include="Graphics\VoxelLoader.cs" />
     <Compile Include="Graphics\ModelRenderer.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />
     <Compile Include="InstalledMods.cs" />
@@ -1646,6 +1678,9 @@
     <Compile Include="NetWork\OrderIO.cs" />
     <Compile Include="NetWork\FrameData.cs" />
     <Compile Include="NetWork\UnitOrders.cs" />
+    <Compile Include="SelectableExts.cs" />
+    <Compile Include="Support\Evaluator.cs" />
+    <Compile Include="Widgets\ChromeMetrics.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />
@@ -1994,6 +2029,7 @@
     <AndroidAsset Include="Content\mods\common\chrome\map-chooser.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\missionbrowser.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\multiplayer-browser.yaml" />
+    <AndroidAsset Include="Content\mods\common\metrics.yaml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -2007,12 +2043,6 @@
     <None Include="Properties\AndroidManifest.xml">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EW.Framework.Android\EW.Framework.Android.csproj">
-      <Project>{6d95a620-d0d0-4b0c-b1ee-ab9f61bcc201}</Project>
-      <Name>EW.Framework.Android</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <AndroidNativeLibrary Include="lib\x86\liblua.so">

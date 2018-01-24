@@ -29,7 +29,7 @@ namespace EW.Mods.Common.Traits
 
             this.anim = new Animation(world, image, () => facing);
             anim.PlayThen(sequence,()=>world.AddFrameEndTask(w=>{w.Remove(this); w.ScreenMap.Remove(this);}));
-
+            world.ScreenMap.Add(this,pos,anim.Image);
         }
 
 

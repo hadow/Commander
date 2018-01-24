@@ -10,6 +10,10 @@ namespace EW.Mods.Common.Projectiles
         public IProjectile Create(ProjectileArgs args) { return new LaserZap(); }
     }
 
+    /// <summary>
+    /// Laser zap.
+    /// 击光打击
+    /// </summary>
     public class LaserZap:IProjectile,ISync
     {
         public void Tick(World world)

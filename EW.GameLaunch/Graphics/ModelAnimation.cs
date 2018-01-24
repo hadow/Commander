@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using EW.Primitives;
 using System.Drawing;
 namespace EW.Graphics
 {

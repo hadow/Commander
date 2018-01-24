@@ -16,6 +16,9 @@ namespace EW.Mods.Common.Scripting
             cargo = self.Trait<Cargo>();
         }
 
+
+        public bool HasPassengers{ get { return cargo.Passengers.Any(); }}
+
         public void LoadPassenger(Actor a)
         {
             //Console.WriteLine("LoadPassenger");

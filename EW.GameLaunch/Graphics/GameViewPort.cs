@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EW.Framework;
 using System.Drawing;
 
+
 namespace EW.Graphics
 {
 
@@ -52,6 +53,7 @@ namespace EW.Graphics
 
         public static Int2 LastMousePos;
 
+        public static long LastMoveRunTime = 0;
         /// <summary>
         /// 
         /// </summary>

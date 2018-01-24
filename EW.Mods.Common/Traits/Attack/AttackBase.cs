@@ -132,7 +132,8 @@ namespace EW.Mods.Common.Traits
         /// <returns></returns>
         public bool IsReachableTarget(Target target,bool allowMove)
         {
-            return HasAnyValidWeapons(target) && (target.IsInRange(self.CenterPosition, GetMaximumRangeVersusTarget(target)) || (allowMove && self.Info.HasTraitInfo<IMoveInfo>()));
+            return HasAnyValidWeapons(target) && (target.IsInRange(self.CenterPosition, GetMaximumRangeVersusTarget(target))
+                                                  || (allowMove && self.Info.HasTraitInfo<IMoveInfo>()));
         }
 
         /// <summary>

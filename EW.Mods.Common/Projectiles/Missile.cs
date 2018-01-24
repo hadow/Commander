@@ -196,6 +196,9 @@ namespace EW.Mods.Common.Projectiles
         }
     }
 
+    /// <summary>
+    /// 导弹
+    /// </summary>
     public class Missile:IProjectile,ISync
     {
         enum States

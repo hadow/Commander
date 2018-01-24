@@ -539,4 +539,10 @@ namespace EW.Traits
 
     public interface IValidateOrder { bool OrderValidation(OrderManager orderManager, World world, int clientId, Order order); }
 
+
+    public interface IMouseBounds { Rectangle MouseoverBounds(Actor self, WorldRenderer wr); }
+
+    public interface IMouseBoundsInfo:ITraitInfoInterface{}
+
+    public interface IAutoMouseBounds { Rectangle AutoMouseoverBounds(Actor self, WorldRenderer wr); }
 }

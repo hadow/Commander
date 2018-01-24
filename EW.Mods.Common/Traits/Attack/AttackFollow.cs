@@ -17,16 +17,17 @@ namespace EW.Mods.Common.Traits
     public class AttackFollow:AttackBase,ITick,INotifyOwnerChanged
     {
         public Target Target { get; protected set; }
-        public AttackFollow(Actor self,AttackBaseInfo info) : base(self, info)
-        {
-
-        }
+        public AttackFollow(Actor self,AttackBaseInfo info) : base(self, info){}
 
         public override Activity GetAttackActivity(Actor self, Target newTarget, bool allowMove, bool forceAttack)
         {
             return new AttackActivity(self, newTarget, allowMove, forceAttack);
         }
 
+
+        void ITick.Tick(Actor self){
+            Tick(self);
+        }
         public virtual void Tick(Actor self)
         {
             if(IsTraitDisabled)
@@ -41,7 +42,7 @@ namespace EW.Mods.Common.Traits
 
         public void OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)
         {
-
+            Target = Target.Invalid;
         }
         class AttackActivity : Activity
         {
