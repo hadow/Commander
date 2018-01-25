@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
+using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.Traits
 {
 
@@ -32,13 +33,57 @@ namespace EW.Mods.Common.Traits
 
         public virtual object Create(ActorInitializer init) { return new Refinery(init.Self,this); }
     }
-    public class Refinery
+    public class Refinery:ITick,IAcceptResources,INotifyOwnerChanged,ISync,INotifyActorDisposing
     {
+
+        readonly Actor self;
+        readonly RefineryInfo info;
+        PlayerResources playerResources;
+
+        [Sync]
+        bool preventDock = false;
+
+        public bool AllowDocking { get { return !preventDock; } }
+
+        public CVec DeliveryOffset { get { return info.DockOffset; } }
 
         public Refinery(Actor self,RefineryInfo info)
         {
 
         }
+
+        public bool CanGiveResource(int amount)
+        {
+            return !info.UseStorage || info.DiscardExcessResources || playerResources.CanGiveResources(amount);
+        }
+
+        public void GiveResource(int amount)
+        {
+
+        }
+
+        public void OnDock(Actor harv,DeliverResources dockOrder)
+        {
+
+        }
+
+
+        void ITick.Tick(Actor self)
+        {
+
+        }
+
+        void INotifyOwnerChanged.OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)
+        {
+
+        }
+
+        void INotifyActorDisposing.Disposing(Actor self)
+        {
+
+        }
+
+
     }
 
 

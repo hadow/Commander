@@ -16,6 +16,12 @@ namespace EW.Mods.Common.Traits
         readonly Dictionary<Actor, CPos> claimByActor = new Dictionary<Actor, CPos>(32);
 
 
+        public bool TryClaimCell(Actor claimer,CPos cell)
+        {
+            return true;
+        }
+
+
         /// <summary>
         /// Returns false if the cell is already reserved by an allied actor.
         /// </summary>
@@ -27,7 +33,11 @@ namespace EW.Mods.Common.Traits
             return !claimByCell.GetOrAdd(cell).Any(c => c != claimer && !c.IsDead && claimer.Owner.IsAlliedWith(c.Owner));
         }
 
+        public void RemoveClaim(Actor claimer)
+        {
+            CPos lastClaim;
 
+        }
 
 
 

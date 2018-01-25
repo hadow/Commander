@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
+    /// <summary>
+    /// Modifies the damage applied to this actor,Use 0 to make actor invulnerable(无敌).
+    /// </summary>
     public class DamageMultiplierInfo : ConditionalTraitInfo
     {
 

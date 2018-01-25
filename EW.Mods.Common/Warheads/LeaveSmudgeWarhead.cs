@@ -22,6 +22,9 @@ namespace EW.Mods.Common.Warheads
         /// </summary>
         public readonly HashSet<string> SmudgeType = new HashSet<string>();
 
+        /// <summary>
+        /// How close to ground must the impact happen to spawn smudges.
+        /// </summary>
         public readonly WDist AirThreshold = new WDist(128);
 
         public override void DoImpact(Target target, Actor firedBy, IEnumerable<int> damagedModifiers)

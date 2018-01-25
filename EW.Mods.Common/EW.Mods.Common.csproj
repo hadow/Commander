@@ -55,8 +55,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\Air\FlyAttack.cs" />
+    <Compile Include="Activities\DeliverResources.cs" />
     <Compile Include="Activities\Drag.cs" />
     <Compile Include="Activities\FindResources.cs" />
+    <Compile Include="Activities\HarvestResource.cs" />
     <Compile Include="Activities\Hunt.cs" />
     <Compile Include="Activities\Move\AttackMoveActivity.cs" />
     <Compile Include="Activities\Move\Follow.cs" />

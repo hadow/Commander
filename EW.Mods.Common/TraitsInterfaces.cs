@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
+using EW.Activities;
 using EW.Traits;
 using EW.Primitives;
 using EW.Graphics;
 using EW.Mods.Common.Traits.Render;
+using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.Traits
 {
     public enum VisibilityType { Footprint, CenterPosition, GroundPosition }
@@ -16,6 +18,22 @@ namespace EW.Mods.Common.Traits
     }
 
     #region Notify
+
+    public interface INotifyHarvesterAction
+    {
+        //void MovingToResources(Actor self, CPos targetCell, Activity next);
+
+        //void MovingToRefinery(Actor self, Actor refineryActor, Activity next);
+
+        //void MovementCancelled(Actor self);
+
+        void Harvested(Actor self, ResourceType resource);
+
+        void Docked();
+
+        void Undocked();
+    }
+
 
     public interface INotifyBlockingMove { void OnNotifyBlockingMove(Actor self, Actor blocking); }
 
@@ -53,6 +71,9 @@ namespace EW.Mods.Common.Traits
     public interface INotifyDamage{
         void Damaged(Actor self, AttackInfo attackInfo);
     }
+
+    [RequireExplicitImplementation]
+    public interface INotifyDamageStateChanged { void DamageStateChanged(Actor self, AttackInfo attackInfo); }
 
     public interface INotifyKilled{
         void Killed(Actor self, AttackInfo attackInfo);
@@ -155,6 +176,19 @@ namespace EW.Mods.Common.Traits
 
 
     public interface IAcceptResourcesInfo : ITraitInfo { }
+
+    public interface IAcceptResources
+    {
+        void OnDock(Actor harv, DeliverResources dockOrder);
+
+        void GiveResource(int amount);
+
+        bool CanGiveResource(int amount);
+
+        CVec DeliveryOffset { get; }
+
+        bool AllowDocking { get; }
+    }
 
     public interface IQuantizeBodyOrientationInfo : ITraitInfo
     {

@@ -8,7 +8,11 @@ namespace EW.Mods.Common.HitShapes
         public readonly WDist Radius = new WDist(426);
         public WDist OuterRadius { get { return Radius; } }
 
-        public void Initialize() { }
+        public void Initialize()
+        {
+            //if (VerticalTopOffset < VerticalBottomOffset)
+            //    throw new YamlException("VerticalTopOffset must be equal to or higher than VerticalBottomOffset.");
+        }
 
         public CircleShape() { }
 

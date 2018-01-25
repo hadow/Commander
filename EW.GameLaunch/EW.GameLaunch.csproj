@@ -191,11 +191,17 @@
     <Compile Include="..\EW.Mods.Common\Activities\Attack.cs">
       <Link>External_Common\Activities\Attack.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\DeliverResources.cs">
+      <Link>External_Common\Activities\DeliverResources.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Drag.cs">
       <Link>External_Common\Activities\Drag.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
       <Link>External_Common\Activities\FindResources.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\HarvestResource.cs">
+      <Link>External_Common\Activities\HarvestResource.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Hunt.cs">
       <Link>External_Common\Activities\Hunt.cs</Link>

@@ -299,6 +299,11 @@ namespace EW
             return TraitDict.ActorsHavingTrait<T>();
         }
 
+
+        public IEnumerable<Actor> ActorsHavingTrait<T>(Func<T,bool> predicate)
+        {
+            return TraitDict.ActorsHavingTrait(predicate);
+        }
         
 
         public void AddFrameEndTask(Action<World> a)
@@ -401,7 +406,7 @@ namespace EW
             effects.Remove(e);
 
             var sp = e as ISpatiallyPartitionable;
-            if (sp != null)
+            if (sp == null)
                 unpartitionedEffects.Remove(e);
 
             var se = e as ISync;

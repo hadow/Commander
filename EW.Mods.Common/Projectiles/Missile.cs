@@ -106,6 +106,7 @@ namespace EW.Mods.Common.Projectiles
 
         /// <summary>
         /// Is the missile aware of terrain height level.
+        /// 导弹是否意识到地形高度水平
         /// </summary>
         public readonly bool TerrainHeightAware = false;
         /// <summary>
@@ -115,6 +116,7 @@ namespace EW.Mods.Common.Projectiles
 
         /// <summary>
         /// Probability of locking onto and following target.
+        /// 锁定目标的可能性
         /// </summary>
         public readonly int LockOnProbability = 100;
 
@@ -314,7 +316,7 @@ namespace EW.Mods.Common.Projectiles
 
 
         /// <summary>
-        /// 
+        /// 判定导弹启动速度和角度
         /// </summary>
         /// <param name="world"></param>
         /// <param name="speed"></param>

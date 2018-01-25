@@ -74,6 +74,20 @@ namespace EW
                 }
             }
 
+            public IEnumerable<Actor> Actors(Func<T,bool> predicate)
+            {
+                ++Queries;
+                Actor last = null;
+
+                for(var i = 0; i < actors.Count; i++)
+                {
+                    if (actors[i] == last || !predicate(traits[i]))
+                        continue;
+                    yield return actors[i];
+                    last = actors[i];
+                }
+            }
+
             public void Add(Actor actor,object trait)
             {
                 var insertIndex = actors.BinarySearchMany(actor.ActorID + 1);
@@ -316,6 +330,11 @@ namespace EW
         public IEnumerable<Actor> ActorsHavingTrait<T>()
         {
             return InnerGet<T>().Actors();
+        }
+
+        public IEnumerable<Actor> ActorsHavingTrait<T>(Func<T,bool> predicate)
+        {
+            return InnerGet<T>().Actors(predicate);
         }
 
         public void RemoveActor(Actor a)

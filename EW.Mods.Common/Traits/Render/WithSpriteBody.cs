@@ -8,7 +8,7 @@ namespace EW.Mods.Common.Traits
     /// <summary>
     /// Default trait for rendering sprite-based actors.
     /// </summary>
-    public class WithSpriteBodyInfo : ConditionalTraitInfo,IRenderActorPreviewSpritesInfo,Requires<RenderSpritesInfo>
+    public class WithSpriteBodyInfo : PausableConditionalTraitInfo,IRenderActorPreviewSpritesInfo,Requires<RenderSpritesInfo>
     {
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class WithSpriteBody:ConditionalTrait<WithSpriteBodyInfo>, INotifyBuildComplete
+    public class WithSpriteBody:PausableConditionalTrait<WithSpriteBodyInfo>, INotifyBuildComplete,INotifyDamageStateChanged
     {
 
         public readonly Animation DefaultAnimation;
@@ -125,6 +125,17 @@ namespace EW.Mods.Common.Traits
                 if (after != null)
                     after();
             });
+        }
+
+        void INotifyDamageStateChanged.DamageStateChanged(Actor self, AttackInfo attackInfo)
+        {
+            DamageStateChanged(self);
+        }
+
+        protected virtual void DamageStateChanged(Actor self)
+        {
+            if (DefaultAnimation.CurrentSequence != null)
+                DefaultAnimation.ReplaceAnim(NormalizeSequence(self, DefaultAnimation.CurrentSequence.Name));
         }
     }
 }

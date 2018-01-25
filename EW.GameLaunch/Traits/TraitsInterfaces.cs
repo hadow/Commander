@@ -218,7 +218,7 @@ namespace EW.Traits
 
     public interface IDefaultVisibility { bool IsVisible(Actor self, Player byPlayer); }
     public interface IVisibilityModifier { bool IsVisible(Actor self, Player byPlayer); }
-
+    [RequireExplicitImplementation]
     public interface IDamageModifier { int GetDamageModifier(Actor attacker, Damage damage); }
 
     public interface ISpeedModifier { int GetSpeedModifier(); }

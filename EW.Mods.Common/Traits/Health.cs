@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 using EW.Mods.Common.HitShapes;
 namespace EW.Mods.Common.Traits
@@ -99,6 +100,7 @@ namespace EW.Mods.Common.Traits
         /// <param name="ignoreModifiers"></param>
         public void InflictDamage(Actor self,Actor attacker,Damage damage,bool ignoreModifiers)
         {
+            //Overkill! Don't count extra hits as more kills!
             if (IsDead)
                 return;
 
@@ -106,8 +108,53 @@ namespace EW.Mods.Common.Traits
             //Apply any damage modifiers
             if(!ignoreModifiers && damage.Value > 0)
             {
+                var modifiers = self.TraitsImplementing<IDamageModifier>()
+                    .Concat(self.Owner.PlayerActor.TraitsImplementing<IDamageModifier>())
+                    .Select(t => t.GetDamageModifier(attacker, damage));
+
+                damage = new Damage(Util.ApplyPercentageModifiers(damage.Value, modifiers), damage.DamageTypes);
 
             }
+            hp = (hp - damage.Value).Clamp(0, MaxHP);
+
+            var ai = new AttackInfo
+            {
+                Attacker = attacker,
+                Damage = damage,
+                DamageState = DamageState,
+                PreviousDamageState = oldState,
+            };
+
+            foreach (var nd in self.TraitsImplementing<INotifyDamage>()
+                .Concat(self.Owner.PlayerActor.TraitsImplementing<INotifyDamage>()))
+                nd.Damaged(self, ai);
+
+            if (DamageState != oldState)
+                foreach (var nd in self.TraitsImplementing<INotifyDamageStateChanged>())
+                    nd.DamageStateChanged(self, ai);
+
+            if (Info.NotifyAppliedDamage && attacker != null && attacker.IsInWorld && !attacker.IsDead)
+                foreach (var nd in attacker.TraitsImplementing<INotifyAppliedDamage>().Concat(attacker.Owner.PlayerActor.TraitsImplementing<INotifyAppliedDamage>()))
+                    nd.AppliedDamage(attacker, self, ai);
+
+            if(hp == 0)
+            {
+                foreach (var nd in self.TraitsImplementing<INotifyKilled>().Concat(self.Owner.PlayerActor.TraitsImplementing<INotifyKilled>()))
+                    nd.Killed(self, ai);
+
+                if (RemoveOnDeath)
+                    self.Dispose();
+
+                if(attacker == null)
+                {
+
+                }
+                else
+                {
+
+                }
+            }
+
         }
 
         public void Kill(Actor self,Actor attacker)

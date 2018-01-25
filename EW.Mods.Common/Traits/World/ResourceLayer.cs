@@ -46,7 +46,8 @@ namespace EW.Mods.Common.Traits
         protected readonly CellLayer<CellContents> Content;
         protected readonly CellLayer<CellContents> RenderContent;
 
-
+        bool disposed;
+        int resCell;
         public ResourceLayer(Actor self)
         {
             world = self.World;
@@ -281,7 +282,31 @@ namespace EW.Mods.Common.Traits
             RenderContent[cell] = t;
         }
 
-        bool disposed;
+        /// <summary>
+        /// 收割
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns></returns>
+        public ResourceType Harvest(CPos cell)
+        {
+            var c = Content[cell];
+            if (c.Type == null)
+                return null;
+
+            if (--c.Density < 0)
+            {
+                Content[cell] = EmptyCell;
+                world.Map.CustomTerrain[cell] = byte.MaxValue;
+                --resCell;
+            }
+            else
+                Content[cell] = c;
+
+            dirty.Add(cell);
+            return c.Type;
+        }
+
+        
         public void Disposing(Actor self)
         {
             if (disposed)

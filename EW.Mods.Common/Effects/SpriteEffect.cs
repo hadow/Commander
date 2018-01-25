@@ -22,6 +22,7 @@ namespace EW.Mods.Common.Traits
                             bool visibleThroughFog = false,bool scaleSizeWithZoom = false,int facing = 0)
         {
             this.world = world;
+            this.pos = pos;
             this.palette = palette;
 
             this.scaleSizeWithZoom = scaleSizeWithZoom;

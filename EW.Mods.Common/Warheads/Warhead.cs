@@ -4,6 +4,23 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Warheads
 {
+
+
+    public enum ImpactType
+    {
+        None,
+        Ground,
+        Air,
+        TargetHit
+    }
+
+    public enum ImpactTargetType
+    {
+        NoActor,
+        ValidActor,
+        InvalidActor
+    }
+
     public abstract class Warhead:IWarHead
     {
 

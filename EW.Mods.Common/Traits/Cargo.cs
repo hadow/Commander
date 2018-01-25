@@ -128,8 +128,14 @@ namespace EW.Mods.Common.Traits
 
         void INotifyAddedToWorld.AddedToWorld(Actor self){
 
+            //Force location update to avoid issues when initial spawn is outside map.
             currentCell = self.Location;
+            CurrentAdjacentCells = GetAdjacentCells();
+        }
 
+        IEnumerable<CPos> GetAdjacentCells()
+        {
+            return Util.AdjacentCells(self.World, Target.FromActor(self)).Where(c => self.Location != c);
         }
 
         void ITick.Tick(Actor self){

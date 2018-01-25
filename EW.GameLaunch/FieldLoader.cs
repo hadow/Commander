@@ -356,6 +356,16 @@ namespace EW
 
                 return InvalidValueAction(value, fieldType, fieldName);
             }
+            else if(fieldType == typeof(Int2))
+            {
+                if(value != null)
+                {
+                    var parts = value.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    return new Int2(Exts.ParseIntegerInvariant(parts[0]), Exts.ParseIntegerInvariant(parts[1]));
+                }
+
+                return InvalidValueAction(value, fieldType, fieldName);
+            }
             else if (fieldType.IsEnum)
             {
                 try

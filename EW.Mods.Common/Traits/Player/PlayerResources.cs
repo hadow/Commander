@@ -57,6 +57,11 @@ namespace EW.Mods.Common.Traits
 
         }
 
+        public bool CanGiveResources(int amount)
+        {
+            return Resources + amount <= ResourceCapacity;
+        }
+
         void ITick.Tick(Actor self)
         {
             ResourceCapacity = 0;
