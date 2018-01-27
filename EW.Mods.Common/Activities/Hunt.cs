@@ -22,8 +22,7 @@ namespace EW.Mods.Common.Activities
                 !a.IsDead &&
                 a.IsInWorld && 
                 a.AppearsHostileTo(self) &&
-                a.IsTargetableBy(self) && 
-                attack.HasAnyValidWeapons(Target.FromActor(a)));
+                a.IsTargetableBy(self) && attack.HasAnyValidWeapons(Target.FromActor(a)));
 
         }
 

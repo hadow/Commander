@@ -166,6 +166,20 @@ namespace EW.Mods.Common.Traits
                 return DesiredFacing == null || TurretFacing == DesiredFacing.Value;
             }
         }
+
+
+        public bool FaceTarget(Actor self,Target target)
+        {
+            if (attack == null || attack.IsTraitDisabled || attack.IsTraitPaused)
+                return false;
+
+            var pos = self.CenterPosition;
+            var targetPos = attack.GetTargetPosition(pos, target);
+            var delta = targetPos - pos;
+            DesiredFacing = delta.HorizontalLengthSquared != 0 ? delta.Yaw.Facing : TurretFacing;
+            MoveTurret();
+            return HasAchieveDesiredFacing;
+        }
     }
 
     public class TurretFacingInit : IActorInit<int>

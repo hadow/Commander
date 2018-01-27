@@ -94,6 +94,7 @@
     <Compile Include="FileFormats\RLEZerosCompression.cs" />
     <Compile Include="FileFormats\WavReader.cs" />
     <Compile Include="FileFormats\XORDeltaCompression.cs" />
+    <Compile Include="Graphics\BeamRenderable.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\ModelPreview.cs" />
     <Compile Include="Graphics\ModelRenderable.cs" />

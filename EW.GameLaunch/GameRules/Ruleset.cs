@@ -227,7 +227,8 @@ namespace EW
             if (additional == null && defaults != null)
                 return defaults;
 
-            var result = MiniYaml.Load(fileSystem, files, additional).ToDictionaryWithConflictLog(k => k.Key.ToLowerInvariant(), makeObject, "LoadFromManifest<" + name + ">");
+            var result = MiniYaml.Load(fileSystem, files, additional)
+                .ToDictionaryWithConflictLog(k => k.Key.ToLowerInvariant(), makeObject, "LoadFromManifest<" + name + ">");
 
             return new ReadOnlyDictionary<string, T>(result);
         }

@@ -92,11 +92,47 @@ namespace EW.Mods.Common.Activities
             }
         }
 
-
+        /// <summary>
+        /// Finds the closest harvestable pos between the current position of the harvester and the last order location
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         CPos? ClosestHarvestablePos(Actor self)
         {
 
-            return null;
+            if (harv.CanHarvestCell(self, self.Location) && claimLayer.CanClaimCell(self, self.Location))
+                return self.Location;
+
+            //Determine where to search from and how far to search
+            var searchFromLoc = harv.LastOrderLocation ?? (harv.LastLinkedProc ?? harv.LinkedProc ?? self).Location;
+            var searchRadius = harv.LastOrderLocation.HasValue ? harvInfo.SearchFromOrderRadius : harvInfo.SearchFromProcRadius;
+            var searchRadiusSquared = searchRadius * searchRadius;
+
+            //Find any harvestable resource:
+            var passable = (uint)mobileInfo.GetMovementClass(self.World.Map.Rules.TileSet);
+            List<CPos> path;
+            using (var search = PathSearch.Search(self.World, mobileInfo, self, true, loc =>
+                 domainIndex.IsPassable(self.Location, loc, mobileInfo, passable) && harv.CanHarvestCell(self, loc) && claimLayer.CanClaimCell(self, loc))
+                .WithCustomCost(loc =>
+                {
+                    if ((avoidCell.HasValue && loc == avoidCell.Value) ||
+                    (loc - self.Location).LengthSquard > searchRadiusSquared)
+                        return int.MaxValue;
+                    return 0;
+                })
+                .FromPoint(self.Location)
+                .FromPoint(searchFromLoc))
+                path = pathFinder.FindPath(search);
+
+            if (path.Count > 0)
+                return path[0];
+                return null;
+        }
+
+
+        public override IEnumerable<Target> GetTargets(Actor self)
+        {
+            yield return Target.FromCell(self.World, self.Location);
         }
     }
 }

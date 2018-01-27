@@ -940,7 +940,7 @@ namespace EW
             if (allowOutsideBounds)
                 valid = Tiles.Contains;
 
-            for (var i = minRange; i < maxRange;i++){
+            for (var i = minRange; i <= maxRange;i++){
                 foreach(var offset in Grid.TilesByDistance[i]){
                     var t = offset + center;
                     if (valid(t))

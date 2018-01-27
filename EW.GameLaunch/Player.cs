@@ -179,6 +179,10 @@ namespace EW
         {
             return p == null || Stances[p] == Stance.Ally || (p.Spectating && !NonCombatant);
         }
+        public override string ToString()
+        {
+            return "{0} ({1})".F(PlayerName, ClientIndex);
+        }
 
         #region Scripting interface
 

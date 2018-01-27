@@ -19,6 +19,10 @@ namespace EW.Mods.Common.Traits
 
     #region Notify
 
+    public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
+
+    public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }
+
     public interface INotifyHarvesterAction
     {
         //void MovingToResources(Actor self, CPos targetCell, Activity next);
@@ -134,6 +138,7 @@ namespace EW.Mods.Common.Traits
         string SequencePrefix { get; }
     }
 
+    [RequireExplicitImplementation]
     public interface ICrushable
     {
         bool CrushableBy(Actor self, Actor crusher, HashSet<string> crushClasses);

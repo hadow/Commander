@@ -63,7 +63,7 @@ namespace EW.Mods.Common.Traits
 
         public bool IsDead { get { return hp <= 0; } }
 
-        public bool RemoveOnDeath;
+        public bool RemoveOnDeath = true;
 
         public Health(ActorInitializer init,HealthInfo info)
         {
@@ -83,7 +83,15 @@ namespace EW.Mods.Common.Traits
                 if (hp <= 0)
                     return DamageState.Dead;
 
+                if (hp < MaxHP * 0.25f)
+                    return DamageState.Critical;
 
+                if (hp < MaxHP * 0.5f)
+                    return DamageState.Heavy;
+
+                if (hp < MaxHP * 0.75f)
+                    return DamageState.Medium;
+                
                 if (hp == MaxHP)
                     return DamageState.Undamaged;
 
@@ -165,7 +173,11 @@ namespace EW.Mods.Common.Traits
 
         void ITick.Tick(Actor self)
         {
+            if (hp > DisplayHP)
+                DisplayHP = hp;
 
+            if (DisplayHP > hp)
+                DisplayHP = (2 * DisplayHP + hp) / 3;
         }
 
         /// <summary>

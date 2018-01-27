@@ -32,6 +32,14 @@ namespace EW.Mods.Common.Warheads
             return Util.ApplyPercentageModifiers(100, armor);
         }
 
+        public override bool IsValidAgainst(Actor victim, Actor firedBy)
+        {
+            if (Damage < 0 && victim.GetDamageState() == DamageState.Undamaged)
+                return false;
+
+            return base.IsValidAgainst(victim, firedBy);
+        }
+
 
         public abstract void DoImpact(WPos pos, Actor firedBy, IEnumerable<int> damageModifiers);
 

@@ -87,9 +87,10 @@ namespace EW.Traits
             {
                 if(type == TargetT.Actor)
                 {
+                    //Actor is no longer in the world
                     if (!actor.IsInWorld || actor.IsDead)
                         return TargetT.Invalid;
-
+                    //Actor generation has changed (teleported or captured)
                     if (actor.Generation != generation)
                         return TargetT.Invalid;
                 }

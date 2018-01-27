@@ -391,7 +391,8 @@ namespace EW
 
         public static bool IsTraitEnabled(this object trait)
         {
-            return trait as IDisabledTrait == null || !(trait as IDisabledTrait).IsTraitDisabled;
+            var disabledTrait = trait as IDisabledTrait;
+            return disabledTrait == null || !disabledTrait.IsTraitDisabled;
         }
         
         public static bool IsTraitEnabled<T>(T t)

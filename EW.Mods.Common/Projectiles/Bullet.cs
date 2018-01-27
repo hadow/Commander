@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using EW.Graphics;
 using EW.Traits;
 using EW.Mods.Common.Graphics;
+using EW.Mods.Common.Traits;
 using System.Drawing;
+using System.Linq;
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Projectiles
 {
 
@@ -14,6 +17,7 @@ namespace EW.Mods.Common.Projectiles
         /// </summary>
         public readonly WDist[] Speed = { new WDist(17) };
 
+        public readonly Stance ValidBounceBlockerStances = Stance.Enemy | Stance.Neutral;
         /// <summary>
         /// Maximum offset at the maximum range.
         /// </summary>
@@ -127,7 +131,12 @@ namespace EW.Mods.Common.Projectiles
 
 
         void IRulesetLoaded<WeaponInfo>.RulesetLoaded(Ruleset rules,WeaponInfo wi){
-            
+
+            if (BlockerScanRadius < WDist.Zero)
+                BlockerScanRadius = Util.MinimumRequiredBlockerScanRadius(rules);
+
+            if (BounceBlockerScanRadius < WDist.Zero)
+                BounceBlockerScanRadius = Util.MinimumRequiredBlockerScanRadius(rules);
         }
     }
 
@@ -187,7 +196,10 @@ namespace EW.Mods.Common.Projectiles
 
             if(info.Inaccuracy.Length>0){
 
-
+                var inaccuracy = Util.ApplyPercentageModifiers(info.Inaccuracy.Length, args.InaccuracyModifiers);
+                var range = Util.ApplyPercentageModifiers(args.Weapon.Range.Length, args.RangeModifiers);
+                var maxOffset = inaccuracy * (target - pos).Length / range;
+                target += WVec.FromPDF(world.SharedRandom, 2) * maxOffset / 1024;
             }
 
             if(info.AirburstAltitude>WDist.Zero){
@@ -237,12 +249,87 @@ namespace EW.Mods.Common.Projectiles
                 anim.Tick();
 
             var lastPos = pos;
+            pos = WPos.LerpQuadratic(source, target, angle, ticks, length);
+
 
             //Check for walls or other blocking obstacles
             var shouldExplode = false;
-
             WPos blockedPos;
+            if(info.Blockable && BlocksProjectiles.AnyBlockingActorsBetween(world,lastPos,pos,info.Width,info.BlockerScanRadius,out blockedPos))
+            {
+                pos = blockedPos;
+                shouldExplode = true;
+            }
 
+            if(!string.IsNullOrEmpty(info.TrailImage) && --smokeTicks < 0)
+            {
+                var delayedPos = WPos.LerpQuadratic(source, target, angle, ticks - info.TrailDelay, length);
+                world.AddFrameEndTask(w => w.Add(new SpriteEffect(delayedPos, w, info.TrailImage, info.TrailSequence.Random(world.SharedRandom),
+                    trailPalette, false, false, GetEffectiveFacing())));
+
+                smokeTicks = info.TrailInterval;
+            }
+
+            if (info.ContrailLength > 0)
+                contrail.Update(pos);
+
+            var flightLengthReached = ticks++ >= length;
+            var shouldBounce = remainingBounces > 0;
+
+            if(flightLengthReached && shouldBounce)
+            {
+                shouldExplode |= AnyValidTargetsInRadius(world, pos, info.Width + info.BounceBlockerScanRadius, args.SourceActor, true);
+                target += (pos - source) * info.BounceRangeModifier / 100;
+                var dat = world.Map.DistanceAboveTerrain(target);
+                target += new WVec(0, 0, -dat.Length);
+                length = Math.Max((target - pos).Length / speed.Length, 1);
+                ticks = 0;
+                source = pos;
+                remainingBounces--;
+            }
+
+            //Flight length reached/exceeded
+            shouldExplode |= flightLengthReached && !shouldBounce;
+
+            //Driving into cell with higher height level
+            shouldExplode |= world.Map.DistanceAboveTerrain(pos).Length < 0;
+
+            if (remainingBounces < info.BounceCount)
+                shouldExplode |= AnyValidTargetsInRadius(world, pos, info.Width + info.BounceBlockerScanRadius, args.SourceActor, true);
+
+            if (shouldExplode)
+                Explode(world);
+
+        }
+
+        void Explode(World world)
+        {
+            if (info.ContrailLength > 0)
+                world.AddFrameEndTask(w => w.Add(new ContrailFader(pos, contrail)));
+
+            world.AddFrameEndTask(w => w.Remove(this));
+
+            args.Weapon.Impact(Target.FromPos(pos), args.SourceActor, args.DamagedModifiers);
+        }
+
+
+        bool AnyValidTargetsInRadius(World world,WPos pos,WDist radius,Actor firedBy,bool checkTargetType)
+        {
+            foreach(var victim in world.FindActorsInCircle(pos, radius))
+            {
+                if (checkTargetType && !Target.FromActor(victim).IsValidFor(firedBy))
+                    continue;
+
+                if (!info.ValidBounceBlockerStances.HasStance(victim.Owner.Stances[firedBy.Owner]))
+                    continue;
+
+                //If the impact position is within anyh actor's Hitshape,we have a direct hit
+                var activeShapes = victim.TraitsImplementing<HitShape>().Where(Exts.IsTraitEnabled);
+                if (activeShapes.Any(i => i.Info.Type.DistanceFromEdge(pos, victim).Length <= 0))
+                    return true;
+            }
+
+            return false;
         }
 
         public IEnumerable<IRenderable> Render(WorldRenderer wr)
@@ -256,11 +343,13 @@ namespace EW.Mods.Common.Projectiles
 
             var world = args.SourceActor.World;
             if(!world.FogObscures(pos)){
-
-
-
+                
                 if(info.Shadow){
-                    
+
+                    var dat = world.Map.DistanceAboveTerrain(pos);
+                    var shadowPos = pos - new WVec(0, 0, dat.Length);
+                    foreach (var r in anim.Render(shadowPos, wr.Palette(info.ShadowPalette)))
+                        yield return r;
                 }
 
                 var palette = wr.Palette(info.Palette);

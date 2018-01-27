@@ -27,15 +27,23 @@ namespace EW.Mods.Common.Warheads
         /// <summary>
         /// What types of targets are affected.
         /// </summary>
-        public readonly HashSet<string> ValidTargets = new HashSet<string>();
+        public readonly HashSet<string> ValidTargets = new HashSet<string> { "Ground","Water"};
 
         public readonly HashSet<string> InvalidTargets = new HashSet<string>();
 
+        /// <summary>
+        /// What diplomatic(外交上的) stances are affected.
+        /// </summary>
         public readonly Stance ValidStances = Stance.Ally | Stance.Neutral | Stance.Enemy;
 
+        /// <summary>
+        /// Can this warhead affect the actor that fired it.
+        /// </summary>
         public readonly bool AffectsParent = false;
 
-
+        /// <summary>
+        /// Delay in ticks before applying the warhead effect.(0 - instant)
+        /// </summary>
         public readonly int Delay = 0;
 
         int IWarHead.Delay { get { return Delay; } }
@@ -50,7 +58,7 @@ namespace EW.Mods.Common.Warheads
         public abstract void DoImpact(Target target, Actor firedBy, IEnumerable<int> damageModifiers);
 
         /// <summary>
-        /// Checks if the wardhead is valid against (can do something to ) the actor.
+        /// Checks if the wardhead is valid against (can target ) the actor.
         /// </summary>
         /// <param name="victim"></param>
         /// <param name="firedBy"></param>
@@ -72,7 +80,18 @@ namespace EW.Mods.Common.Warheads
             return true;
         }
 
-        public bool IsValidAgainst(FrozenActor victim,Actor firedBy) { return false; }
+        public bool IsValidAgainst(FrozenActor victim,Actor firedBy)
+        {
+
+            var stance = firedBy.Owner.Stances[victim.Owner];
+            if (!ValidStances.HasStance(stance))
+                return false;
+
+            if (!IsValidTarget(victim.TargetTypes))
+                return false;
+
+            return true;
+        }
   
     }
 }

@@ -41,6 +41,7 @@ namespace EW.Traits
     {
         public static bool HasStance(this Stance s ,Stance stance)
         {
+            //PERF: Enum.HasFlag is slower and requires allocations.
             return (s & stance) == stance;
         }
     }

@@ -39,6 +39,9 @@
     <PlatformTarget>x86</PlatformTarget>
     <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -322,6 +325,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\ActorPreview.cs">
       <Link>External_Common\Graphics\ActorPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\BeamRenderable.cs">
+      <Link>External_Common\Graphics\BeamRenderable.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\ContrailRenderable.cs">
       <Link>External_Common\Graphics\ContrailRenderable.cs</Link>

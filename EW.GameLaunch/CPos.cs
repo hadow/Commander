@@ -35,7 +35,7 @@ namespace EW
 
         public static CPos operator +(CVec a, CPos b)
         {
-            return new CPos(a.X + b.Y, a.Y + b.Y, b.Layer);
+            return new CPos(a.X + b.X, a.Y + b.Y, b.Layer);
         }
         public static CPos operator +(CPos a,CVec b)
         {

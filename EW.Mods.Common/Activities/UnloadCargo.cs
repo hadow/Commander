@@ -8,6 +8,9 @@ using EW.Primitives;
 using EW.Traits;
 namespace EW.Mods.Common.Activities
 {
+    /// <summary>
+    /// 卸载货物
+    /// </summary>
     public class UnloadCargo:Activity
     {
 
@@ -51,7 +54,7 @@ namespace EW.Mods.Common.Activities
             var spawn = self.CenterPosition;
 
             var exitSubCell = ChooseExitSubCell(actor);
-            if(exitSubCell != null)
+            if(exitSubCell == null)
             {
                 self.NotifyBlocker(BlockedExitCells(actor));
                 return ActivityUtils.SequenceActivities(new Wait(10), this);

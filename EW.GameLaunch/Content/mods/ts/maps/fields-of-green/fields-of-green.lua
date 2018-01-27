@@ -108,7 +108,7 @@ WorldLoaded = function()
 
     Utils.Do(ProducedUnitTypes, ProduceUnits)
     SendNodInfantry()
-    Trigger.AfterDelay(DateTime.Seconds(50), SendNodVehicles)
+    Trigger.AfterDelay(DateTime.Seconds(5), SendNodVehicles)
     SendGDIInfantry()
-    Trigger.AfterDelay(DateTime.Seconds(70), SendGDIVehicles)
+    Trigger.AfterDelay(DateTime.Seconds(5), SendGDIVehicles)
 end

@@ -205,6 +205,26 @@ namespace EW.Graphics
             return new Vector3(x / d, y / d, 0.5f * (a.Z + b.Z));
         }
 
+        public void FillRect(Vector3 a,Vector3 b,Vector3 c,Vector3 d,Color color)
+        {
+            renderer.CurrentBatchRenderer = this;
+            if (nv + 6 > renderer.TempBufferSize)
+                Flush();
+
+            color = Util.PremultiplyAlpha(color);
+            var cr = color.R / 255.0f;
+            var cg = color.G / 255.0f;
+            var cb = color.B / 255.0f;
+            var ca = color.A / 255.0f;
+
+            vertices[nv++] = new Vertex(a + Offset, cr, cg, cb, ca, 0, 0);
+            vertices[nv++] = new Vertex(b + Offset, cr, cg, cb, ca, 0, 0);
+            vertices[nv++] = new Vertex(c + Offset, cr, cg, cb, ca, 0, 0);
+            vertices[nv++] = new Vertex(c + Offset, cr, cg, cb, ca, 0, 0);
+            vertices[nv++] = new Vertex(d + Offset, cr, cg, cb, ca, 0, 0);
+            vertices[nv++] = new Vertex(a + Offset, cr, cg, cb, ca, 0, 0);
+        }
+
         public void SetViewportParams(Size screen,float depthScale,float depthOffset,float zoom,Int2 scroll)
         {
             shader.SetVec("Scroll",scroll.X,scroll.Y,scroll.Y);

@@ -235,6 +235,7 @@ namespace EW.Graphics
             if (World.OrderGenerator != null)
                 worldRenderables = worldRenderables.Concat(World.OrderGenerator.Render(this, World));
 
+            //Unpartitioned effects.
             worldRenderables = worldRenderables.Concat(World.UnpartitionedEffects.SelectMany(a => a.Render(this)));
 
             //Partitioned,currently on-screen effects

@@ -21,7 +21,7 @@ namespace EW.Mods.Common.Traits
     {
         public readonly string Type = "Scorch";
 
-        public readonly string Sequence = "scorch";
+        public readonly string Sequence = "scorch";//烧灼
 
         public readonly int SmokePercentage = 25;
 
@@ -57,10 +57,7 @@ namespace EW.Mods.Common.Traits
                         var depth = FieldLoader.GetValue<int>("depth", parts[1]);
                         smudges.Add(cell, new MapSmudge { Type = type, Depth = depth });
                     }
-                    catch
-                    {
-
-                    }
+                    catch{}
                 }
             }
             return smudges;

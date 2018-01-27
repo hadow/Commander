@@ -81,7 +81,7 @@ namespace EW
         /// <summary>
         /// What types of targets are affected.
         /// </summary>
-        public readonly HashSet<string> ValidTargets = new HashSet<string> { "Gound", "Water" };
+        public readonly HashSet<string> ValidTargets = new HashSet<string> { "Ground", "Water" };
 
         /// <summary>
         /// What types of targets are unaffected.

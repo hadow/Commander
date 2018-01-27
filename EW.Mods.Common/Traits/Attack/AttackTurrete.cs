@@ -24,5 +24,18 @@ namespace EW.Mods.Common.Traits
         {
             turrets = self.TraitsImplementing<Turreted>().Where(t => info.Turrets.Contains(t.Info.Turret)).ToArray();
         }
+
+        protected override bool CanAttack(Actor self, Target target)
+        {
+            if (target.Type == TargetT.Invalid)
+                return false;
+            //Don't break early from this loop - we want to
+            var turretReady = false;
+            foreach (var t in turrets)
+                if (t.FaceTarget(self, target))
+                    turretReady = true;
+
+            return turretReady && base.CanAttack(self, target);
+        }
     }
 }

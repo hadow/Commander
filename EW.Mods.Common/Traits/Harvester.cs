@@ -46,7 +46,15 @@ namespace EW.Mods.Common.Traits
         public readonly bool SearchOnCreation = true;
 
         public readonly int HarvestFacings = 0;
+        /// <summary>
+        /// Search radius (in cells) from the last harvest order location to find more resources.
+        /// </summary>
+        public readonly int SearchFromOrderRadius = 12;
 
+        /// <summary>
+        /// Initial search radius (in cells) from the refinery that created us.
+        /// </summary>
+        public readonly int SearchFromProcRadius = 24;
         /// <summary>
         /// Maximum duration of being idle before queueing a wait activity.
         /// </summary>
@@ -164,10 +172,11 @@ namespace EW.Mods.Common.Traits
 
             idleDuration++;
 
+            //Wait a bit before queueing Wait activity
             if(idleDuration > Info.MaxIdleDuration)
             {
                 idleDuration = 0;
-
+                //Wait for a bit before becoming idle again.
                 self.QueueActivity(new Wait(Info.WaitDuration));
             }
         }

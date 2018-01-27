@@ -168,7 +168,6 @@ namespace EW.Mods.Common.Traits
                 var turretOrientation = turret.WorldOrientation(self) - bodyOrientation;
                 localOffset = localOffset.Rotate(turretOrientation);
                 localOffset += turret.Offset;
-
             }
 
             return coords.LocalToWorld(localOffset.Rotate(bodyOrientation));

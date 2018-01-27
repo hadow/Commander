@@ -5,9 +5,7 @@ using EW.Traits;
 using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
-    public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
-
-    public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }
+    
     public class CargoInfo : ITraitInfo, Requires<IOccupySpaceInfo>
     {
         /// <summary>
@@ -33,6 +31,15 @@ namespace EW.Mods.Common.Traits
         public readonly int PassengerFacing = 128;
 
         /// <summary>
+        /// When this actor dies should all of its passengers be unloaded?
+        /// </summary>
+        public readonly bool EjectOnDeath = false;
+
+        /// <summary>
+        /// Terrain types that this actor is allowed to eject actors onto.Leave empty for all terrain types.
+        /// </summary>
+        public readonly HashSet<string> UnloadTerrainTypes = new HashSet<string>();
+        /// <summary>
         /// Conditions to grant when specified actors are loaded inside the transport.
         /// A dictionary of [actor id]:[condition].
         /// </summary>
@@ -41,7 +48,7 @@ namespace EW.Mods.Common.Traits
 
         public object Create(ActorInitializer init) { return new Cargo(init, this); }
     }
-    public class Cargo:INotifyCreated,INotifyKilled,INotifyAddedToWorld,ITick
+    public class Cargo:INotifyCreated,INotifyKilled,INotifyAddedToWorld,ITick,INotifyActorDisposing
     {
         readonly Actor self;
         public readonly CargoInfo Info;
@@ -50,6 +57,7 @@ namespace EW.Mods.Common.Traits
         readonly Dictionary<string, Stack<int>> passengerTokens = new Dictionary<string, Stack<int>>();
         Stack<int> loadedTokens = new Stack<int>();
         readonly Lazy<IFacing> facing;
+        readonly bool checkTerrainType;
         int totalWeight = 0;
         int reservedWeight = 0;
 
@@ -69,6 +77,8 @@ namespace EW.Mods.Common.Traits
             self = init.Self;
             Info = info;
             Unloading = false;
+            checkTerrainType = info.UnloadTerrainTypes.Count > 0;
+
             if(init.Contains<RuntimeCargoInit>()){
                 cargo = new Stack<Actor>(init.Get<RuntimeCargoInit, Actor[]>());
             }
@@ -123,7 +133,52 @@ namespace EW.Mods.Common.Traits
 
         void INotifyKilled.Killed(Actor self,AttackInfo info){
 
+            if(Info.EjectOnDeath)
+                while((!IsEmpty(self) && CanUnload()))
+                {
+                    var passenger = Unload(self);
+                    var cp = self.CenterPosition;
+                    var inAir = self.World.Map.DistanceAboveTerrain(cp).Length != 0;
+                    var positionable = passenger.Trait<IPositionable>();
+                    positionable.SetPosition(passenger, self.Location);
 
+                    if (!inAir && positionable.CanEnterCell(self.Location, self, false))
+                    {
+                        self.World.AddFrameEndTask(w => w.Add(passenger));
+                        var nbm = passenger.TraitOrDefault<INotifyBlockingMove>();
+                        if (nbm != null)
+                            nbm.OnNotifyBlockingMove(passenger, passenger);
+                    }
+                    else
+                        passenger.Kill(info.Attacker);
+                }
+
+            foreach (var c in cargo)
+                c.Kill(info.Attacker);
+
+            cargo.Clear();
+        }
+
+        bool CanUnload()
+        {
+            if (checkTerrainType)
+            {
+                var terrainType = self.World.Map.GetTerrainInfo(self.Location).Type;
+
+                if (!Info.UnloadTerrainTypes.Contains(terrainType))
+                    return false;
+            }
+
+            return !IsEmpty(self) && CurrentAdjacentCells != null && CurrentAdjacentCells.Any(c => Passengers.Any(p => p.Trait<IPositionable>().CanEnterCell(c)));
+        }
+
+
+        void INotifyActorDisposing.Disposing(Actor self)
+        {
+            foreach (var c in cargo)
+                c.Dispose();
+
+            cargo.Clear();
         }
 
         void INotifyAddedToWorld.AddedToWorld(Actor self){
@@ -140,15 +195,31 @@ namespace EW.Mods.Common.Traits
 
         void ITick.Tick(Actor self){
 
+            //Notify initial cargo load
+            if (!initialized)
+            {
+                foreach(var c in cargo)
+                {
+                    c.Trait<Passenger>().Transport = self;
 
+                    foreach (var npe in self.TraitsImplementing<INotifyPassengerEntered>())
+                        npe.OnPassengerEntered(self, c);
+                }
+                initialized = true;
+            }
+            
             var cell = self.World.Map.CellContaining(self.CenterPosition);
             if(currentCell != cell)
             {
                 currentCell = cell;
-
+                CurrentAdjacentCells = GetAdjacentCells();
             }
         }
-
+        /// <summary>
+        /// 装载乘客
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="a"></param>
         public void Load(Actor self,Actor a)
         {
             cargo.Push(a);
@@ -171,7 +242,11 @@ namespace EW.Mods.Common.Traits
             p.Transport = self;
 
         }
-
+        /// <summary>
+        /// 卸载货物
+        /// </summary>
+        /// <param name="self"></param>
+        /// <returns></returns>
         public Actor Unload(Actor self)
         {
             var a = cargo.Pop();

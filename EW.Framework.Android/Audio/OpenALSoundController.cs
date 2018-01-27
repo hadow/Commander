@@ -33,7 +33,7 @@ namespace EW.Framework.Audio
                 if (args != null && args.Length > 0)
                     message = String.Format(message, args);
                 
-                throw new InvalidOperationException(message + " (Reason: " + AL.GetErrorString(error) + ")");
+                //throw new InvalidOperationException(message + " (Reason: " + AL.GetErrorString(error) + ")");
             }
         }
 

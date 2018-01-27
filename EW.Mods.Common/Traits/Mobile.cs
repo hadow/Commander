@@ -306,20 +306,14 @@ namespace EW.Mods.Common.Traits
                 return true;
 
             var crushables = otherActor.TraitsImplementing<ICrushable>();
-            //var lacksCrushability = true;
 
             //If the other actor in our way,we are blocked.
             //PERF:Avoid LINQ
             foreach(var crushable in crushables)
             {
-                //lacksCrushability = false;
                 if (!crushable.CrushableBy(otherActor, self, Crushes))
                     return true;
             }
-
-            //if (lacksCrushability)
-            //    return true;
-            //We are not blocked by the other actor.
             return true;
         }
 
@@ -597,6 +591,14 @@ namespace EW.Mods.Common.Traits
             //Only make actor crush if it is on the ground.
             if (!self.IsAtGroundLevel())
                 return;
+
+            var actors = self.World.ActorMap.GetActorsAt(ToCell).Where(a => a != self).ToList();
+            if (!AnyCrushables(actors))
+                return;
+
+            var notifiers = actors.SelectMany(a => a.TraitsImplementing<INotifyCrushed>().Select(t => new TraitPair<INotifyCrushed>(a, t)));
+            foreach (var notifyCrushed in notifiers)
+                notifyCrushed.Trait.WarnCrush(notifyCrushed.Actor, self, Info.Crushes);
         }
 
         /// <summary>
@@ -647,7 +649,16 @@ namespace EW.Mods.Common.Traits
 
         bool AnyCrushables(List<Actor> actors)
         {
-            return true;
+            var crushables = actors.SelectMany(a => a.TraitsImplementing<ICrushable>().Select(t => new TraitPair<ICrushable>(a, t))).ToList();
+
+            if (crushables.Count == 0)
+                return false;
+
+            foreach (var crushes in crushables)
+                if (crushes.Trait.CrushableBy(crushes.Actor, self, Info.Crushes))
+                    return true;
+
+            return false;
         }
 
         

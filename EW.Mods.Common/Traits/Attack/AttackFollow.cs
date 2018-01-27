@@ -50,8 +50,8 @@ namespace EW.Mods.Common.Traits
             readonly IMove move;
             readonly Target target;
             readonly bool forceAttack;
-            readonly bool onRailsHack;
 
+            bool hasTicked;
 
             public AttackActivity(Actor self,Target target,bool allowMove,bool forceAttack)
             {
@@ -65,7 +65,40 @@ namespace EW.Mods.Common.Traits
             }
             public override Activity Tick(Actor self)
             {
-                throw new NotImplementedException();
+                if (IsCanceled || !target.IsValidFor(self))
+                    return NextActivity;
+
+                if (attack.IsTraitPaused)
+                    return this;
+
+                var weapon = attack.ChooseArmamentsForTarget(target, forceAttack).FirstEnabledTraitOrDefault();
+                if(weapon != null)
+                {
+                    var targetIsMobile = (target.Type == TargetT.Actor && target.Actor.Info.HasTraitInfo<IMoveInfo>())
+                        || (target.Type == TargetT.FrozenActor && target.FrozenActor.Info.HasTraitInfo<IMoveInfo>());
+
+                    var modifiedRange = weapon.MaxRange();
+                    var maxRange = targetIsMobile ? new WDist(Math.Max(weapon.Weapon.MinRange.Length, modifiedRange.Length - 1024)) : modifiedRange;
+
+                    if (hasTicked && attack.Target.Type == TargetT.Invalid)
+                        return NextActivity;
+
+                    attack.Target = target;
+                    hasTicked = true;
+
+                    if (move != null)
+                        return ActivityUtils.SequenceActivities(move.MoveFollow(self, target, weapon.Weapon.MinRange, maxRange), this);
+
+                    if (target.IsInRange(self.CenterPosition, weapon.MaxRange()) && !target.IsInRange(self.CenterPosition, weapon.Weapon.MinRange))
+                        return this;
+
+
+                        
+                }
+
+                attack.Target = Target.Invalid;
+
+                return NextActivity;
             }
 
 

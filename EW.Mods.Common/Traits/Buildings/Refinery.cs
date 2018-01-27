@@ -40,6 +40,9 @@ namespace EW.Mods.Common.Traits
         readonly RefineryInfo info;
         PlayerResources playerResources;
 
+        int currentDisplayTick = 0;
+        int currentDisplayValue = 0;
+
         [Sync]
         bool preventDock = false;
 
@@ -49,7 +52,10 @@ namespace EW.Mods.Common.Traits
 
         public Refinery(Actor self,RefineryInfo info)
         {
-
+            this.self = self;
+            this.info = info;
+            playerResources = self.Owner.PlayerActor.Trait<PlayerResources>();
+            currentDisplayTick = info.TickRate;
         }
 
         public bool CanGiveResource(int amount)

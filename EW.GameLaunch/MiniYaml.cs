@@ -147,15 +147,15 @@ namespace EW
             return ret;
         }
 
-        public static Dictionary<string,MiniYaml> DictFromFile(string path)
-        {
-            return FromFile(path).ToDictionary(x => x.Key, x => x.Value);
-        }
+        //public static Dictionary<string,MiniYaml> DictFromFile(string path)
+        //{
+        //    return FromFile(path).ToDictionary(x => x.Key, x => x.Value);
+        //}
 
-        public static List<MiniYamlNode> FromFile(string path)
-        {
-            return FromLines(File.ReadAllLines(path), path);
-        }
+        //public static List<MiniYamlNode> FromFile(string path)
+        //{
+        //    return FromLines(File.ReadAllLines(path), path);
+        //}
         
 
         static List<MiniYamlNode> FromLines(IEnumerable<string> lines,string filename)
@@ -301,7 +301,10 @@ namespace EW
             if (!sources.Any())
                 return new List<MiniYamlNode>();
 
-            var tree = sources.Where(s => s != null).Aggregate(MergePartial).ToDictionary(n=>n.Key,n=>n.Value);
+            var tree = sources.Where(s => s != null)
+                .Select(MergeSelfPartial)
+                .Aggregate(MergePartial)
+                .ToDictionary(n=>n.Key,n=>n.Value);
 
             var resolved = new Dictionary<string, MiniYaml>();
             foreach(var kv in tree)
@@ -316,6 +319,23 @@ namespace EW
             var nodes = new MiniYaml("", resolved.Select(kv => new MiniYamlNode(kv.Key, kv.Value)).ToList());
             
             return ResolveInherits("",nodes,tree,new Dictionary<string, MiniYamlNode.SourceLocation>());
+        }
+
+        static List<MiniYamlNode> MergeSelfPartial(List<MiniYamlNode> existingNodes)
+        {
+            var keys = new HashSet<string>();
+            var ret = new List<MiniYamlNode>();
+            foreach(var n in existingNodes)
+            {
+                if (keys.Add(n.Key))
+                    ret.Add(n);
+                else
+                {
+                    var original = ret.First(r => r.Key == n.Key);
+                    original.Value = MergePartial(original.Value, n.Value);
+                }
+            }
+            return ret;
         }
 
         /// <summary>
@@ -356,10 +376,10 @@ namespace EW
 
 
         /// <summary>
-        /// 
+        /// 部分合并
         /// </summary>
-        /// <param name="existingNodes"></param>
-        /// <param name="overrideNodes"></param>
+        /// <param name="existingNodes">父节点中已存在的节点</param>
+        /// <param name="overrideNodes">覆盖父节点的节点</param>
         /// <returns></returns>
         static MiniYaml MergePartial(MiniYaml existingNodes,MiniYaml overrideNodes)
         {
@@ -374,7 +394,7 @@ namespace EW
 
 
         /// <summary>
-        /// 
+        /// 解析继承自父节点特性
         /// </summary>
         /// <param name="key"></param>
         /// <param name="node"></param>
@@ -426,13 +446,14 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 合并解析
         /// </summary>
         /// <param name="overrideNode"></param>
-        /// <param name="existingNodes"></param>
+        /// <param name="existingNodes">已解析过，存在的节点</param>
         /// <param name="tree"></param>
         /// <param name="inherited"></param>
-        static void MergeIntoResolved(MiniYamlNode overrideNode,List<MiniYamlNode> existingNodes,Dictionary<string,MiniYaml> tree,Dictionary<string,MiniYamlNode.SourceLocation> inherited)
+        static void MergeIntoResolved(MiniYamlNode overrideNode,List<MiniYamlNode> existingNodes,
+            Dictionary<string,MiniYaml> tree,Dictionary<string,MiniYamlNode.SourceLocation> inherited)
         {
             var existingNode = existingNodes.FirstOrDefault(n => n.Key == overrideNode.Key);
             if (existingNode != null)
