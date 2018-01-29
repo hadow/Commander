@@ -218,6 +218,7 @@ namespace EW.Traits
 
 
     public interface IDefaultVisibility { bool IsVisible(Actor self, Player byPlayer); }
+    public interface IDefaultVisibilityInfo : ITraitInfoInterface { }
     public interface IVisibilityModifier { bool IsVisible(Actor self, Player byPlayer); }
     [RequireExplicitImplementation]
     public interface IDamageModifier { int GetDamageModifier(Actor attacker, Damage damage); }
@@ -249,7 +250,7 @@ namespace EW.Traits
 
         CPos TopLeft { get; }
 
-        IEnumerable<Pair<CPos, SubCell>> OccupiedCells();
+        Pair<CPos, SubCell>[] OccupiedCells();
     }
     public interface IPositionableInfo : IOccupySpaceInfo
     {

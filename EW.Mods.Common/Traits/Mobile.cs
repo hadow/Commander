@@ -569,7 +569,7 @@ namespace EW.Mods.Common.Traits
             return true;
         }
 
-        public IEnumerable<Pair<CPos,SubCell>> OccupiedCells()
+        public Pair<CPos,SubCell>[] OccupiedCells()
         {
             if (FromCell == ToCell)
                 return new[] { Pair.New(FromCell, FromSubCell) };

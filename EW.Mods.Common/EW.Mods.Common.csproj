@@ -148,6 +148,7 @@
     <Compile Include="Scripting\Properties\ProductionProperties.cs" />
     <Compile Include="Scripting\Properties\TransportProperties.cs" />
     <Compile Include="Scripting\ScriptTriggers.cs" />
+    <Compile Include="ShroudExts.cs" />
     <Compile Include="SpriteLoaders\ShpD2Loader.cs" />
     <Compile Include="SpriteLoaders\ShpTDLoader.cs" />
     <Compile Include="SpriteLoaders\ShpTSLoader.cs" />

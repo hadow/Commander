@@ -30,7 +30,7 @@ namespace EW.Mods.Common.Traits
         [Sync]
         readonly WPos position;
 
-        readonly IEnumerable<Pair<CPos, SubCell>> occupied;
+        readonly Pair<CPos, SubCell>[] occupied;
 
         public Immobile(ActorInitializer init,ImmobileInfo info)
         {
@@ -48,7 +48,7 @@ namespace EW.Mods.Common.Traits
 
         public WPos CenterPosition { get { return position; } }
 
-        public IEnumerable<Pair<CPos,SubCell>> OccupiedCells() {  return occupied;  }
+        public Pair<CPos,SubCell>[] OccupiedCells() {  return occupied;  }
 
         public void AddedToWorld(Actor self)
         {

@@ -494,6 +494,9 @@
     <Compile Include="..\EW.Mods.Common\Scripting\ScriptTriggers.cs">
       <Link>External_Common\Scripting\ScriptTriggers.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\ShroudExts.cs">
+      <Link>External_Common\ShroudExts.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\SpriteLoaders\ShpD2Loader.cs">
       <Link>External_Common\SpriteLoaders\ShpD2Loader.cs</Link>
     </Compile>

@@ -39,7 +39,7 @@ namespace EW.Mods.Common.Traits
         public int Facing { get; set; }
 
 
-        public IEnumerable<Pair<CPos,SubCell>> OccupiedCells()
+        public Pair<CPos,SubCell>[] OccupiedCells()
         {
             return new[] { Pair.New(TopLeft, SubCell.FullCell) };
         }

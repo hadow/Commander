@@ -65,6 +65,7 @@ namespace EW.Traits
                 if (disabled == value)
                     return;
                 disabled = value;
+                Invalidate(map.ProjectedCellBounds);
 
             }
         }
@@ -104,7 +105,7 @@ namespace EW.Traits
 
             ExploreMapEnabled = gs.OptionOrDefault("explored", info.ExploredMapCheckboxEnabled);
 
-            //if (ExploreMapEnabled)
+            if (ExploreMapEnabled)
                 self.World.AddFrameEndTask(w => ExploreAll());
         }
 
@@ -188,6 +189,8 @@ namespace EW.Traits
                         break;
                 }
             }
+
+            Invalidate(projectedCells);
         }
 
 
@@ -217,6 +220,7 @@ namespace EW.Traits
                 }
             }
             sources.Remove(key);
+            Invalidate(state.ProjectedCells);
         }
 
         public bool IsVisible(CPos cell)
@@ -250,6 +254,10 @@ namespace EW.Traits
             return resolvedType.Contains(uv) && resolvedType[uv] == ShroudCellType.Visible;
         }
 
+        public bool IsExplored(WPos pos)
+        {
+            return IsExplored(map.ProjectedCellCovering(pos));
+        }
 
         public bool IsExplored(PPos puv)
         {
@@ -258,6 +266,23 @@ namespace EW.Traits
 
             var uv = (MPos)puv;
             return resolvedType.Contains(uv) && resolvedType[uv] > ShroudCellType.Shroud;
+        }
+
+        public bool IsExplored(CPos cell)
+        {
+            return IsExplored(cell.ToMPos(map));
+        }
+
+        public bool IsExplored(MPos uv)
+        {
+            if (!map.Contains(uv))
+                return false;
+
+            foreach (var puv in map.ProjectedCellsCovering(uv))
+                if (IsExplored(puv))
+                    return true;
+
+            return false;
         }
 
 

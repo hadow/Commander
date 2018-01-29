@@ -227,7 +227,7 @@ namespace EW.Mods.Common.Traits
             return targetableCells;
         }
 
-        public IEnumerable<Pair<CPos,SubCell>> OccupiedCells() { return occupiedCells; }
+        public Pair<CPos,SubCell>[] OccupiedCells() { return occupiedCells; }
 
 
         public bool Lock(){

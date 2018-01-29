@@ -261,7 +261,7 @@ namespace EW.Mods.Common.Traits
                 if (shroud != null)
                     visibleUnderShroud = puv => currentShroud.IsExplored(puv);
                 else
-                    visibleUnderFog = puv => map.Contains(puv);
+                    visibleUnderShroud = puv => map.Contains(puv);
 
                 if (shroud != null)
                 {
