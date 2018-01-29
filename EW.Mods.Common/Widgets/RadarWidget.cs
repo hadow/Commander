@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using EW.Widgets;
@@ -6,14 +7,25 @@ using EW.Graphics;
 using EW.Traits;
 using EW.Mods.Common.Traits;
 using EW.Framework;
+using EW.Framework.Touch;
+using EW.Primitives;
 namespace EW.Mods.Common.Widgets
 {
     public sealed class RadarWidget:Widget,IDisposable
     {
+        public string WorldInteractionController = null;
         readonly World world;
         readonly WorldRenderer worldRenderer;
         readonly RadarPings radarPings;
 
+        public Func<bool> IsEnabled = () => true;
+        public Action<float> Animating = _ => { };
+
+        public Action AfterOpen = () => { };
+        public Action AfterClose = () => { };
+        public int AnimationLength = 5;
+        public string RadarOnlineSound = null;
+        public string RadarOfflineSound = null;
         readonly bool isRectangularIsometric;
 
         float previewScale = 0;
@@ -39,6 +51,9 @@ namespace EW.Mods.Common.Widgets
         bool hasRadar;
         bool cachedEnabled;
 
+        readonly HashSet<PPos> dirtyShroudCells = new HashSet<PPos>();
+
+        [ObjectCreator.UseCtor]
         public RadarWidget(World world,WorldRenderer worldRenderer)
         {
             this.world = world;
@@ -74,6 +89,24 @@ namespace EW.Mods.Common.Widgets
             world.Map.Tiles.CellEntryChanged += UpdateTerrainCell;
 
         }
+
+        public override bool HandleInput(GestureSample gs)
+        {
+            if (!mapRect.Contains(gs.Position.ToInt2()))
+                return false;
+
+            if (!hasRadar)
+                return true;
+
+            var cell = MinimapPixelToCell(gs.Position.ToInt2());
+            var pos = world.Map.CenterOfCell(cell);
+            if (gs.GestureType == GestureType.FreeDrag)
+                worldRenderer.ViewPort.Center(pos);
+
+            return true;
+        }
+
+        
 
         void MapBoundsChanged()
         {
@@ -115,20 +148,120 @@ namespace EW.Mods.Common.Widgets
 
         }
 
-        void UpdateTerrainCell(CPos cell)
-        {
-            var uv = cell.ToMPos(world.Map);
-
-            if (!world.Map.CustomTerrain.Contains(uv))
-                return;
-
-
-        }
+        
 
 
         public override void Tick()
         {
+            //Enable / Disable the radar
+            var enabled = IsEnabled();
+            if (enabled != cachedEnabled)
+                WarGame.Sound.Play(SoundType.UI, enabled ? RadarOnlineSound : RadarOfflineSound);
 
+            cachedEnabled = enabled;
+
+            if (enabled)
+            {
+                var rp = world.RenderPlayer;
+                var newRenderShroud = rp != null ? rp.Shroud : null;
+                if(newRenderShroud != renderShroud)
+                {
+                    if (renderShroud != null)
+                        renderShroud.CellsChanged -= MarkShroudDirty;
+
+                    if(newRenderShroud != null)
+                    {
+                        //Redraw the full shroud sprite
+                        MarkShroudDirty(world.Map.AllCells.MapCoords.Select(uv => (PPos)uv));
+
+                        //Update the notification binding
+                        newRenderShroud.CellsChanged += MarkShroudDirty;
+                    }
+
+                    renderShroud = newRenderShroud;
+                }
+
+
+                //The actor layer is updated every tick
+                var stride = radarSheet.Size.Width;
+
+                Array.Clear(radarData, 4 * actorSprite.Bounds.Top * stride, 4 * actorSprite.Bounds.Height * stride);
+
+                var cells = new List<Pair<CPos, Color>>();
+
+                unsafe
+                {
+                    fixed(byte* colorBytes = &radarData[0])
+                    {
+                        var colors = (int*)colorBytes;
+
+                        foreach(var t in world.ActorsWithTrait<IRadarSignature>())
+                        {
+                            if (!t.Actor.IsInWorld || world.FogObscures(t.Actor))
+                                continue;
+
+                            cells.Clear();
+                            t.Trait.PopulateRadarSignatureCells(t.Actor, cells);
+
+                            foreach(var cell in cells)
+                            {
+                                if (!world.Map.Contains(cell.First))
+                                    continue;
+
+                                var uv = cell.First.ToMPos(world.Map.Grid.Type);
+                                var color = cell.Second.ToArgb();
+
+                                if (isRectangularIsometric)
+                                {
+                                    //Odd rows are shifted right by 1px
+                                    var dx = uv.V & 1;
+                                    if (uv.U + dx > 0)
+                                        colors[(uv.V + previewHeight) * stride + 2 * uv.U + dx - 1] = color;
+
+                                    if (2 * uv.U + dx < stride)
+                                        colors[(uv.V + previewHeight) * stride + 2 * uv.U + dx] = color;
+
+                                }
+                                else
+                                {
+                                    colors[(uv.V + previewHeight) * stride + uv.U] = color;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var targetFrame = enabled ? AnimationLength : 0;
+            hasRadar = enabled && frame == AnimationLength;
+
+            if (frame == targetFrame)
+                return;
+
+            frame += enabled ? 1 : -1;
+            radarMinimapHeight = Vector2.Lerp(0, 1, (float)frame / AnimationLength);
+            Animating(frame * 1f / AnimationLength);
+
+            //Update map rectangle for event handling
+            var ro = RenderOrigin;
+            mapRect = new Rectangle(previewOrigin.X + ro.X, previewOrigin.Y + ro.Y, mapRect.Width, mapRect.Height);
+
+            //Animation is complete
+            if(frame == targetFrame)
+            {
+                if (enabled)
+                    AfterOpen();
+                else
+                    AfterClose();
+            }
+           
+        }
+
+        void MarkShroudDirty(IEnumerable<PPos> projectedCellsChanged)
+        {
+            //PERF:Many cells in the shroud change every tick.We only track the changes here and defer the real work
+            //we need to do until we render,This allows us to avoid wasted work.
+            dirtyShroudCells.UnionWith(projectedCellsChanged);
         }
 
 
@@ -140,7 +273,10 @@ namespace EW.Mods.Common.Widgets
 
             if(renderShroud != null)
             {
+                foreach (var cell in dirtyShroudCells)
+                    UpdateShroudCell(cell);
 
+                dirtyShroudCells.Clear();
             }
 
             radarSheet.CommitBufferedData();
@@ -167,6 +303,87 @@ namespace EW.Mods.Common.Widgets
             }
         }
 
+        void UpdateShroudCell(PPos puv)
+        {
+            var color = 0;
+            var rp = world.RenderPlayer;
+            if (rp != null)
+            {
+                if (!rp.Shroud.IsExplored(puv))
+                    color = Color.Black.ToArgb();
+                else if (!rp.Shroud.IsVisible(puv))
+                    color = Color.FromArgb(128, Color.Black).ToArgb();
+
+            }
+
+            var stride = radarSheet.Size.Width;
+            unsafe
+            {
+                fixed(byte* colorBytes = &radarData[0])
+                {
+                    var colors = (int*)colorBytes;
+
+                    foreach(var uv in world.Map.Unproject(puv))
+                    {
+                        if (isRectangularIsometric)
+                        {
+                            var dx = uv.V & 1;
+                            if (uv.U + dx > 0)
+                                colors[uv.V * stride + 2 * uv.U + dx - 1 + previewWidth] = color;
+
+                            if (2 * uv.U + dx < stride)
+                                colors[uv.V * stride + 2 * uv.U + dx + previewWidth] = color;
+                        }
+                        else
+                            colors[uv.V * stride + uv.U + previewWidth] = color;
+                    }
+                }
+            }
+        }
+
+        void UpdateTerrainCell(CPos cell)
+        {
+            var uv = cell.ToMPos(world.Map);
+
+            if (!world.Map.CustomTerrain.Contains(uv))
+                return;
+
+            var custom = world.Map.CustomTerrain[uv];
+            int leftColor, rightColor;
+            if (custom == byte.MaxValue)
+            {
+                var type = world.Map.Rules.TileSet.GetTileInfo(world.Map.Tiles[uv]);
+                leftColor = type != null ? type.LeftColor.ToArgb() : Color.Black.ToArgb();
+                rightColor = type != null ? type.RightColor.ToArgb() : Color.Black.ToArgb();
+            }
+            else
+                leftColor = rightColor = world.Map.Rules.TileSet[custom].Color.ToArgb();
+
+            var stride = radarSheet.Size.Width;
+
+            unsafe
+            {
+                fixed (byte* colorBytes = &radarData[0])
+                {
+                    var colors = (int*)colorBytes;
+                    if (isRectangularIsometric)
+                    {
+                        //Odd rows are shifted right by 1px
+                        var dx = uv.V & 1;
+                        if (uv.U + dx > 0)
+                            colors[uv.V * stride + 2 * uv.U + dx - 1] = leftColor;
+
+                        if (2 * uv.U + dx < stride)
+                            colors[uv.V * stride + 2 * uv.U + dx] = rightColor;
+
+                    }
+                    else
+                        colors[uv.V * stride + uv.U] = leftColor;
+                }
+            }
+
+        }
+
 
         void DrawRadarPings()
         {
@@ -182,6 +399,24 @@ namespace EW.Mods.Common.Widgets
             }
         }
 
+        /// <summary>
+        /// 小地图位置转换到世界地图单元格
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        CPos MinimapPixelToCell(Int2 p)
+        {
+            var u = (int)((p.X - mapRect.X) / (previewScale * cellWidth)) + world.Map.Bounds.Left;
+            var v = (int)((p.Y - mapRect.Y) / previewScale) + world.Map.Bounds.Top;
+
+            return new MPos(u, v).ToCPos(world.Map);
+        }
+
+        /// <summary>
+        /// 单元格转换至小地图像素位置
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
         Int2 CellToMinimapPixel(CPos p)
         {
             var uv = p.ToMPos(world.Map);

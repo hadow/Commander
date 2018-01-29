@@ -472,6 +472,18 @@ namespace EW
 
             return Array.IndexOf(array, value);
         }
+
+        public static Rectangle Bounds(this Android.Graphics.Bitmap b) { return new Rectangle(0, 0, b.Width, b.Height); }
+
+        public static byte[] ToBytes(this int[] src)
+        {
+            var bytes = new byte[src.Length];
+            for (var i = 0; i < src.Length; i++)
+            {
+                bytes[i] = (byte)src[i];
+            }
+            return bytes;
+        }
     }
     
 }

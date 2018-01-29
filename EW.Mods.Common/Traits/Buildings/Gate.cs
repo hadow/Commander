@@ -91,7 +91,7 @@ namespace EW.Mods.Common.Traits
             {
                 //Gate was fully closed.
                 if(Position == 0){
-                    
+                    WarGame.Sound.Play(SoundType.World, info.OpeningSound, self.CenterPosition);
                 }
 
                 Position++;

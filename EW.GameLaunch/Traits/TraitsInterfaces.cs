@@ -544,10 +544,33 @@ namespace EW.Traits
 
     public interface IValidateOrder { bool OrderValidation(OrderManager orderManager, World world, int clientId, Order order); }
 
+    public interface IDecorationBounds { Rectangle DecorationBounds(Actor self, WorldRenderer wr); }
+
+    public interface IDecorationBoundsInfo : ITraitInfoInterface { }
 
     public interface IMouseBounds { Rectangle MouseoverBounds(Actor self, WorldRenderer wr); }
 
     public interface IMouseBoundsInfo:ITraitInfoInterface{}
 
     public interface IAutoMouseBounds { Rectangle AutoMouseoverBounds(Actor self, WorldRenderer wr); }
+
+    public interface ISelectionBar
+    {
+        float GetValue();
+
+        Color GetColor();
+
+        bool DisplayWhenEmpty { get; }
+    }
+
+    public interface IVoiced
+    {
+        string VoiceSet { get; }
+
+        bool PlayVoice(Actor self, string phrase, string variant);
+
+        bool PlayVoiceLocal(Actor self, string phrase, string variant, float volume);
+
+        bool HasVoice(Actor self, string voice);
+    }
 }

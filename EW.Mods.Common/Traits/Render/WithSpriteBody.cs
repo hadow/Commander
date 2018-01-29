@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using EW.Traits;
 using EW.Graphics;
 using EW.Mods.Common.Graphics;
@@ -49,16 +50,16 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class WithSpriteBody:PausableConditionalTrait<WithSpriteBodyInfo>, INotifyBuildComplete,INotifyDamageStateChanged
+    public class WithSpriteBody:PausableConditionalTrait<WithSpriteBodyInfo>, INotifyBuildComplete,INotifyDamageStateChanged,IAutoMouseBounds
     {
 
         public readonly Animation DefaultAnimation;
-
+        readonly RenderSprites rs;
         public WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info) : this(init, info, () => 0) { }
 
         protected WithSpriteBody(ActorInitializer init,WithSpriteBodyInfo info,Func<int> baseFacing) : base(info)
         {
-            var rs = init.Self.Trait<RenderSprites>();
+            rs= init.Self.Trait<RenderSprites>();
 
             Func<bool> paused = null;
             if (info.PauseAnimationWhenDisabled)
@@ -136,6 +137,12 @@ namespace EW.Mods.Common.Traits
         {
             if (DefaultAnimation.CurrentSequence != null)
                 DefaultAnimation.ReplaceAnim(NormalizeSequence(self, DefaultAnimation.CurrentSequence.Name));
+        }
+
+
+        Rectangle IAutoMouseBounds.AutoMouseoverBounds(Actor self, WorldRenderer wr)
+        {
+            return DefaultAnimation != null ? DefaultAnimation.ScreenBounds(wr, self.CenterPosition, WVec.Zero, rs.Info.Scale) : Rectangle.Empty;
         }
     }
 }

@@ -162,7 +162,7 @@ namespace EW.Mods.Common.Traits
 
         string cachedImage;
 
-        readonly RenderSpritesInfo info;
+        public readonly RenderSpritesInfo Info;
 
         readonly string faction;
 
@@ -170,7 +170,7 @@ namespace EW.Mods.Common.Traits
 
         public RenderSprites(ActorInitializer init, RenderSpritesInfo info)
         {
-            this.info = info;
+            this.Info = info;
             faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : init.Self.Owner.Faction.InternalName;
         }
 
@@ -213,8 +213,8 @@ namespace EW.Mods.Common.Traits
             //Use defaults
             if(palette == null)
             {
-                palette = info.Palette ?? info.PlayerPalette;
-                isPlayerPalette = info.Palette == null;
+                palette = Info.Palette ?? Info.PlayerPalette;
+                isPlayerPalette = Info.Palette == null;
             }
 
             anims.Add(new AnimationWrapper(anim, palette, isPlayerPalette));
@@ -226,7 +226,7 @@ namespace EW.Mods.Common.Traits
             if (cachedImage != null)
                 return cachedImage;
 
-            return cachedImage = info.GetImage(self.Info, self.World.Map.Rules.Sequences, faction);
+            return cachedImage = Info.GetImage(self.Info, self.World.Map.Rules.Sequences, faction);
         }
 
         public virtual IEnumerable<IRenderable> Render(Actor self,WorldRenderer wr)
@@ -243,7 +243,7 @@ namespace EW.Mods.Common.Traits
 
                 }
 
-                foreach (var r in a.Animation.Render(self, wr, a.PaletteReference, info.Scale))
+                foreach (var r in a.Animation.Render(self, wr, a.PaletteReference, Info.Scale))
                     yield return r;
             }
         }
@@ -253,7 +253,7 @@ namespace EW.Mods.Common.Traits
         {
             foreach (var a in anims)
                 if (a.IsVisible)
-                    yield return a.Animation.ScreenBounds(self, wr, info.Scale);
+                    yield return a.Animation.ScreenBounds(self, wr, Info.Scale);
         }
 
         public virtual void OnOwnerChanged(Actor self,Player oldOwner,Player newOwner)

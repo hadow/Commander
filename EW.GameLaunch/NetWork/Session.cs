@@ -70,6 +70,16 @@ namespace EW.NetWork
         }
 
 
+        public class LobbyOptionState
+        {
+            public string value;
+            public string PreferredValue;
+
+            public bool IsLocked;
+
+            public bool IsEnabled { get { return value == "True"; } }
+        }
+
 
         public class Global
         {
@@ -79,6 +89,27 @@ namespace EW.NetWork
             public int RandomSeed = 0;
             public bool EnableSinglePlayer;
             public bool AllowSpectators = true;
+
+            [FieldLoader.Ignore]
+            public Dictionary<string, LobbyOptionState> LobbyOptions = new Dictionary<string, LobbyOptionState>();
+
+            public string OptionOrDefault(string id,string def)
+            {
+                LobbyOptionState option;
+                if (LobbyOptions.TryGetValue(id, out option))
+                    return option.value;
+
+                return def;
+            }
+
+            public bool OptionOrDefault(string id,bool def)
+            {
+                LobbyOptionState option;
+                if (LobbyOptions.TryGetValue(id, out option))
+                    return option.IsEnabled;
+
+                return def;
+            }
         }
     }
 }

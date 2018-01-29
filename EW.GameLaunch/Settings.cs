@@ -53,6 +53,7 @@ namespace EW
 
         public int SelectionDeadzone = 24;
 
+        public bool UsePlayerStanceColor = false;
 
     }
 

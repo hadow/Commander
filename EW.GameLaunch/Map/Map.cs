@@ -675,9 +675,23 @@ namespace EW
             {
                 CustomTerrain[uv] = byte.MaxValue;
             }
-
+            AllEdgeCells = UpdateEdgeCells();
             
 
+        }
+
+        List<CPos> UpdateEdgeCells()
+        {
+            var edgeCells = new List<CPos>();
+            var unProjected = new List<MPos>();
+            var bottom = Bounds.Bottom - 1;
+
+            for(var u = Bounds.Left; u < Bounds.Right; u++)
+            {
+
+            }
+
+            return edgeCells;
         }
 
 

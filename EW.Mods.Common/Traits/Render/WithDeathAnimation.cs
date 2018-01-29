@@ -100,10 +100,7 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        void INotifyCrushed.WarnCrush(Actor self, Actor crusher, HashSet<string> crushClasses)
-        {
-
-        }
+        void INotifyCrushed.WarnCrush(Actor self, Actor crusher, HashSet<string> crushClasses){}
 
 
         public void SpawnDeathAnimation(Actor self,WPos pos,string image,string sequence,string palette)

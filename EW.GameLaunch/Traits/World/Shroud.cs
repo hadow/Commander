@@ -5,13 +5,15 @@ namespace EW.Traits
 {
     public class ShroudInfo:ITraitInfo
     {
-        public bool FogEnabled = true;
+        public readonly string FogCheckboxLabel = "Fog of war";
 
-        public bool FogLocked = false;
+        public readonly bool FogCheckboxEnabled = true;
 
-        public bool ExploredMapEnabled = false;
+        public readonly bool FogCheckboxLocked = false;
 
-        public bool ExploredMapLocked = false;
+        public readonly bool ExploredMapCheckboxEnabled = false;
+
+
 
         public object Create(ActorInitializer init) { return new Shroud(init.Self,this); }
     }
@@ -97,6 +99,61 @@ namespace EW.Traits
 
         void INotifyCreated.Created(Actor self)
         {
+            var gs = self.World.LobbyInfo.GlobalSettings;
+            fogEnabled = gs.OptionOrDefault("fog", info.FogCheckboxEnabled);
+
+            ExploreMapEnabled = gs.OptionOrDefault("explored", info.ExploredMapCheckboxEnabled);
+
+            //if (ExploreMapEnabled)
+                self.World.AddFrameEndTask(w => ExploreAll());
+        }
+
+        public void ExploreAll()
+        {
+            var changed = new List<PPos>();
+            foreach(var puv in map.ProjectedCellBounds)
+            {
+                var uv = (MPos)puv;
+                if (!explored[uv])
+                {
+                    explored[uv] = true;
+                    changed.Add(puv);
+                }
+            }
+
+            Invalidate(changed);
+        }
+
+
+        void Invalidate(IEnumerable<PPos> changed)
+        {
+            foreach(var puv in changed)
+            {
+                var uv = (MPos)puv;
+                var type = ShroudCellType.Shroud;
+
+                if(explored[uv] && (!shroudGenerationEnabled || generatedShroudCount[uv] == 0 || visibleCount[uv] == 0))
+                {
+                    var count = visibleCount[uv];
+                    if (passiveVisibilityEnabled)
+                        count += passiveVisibleCount[uv];
+
+                    type = count > 0 ? ShroudCellType.Visible : ShroudCellType.Fog
+;                }
+
+                resolvedType[uv] = type;
+            }
+
+            if (CellsChanged != null)
+                CellsChanged(changed);
+
+            var oldHash = Hash;
+            Hash = Sync.HashPlayer(self.Owner) + self.World.WorldTick * 3;
+
+            //Invalidate may be called multiple times in one world tick,which is decoupled from rendering
+            //无效可能会在同一个世界中被多次调用，与渲染分离。
+            if (oldHash == Hash)
+                Hash += 1;
         }
 
 

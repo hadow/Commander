@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Mods.Common.Graphics;
-using EW.Activities;
+using System.Drawing;
 using EW.Traits;
 using EW.Primitives;
 using EW.Graphics;
@@ -167,15 +167,7 @@ namespace EW.Mods.Common.Traits
 
     public interface IConditionConsumerInfo : ITraitInfo { }
 
-    public interface IDeathActorInitModifier
-    {
-        void ModifyDeathActorInit(Actor self, TypeDictionary inits);
-    }
-
-    public interface IActorPreviewInitModifier
-    {
-        void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
-    }
+    
 
 
 
@@ -236,6 +228,27 @@ namespace EW.Mods.Common.Traits
     public interface IPowerModifier { int GetPowerModifier(); }
 
 
+    public interface IDeathActorInitModifier
+    {
+        void ModifyDeathActorInit(Actor self, TypeDictionary inits);
+    }
+
+    public interface IHuskModifier { string HuskActor(Actor self); }
+
+
+    public interface IActorPreviewInitModifier
+    {
+        void ModifyActorPreviewInit(Actor self, TypeDictionary inits);
+    }
+
+    public interface IRadarColorModifier { Color RadarColorOverride(Actor self, Color color); }
+
     #endregion
+
+
+    public interface IRadarSignature
+    {
+        void PopulateRadarSignatureCells(Actor self, List<Pair<CPos, Color>> destinationBuffer);
+    }
 
 }

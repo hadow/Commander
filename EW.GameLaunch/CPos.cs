@@ -88,11 +88,8 @@ namespace EW
         {
             if (gridT == MapGridT.Rectangular)
                 return new MPos(X, Y);
-
-
+            
             //Convert from RectangularIsometric cell (x,y) position to rectangular map position (u,v)
-
-
             var u = (X - Y) / 2;
             var v = X + Y;
             return new MPos(u,v);

@@ -66,7 +66,9 @@ namespace EW.Framework.Audio
     {
         Pitch = 0x1003,
         Gain = 0x100A,
-        ReferenceDistance = 0x1020
+        ReferenceDistance = 0x1020,
+        MaxDistance=4131,
+
     }
 
     internal enum ALGetSourcei

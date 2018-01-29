@@ -130,6 +130,7 @@ namespace EW
             TileSets = YamlList(yaml, "TileSets");
             Missions = YamlList(yaml, "Missions");
             ServerTraits = YamlList(yaml, "ServerTraits");
+            Chrome = YamlList(yaml, "Chrome");
             ChromeLayout = YamlList(yaml, "ChromeLayout");
             ChromeMetrics = YamlList(yaml, "ChromeMetrics");
             Fonts = yaml["Fonts"].ToDictionary(my =>

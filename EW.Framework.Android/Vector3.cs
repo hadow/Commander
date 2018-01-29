@@ -132,11 +132,23 @@ namespace EW.Framework
         //    }
         //}
 
+        public long LengthSquared
+        {
+            get { return (long)(X * X + Y * Y + Z * Z); }
+        }
+
+        public static Vector3 Lerp(Vector3 a,Vector3 b,float t)
+        {
+            return new Vector3(Vector2.Lerp(a.X, b.X, t), Vector2.Lerp(a.Y, b.Y, t), Vector2.Lerp(a.Z, b.Z, t));
+        }
+
         public override int GetHashCode()
         {
             //return (int)(this.X ^ this.Y ^ this.Z);
             return X.GetHashCode() * Y.GetHashCode() * Z.GetHashCode();
         }
+
+
 
         public Vector2 XY { get { return new Vector2(X, Y); } }
 

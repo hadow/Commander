@@ -70,5 +70,7 @@ namespace EW.Mods.Common.Traits
 
             return RandomExitOrDefault(self.Info, self.World, productionType, p);
         }
+
+        
     }
 }

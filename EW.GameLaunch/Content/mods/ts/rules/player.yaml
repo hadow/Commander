@@ -78,3 +78,4 @@ Player:
 		Id: unrestricted
 	ResourceStorageWarning:
 	PlayerExperience:
+	ProvidesRadar:

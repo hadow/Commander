@@ -83,6 +83,10 @@ namespace EW.Framework.Audio
         private IntPtr _context;
         float volume = 1f;
 
+        const int MaxInstancesPerFrame = 3;
+        const int GroupDistance = 2730;
+        const int GroupDistanceSqr = GroupDistance * GroupDistance;
+
         public float Volume
         {
             get { return volume; }
@@ -518,7 +522,33 @@ namespace EW.Framework.Audio
 
             if (attenuateVolume)
             {
+                int instances = 0, activeCount = 0;
+                foreach(var s in sourcePool.Values)
+                {
+                    if (!s.IsActive)
+                        continue;
+                    if (s.IsRelative != relative)
+                        continue;
 
+                    ++activeCount;
+                    if (s.SoundSource != alSoundSource)
+                        continue;
+
+                    if (currFrame - s.FrameStarted >= 5)
+                        continue;
+
+                    //Too far away to count?
+                    var lensqr = (s.Pos - pos).LengthSquared;
+                    if (lensqr >= GroupDistanceSqr)
+                        continue;
+
+                    if (++instances == MaxInstancesPerFrame)
+                        return null;
+
+                }
+
+                //Attenuate a little bit based on number of active sounds
+                atten = 0.66f * ((MAX_NUMBER_OF_SOURCES - activeCount * 0.5f) / MAX_NUMBER_OF_SOURCES);
             }
 
             int source;
@@ -730,7 +760,9 @@ namespace EW.Framework.Audio
                 AL.Source(source, ALSourcei.SourceRelative, relative?1:0);
                 ALHelper.CheckError("Failed set source relative.");
                 //Distance Model
-                AL.DistanceModel(ALDistanceModel.InverseDistanceClamped);
+                //AL.DistanceModel(ALDistanceModel.InverseDistanceClamped);
+                AL.Source(source, ALSourcef.ReferenceDistance, 6826);
+                AL.Source(source, ALSourcef.MaxDistance, 136533);
                 ALHelper.CheckError("Failed set source distance.");
 
             }
@@ -870,6 +902,23 @@ namespace EW.Framework.Audio
 
                 });
             }
+
+            public override void Stop()
+            {
+                lock (cts)
+                {
+                    StopSource();
+                    cts.Cancel();
+                }
+
+                try
+                {
+                    playTask.Wait();
+                }
+                catch (AggregateException) { }
+            }
+
+            public override bool Complete { get { return playTask.IsCompleted; } }
         }
 
     }

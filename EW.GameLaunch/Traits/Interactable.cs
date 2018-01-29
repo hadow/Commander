@@ -6,7 +6,7 @@ using EW.Framework;
 
 namespace EW.Traits
 {
-    public class InteractableInfo:ITraitInfo,IMouseBoundsInfo
+    public class InteractableInfo:ITraitInfo,IMouseBoundsInfo,IDecorationBoundsInfo
     {
 
         public readonly int[] Bounds = null;
@@ -18,7 +18,7 @@ namespace EW.Traits
         public virtual object Create(ActorInitializer init) { return new Interactable(this); }
     }
 
-    public class Interactable:INotifyCreated,IMouseBounds
+    public class Interactable:INotifyCreated,IMouseBounds,IDecorationBounds
     {
         readonly InteractableInfo info;
         IAutoMouseBounds[] autoBounds;
@@ -56,6 +56,11 @@ namespace EW.Traits
 
         Rectangle IMouseBounds.MouseoverBounds(Actor self,WorldRenderer wr){
             return Bounds(self, wr, info.Bounds);
+        }
+
+        Rectangle IDecorationBounds.DecorationBounds(Actor self, WorldRenderer wr)
+        {
+            return Bounds(self, wr, info.DecorationBounds ?? info.Bounds);
         }
 
     }

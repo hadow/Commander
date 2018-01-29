@@ -102,7 +102,7 @@ namespace EW
 
         protected override void Initialize()
         {
-            TouchPanel.EnabledGestures =GestureType.Tap| GestureType.DoubleTap| GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag;
+            TouchPanel.EnabledGestures =GestureType.Tap| GestureType.DoubleTap| GestureType.Pinch | GestureType.PinchComplete | GestureType.FreeDrag | GestureType.DragComplete;
             base.Initialize();
 
         }
@@ -282,7 +282,7 @@ namespace EW
                         _pinching = false;
                         break;
                     case GestureType.FreeDrag:
-                        worldRenderer.ViewPort.Scroll(gesture.Delta*-1,false);
+                        //worldRenderer.ViewPort.Scroll(gesture.Delta*-1,false);
                         break;
 
                 }

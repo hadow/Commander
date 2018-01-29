@@ -243,6 +243,74 @@ namespace EW
             MusicPlaying = true;
         }
 
+
+        public bool PlayPredefined(SoundType soundType,Ruleset ruleset,Player p,Actor voicedActor,string type,string definition,string variant,
+            bool relative,WPos pos,float volumeModifier,bool attenuateVolume)
+        {
+
+            if (ruleset == null)
+                throw new ArgumentNullException("ruleset");
+
+            if (definition == null || (DisableWorldSounds && soundType == SoundType.World))
+                return false;
+
+            if (ruleset.Voices == null || ruleset.Notifications == null)
+                return false;
+
+            var rules = (voicedActor != null) ? ruleset.Voices[type] : ruleset.Notifications[type];
+            if (rules == null)
+                return false;
+
+            var id = voicedActor != null ? voicedActor.ActorID : 0;
+
+            string clip;
+            var suffix = rules.DefaultVariant;
+            var prefix = rules.DefaultPrefix;
+
+            if(voicedActor != null)
+            {
+                if (!rules.VoicePools.Value.ContainsKey(definition))
+                    throw new InvalidOperationException("Can't find {0} voice pool.".F(definition));
+
+                clip = rules.VoicePools.Value[definition].GetNext();
+            }
+            else
+            {
+                if (!rules.NotificationsPools.Value.ContainsKey(definition))
+                    throw new InvalidOperationException("Can't find {0} in notification pool".F(definition));
+
+                clip = rules.NotificationsPools.Value[definition].GetNext();
+            }
+
+            if (string.IsNullOrEmpty(clip))
+                return false;
+
+            if(variant != null)
+            {
+                if (rules.Variants.ContainsKey(variant) && !rules.DisableVariants.Contains(definition))
+                    suffix = rules.Variants[variant][id % rules.Variants[variant].Length];
+                if (rules.Prefixes.ContainsKey(variant) && !rules.DisablePrefixed.Contains(definition))
+                    prefix = rules.Prefixes[variant][id % rules.Prefixes[variant].Length];
+            }
+
+            var name = prefix + clip + suffix;
+
+            if(!string.IsNullOrEmpty(name) && (p == null || p == p.World.LocalPlayer))
+            {
+                var sound = soundEngine.Play2D(sounds[name], false, relative, pos.ToVector3(), InternalSoundVolume * volumeModifier, attenuateVolume);
+
+                if (id != 0)
+                {
+                    if (currentSounds.ContainsKey(id))
+                        soundEngine.StopSound(currentSounds[id]);
+
+                    currentSounds[id] = sound;
+                }
+            }
+            return true;
+
+        }
+
         /// <summary>
         /// 
         /// </summary>

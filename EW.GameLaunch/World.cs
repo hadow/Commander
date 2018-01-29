@@ -168,7 +168,11 @@ namespace EW
         void SetLocalPlayer(Player localPlayer)
         {
             if (localPlayer == null)
-                return;
+            {
+                //test code,
+                localPlayer = Players.FirstOrDefault(p => p.InternalName == "GDI");
+                //return;
+            }
 
             if (!Players.Contains(localPlayer))
                 throw new ArgumentException("The local player must be one of the players in the world.", "localPlayer");

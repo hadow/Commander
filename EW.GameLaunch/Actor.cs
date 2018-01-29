@@ -329,6 +329,7 @@ namespace EW
 
             health.InflictDamage(this, attacker, damage, false);
         }
+        
 
 
         #region Trait

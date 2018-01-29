@@ -205,6 +205,14 @@ namespace EW.Graphics
             return new Vector3(x / d, y / d, 0.5f * (a.Z + b.Z));
         }
 
+        public void FillRect(Vector3 tl,Vector3 br,Color color)
+        {
+            var tr = new Vector3(br.X, tl.Y, tl.Z);
+            var bl = new Vector3(tl.X, br.Y, br.Z);
+
+            FillRect(tl, tr, br, bl, color);
+        }
+
         public void FillRect(Vector3 a,Vector3 b,Vector3 c,Vector3 d,Color color)
         {
             renderer.CurrentBatchRenderer = this;

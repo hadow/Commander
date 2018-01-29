@@ -99,6 +99,7 @@
     <Compile Include="Graphics\ModelPreview.cs" />
     <Compile Include="Graphics\ModelRenderable.cs" />
     <Compile Include="Graphics\RangeCircleRenderable.cs" />
+    <Compile Include="Graphics\SelectionBarsRenderable.cs" />
     <Compile Include="Graphics\SpriteActorPreview.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />
     <Compile Include="HitShapes\CircleShape.cs" />
@@ -476,6 +477,12 @@
     <Compile Include="Warheads\SpreadDamageWarhead.cs" />
     <Compile Include="Warheads\TargetDamageWarhead.cs" />
     <Compile Include="Warheads\Warhead.cs" />
+    <Compile Include="Widgets\ButtonWidget.cs" />
+    <Compile Include="Widgets\ColorBlockWidget.cs" />
+    <Compile Include="Widgets\ImageWidget.cs" />
+    <Compile Include="Widgets\Logic\Ingame\AddFactionSuffixLogic.cs" />
+    <Compile Include="Widgets\Logic\Ingame\ControlGroupLogic.cs" />
+    <Compile Include="Widgets\Logic\Ingame\GameTimerLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
     <Compile Include="Traits\BodyOrientation.cs" />

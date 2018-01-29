@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using EW.Framework;
 using EW.Graphics;
+using EW.Widgets;
 namespace EW.Mods.Common.LoadScreens
 {
     public sealed class LogoStripeLoadScreen:BlankLoadScreen
@@ -30,16 +31,16 @@ namespace EW.Mods.Common.LoadScreens
             if (info.ContainsKey("Text"))
                 messages = info["Text"].Split(',');
 
-            //if (info.ContainsKey("Image"))
-            //{
-            //    using (var stream = modData.DefaultFileSystem.Open(info["Image"]))
-            //        sheet = new Sheet(SheetT.BGRA, stream);
+            if (info.ContainsKey("Image"))
+            {
+                using (var stream = modData.DefaultFileSystem.Open(info["Image"]))
+                    sheet = new Sheet(SheetT.BGRA, stream);
 
-            //    logo = new Sprite(sheet, new Rectangle(0, 0, 256, 256), TextureChannel.Alpha);
-            //    stripe = new Sprite(sheet, new Rectangle(256, 0, 256, 256), TextureChannel.Alpha);
-            //    stripeRect = new Rectangle(0, r.Resolution.Height / 2 - 128, r.Resolution.Width, 256);
-            //    logoPos = new Vector2(r.Resolution.Width / 2 - 128, r.Resolution.Height / 2 - 128);
-            //}
+                logo = new Sprite(sheet, new Rectangle(0, 0, 256, 256), TextureChannel.Alpha);
+                stripe = new Sprite(sheet, new Rectangle(256, 0, 256, 256), TextureChannel.Alpha);
+                stripeRect = new Rectangle(0, r.Resolution.Height / 2 - 128, r.Resolution.Width, 256);
+                logoPos = new Vector2(r.Resolution.Width / 2 - 128, r.Resolution.Height / 2 - 128);
+            }
         }
 
 
@@ -61,12 +62,11 @@ namespace EW.Mods.Common.LoadScreens
             r.BeginFrame(Int2.Zero, 1f);
             if (stripe != null)
             {
-
+                WidgetUtils.FillRectWithSprite(stripeRect, stripe);
             }
 
             if (logo != null)
                 r.RgbaSpriteRenderer.DrawSprite(logo, logoPos);
-
             r.Fonts["Bold"].DrawText(text, new Vector2(r.Resolution.Width - textSize.X - 20, r.Resolution.Height - textSize.Y - 20), Color.White);
 
             r.EndFrame();

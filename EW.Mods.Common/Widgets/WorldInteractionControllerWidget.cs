@@ -7,7 +7,7 @@ using EW.Widgets;
 using EW.Graphics;
 using EW.Framework;
 using EW.Traits;
-
+using EW.Mods.Common.Graphics;
 namespace EW.Mods.Common.Widgets
 {
     public class WorldInteractionControllerWidget:Widget
@@ -81,7 +81,11 @@ namespace EW.Mods.Common.Widgets
 
             if(unit.Info.HasTraitInfo<SelectableInfo>()){
 
+                var bounds = unit.TraitsImplementing<IDecorationBounds>()
+                    .Select(b => b.DecorationBounds(unit, worldRenderer))
+                    .FirstOrDefault(b => !b.IsEmpty);
 
+                new SelectionBarsRenderable(unit, bounds, true, true).Render(worldRenderer);
             }
 
 

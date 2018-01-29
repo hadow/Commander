@@ -159,6 +159,7 @@ namespace EW.Framework
         }
 
 
+
         public float LengthSquared { get { return X * X + Y * Y; } }
 
         public float Length
@@ -167,6 +168,18 @@ namespace EW.Framework
             {
                 return (float)Math.Sqrt(LengthSquared);
             }
+        }
+
+        public static float Lerp(float a,float b,float t) { return a + t * (b - a); }
+
+        public static Vector2 Lerp(Vector2 a,Vector2 b,float t)
+        {
+            return new Vector2(Lerp(a.X, b.X, t), Lerp(a.Y, b.Y, t));
+        }
+
+        public static Vector2 Lerp(Vector2 a,Vector2 b,Vector2 t)
+        {
+            return new Vector2(Lerp(a.X, b.X, t.X), Lerp(a.Y, b.Y, t.Y));
         }
 
         static float Constrain(float x,float a,float b)

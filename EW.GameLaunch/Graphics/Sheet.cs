@@ -1,6 +1,9 @@
 ﻿using System;
 using EW.Framework.Graphics;
 using System.Drawing;
+using Android.Graphics;
+using System.IO;
+using EW.Traits;
 namespace EW.Graphics
 {
     /// <summary>
@@ -34,18 +37,50 @@ namespace EW.Graphics
             Size = texture.Size;
         }
 
-        //public Sheet(SheetT type,Stream stream)
-        //{
-        //    //using (var bitmap = BitmapFactory.DecodeStream(stream, null, 
-        //      //  new BitmapFactory.Options { InScaled = false, InDither = false, InJustDecodeBounds = false, InPurgeable = true, InInputShareable = true, }))
-        //    using(var bitmap = (Bitmap)Image.FromStream(stream))
-        //    {
-        //        Size = new Size(bitmap.Width, bitmap.Height);
-        //        data = new byte[4 * Size.Width * Size.Height];
-        //        Util.FastCopyIntoSprite(new Sprite(this, bitmap.Bounds2(), TextureChannel.Red), bitmap);
-        //    }
-        //    Type = type;
-        //}
+        public Sheet(SheetT type, Stream stream)
+        {
+            using (var bitmap = BitmapFactory.DecodeStream(stream, null,
+              new BitmapFactory.Options
+              {
+                  InScaled = false,
+                  InDither = false,
+                  InJustDecodeBounds = false,
+                  InPurgeable = true,
+                  InInputShareable = true,
+              }))
+            {
+                
+                var width = bitmap.Width;
+                var height = bitmap.Height;
+                Size = new Size(width, height);
+                data = new byte[4 * Size.Width * Size.Height];
+                //int[] pixels = new int[width * height];
+                //if((width != bitmap.Width ) || (height != bitmap.Height))
+                //{
+
+                //}
+                //else
+                //{
+                //    bitmap.GetPixels(pixels, 0, width, 0, 0, width, height);
+
+                //}
+
+                //Util.FastCopyIntoChannel(new Sprite(this, bitmap.Bounds(), TextureChannel.Red), pixels.ToBytes());
+                Util.FastCopyIntoSprite(new Sprite(this, bitmap.Bounds(), TextureChannel.Red), bitmap);
+                bitmap.Recycle();
+
+            }
+                //using (var bitmap = (Bitmap)Image.FromStream(stream))
+                //{
+                //    Size = new Size(bitmap.Width, bitmap.Height);
+                //    data = new byte[4 * Size.Width * Size.Height];
+                //    Util.FastCopyIntoSprite(new Sprite(this, bitmap.Bounds2(), TextureChannel.Red), bitmap);
+                //}
+
+
+                Type = type;
+            ReleaseBuffer();
+        }
         public bool Buffered { get { return data != null || texture == null; } }
 
         /// <summary>

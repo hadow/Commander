@@ -86,7 +86,7 @@ namespace EW
         {
             FieldLoader.Load(this, yaml);
 
-            // The default subcell index defaults to the middle entry
+            // The default subcell index defaults to the middle entry 默认子单元格索为中间条目
             var defaultSubCellIndex = (byte)DefaultSubCell;
             if (defaultSubCellIndex == byte.MaxValue)
                 DefaultSubCell = (SubCell)(SubCellOffsets.Length / 2);

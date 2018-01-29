@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using EW.Traits;
 using EW.Graphics;
 namespace EW.Mods.Common.Traits.Render
@@ -17,7 +18,7 @@ namespace EW.Mods.Common.Traits.Render
         }
     }
 
-    public class WithVoxelBody:ConditionalTrait<WithVoxelBodyInfo>
+    public class WithVoxelBody:ConditionalTrait<WithVoxelBodyInfo>,IAutoMouseBounds
     {
         readonly ModelAnimation modelAnimation;
         readonly RenderVoxels rv;
@@ -33,6 +34,11 @@ namespace EW.Mods.Common.Traits.Render
                 () => IsTraitDisabled, () => 0, info.ShowShadow);
 
             rv.Add(modelAnimation);
+        }
+
+        Rectangle IAutoMouseBounds.AutoMouseoverBounds(Actor self, WorldRenderer wr)
+        {
+            return modelAnimation.ScreenBounds(self.CenterPosition, wr, rv.Info.Scale);
         }
     }
 }

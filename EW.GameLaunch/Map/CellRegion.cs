@@ -7,6 +7,7 @@ namespace EW
     /// <summary>
     /// Represents a (on-screen) rectangular collection of tiles.
     /// TopLeft and BottomRight are inclusive
+    /// 表示(屏幕上）矩形的图块集合
     /// </summary>
     public class CellRegion:IEnumerable<CPos>
     {
@@ -19,7 +20,8 @@ namespace EW
         readonly MapGridT gridT;
 
         /// <summary>
-        /// 
+        /// Corners in map coordinates
+        /// These will only equal TopLef and BottomRight for MapGridType.Rectangular.
         /// </summary>
         readonly MPos mapTopLeft;
         readonly MPos mapBottomRight;
@@ -99,6 +101,7 @@ namespace EW
 
             public void Reset()
             {
+                //Enumerator starts *before* the first element in the sequence.
                 u = cr.mapTopLeft.U - 1;
                 v = cr.mapTopLeft.V;
             }

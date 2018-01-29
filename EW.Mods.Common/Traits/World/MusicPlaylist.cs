@@ -79,7 +79,7 @@ namespace EW.Mods.Common.Traits
                 CurrentSongIsBackground = false;
             }
 
-            Play();
+            //Play();
         }
 
 

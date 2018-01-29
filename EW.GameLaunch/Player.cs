@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 using Eluant;
 using Eluant.ObjectBinding;
 using EW.Traits;
@@ -8,6 +9,7 @@ using EW.Scripting;
 using EW.NetWork;
 using EW.Primitives;
 using EW.Graphics;
+using EW.Widgets;
 namespace EW
 {
     public enum WinState { Undefined,Won,Lost}
@@ -17,6 +19,14 @@ namespace EW
 
     public class Player:IScriptBindable,IScriptNotifyBind,ILuaTableBinding,ILuaEqualityBinding,ILuaToStringBinding
     {
+        struct StanceColors
+        {
+            public Color Self;
+            public Color Allies;
+            public Color Enemies;
+            public Color Neutrals;
+
+        }
         public WinState WinState = WinState.Undefined;
 
         public readonly HSLColor Color;
@@ -34,6 +44,7 @@ namespace EW
 
         public World World { get; private set; }
 
+        readonly StanceColors stanceColors;
         public bool IsBot;
 
         public readonly string BotType;
@@ -106,6 +117,10 @@ namespace EW
                     logic.Activate(this);
                 }
             }
+            stanceColors.Self = ChromeMetrics.Get<Color>("PlayerStanceColorSelf");
+            stanceColors.Allies = ChromeMetrics.Get<Color>("PlayerStanceColorAllies");
+            stanceColors.Enemies = ChromeMetrics.Get<Color>("PlayerStanceColorEnemies");
+            stanceColors.Neutrals = ChromeMetrics.Get<Color>("PlayerStanceColorNeutrals");
         }
 
 
@@ -178,6 +193,33 @@ namespace EW
         public bool IsAlliedWith(Player p)
         {
             return p == null || Stances[p] == Stance.Ally || (p.Spectating && !NonCombatant);
+        }
+
+
+
+        public Color PlayerStanceColor(Actor a)
+        {
+            var player = a.World.RenderPlayer ?? a.World.LocalPlayer;
+
+            if(player != null && !player.Spectating)
+            {
+                var apparentOwner = a.EffectiveOwner != null && a.EffectiveOwner.Disguised ? a.EffectiveOwner.Owner : a.Owner;
+
+                if (a.Owner.IsAlliedWith(a.World.RenderPlayer))
+                    apparentOwner = a.Owner;
+
+                if (apparentOwner == player)
+                    return stanceColors.Self;
+
+                if (apparentOwner.IsAlliedWith(player))
+                    return stanceColors.Allies;
+
+                if (!apparentOwner.NonCombatant)
+                    return stanceColors.Enemies;
+
+            }
+
+            return stanceColors.Neutrals;
         }
         public override string ToString()
         {

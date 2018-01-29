@@ -344,6 +344,9 @@
     <Compile Include="..\EW.Mods.Common\Graphics\RangeCircleRenderable.cs">
       <Link>External_Common\Graphics\RangeCircleRenderable.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\SelectionBarsRenderable.cs">
+      <Link>External_Common\Graphics\SelectionBarsRenderable.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\SpriteActorPreview.cs">
       <Link>External_Common\Graphics\SpriteActorPreview.cs</Link>
     </Compile>
@@ -1505,6 +1508,24 @@
     <Compile Include="..\EW.Mods.Common\Warheads\Warhead.cs">
       <Link>External_Common\Warheads\Warhead.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ButtonWidget.cs">
+      <Link>External_Common\Widgets\ButtonWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ColorBlockWidget.cs">
+      <Link>External_Common\Widgets\ColorBlockWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ImageWidget.cs">
+      <Link>External_Common\Widgets\ImageWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\ControlGroupLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\ControlGroupLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\GameTimerLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\GameTimerLogic.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs</Link>
     </Compile>
@@ -1569,9 +1590,11 @@
     <Compile Include="GameSpeeds.cs" />
     <Compile Include="Graphics\Animation.cs" />
     <Compile Include="Graphics\AnimationWithOffset.cs" />
+    <Compile Include="Graphics\ChromeProvider.cs" />
     <Compile Include="Graphics\GameViewPort.cs" />
     <Compile Include="Graphics\HardwarePalette.cs" />
     <Compile Include="Graphics\HSLColor.cs" />
+    <Compile Include="Graphics\MappedImage.cs" />
     <Compile Include="Graphics\Model.cs" />
     <Compile Include="Graphics\ModelAnimation.cs" />
     <Compile Include="Graphics\Palette.cs" />
@@ -1681,10 +1704,12 @@
     <Compile Include="Traits\World\ResourceType.cs" />
     <Compile Include="Traits\World\ScreenMap.cs" />
     <Compile Include="Traits\World\Shroud.cs" />
+    <Compile Include="VoiceExts.cs" />
     <Compile Include="WAngle.cs" />
     <Compile Include="WarGame.cs" />
     <Compile Include="Widgets\Widget.cs" />
     <Compile Include="Widgets\WidgetLoader.cs" />
+    <Compile Include="Widgets\WidgetUtils.cs" />
     <Compile Include="World.cs" />
     <Compile Include="WDist.cs" />
     <Compile Include="WorldUtils.cs" />

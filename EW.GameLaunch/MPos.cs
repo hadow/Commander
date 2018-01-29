@@ -44,7 +44,7 @@ namespace EW
             if (gridT == MapGridT.Rectangular)
                 return new CPos(U, V);
 
-            var offset = (V & 1) == 1 ? 1 : 0;
+            var offset = (V & 1) == 1 ? 1 : 0;//1 是奇数 0 是偶数
             var y = (V - offset) / 2 - U;
             var x = V - y;
             return new CPos(x, y);
@@ -57,10 +57,15 @@ namespace EW
                             Math.Min(r.Bottom,Math.Max(V,r.Top)));
         }
 
+        public override string ToString()
+        {
+            return U + "," + V;
+        }
+
     }
 
     /// <summary>
-    /// PPos 最好被认为是在屏幕空间中应用的单元风格。
+    /// PPos 最好被认为是在屏幕空间中应用的单元网格。
     /// 具有不同地形高度的多个单元格可以投影到相同的PPos上，
     /// 或者投影到多个PPos(如果它们不与屏幕网格对齐)
     /// PPos 坐标主要用于地图边缘检查和遮罩可见性查询

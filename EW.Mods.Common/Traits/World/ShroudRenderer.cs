@@ -119,16 +119,17 @@ namespace EW.Mods.Common.Traits
 
         readonly Sprite[] fogSprites, shroudSprites;
 
-
+        //缓存废弃的PPos
         readonly HashSet<PPos> cellsDirty = new HashSet<PPos>();
-
         readonly HashSet<PPos> cellsAndNeighborsDirty = new HashSet<PPos>();
 
         Shroud currentShroud;
 
         TerrainSpriteLayer shroudLayer, fogLayer;
 
+        //PPos 在 shroud & fog 下是否可见
         Func<PPos, bool> visibleUnderShroud, visibleUnderFog;
+
         bool disposed;
 
         public ShroudRenderer(World world, ShroudRendererInfo info){
@@ -193,6 +194,7 @@ namespace EW.Mods.Common.Traits
         {
             //Initialize tile cache
             //This includes the region outside the visible area to cover any sprites peeking outside the map
+            //这包括可见区域以外的区域，以覆盖在地图之外偷看的任何精灵
             foreach(var uv in w.Map.AllCells.MapCoords)
             {
                 var pos = w.Map.CenterOfCell(uv.ToCPos(map));
@@ -211,6 +213,7 @@ namespace EW.Mods.Common.Traits
 
             visibleUnderFog = puv => map.Contains(puv);
 
+            //确保shroud & fog 使用相同的Sheet
             var shroudSheet = shroudSprites[0].Sheet;
             if (shroudSprites.Any(s => s.Sheet != shroudSheet))
                 throw new InvalidDataException("Shroud sprites span multiple sheets.Try loading their sequences earlier.");
@@ -231,7 +234,10 @@ namespace EW.Mods.Common.Traits
             fogLayer = new TerrainSpriteLayer(w, wr, fogSheet, fogBlend, wr.Palette(info.FogPalette), false);
         }
 
-
+        /// <summary>
+        /// 使单元格废弃
+        /// </summary>
+        /// <param name="cells"></param>
         void DirtyCells(IEnumerable<PPos> cells)
         {
             //PERF: Many cells in the shroud change every tick,We only track the changes here and defer the real work
@@ -272,6 +278,7 @@ namespace EW.Mods.Common.Traits
 
             // We need to update newly dirtied areas of the shroud.
             //Expand the dirty area to cover the neighboring cells,since shroud is affected by neighboring cells.
+            //展开脏区域以覆盖相邻的单元，因为shroud 受邻近单元的影响。
             foreach(var uv in cellsDirty)
             {
                 cellsAndNeighborsDirty.Add(uv);

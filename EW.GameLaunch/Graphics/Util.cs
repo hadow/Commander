@@ -11,52 +11,56 @@ namespace EW.Graphics
         static readonly int[] ChannelMasks = { 2, 1, 0, 3 };
         static readonly float[] ChannelSelect = { 0.2f, 0.4f, 0.6f, 0.8f };
 
-        //public static void FastCopyIntoSprite(Sprite dest,Bitmap src)
-        //{
-        //    var createdTempBitmap = false;
-        //    if(src.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
-        //    {
-        //        createdTempBitmap = true;
-        //    }
-        //    try
-        //    {
-        //        var destData = dest.Sheet.GetData();
-        //        var destStride = dest.Sheet.Size.Width;
-        //        var width = dest.Bounds.Width;
-        //        var height = dest.Bounds.Height;
+        public static void FastCopyIntoSprite(Sprite dest, Android.Graphics.Bitmap src)
+        {
+            var createdTempBitmap = false;
+            //if (src.PixelFormat != System.Drawing.Imaging.PixelFormat.Format32bppArgb)
+            //{
+            //    createdTempBitmap = true;
+            //}
+            try
+            {
+                var destData = dest.Sheet.GetData();
+                var destStride = dest.Sheet.Size.Width;
+                var width = dest.Bounds.Width;
+                var height = dest.Bounds.Height;
 
-        //        var srcData = src.LockBits(src.Bounds(), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    
-        //        unsafe
-        //        {
-        //            var c = (int*)srcData.Scan0;
+                //var srcData = src.LockBits(src.Bounds(), System.Drawing.Imaging.ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+                var srcData = src.GetBitmapInfo();
 
-        //            //Cast the data to an int array so we can copy the src data directly
-        //            fixed(byte* bd = &destData[0])
-        //            {
-        //                var data = (int*)bd;
-        //                var x = dest.Bounds.Left;
-        //                var y = dest.Bounds.Top;
+                unsafe
+                {
+                    //var c = (int*)srcData.Scan0;
+                    int[] pixels = new int[src.Width * src.Height];
+                    src.GetPixels(pixels, 0, width, 0, 0, width, height);
+                    //Cast the data to an int array so we can copy the src data directly
+                    fixed (byte* bd = &destData[0])
+                    {
+                        var data = (int*)bd;
+                        var x = dest.Bounds.Left;
+                        var y = dest.Bounds.Top;
 
-        //                for(var j = 0; j < height; j++)
-        //                {
-        //                    for(var i = 0; i < width; i++)
-        //                    {
-        //                        var cc = Color.FromArgb(*(c + (j * srcData.Stride >> 2) + i));
-        //                        data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
-        //                    }
-        //                }
-        //            }
-        //        }
+                        for (var j = 0; j < height; j++)
+                        {
+                            for (var i = 0; i < width; i++)
+                            {
+                                //var cc = Color.FromArgb(*(c + (j * srcData.Stride >> 2) + i));
+                                var cc = Color.FromArgb(pixels[(y + j) * destStride + x + i]);
+                                data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
+                            }
+                        }
+                    }
+                }
 
-        //        src.UnlockBits(srcData);
-        //    }
-        //    finally
-        //    {
-        //        if (createdTempBitmap)
-        //            src.Dispose();
-        //    }
-        //}
+                //src.UnlockBits(srcData);
+
+            }
+            finally
+            {
+                if (createdTempBitmap)
+                    src.Dispose();
+            }
+        }
 
         /// <summary>
         /// 

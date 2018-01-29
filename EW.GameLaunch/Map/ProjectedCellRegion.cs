@@ -24,12 +24,17 @@ namespace EW
             TopLeft = topLeft;
             BottomRight = bottomRight;
 
+            //The projection from MPos->PPos cannot produce a larger V coordinate
+            //so the top edge of the MPos region is the same as the PPos region.
+            //(in fact the cells are identical if height ==0)
             //MPos -> PPos 的投影不能产生较大的V 坐标，因此MPos区域内的顶边与 PPos 相同(事实上，如果height == 0,单元格是一样的)
             mapTopLef = (MPos)topLeft;
 
             var maxHeight = map.Grid.MaximumTerrainHeight;
-
             var heightOffset = map.Grid.Type == MapGridT.RectangularIsometric ? maxHeight : maxHeight / 2;
+
+            //Use the map Height data array to clamp the bottom coordinate so it doesn't overflow the map
+            //使用地图高度数据数组来限制底部坐标，使其不会溢出地图
             mapBottomRight = map.Height.Clamp(new MPos(bottomRight.U, bottomRight.V + heightOffset));
         }
 

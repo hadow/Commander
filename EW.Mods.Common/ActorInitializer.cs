@@ -74,4 +74,16 @@ namespace EW.Mods.Common
         }
     }
 
+    public class EffectiveOwnerInit : IActorInit<Player>
+    {
+        [FieldFromYamlKey]
+        readonly Player value = null;
+
+        public EffectiveOwnerInit() { }
+
+        public EffectiveOwnerInit(Player owner) { value = owner; }
+
+        Player IActorInit<Player>.Value(World world) { return value; }
+    }
+
 }
