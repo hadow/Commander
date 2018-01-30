@@ -116,6 +116,14 @@ namespace EW.Mods.Common.Traits
                 yield return t;
         }
 
+        public IEnumerable<CPos> FrozenUnderFogTiles(CPos location)
+        {
+            foreach (var t in FootprintTiles(location, FootprintCellType.Empty))
+                yield return t;
+
+            foreach (var t in Tiles(location))
+                yield return t;
+        }
 
         /// <summary>
         /// Occupieds the cells.

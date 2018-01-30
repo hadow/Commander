@@ -74,6 +74,12 @@ namespace EW.Traits
         }
 
 
+        public void RefreshState()
+        {
+
+        }
+
+
         public void Flash(){
             flashTicks = 5;
         }
