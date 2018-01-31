@@ -146,7 +146,7 @@ Translations:
 
 LoadScreen: LogoStripeLoadScreen
 	Image: ts|uibits/loadscreen.png
-	Text: Updating EVA installation..., Changing perspective...
+	Text: Loading..., Changing perspective...
 
 ServerTraits:
 	LobbyCommands

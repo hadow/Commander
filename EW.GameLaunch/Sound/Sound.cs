@@ -311,6 +311,17 @@ namespace EW
 
         }
 
+        public bool PlayNotification(Ruleset rules,Player player,string type,string notification,string variant)
+        {
+            if (rules == null)
+                throw new ArgumentNullException("rules");
+
+            if (type == null || notification == null)
+                return false;
+
+            return PlayPredefined(SoundType.UI, rules, player, null, type.ToLowerInvariant(), notification, variant, true, WPos.Zero, 1f, false);
+        }
+
         /// <summary>
         /// 
         /// </summary>

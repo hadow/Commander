@@ -5,6 +5,7 @@ using EW.Primitives;
 using EW.Support;
 using SharpFont;
 using EW.Framework;
+using EW.Widgets;
 namespace EW.Graphics
 {
     class GlyphInfo
@@ -154,6 +155,24 @@ namespace EW.Graphics
 
                 p += new Vector2(g.Advance / deviceScale, 0);
             }
+        }
+
+        public void DrawTextWithContrast(string text,Vector2 location,Color fg,Color bgDark,Color bgLight,int offset)
+        {
+            DrawTextWithContrast(text, location, fg, WidgetUtils.GetContrastColor(fg, bgDark, bgLight), offset);
+        }
+
+
+        public void DrawTextWithContrast(string text,Vector2 location,Color fg,Color bg,int offset)
+        {
+            if (offset > 0)
+            {
+                DrawText(text, location + new Vector2(-offset / deviceScale, 0), bg);
+                DrawText(text, location + new Vector2(offset / deviceScale, 0), bg);
+                DrawText(text, location + new Vector2(0, -offset / deviceScale), bg);
+                DrawText(text, location + new Vector2(0, offset / deviceScale), bg);
+            }
+            DrawText(text, location, fg);
         }
 
         public Int2 Measure(string text)

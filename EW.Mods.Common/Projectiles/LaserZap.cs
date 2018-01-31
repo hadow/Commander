@@ -64,7 +64,7 @@ namespace EW.Mods.Common.Projectiles
 
         public IProjectile Create(ProjectileArgs args)
         {
-            var c = UsePlayerColor ? args.SourceActor.Owner.Color.RGB : Color;
+            var c = !UsePlayerColor ? args.SourceActor.Owner.Color.RGB : Color;
             return new LaserZap(this,args,c);
         }
 

@@ -25,9 +25,9 @@ namespace EW.Mods.Common.Traits.Render
         /// <summary>
         /// Custom PlayerColorPalette:BaseName.
         /// </summary>
-        public readonly string PlayerPalette = "player";
-        public readonly string NormalsPalette = "normals";
-        public readonly string ShadowPalette = "shadow";
+        [PaletteReference]public readonly string PlayerPalette = "player";
+        [PaletteReference] public readonly string NormalsPalette = "normals";
+        [PaletteReference] public readonly string ShadowPalette = "shadow";
 
         public readonly WAngle LightPitch = WAngle.FromDegrees(50);
         public readonly WAngle LightYaw = WAngle.FromDegrees(240);

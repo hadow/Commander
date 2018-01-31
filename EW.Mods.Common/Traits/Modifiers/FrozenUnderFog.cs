@@ -8,9 +8,15 @@ using EW.Graphics;
 namespace EW.Mods.Common.Traits
 {
 
-
+    /// <summary>
+    /// This actor will remain visible (but not updated visually) under fog,once discovered.
+    /// </summary>
     public class FrozenUnderFogInfo : ITraitInfo, Requires<BuildingInfo>
     {
+        /// <summary>
+        /// Player with these stances can always see the actor.
+        /// </summary>
+        public readonly Stance AlwaysVisibleStance = Stance.Ally;
 
         public object Create(ActorInitializer init) { return new FrozenUnderFog(init,this); }
     }
@@ -74,17 +80,70 @@ namespace EW.Mods.Common.Traits
 
         public bool IsVisible(Actor self,Player byPlayer)
         {
-            return true;
+            if (byPlayer == null)
+                return true;
+
+            var stance = self.Owner.Stances[byPlayer];
+
+
+            return info.AlwaysVisibleStance.HasStance(stance) || IsVisibleInner(self,byPlayer);
+        }
+
+        bool IsVisibleInner(Actor self,Player byPlayer)
+        {
+            //If fog is disabled visibility is determined by shroud
+            if (!byPlayer.Shroud.FogEnabled)
+                return byPlayer.Shroud.AnyExplored(self.OccupiesSpace.OccupiedCells());
+
+            return frozenStates[byPlayer].IsVisible;
         }
 
         void ITick.Tick(Actor self)
         {
+            if (self.Disposed)
+                return;
 
+            VisibilityHash = 0;
+
+            for(var playerIndex = 0;playerIndex<frozenStates.Count;playerIndex++)
+            {
+                var state = frozenStates[playerIndex];
+                var frozenActor = state.FrozenActor;
+                var isVisible = !frozenActor.Visible;
+                state.IsVisible = isVisible;
+
+                if (isVisible)
+                    UpdateFrozenActor(self, frozenActor, playerIndex);
+            }
         }
 
-        void ITickRender.TickRender(EW.Graphics.WorldRenderer wr, Actor self)
+        void ITickRender.TickRender(WorldRenderer wr, Actor self)
         {
+            IRenderable[] renderables = null;
+            Rectangle[] bounds = null;
+            Rectangle mouseBounds = Rectangle.Empty;
+            for(var playerIndex = 0; playerIndex < frozenStates.Count; playerIndex++)
+            {
+                var frozen = frozenStates[playerIndex].FrozenActor;
+                if (!frozen.NeedRenderables)
+                    continue;
 
+                if(renderables == null)
+                {
+                    isRendering = true;
+                    renderables = self.Render(wr).ToArray();
+                    bounds = self.ScreenBounds(wr).ToArray();
+                    mouseBounds = self.MouseBounds(wr);
+
+                    isRendering = false;
+                }
+
+                frozen.NeedRenderables = false;
+                frozen.Renderables = renderables;
+                frozen.ScreenBounds = bounds;
+                frozen.MouseBounds = mouseBounds;
+                self.World.ScreenMap.AddOrUpdate(self.World.Players[playerIndex], frozen);
+            }
         }
 
         IEnumerable<IRenderable> IRenderModifier.ModifyRender(Actor self, WorldRenderer wr, IEnumerable<IRenderable> r)

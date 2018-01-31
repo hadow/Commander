@@ -286,6 +286,14 @@ namespace EW.Traits
         }
 
 
+        public bool Contains(PPos uv)
+        {
+            //Check that uv is inside the map are.There is nothing special
+            //about explored here:any of the CellLayers would have been suitable.
+            return explored.Contains((MPos)uv);
+        }
+
+
         public static IEnumerable<PPos> ProjectedCellsInRange(Map map,CPos cell,WDist range,int maxHeightDelta = -1)
         {
             return ProjectedCellsInRange(map, map.CenterOfCell(cell), range, maxHeightDelta);

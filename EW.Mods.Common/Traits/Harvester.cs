@@ -40,6 +40,8 @@ namespace EW.Mods.Common.Traits
 
         public readonly int BaleLoadDelay = 4;
 
+        public readonly int BaleUnloadDelay = 4;
+
         /// <summary>
         /// Automatically scan for resources when created.
         /// </summary>
@@ -105,7 +107,8 @@ namespace EW.Mods.Common.Traits
 
         [Sync]
         public Actor LinkedProc = null;
-
+        [Sync]
+        int currentUnloadTicks;
         public CPos? LastHarvestedCell = null;
         public CPos? LastOrderLocation = null;
         public Harvester(Actor self,HarvesterInfo info)
@@ -182,9 +185,56 @@ namespace EW.Mods.Common.Traits
         }
 
 
+        /// <summary>
+        /// 离开停靠
+        /// </summary>
+        /// <param name="self"></param>
         public void UnblockRefinery(Actor self)
         {
+            var lastProc = LastLinkedProc ?? LinkedProc;
 
+            if(lastProc != null && !lastProc.Disposed)
+            {
+                var deliveryLoc = lastProc.Location + lastProc.Trait<IAcceptResources>().DeliveryOffset;
+                if(self.Location == deliveryLoc)
+                {
+                    var unblockCell = LastHarvestedCell ?? (deliveryLoc + Info.UnblockCell);
+                    var moveTo = mobile.NearestMoveableCell(unblockCell, 1, 5);
+
+                    
+                    self.QueueActivity(mobile.MoveTo(moveTo,1));
+                    self.SetTargetLine(Target.FromCell(self.World, moveTo), Color.Gray, false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Return true when unloading is complete.
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="proc"></param>
+        /// <returns></returns>
+        public bool TickUnload(Actor self,Actor proc)
+        {
+            if (--currentUnloadTicks > 0)
+                return false;
+
+            if (contents.Keys.Count > 0)
+            {
+                var type = contents.First().Key;
+                var iao = proc.Trait<IAcceptResources>();
+                if (!iao.CanGiveResource(type.ValuePerUnit))
+                    return false;
+
+                iao.GiveResource(type.ValuePerUnit);
+                if (--contents[type] == 0)
+                    contents.Remove(type);
+
+                currentUnloadTicks = Info.BaleUnloadDelay;
+
+            }
+
+            return contents.Count == 0;
         }
 
         int ISpeedModifier.GetSpeedModifier()
@@ -219,6 +269,17 @@ namespace EW.Mods.Common.Traits
             LinkProc(self, ClosestProc(self, ignore));
         }
 
+
+        /// <summary>
+        /// 继续采集资源
+        /// </summary>
+        /// <param name="self"></param>
+        public void ContinueHarvesting(Actor self)
+        {
+            UnblockRefinery(self);
+            self.QueueActivity(new FindResources(self));
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -230,6 +291,12 @@ namespace EW.Mods.Common.Traits
             LinkedProc = proc;
             SetProcLines(oldProc);
             SetProcLines(proc);
+        }
+
+        public void UnlinkProc(Actor self,Actor proc)
+        {
+            if (LinkedProc == proc)
+                ChooseNewProc(self, proc);
         }
 
         /// <summary>

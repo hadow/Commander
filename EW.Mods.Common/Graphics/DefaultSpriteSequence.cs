@@ -340,8 +340,14 @@ namespace EW.Mods.Common.Graphics
 
             if (Frames != null)
                 return sprites[Frames[i]];
-
-            return sprites[start+i];
+            try
+            {
+                return sprites[start+i];
+            }
+            catch(IndexOutOfRangeException ex)
+            {
+                throw ex;
+            }
         }
 
         public Sprite GetShadow(int frame,int facing)

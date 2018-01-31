@@ -91,6 +91,7 @@ namespace EW
 
         public bool FogObscures(WPos pos) { return RenderPlayer != null && !RenderPlayer.Shroud.IsVisible(pos); }
 
+        public bool ShroudObscures(WPos pos) { return RenderPlayer != null && !RenderPlayer.Shroud.IsExplored(pos); }
         /// <summary>
         /// Fogs the obscures.
         /// ÎíÐ§Ä£ºý

@@ -21,7 +21,7 @@ namespace EW.Traits
 
         public readonly WPos CenterPosition;
 
-        public readonly HashSet<string> TargetTypes;
+        public HashSet<string> TargetTypes { get; private set; }
 
         public readonly Rectangle Bounds;
 
@@ -56,12 +56,36 @@ namespace EW.Traits
 
         int flashTicks;
 
+        public bool NeedRenderables { get; set; }
+
+        public DamageState DamageState { get; private set; }
+
+        readonly IHealth health;
+
+        public int HP { get; private set; }
 
         public FrozenActor(Actor actor,PPos[] footprint,Player viewer,bool startsRevealed){
 
             this.actor = actor;
             this.viewer = viewer;
 
+            shroud = viewer.Shroud;
+            NeedRenderables = startsRevealed;
+
+            //Consider all cells inside the map are(ignoring the current map bounds)
+            Footprint = footprint.Where(m => shroud.Contains(m)).ToArray();
+
+            if(Footprint.Length == 0)
+            {
+                throw new ArgumentException("The frozen actor has no footprint");
+            }
+
+            CenterPosition = actor.CenterPosition;
+            TargetTypes = new HashSet<string>();
+
+            health = actor.TraitOrDefault<IHealth>();
+
+            UpdateVisibility();
         }
 
 
@@ -70,18 +94,58 @@ namespace EW.Traits
             if (Shrouded)
                 return NoRenderables;
 
+            if(flashTicks >0 && flashTicks % 2 == 0)
+            {
+                var highlight = wr.Palette("highlight");
+                return Renderables.Concat(Renderables.Where(r => !r.IsDecoration).Select(r => r.WithPalette(highlight)));
+            }
+
             return Renderables;
         }
 
 
         public void RefreshState()
         {
+            Owner = actor.Owner;
+            TargetTypes = actor.GetEnabledTargetTypes().ToHashSet();
 
+            if(health != null)
+            {
+                HP = health.HP;
+                DamageState = health.DamageState;
+            }
+        }
+
+        public void UpdateVisibility()
+        {
+            var wasVisible = Visible;
+            Shrouded = true;
+            Visible = true;
+
+            foreach(var puv in Footprint)
+            {
+                if(shroud.IsVisible(puv))
+                {
+                    Visible = false;
+                    Shrouded = false;
+                    break;
+                }
+
+                if (Shrouded && shroud.IsExplored(puv))
+                    Shrouded = false;
+            }
+            NeedRenderables |= Visible && !wasVisible;
         }
 
 
         public void Flash(){
             flashTicks = 5;
+        }
+
+        public void Tick()
+        {
+            if (flashTicks > 0)
+                flashTicks--;
         }
     }
     public class FrozenActorLayer:IRender,ITick,ISync
@@ -119,6 +183,8 @@ namespace EW.Traits
 
             frozenActorsById = new Dictionary<uint, FrozenActor>();
 
+            //PERF:Partition the map into a series of coarse-grained bins and track changes in the shroud against bin
+            //marking that bin dirty if it changes.This is fairly cheap to track and allows us to perform the expensive visibility update for frozen actors in these regions.
             partitionedFrozenActorIds = new SpatiallyPartitioned<uint>(world.Map.MapSize.X, world.Map.MapSize.Y, binSize);
 
 
@@ -127,6 +193,16 @@ namespace EW.Traits
 
             dirtyBins = new bool[cols * rows];
 
+            self.Trait<Shroud>().CellsChanged += cells =>
+            {
+                foreach (var cell in cells)
+                {
+                    var x = cell.U / binSize;
+                    var y = cell.V / binSize;
+                    dirtyBins[y * cols + x] = true;
+                }
+            };
+
         }
 
 
@@ -134,7 +210,7 @@ namespace EW.Traits
 
             frozenActorsById.Add(fa.ID,fa);
             world.ScreenMap.AddOrUpdate(owner,fa);
-
+            partitionedFrozenActorIds.Add(fa.ID, FootprintBounds(fa));
 
         }
 
@@ -144,10 +220,57 @@ namespace EW.Traits
             world.ScreenMap.Remove(owner,fa);
             frozenActorsById.Remove(fa.ID);
         }
-        public void Tick(Actor self) 
+
+        void ITick.Tick(Actor self) 
         {
+            UpdateDirtyFrozenActorsFromDirtyBins();
+
+            var frozenActorsToRemove = new List<FrozenActor>();
+            VisibilityHash = 0;
+            FrozenHash = 0;
         
-        
+
+            foreach(var kvp in frozenActorsById)
+            {
+                var id = kvp.Key;
+                var hash = (int)id;
+                FrozenHash += hash;
+
+                var frozenActor = kvp.Value;
+                frozenActor.Tick();
+
+                if (dirtyFrozenActorIds.Contains(id))
+                    frozenActor.UpdateVisibility();
+
+                if (frozenActor.Visible)
+                    VisibilityHash += hash;
+                else if (frozenActor.Actor == null)
+                    frozenActorsToRemove.Add(frozenActor);
+            }
+
+            dirtyFrozenActorIds.Clear();
+
+            foreach (var fa in frozenActorsToRemove)
+                Remove(fa);
+        }
+
+
+        void UpdateDirtyFrozenActorsFromDirtyBins()
+        {
+            //Check which bins on the map were dirtied due to changes in the shroud and gather the frozen actors whose footprint overlap with these bins.
+            for(var y = 0; y < rows; y++)
+            {
+                for(var x= 0; x < cols; x++)
+                {
+                    if (!dirtyBins[y * cols + x])
+                        continue;
+
+                    var box = new Rectangle(x * binSize, y * binSize, binSize, binSize);
+                    dirtyFrozenActorIds.UnionWith(partitionedFrozenActorIds.InBox(box));
+                }
+            }
+
+            Array.Clear(dirtyBins, 0, dirtyBins.Length);
         }
 
 
@@ -179,6 +302,30 @@ namespace EW.Traits
             var br = region.BottomRight;
 
             return partitionedFrozenActorIds.InBox(Rectangle.FromLTRB(tl.X, tl.Y, br.X, br.Y)).Select(FromID);
+        }
+
+        Rectangle FootprintBounds(FrozenActor fa)
+        {
+            var p1 = fa.Footprint[0];
+            var minU = p1.U;
+            var maxU = p1.U;
+            var minV = p1.V;
+            var maxV = p1.V;
+
+            foreach(var p in fa.Footprint)
+            {
+                if (minU > p.U)
+                    minU = p.U;
+                else if (maxU < p.U)
+                    maxU = p.U;
+
+                if (minV > p.V)
+                    minV = p.V;
+                else if (maxV < p.V)
+                    maxV = p.V;
+            }
+
+            return Rectangle.FromLTRB(minU, minV, maxU + 1, maxV + 1);
         }
 
     }

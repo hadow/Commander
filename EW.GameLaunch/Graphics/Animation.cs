@@ -128,7 +128,7 @@ namespace EW.Graphics
             tickFunc = () =>
             {
                 ++frame;
-                if (frame > CurrentSequence.Length)
+                if (frame >= CurrentSequence.Length)
                 {
                     frame = CurrentSequence.Length - 1;
                     tickFunc = () => { };

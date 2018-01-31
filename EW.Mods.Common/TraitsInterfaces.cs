@@ -19,6 +19,8 @@ namespace EW.Mods.Common.Traits
 
     #region Notify
 
+    public interface INotifyDocking { void Docked(Actor self, Actor harvester); void Undocked(Actor self, Actor harvester); }
+
     public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
 
     public interface INotifyPassengerExited { void OnPassengerExited(Actor self, Actor passenger); }

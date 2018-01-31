@@ -60,7 +60,7 @@ namespace EW.Mods.Common.Activities
 
             if(self.Location != proc.Location + iao.DeliveryOffset)
             {
-
+                return ActivityUtils.SequenceActivities(movement.MoveTo(proc.Location + iao.DeliveryOffset, 0), this);
             }
 
             if (!isDocking)

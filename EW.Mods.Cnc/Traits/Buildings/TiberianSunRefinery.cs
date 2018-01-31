@@ -1,6 +1,8 @@
 ﻿using System;
 using EW.Traits;
 using EW.Mods.Common.Traits;
+using EW.Activities;
+using EW.Mods.Cnc.Activities;
 namespace EW.Mods.Cnc.Traits
 {
     class TiberianSunRefineryInfo:RefineryInfo
@@ -17,6 +19,9 @@ namespace EW.Mods.Cnc.Traits
 
         public TiberianSunRefinery(Actor self ,RefineryInfo info) : base(self, info) { }
 
-
+        public override Activity DockSequence(Actor harv, Actor self)
+        {
+            return new VoxelHarvesterDockSequence(harv, self, DeliveryAngle, IsDragRequired, DragOffset, DragLength);
+        }
     }
 }

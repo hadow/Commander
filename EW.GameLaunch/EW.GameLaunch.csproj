@@ -83,6 +83,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\EW.Mods.Cnc\Activities\VoxelHarvesterDockSequence.cs">
+      <Link>External_CnC\Activities\VoxelHarvesterDockSequence.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Cnc\CncLoadScreen.cs">
       <Link>External_CnC\CncLoadScreen.cs</Link>
     </Compile>
@@ -203,6 +206,9 @@
     <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
       <Link>External_Common\Activities\FindResources.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\HarvesterDockSequence.cs">
+      <Link>External_Common\Activities\HarvesterDockSequence.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\HarvestResource.cs">
       <Link>External_Common\Activities\HarvestResource.cs</Link>
     </Compile>
@@ -226,6 +232,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\SimpleTeleport.cs">
       <Link>External_Common\Activities\SimpleTeleport.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\SpriteHarvesterDockSequence.cs">
+      <Link>External_Common\Activities\SpriteHarvesterDockSequence.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Turn.cs">
       <Link>External_Common\Activities\Turn.cs</Link>
@@ -290,8 +299,14 @@
     <Compile Include="..\EW.Mods.Common\Effects\ContrailFader.cs">
       <Link>External_Common\Effects\ContrailFader.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\FloatingText.cs">
+      <Link>External_Common\Effects\FloatingText.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\RallyPointIndicator.cs">
       <Link>External_Common\Effects\RallyPointIndicator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\RevealShroudEffect.cs">
+      <Link>External_Common\Effects\RevealShroudEffect.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\SpriteEffect.cs">
       <Link>External_Common\Effects\SpriteEffect.cs</Link>
@@ -349,6 +364,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\SpriteActorPreview.cs">
       <Link>External_Common\Graphics\SpriteActorPreview.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\TextRenderable.cs">
+      <Link>External_Common\Graphics\TextRenderable.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\TilesetSpecificSpriteSequenceLoader.cs">
       <Link>External_Common\Graphics\TilesetSpecificSpriteSequenceLoader.cs</Link>
@@ -1255,6 +1273,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\RepairsBridges.cs">
       <Link>External_Common\Traits\RepairsBridges.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\RevealOnDeath.cs">
+      <Link>External_Common\Traits\RevealOnDeath.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\RevealOnFire.cs">
       <Link>External_Common\Traits\RevealOnFire.cs</Link>

@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Activities\VoxelHarvesterDockSequence.cs" />
     <Compile Include="CncLoadScreen.cs" />
     <Compile Include="FileFormats\Blowfish.cs" />
     <Compile Include="FileFormats\BlowfishKeyProvider.cs" />

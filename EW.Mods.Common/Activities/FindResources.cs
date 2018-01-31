@@ -54,6 +54,8 @@ namespace EW.Mods.Common.Activities
 
             var closestHarvestablePosition = ClosestHarvestablePos(self);
 
+            //If no harvestable position could be found,either deliver the remaining resources or get out of the way and do not disturb.
+            //如果没有找到可以获取的位置，可以交付剩余的资源，也可以避开干扰。
             if (!closestHarvestablePosition.HasValue)
             {
                 if (!harv.IsEmpty)

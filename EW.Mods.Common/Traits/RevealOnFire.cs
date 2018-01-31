@@ -1,17 +1,33 @@
 ﻿using System;
 using System.Linq;
 using EW.Traits;
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Traits
 {
+    /// <summary>
+    /// Reveal this actor to the target's owner when attacking.
+    /// </summary>
     public class RevealOnFireInfo:ConditionalTraitInfo
     {
 
+        /// <summary>
+        /// The armament types which trigger revealing.
+        /// </summary>
         public readonly string[] ArmamentNames = { "primary", "secondary" };
 
+        /// <summary>
+        /// Stances relative to the target player this actor will be revealed to during firing.
+        /// </summary>
         public readonly Stance RevealForStancesRelativeToTarget = Stance.Ally;
 
+        /// <summary>
+        /// Duration of the reveal.
+        /// </summary>
         public readonly int Duration = 25;
 
+        /// <summary>
+        /// Radius of the reveal around this actor.
+        /// </summary>
         public readonly WDist Radius = new WDist(1536);
 
 
@@ -46,7 +62,9 @@ namespace EW.Mods.Common.Traits
             var targetPlayer = GetTargetPlayer(target);
             if(targetPlayer != null && targetPlayer.WinState == WinState.Undefined)
             {
-
+                self.World.AddFrameEndTask(w => w.Add(new RevealShroudEffect(self.CenterPosition, info.Radius,
+                    info.RevealGeneratedShroud ? Shroud.SourceType.Visibility : Shroud.SourceType.PassiveVisibility, targetPlayer,
+                    info.RevealForStancesRelativeToTarget, duration: info.Duration)));
             }
         }
 

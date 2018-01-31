@@ -62,6 +62,23 @@ namespace EW.Mods.Common.Traits
             return Resources + amount <= ResourceCapacity;
         }
 
+
+        public void GiveResources(int num)
+        {
+            Resources += num;
+            Earned += num;
+            if (Resources > ResourceCapacity)
+            {
+                Earned -= Resources - ResourceCapacity;
+                Resources = ResourceCapacity;
+            }
+        }
+
+        public void GiveCash(int num)
+        {
+
+        }
+
         void ITick.Tick(Actor self)
         {
             ResourceCapacity = 0;
