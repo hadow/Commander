@@ -47,7 +47,7 @@ namespace EW.Traits
         /// <summary>
         /// 活动序列
         /// </summary>
-        /// <param name="acts"></param>
+        /// <param name="acts">活动集</param>
         /// <returns></returns>
         public static Activity SequenceActivities(params Activity[] acts)
         {

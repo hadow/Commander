@@ -4,18 +4,26 @@ using System.Linq;
 using EW.Traits;
 namespace EW.Activities
 {
-
-    public enum ActivityState { Queued,Active,Done,Canceled}
+    /// <summary>
+    /// 活动状态
+    /// </summary>
+    public enum ActivityState 
+    { 
+        Queued,//队列中
+        Active, //活动中
+        Done,   //已完成
+        Canceled //已取消
+    }
 
     /// <summary>
-    /// 
+    /// 活动
     /// </summary>
     public abstract class Activity
     {
 
-        public ActivityState State { get; private set; }
+        public ActivityState State { get; private set; }    //活动状态
 
-        public bool IsInterruptible { get; protected set; }
+        public bool IsInterruptible { get; protected set; } //标识是否可以中断
 
         public bool IsCanceled
         {
