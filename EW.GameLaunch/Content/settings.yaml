@@ -15,6 +15,9 @@ Server:
 Debug:
 	SystemInformationVersionPrompt: 1
 	UUID: 89d320dd-4702-48e0-8e1e-3ce81776fc5d
+	LuaDebug:true
+	PerfText:true
+	PerfGraph:true
 
 Keys:
 

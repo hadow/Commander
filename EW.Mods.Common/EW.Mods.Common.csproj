@@ -484,10 +484,12 @@
     <Compile Include="Warheads\SpreadDamageWarhead.cs" />
     <Compile Include="Warheads\TargetDamageWarhead.cs" />
     <Compile Include="Warheads\Warhead.cs" />
+    <Compile Include="Widgets\BackgroundWidget.cs" />
     <Compile Include="Widgets\ButtonWidget.cs" />
     <Compile Include="Widgets\ColorBlockWidget.cs" />
     <Compile Include="Widgets\ImageWidget.cs" />
     <Compile Include="Widgets\Logic\Ingame\AddFactionSuffixLogic.cs" />
+    <Compile Include="Widgets\Logic\Ingame\CommandBarLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\ControlGroupLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\GameTimerLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs" />
@@ -505,6 +507,8 @@
     <Compile Include="Traits\Buildings\GivesBuildableArea.cs" />
     <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
     <Compile Include="Effects\SpriteEffect.cs" />
+    <Compile Include="Widgets\Logic\PerfDebugLogic.cs" />
+    <Compile Include="Widgets\PerfGraphWidget.cs" />
     <Compile Include="Widgets\RadarWidget.cs" />
     <Compile Include="Traits\Multipliers\RangeMultiplier.cs" />
     <Compile Include="Graphics\ContrailRenderable.cs" />

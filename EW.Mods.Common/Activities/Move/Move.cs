@@ -95,6 +95,7 @@ namespace EW.Mods.Common.Activities
 
             //Although MoveFirstHalf and MoveSecondHalf can't be interrupted,
             //We prevent them from moving forever by removing the path.
+            //通过消除路径来阻止他们永远移动
             if (path != null)
                 path.Clear();
 
@@ -103,7 +104,13 @@ namespace EW.Mods.Common.Activities
             if (!keepQueue && NextInQueue != null)
                 NextInQueue = null;
 
-            ChildActivity.Cancel(self, false);
+            //In current implementation,ChildActivity can be Turn,MoveFirstHalf and MoveSecondHalf.
+            //Turn may be interrupted freely while they are turning.                                //转弯时可能会自由中断
+            //Unlike Turn,MoveFirstHalf and MoveSecondHalf are not Interruptable,but clearing the path guarantees that they will return as soon as possible,once the actor is back in a valid position.
+            //与Turn 不同，MoveFirstHalf 和 MoveSecondHalf 是不可被中断的，但清除路径可以保证一旦单位回到有效的位置，他们将尽快返回
+            //This means that it is safe to unconditionally return true,which avoids breaking parent activities that rely on cancellation succeeding (but not necessarily immediately)
+            //这意味着无条件返回true 是安全的,避免了依靠取消成功(但不一定立即)
+            ChildActivity.Cancel(self);
 
             return true;
 
@@ -192,9 +199,9 @@ namespace EW.Mods.Common.Activities
             //var move = new MoveFirstHalf(this, from, to, mobile.Facing, mobile.Facing, 0);
             QueueChild(new MoveFirstHalf(this, from, to, mobile.Facing, mobile.Facing, 0));
 
-            //While carrying out one Move order,MoveSecondHalf finishes its work from time to time and returns null.
-            //That causes the ChildActivity to be null and makes us return to this part of code.
-            //If we only queue the activity and not run it ,units will lose one tick and pause briefly!
+            //While carrying out one Move order,MoveSecondHalf finishes its work from time to time and returns null.//在执行一个Move命令时，MoveSecondHalf 不时完成其工作，并返回null.
+            //That causes the ChildActivity to be null and makes us return to this part of code.                    //这会导致ChildActivity 为空，并使我们返回到这部分代码
+            //If we only queue the activity and not run it ,units will lose one tick and pause briefly!             //如果我们只排队而不运行它，单位将会失去一个滴答，暂定一下！
             ChildActivity = ActivityUtils.RunActivity(self, ChildActivity);
             return this;
         }
@@ -317,8 +324,8 @@ namespace EW.Mods.Common.Activities
             protected readonly int ArcToLength;
             protected readonly WAngle ArcToAngle;
 
-            protected readonly int MoveFractionTotal;
-            protected int moveFraction;
+            protected readonly int MoveFractionTotal;//移动至目标点的总计分
+            protected int moveFraction;//移动分子
 
             public MovePart(Move move,WPos from,WPos to,int fromFacing,int toFacing,int startingFraction)
             {
@@ -329,9 +336,10 @@ namespace EW.Mods.Common.Activities
                 ToFacing = toFacing;
                 moveFraction = startingFraction;
                 MoveFractionTotal = (to - from).Length;
-                IsInterruptible = false;
+                IsInterruptible = false;                //移动活动不可被中断
 
                 //Calculate an elliptical arc that joins from and to
+                //计算连接的椭圆弧
                 var delta = Util.NormalizeFacing(fromFacing - toFacing);
                 if(delta != 0&&delta != 128)
                 {

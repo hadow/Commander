@@ -28,8 +28,8 @@ namespace EW.Traits
 
             while (act != null)
             {
-                var prev = act;
-                act = act.TickOuter(self);
+                var prev = act;//保持当前活动引用
+                act = act.TickOuter(self);//活动完整运行完一次，返回下一活动或者当前活动
                 var current = Stopwatch.GetTimestamp();
                 if (current - start > longTickThresholdInStopwatchTicks)
                 {
@@ -51,7 +51,8 @@ namespace EW.Traits
         /// <returns></returns>
         public static Activity SequenceActivities(params Activity[] acts)
         {
-            return acts.Reverse().Aggregate((next, a) => { a.Queue(next); return a; });
+            //return acts.Reverse().Aggregate((next, a) => { a.Queue(next); return a; });
+            return acts.Aggregate((a, next) => { a.Queue(next); return a; });
         }
 
     }

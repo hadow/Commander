@@ -507,7 +507,9 @@ namespace EW.Mods.Common.Traits
 
         public int TurnSpeed { get { return Info.TurnSpeed; } }
 
-
+        /// <summary>
+        /// 标识单位是否正在移动中。。。
+        /// </summary>
         public bool IsMoving { get; set; }
 
         public bool IsMovingVertically { get { return false; } }
@@ -920,6 +922,12 @@ namespace EW.Mods.Common.Traits
         }
         
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="cell"></param>
+        /// <returns></returns>
         public int MovementSpeedForCell(Actor self,CPos cell)
         {
             var index = cell.Layer == 0 ? self.World.Map.GetTerrainIndex(cell) : self.World.GetCustomMovementLayers()[cell.Layer].GetTerrainIndex(cell);

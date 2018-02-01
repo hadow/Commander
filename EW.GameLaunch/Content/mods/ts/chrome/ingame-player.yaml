@@ -3,6 +3,126 @@ Container@PLAYER_WIDGETS:
 		LogicKeyListener@CONTROLGROUP_KEYHANDLER:
 			Logic: ControlGroupLogic
 		LogicTicker@SIDEBAR_TICKER:
+		Image@COMMAND_BAR_BACKGROUND:
+			Logic: AddFactionSuffixLogic
+			X: 5
+			Y: WINDOW_BOTTOM - HEIGHT - 5
+			Width: 449
+			Height: 51
+			ImageCollection: sidebar
+			ImageName: background-commandbar
+			ClickThrough: False
+		Container@COMMAND_BAR:
+			Logic: CommandBarLogic
+			X: 19
+			Y: WINDOW_BOTTOM - HEIGHT - 20
+			Width: 275
+			Height: 26
+			Children:
+				LogicKeyListener@MODIFIER_OVERRIDES:
+				Button@ATTACK_MOVE:
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: attack-move
+				Button@FORCE_MOVE:
+					X: 35
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: force-move
+				Button@FORCE_ATTACK:
+					X: 70
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: force-attack
+				Button@GUARD:
+					X: 105
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: guard
+				Button@DEPLOY:
+					X: 140
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: deploy
+				Button@SCATTER:
+					X: 175
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: scatter
+				Button@STOP:
+					X: 210
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: stop
+				Button@QUEUE_ORDERS:
+					X: 245
+					Width: 35
+					Height: 32
+					VisualHeight: 0
+					Background:
+					Children:
+						Image@ICON:
+							Logic: AddFactionSuffixLogic
+							X: 5
+							Y: 3
+							ImageCollection: command-icons
+							ImageName: queue-orders
 		Image@SIDEBAR_BACKGROUND_TOP:
 			Logic: AddFactionSuffixLogic
 			X: WINDOW_RIGHT - 235

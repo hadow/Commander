@@ -9,15 +9,15 @@ namespace EW.Mods.Common.Widgets.Logic
         public AddFactionSuffixLogic(Widget widget,World world)
         {
             string faction = "gdi";
-            //if (!ChromeMetrics.TryGet("FactionSuffix-" + world.LocalPlayer.Faction.InternalName, out faction))
-            //    faction = world.LocalPlayer.Faction.InternalName;
+            if (!ChromeMetrics.TryGet("FactionSuffix-" + world.LocalPlayer.Faction.InternalName, out faction))
+                faction = world.LocalPlayer.Faction.InternalName;
 
             var suffix = "-" + faction;
 
             var buttonWidget = widget as ButtonWidget;
             if(buttonWidget != null)
             {
-
+                buttonWidget.Background += suffix;
             }
             else
             {

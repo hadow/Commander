@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Collections.Generic;
 using System.Linq;
 using EW.Framework;
 using EW.Framework.Graphics;
@@ -60,6 +61,31 @@ namespace EW.Graphics
         public void DrawPolygon(Vector2[] vertices,float width,Color color)
         {
             DrawConnectedLine(vertices.Select(v => new Vector3(v, 0)).ToArray(), width, color, true);
+        }
+
+        public void DrawLine(IEnumerable<Vector3> points,float width,Color color,bool connectSegments = false)
+        {
+            if (!connectSegments)
+                DrawDisconnectedLine(points, width, color);
+            else
+                DrawConnectedLine(points as Vector3[] ?? points.ToArray(), width, color, false);
+        }
+
+        void DrawDisconnectedLine(IEnumerable<Vector3> points,float width,Color color)
+        {
+            using(var e = points.GetEnumerator())
+            {
+                if (!e.MoveNext())
+                    return;
+
+                var lastPoint = e.Current;
+                while (e.MoveNext())
+                {
+                    var point = e.Current;
+                    DrawLine(lastPoint, point, width, color);
+                    lastPoint = point;
+                }
+            }
         }
 
 

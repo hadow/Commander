@@ -33,12 +33,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <PlatformTarget>x86</PlatformTarget>
     <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
-    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
     <BundleAssemblies>false</BundleAssemblies>
@@ -1532,6 +1532,9 @@
     <Compile Include="..\EW.Mods.Common\Warheads\Warhead.cs">
       <Link>External_Common\Warheads\Warhead.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\BackgroundWidget.cs">
+      <Link>External_Common\Widgets\BackgroundWidget.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\ButtonWidget.cs">
       <Link>External_Common\Widgets\ButtonWidget.cs</Link>
     </Compile>
@@ -1544,6 +1547,9 @@
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\CommandBarLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\CommandBarLogic.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\ControlGroupLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\ControlGroupLogic.cs</Link>
     </Compile>
@@ -1552,6 +1558,12 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\PerfDebugLogic.cs">
+      <Link>External_Common\Widgets\Logic\PerfDebugLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\PerfGraphWidget.cs">
+      <Link>External_Common\Widgets\PerfGraphWidget.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\RadarWidget.cs">
       <Link>External_Common\Widgets\RadarWidget.cs</Link>

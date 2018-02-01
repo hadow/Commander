@@ -5,10 +5,16 @@ using EW.Traits;
 namespace EW.Activities
 {
 
-    public enum ActivityState { Queued,Active,Done,Canceled}
+    public enum ActivityState
+    {
+        Queued,
+        Active,
+        Done,
+        Canceled
+    }
 
     /// <summary>
-    /// 
+    /// 活动存在于自身建立的图形数据结构中.每项活动都有一个父级活动和可选的子级活动(通常是下一个活动),CurrentActivity 是一个指向该图的指针，随着活动的进行而移动。
     /// </summary>
     public abstract class Activity
     {
@@ -17,6 +23,14 @@ namespace EW.Activities
 
         public bool IsInterruptible { get; protected set; }
 
+        public Activity()
+        {
+            IsInterruptible = true; //默认情况下活动是可以被中断
+        }
+
+        /// <summary>
+        /// 标识活动是否已被取消
+        /// </summary>
         public bool IsCanceled
         {
             get
@@ -25,6 +39,12 @@ namespace EW.Activities
             }
         }
 
+        /// <summary>
+        /// Returns the top-most activity *from the point of view of the calling activity*.
+        /// Note that the root activity can and likely will have next activities of its own,which would in turn be the root for their children.
+        /// 从调用者活动的角度返回最顶端的活动。
+        /// 根源的活动可能而且可能会有自己的下一个子活动，这反过来又是他们子级的根源
+        /// </summary>
         public Activity RootActivity
         {
             get
@@ -32,13 +52,14 @@ namespace EW.Activities
                 var p = this;
                 while (p.ParentActivity != null)
                     p = p.ParentActivity;
-
                 return p;
             }
         }
 
+        /// <summary>
+        /// 父级活动
+        /// </summary>
         Activity parentActivity;
-
         public Activity ParentActivity
         {
             get { return parentActivity; }
@@ -53,6 +74,9 @@ namespace EW.Activities
         }
 
 
+        /// <summary>
+        /// 子活动
+        /// </summary>
         Activity childActivity;
         protected Activity ChildActivity
         {
@@ -75,7 +99,10 @@ namespace EW.Activities
         }
 
         Activity nextActivity;
-
+        /// <summary>
+        /// The getter will return either the next activity or,if there is none,the parent one.
+        /// getter 将返回下一个活动，如果没有，则返回父级活动
+        /// </summary>
         public virtual Activity NextActivity
         {
             get
@@ -84,18 +111,23 @@ namespace EW.Activities
             }
             set
             {
+                
                 if (value == this || value == ParentActivity || (value != null && value.ParentActivity == this))
-                    nextActivity = null;
+                    nextActivity = null;//后续没有正在排队的活动了
                 else
                 {
                     nextActivity = value;
-
                     if (nextActivity != null)
                         nextActivity.ParentActivity = ParentActivity;
                 }
             }
         }
 
+        /// <summary>
+        /// The getter will return the next activity on the same level_only_,in contrast to NextActivity.
+        /// Use this to check whether there are any follow-up activities queued.
+        /// 与NextActivity相比，getter将返回相同level_only_上的下一个活动。用它来检查是否有任何后续活动排队。
+        /// </summary>
         public Activity NextInQueue
         {
             get { return nextActivity; }
@@ -104,15 +136,7 @@ namespace EW.Activities
                 NextActivity = value;
             }
         }
-
         
-
-        public Activity()
-        {
-            IsInterruptible = true;
-        }
-
-
         public Activity TickOuter(Actor self)
         {
             if (State == ActivityState.Done && WarGame.Settings.Debug.StrictActivityChecking)
@@ -129,6 +153,8 @@ namespace EW.Activities
             {
                 //Make sure that the Parent's ChildActivity pointer is moved forwards as the child queue advances.
                 //The Child's ParentActivity will be set automatically during assignment.
+                //确保父级的子活动指针随着子队列的前进而向前移动
+                //子项的父活动将在分配过程中自动设置
                 if (ParentActivity != null && ParentActivity != ret)
                     ParentActivity.ChildActivity = ret;
 
@@ -144,9 +170,18 @@ namespace EW.Activities
 
         public abstract Activity Tick(Actor self);
 
+        /// <summary>
+        /// 活动取消
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="keepQueue">标识是否保持队列顺序</param>
+        /// <returns></returns>
         public virtual bool Cancel(Actor self, bool keepQueue = false)
         {
             if (!IsInterruptible)
+                return false;
+
+            if (ChildActivity != null && !ChildActivity.Cancel(self))
                 return false;
 
             if(!keepQueue)
@@ -157,6 +192,11 @@ namespace EW.Activities
             return true;
         }
 
+        /// <summary>
+        /// 一级活动排队
+        /// 
+        /// </summary>
+        /// <param name="activity">如果当前没有在排队的活动，activity 即最后的一个活动.如果有正在排队的活动，activity排在当前活动之后</param>
         public virtual void Queue(Activity activity)
         {
 
@@ -166,6 +206,10 @@ namespace EW.Activities
                 NextInQueue = activity;
         }
 
+        /// <summary>
+        /// 二级活动排队
+        /// </summary>
+        /// <param name="activity"></param>
         public virtual void QueueChild(Activity activity)
         {
             if (ChildActivity != null)

@@ -8,12 +8,17 @@ namespace EW
 
     public class DebugSettings
     {
+        public bool LuaDebug = false;
+        public bool PerfText = false;
+        public bool PerfGraph = false;
+
         public bool SanityCheckUnsyncedCode = false;
 
         public string UUID = System.Guid.NewGuid().ToString();
 
 
         public bool StrictActivityChecking = false;
+        public int Samples = 25;
     }
 
 

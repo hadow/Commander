@@ -435,6 +435,11 @@ namespace EW
 
         #region Activity
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="queued">标识是否保持队列顺序完整</param>
+        /// <param name="nextActivity"></param>
         public void QueueActivity(bool queued,Activity nextActivity)
         {
             if (!queued)
@@ -447,16 +452,13 @@ namespace EW
             if (CurrentActivity == null)
                 CurrentActivity = nextActivity;
             else
-                CurrentActivity.Queue(nextActivity);
+                CurrentActivity.RootActivity.Queue(nextActivity);
             
         }
 
 
         public bool CancelActivity()
         {
-            //if (currentActivity != null)
-            //    currentActivity.Cancel(this);
-
             if (CurrentActivity != null)
                 return CurrentActivity.RootActivity.Cancel(this);
 

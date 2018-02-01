@@ -20,7 +20,7 @@ namespace EW.Mods.Common.Pathfinder
 
 
         public List<CPos> FindPath(IPathSearch search){
-            using(new PerfSample("PathFinder")){
+            using(new PerfSample("Pathfinder")){
                 return pathFinder.FindPath(search);
             }
         }
@@ -46,7 +46,7 @@ namespace EW.Mods.Common.Pathfinder
 
 
         public List<CPos> FindUnitPathToRange(CPos source,SubCell srcSub,WPos target,WDist range,Actor self){
-            using(new PerfSample("PathFinder")){
+            using(new PerfSample("Pathfinder")){
 
                 var key = "FindUnitPathToRange" + self.ActorID + source.X + source.Y + target.X + target.Y;
 

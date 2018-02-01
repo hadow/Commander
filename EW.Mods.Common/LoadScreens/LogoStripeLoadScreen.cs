@@ -65,8 +65,10 @@ namespace EW.Mods.Common.LoadScreens
                 WidgetUtils.FillRectWithSprite(stripeRect, stripe);
             }
 
-            if (logo != null)
-                r.RgbaSpriteRenderer.DrawSprite(logo, logoPos);
+            //if (logo != null)
+            //    r.RgbaSpriteRenderer.DrawSprite(logo, logoPos);
+
+
             r.Fonts["Bold"].DrawText(text, new Vector2(r.Resolution.Width - textSize.X - 20, r.Resolution.Height - textSize.Y - 20), Color.White);
 
             r.EndFrame();
