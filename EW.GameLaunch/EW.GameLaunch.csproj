@@ -356,6 +356,9 @@
     <Compile Include="..\EW.Mods.Common\Graphics\ModelRenderable.cs">
       <Link>External_Common\Graphics\ModelRenderable.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\RailgunHelixRenderable.cs">
+      <Link>External_Common\Graphics\RailgunHelixRenderable.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\RangeCircleRenderable.cs">
       <Link>External_Common\Graphics\RangeCircleRenderable.cs</Link>
     </Compile>
@@ -904,6 +907,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Infantry\TerrainModifiesDamage.cs">
       <Link>External_Common\Traits\Infantry\TerrainModifiesDamage.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\JamsMissiles.cs">
+      <Link>External_Common\Traits\JamsMissiles.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\KillsSelf.cs">
       <Link>External_Common\Traits\KillsSelf.cs</Link>
@@ -1680,6 +1686,7 @@
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="GameActivity.cs" />
     <Compile Include="Orders\IOrderGenerator.cs" />
+    <Compile Include="Orders\UnitOrderGenerator.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Primitives\ActionQueue.cs" />

@@ -5,23 +5,27 @@ using EW.Traits;
 namespace EW.Activities
 {
 
-    public enum ActivityState
-    {
-        Queued,
-        Active,
-        Done,
-        Canceled
+    /// <summary>
+    /// 活动存在于自身建立的图形数据结构中.每项活动都有一个父级活动和可选的子级活动(通常是下一个活动),CurrentActivity 是一个指向该图的指针，随着活动的进行而移动。
+    /// <summary>
+    /// </summary>
+    public enum ActivityState 
+    { 
+        Queued,//闃熷垪涓?
+        Active, //娲诲姩涓?
+        Done,   //宸插畬鎴?
+        Canceled //宸插彇娑?
     }
 
     /// <summary>
-    /// 活动存在于自身建立的图形数据结构中.每项活动都有一个父级活动和可选的子级活动(通常是下一个活动),CurrentActivity 是一个指向该图的指针，随着活动的进行而移动。
+    /// 
     /// </summary>
     public abstract class Activity
     {
 
-        public ActivityState State { get; private set; }
+        public ActivityState State { get; private set; }    //娲诲姩鐘舵�?
 
-        public bool IsInterruptible { get; protected set; }
+        public bool IsInterruptible { get; protected set; } //鏍囪瘑鏄惁鍙互涓柇
 
         public Activity()
         {

@@ -35,7 +35,7 @@ namespace EW.Mods.Common.Traits
         [Sync]
         public int QuantizedFacings = 0;
         [Sync]
-        public int TurretFacing = 0;
+        public int TurretFacing = 0;//炮台转向
 
         public int? DesiredFacing;
 
@@ -97,7 +97,7 @@ namespace EW.Mods.Common.Traits
         {
             Tick(self);
         }
-        public virtual void Tick(Actor self)
+        protected virtual void Tick(Actor self)
         {
             if(attack != null)
             {
@@ -117,6 +117,14 @@ namespace EW.Mods.Common.Traits
             {
                 realignTick = 0;
                 MoveTurret();
+            }
+        }
+
+        public virtual bool HasAchievedDesiredFacing
+        {
+            get
+            {
+                return DesiredFacing == null || TurretFacing == DesiredFacing.Value;
             }
         }
 
@@ -142,6 +150,8 @@ namespace EW.Mods.Common.Traits
             if (QuantizedFacings == 0)
                 return world;
 
+            //Quantize orientation to match q rendered sprite
+            //Implies no pitch or yaw
             var facing = body.QuantizeFacing(world.Yaw.Angle / 4, QuantizedFacings);
             return new WRot(WAngle.Zero, WAngle.Zero, WAngle.FromFacing(facing));
         }

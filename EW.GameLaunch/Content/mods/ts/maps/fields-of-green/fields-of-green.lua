@@ -6,19 +6,19 @@
    the License, or (at your option) any later version. For more
    information, see COPYING.
 ]]
-NForce = { "e1", "e1", "e1", "e3", "cyborg", "cyborg" }
+NForce = { "e1", "e1", "e1", "e3", "cyborg", "cyc2","mhijack","mhijack","umagon","mutant","mhijack","mhijack","umagon","mutant"}
 NForcePath = { NodW.Location, GDIBase.Location }
 NForceInterval = 5
 
-VNForce = { "bike", "bike", "bggy", "bggy", "e1", "e1", "e3" }
+VNForce = { "bike", "sapc", "art2", "bggy", "e1", "repair", "e3","sapc","subtank","stnk","lpst" }
 VNForcePath = { South.Location, GDIBase.Location }
 VNForceInterval = 15
 
-GForce = { "e1", "e1", "e1", "e1", "e2", "e1", "e2" }
+GForce = { "e1", "e1", "e1", "e1", "e2", "e1", "e2","medic","ghost","medic","ghost","medic","ghost","medic","ghost" }
 GForcePath = { GDIW.Location, NodBase.Location }
 GForceInterval = 5
 
-VGForce = { "e2", "smech", "smech", "e1", "e1", "apc" }
+VGForce = { "e2", "smech", "mmch", "e1", "e1", "apc","hvr","hmec","sonic","jugg","lpst" }
 VGForcePath = { North.Location, NodBase.Location }
 VGForceInterval = 15
 

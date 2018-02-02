@@ -22,6 +22,9 @@ namespace EW.Mods.Common.Traits
 
         public readonly string Name = "primary";
 
+        /// <summary>
+        /// 武器
+        /// </summary>
         [WeaponReference,FieldLoader.Require]
         public readonly string Weapon = null;
 
@@ -31,11 +34,11 @@ namespace EW.Mods.Common.Traits
 
         public readonly int FireDelay = 0;      //Time (in frames) until the weapon can fire again.
 
-        public readonly WVec[] LocalOffset = { };   //Muzzle position relative to turret or body.
+        public readonly WVec[] LocalOffset = { };   //Muzzle position relative to turret or body. 枪口位置相对于炮台或者身体的偏移
 
         public readonly WAngle[] LocalYaw = { };    //Muzzle yaw relative to turret or body.
 
-        public readonly WDist Recoil = WDist.Zero;  //recoil:反弹 Move the turret backwards when firing.
+        public readonly WDist Recoil = WDist.Zero;  //recoil:反弹 Move the turret backwards when firing.发射时向后推动距离
 
         public readonly WDist RecoilRecovery = new WDist(9);    //Recoil recovery per-frame. 反弹每帧恢复
 
@@ -49,7 +52,11 @@ namespace EW.Mods.Common.Traits
         public readonly Stance TargetStances = Stance.Enemy;
 
         public readonly Stance ForceTargetsStance = Stance.Enemy | Stance.Neutral | Stance.Ally;
-       
+
+        public readonly string Cursor = "attack";
+
+        public readonly string OutsideRangeCursor = "attackoutsiderange";
+
         public WeaponInfo WeaponInfo { get; private set; }
 
         public WDist ModifiedRange { get; private set; }
@@ -99,7 +106,9 @@ namespace EW.Mods.Common.Traits
         INotifyBurstComplete[] notifyBurstComplete;
 
 
-
+        /// <summary>
+        /// 行为延迟
+        /// </summary>
         List<Pair<int, Action>> delayedActions = new List<Pair<int, Action>>();
 
         int currentBarrel;
@@ -248,6 +257,12 @@ namespace EW.Mods.Common.Traits
             return new WDist(Util.ApplyPercentageModifiers(Weapon.Range.Length, rangeModifiers.ToArray()));
         }
 
+        /// <summary>
+        /// 是否满足开火条件
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
         protected virtual bool CanFire(Actor self,Target target)
         {
             if (IsReloading || IsTraitPaused)
@@ -295,7 +310,7 @@ namespace EW.Mods.Common.Traits
 
 
         /// <summary>
-        /// 
+        /// 开火
         /// </summary>
         /// <param name="self"></param>
         /// <param name="facing"></param>
@@ -303,7 +318,7 @@ namespace EW.Mods.Common.Traits
         /// <param name="barrel"></param>
         protected virtual void FireBarrel(Actor self,IFacing facing,Target target,Barrel barrel)
         {
-            Func<WPos> muzzlePosition = () => self.CenterPosition + MuzzleOffset(self, barrel);
+            Func<WPos> muzzlePosition = () => self.CenterPosition + MuzzleOffset(self, barrel);//枪口位置
 
             var legacyFacing = MuzzleOrientation(self, barrel).Yaw.Angle / 4;
 
@@ -312,6 +327,8 @@ namespace EW.Mods.Common.Traits
 
             if(initialOffset != WVec.Zero)
             {
+                //We want this to match Armament.LocalOffset,so we need to convert it to forward,right,up.
+                //我们希望这个匹配Armament.LocalOffset,所以我们需要将它转换为向前，向上，向右。
                 initialOffset = new WVec(initialOffset.Y, -initialOffset.X, initialOffset.Z);
                 passiveTarget += initialOffset.Rotate(WRot.FromFacing(legacyFacing));
             }
@@ -319,6 +336,7 @@ namespace EW.Mods.Common.Traits
             var followingOffset = Weapon.FollowingBurstTargetOffset;
             if(followingOffset!= WVec.Zero)
             {
+                //We want this to match Armament.LocalOffset,so we need to convert it to forward,right,up.
                 followingOffset = new WVec(followingOffset.Y, -followingOffset.X, followingOffset.Z);
                 passiveTarget += ((Weapon.Burst - Burst) * followingOffset).Rotate(WRot.FromFacing(legacyFacing));
             }
@@ -408,7 +426,7 @@ namespace EW.Mods.Common.Traits
 
 
         /// <summary>
-        /// 
+        /// 安排延期行为
         /// </summary>
         /// <param name="t"></param>
         /// <param name="a"></param>

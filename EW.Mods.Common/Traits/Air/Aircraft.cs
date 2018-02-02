@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
+using EW.Primitives;
+using EW.Activities;
 namespace EW.Mods.Common.Traits
 {
 
@@ -34,6 +36,8 @@ namespace EW.Mods.Common.Traits
     public class Aircraft:ITick,ISync,IFacing,IPositionable,IMove,IDeathActorInitModifier,INotifyCreated,INotifyAddedToWorld,INotifyRemovedFromWorld,INotifyActorDisposing
     {
 
+        static readonly Pair<CPos, SubCell>[] NoCells = { };
+
         public readonly AircraftInfo Info;
 
         readonly Actor self;
@@ -54,6 +58,9 @@ namespace EW.Mods.Common.Traits
 
         public int TurnSpeed { get { return Info.TurnSpeed; } }
 
+        public CPos TopLeft { get { return self.World.Map.CellContaining(CenterPosition); } }
+
+        public Pair<CPos,SubCell>[] OccupiedCells() { return NoCells; }
         void INotifyCreated.Created(Actor self)
         {
             conditionManager = self.TraitOrDefault<ConditionManager>();
@@ -95,9 +102,24 @@ namespace EW.Mods.Common.Traits
 
         #region Implement IPositionable
 
+        public bool IsLeavingCell(CPos location,SubCell subCell = SubCell.Any) { return false; }
 
         public bool CanEnterCell(CPos cell,Actor ignoreActor = null,bool checkTransientActors = true) { return true; }
 
+        public SubCell GetValidSubCell(SubCell preferred) { return SubCell.Invalid; }
+
+        public SubCell GetAvailableSubCell(CPos a,SubCell preferredSubCell = SubCell.Any,Actor ignoreActor = null,bool checkTransientActors = true)
+        {
+            return SubCell.Invalid;
+        }
+
+
+        public void SetVisualPosition(Actor self,WPos pos) { SetPosition(self, pos); }
+
+        public void SetPosition(Actor self,CPos cell,SubCell subCell = SubCell.Any)
+        {
+
+        }
 
         public void SetPosition(Actor self,WPos pos)
         {
@@ -106,10 +128,66 @@ namespace EW.Mods.Common.Traits
         }
 
 
+
         #endregion
 
         #region Implement IMove
 
+        public Activity MoveTo(CPos cell,int nearEnough)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveTo(CPos cell,Actor ignoreActor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveWithinRange(Target target,WDist range)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveWithinRange(Target target,WDist minRange,WDist maxRange)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public Activity MoveFollow(Actor self,Target target,WDist minRange,WDist maxRange)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveIntoWorld(Actor self,CPos cell,SubCell subCell = SubCell.Any)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveToTarget(Actor self,Target target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity MoveIntoTarget(Actor self,Target target)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Activity VisualMove(Actor self,WPos fromPos,WPos toPos)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public CPos NearestMoveableCell(CPos cell) { return cell; }
+
+        public bool IsMoving { get { return isMoving; }set { } }
+
+        public bool CanEnterTargetNow(Actor self,Target target)
+        {
+            return true;
+        }
         #endregion
     }
 }

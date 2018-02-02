@@ -102,6 +102,7 @@
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
     <Compile Include="Graphics\ModelPreview.cs" />
     <Compile Include="Graphics\ModelRenderable.cs" />
+    <Compile Include="Graphics\RailgunHelixRenderable.cs" />
     <Compile Include="Graphics\RangeCircleRenderable.cs" />
     <Compile Include="Graphics\SelectionBarsRenderable.cs" />
     <Compile Include="Graphics\SpriteActorPreview.cs" />
@@ -278,6 +279,7 @@
     <Compile Include="Traits\Infantry\ScaredyCat.cs" />
     <Compile Include="Traits\Infantry\TakeCover.cs" />
     <Compile Include="Traits\Infantry\TerrainModifiesDamage.cs" />
+    <Compile Include="Traits\JamsMissiles.cs" />
     <Compile Include="Traits\KillsSelf.cs" />
     <Compile Include="Traits\Mobile.cs" />
     <Compile Include="Traits\Modifiers\AlwaysVisible.cs" />

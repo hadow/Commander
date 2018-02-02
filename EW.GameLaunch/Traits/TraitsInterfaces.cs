@@ -56,6 +56,7 @@ namespace EW.Traits
 
     }
 
+    [Flags]
     public enum TargetModifiers
     {
         None = 0,
@@ -63,6 +64,16 @@ namespace EW.Traits
         ForceQueue = 2,
         ForceMove = 4,
     }
+
+    public static class TargetModifiersExts
+    {
+        public static bool HasModifier(this TargetModifiers self,TargetModifiers m)
+        {
+            //PERF:Enum.HasFlag is slower and requires allocations.
+            return (self & m) == m;
+        }
+    }
+
 
     public interface IExplodeModifier { bool ShouldExplode(Actor self); }
 

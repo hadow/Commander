@@ -401,11 +401,63 @@ namespace EW.Mods.Common.Traits
             }
             bool CanTargetActor(Actor self,Target target,ref TargetModifiers modifiers,ref string cursor)
             {
+                IsQueued = modifiers.HasModifier(TargetModifiers.ForceQueue);
+
+                if (modifiers.HasModifier(TargetModifiers.ForceMove))
+                    return false;
+
+                if (target.Type == TargetT.Actor && target.Actor.EffectiveOwner != null &&
+                    target.Actor.EffectiveOwner.Disguised && self.Owner.Stances[target.Actor.Owner] == Stance.Enemy)
+                    modifiers |= TargetModifiers.ForceAttack;
+
+                var forceAttack = modifiers.HasModifier(TargetModifiers.ForceAttack);
+                var armaments = ab.ChooseArmamentsForTarget(target, forceAttack);
+                if (!armaments.Any())
+                    return false;
+
+                armaments = armaments.OrderByDescending(x => x.MaxRange());
+                var a = armaments.FirstOrDefault(x => !x.IsTraitPaused);
+                if (a == null)
+                    a = armaments.First();
+
+                cursor = !target.IsInRange(self.CenterPosition, a.MaxRange())
+                    ? ab.Info.OutsideRangeCursor ?? a.Info.OutsideRangeCursor
+                    : ab.Info.Cursor ?? a.Info.Cursor;
+
+                if (!forceAttack)
+                    return true;
+
+                OrderID = ab.forceAttackOrderName;
                 return true;
             }
 
             bool CanTargetLocation(Actor self,CPos location,List<Actor> actorsAtLocation,TargetModifiers modifiers,ref string cursor)
             {
+                if (!self.World.Map.Contains(location))
+                    return false;
+
+                IsQueued = modifiers.HasModifier(TargetModifiers.ForceQueue);
+
+                //Targeting the terrain is only possible with force-attack modifier
+                if (modifiers.HasModifier(TargetModifiers.ForceMove) || !modifiers.HasModifier(TargetModifiers.ForceAttack))
+                    return false;
+
+                var target = Target.FromCell(self.World, location);
+                var armaments = ab.ChooseArmamentsForTarget(target, true);
+                if (!armaments.Any())
+                    return false;
+
+                armaments = armaments.OrderByDescending(x => x.MaxRange());
+                var a = armaments.FirstOrDefault(x => !x.IsTraitPaused);
+                if (a == null)
+                    a = armaments.First();
+
+                cursor = !target.IsInRange(self.CenterPosition, a.MaxRange())
+                    ? ab.Info.OutsideRangeCursor ?? a.Info.OutsideRangeCursor
+                    : ab.Info.Cursor ?? a.Info.Cursor;
+
+                OrderID = ab.forceAttackOrderName;
+
                 return true;
             }
             public bool CanTarget(Actor self,Target target,List<Actor> othersAtTarget,ref TargetModifiers modifiers,ref string cursor)

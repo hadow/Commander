@@ -64,7 +64,16 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public class Cloak:ConditionalTrait<CloakInfo>,IRenderModifier,INotifyDamage, INotifyAttack,ITick,IVisibilityModifier,INotifyCreated
+    public class Cloak:ConditionalTrait<CloakInfo>,IRenderModifier,
+        INotifyCreated,
+        INotifyDamage,
+        INotifyAttack,
+        ITick,
+        IVisibilityModifier,
+        IRadarColorModifier,
+        INotifyHarvesterAction,
+        INotifyUnload
+
     {
         [Sync]
         int remainingTime;
@@ -210,6 +219,11 @@ namespace EW.Mods.Common.Traits
         }
 
 
+        /// <summary>
+        /// 受到伤害时取消隐藏
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="attackInfo"></param>
         void INotifyDamage.Damaged(Actor self,AttackInfo attackInfo){
             if (attackInfo.Damage.Value == 0)
                 return;
@@ -219,5 +233,35 @@ namespace EW.Mods.Common.Traits
             if (Info.UncloakOn.HasFlag(type))
                 Uncloak();
         }
+
+        Color IRadarColorModifier.RadarColorOverride(Actor self, Color color)
+        {
+            if (self.Owner == self.World.LocalPlayer && Cloaked)
+                color = Color.FromArgb(128, color);
+            return color;
+        }
+
+        void INotifyHarvesterAction.Docked()
+        {
+            if(Info.UncloakOn.HasFlag(UncloakType.Dock))
+            {
+                isDocking = true;
+                Uncloak();
+            }
+        }
+
+        void INotifyHarvesterAction.Undocked()
+        {
+            isDocking = false;
+        }
+
+        void INotifyHarvesterAction.Harvested(Actor self, ResourceType resource) { }
+
+        void INotifyUnload.Unloading(Actor self)
+        {
+            if (Info.UncloakOn.HasFlag(UncloakType.Unload))
+                Uncloak();
+        }
+
     }
 }

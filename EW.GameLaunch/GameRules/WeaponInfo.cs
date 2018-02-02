@@ -47,15 +47,17 @@ namespace EW
 
         /// <summary>
         /// First burst is aimed at this offset relative to target position.
+        /// 第一次爆炸是相对于目标位置的偏移。
         /// </summary>
         public readonly WVec FirstBurstTargetOffset = WVec.Zero;
 
         /// <summary>
         /// Each burst after the first lands by this offset away from the previous burst.
+        /// 第一次之后的每一次爆发都会从前一次爆发中抵消
         /// </summary>
         public readonly WVec FollowingBurstTargetOffset = WVec.Zero;
 
-        public readonly WDist MinRange = WDist.Zero;//The minimum range the weapon can fire.
+        public readonly WDist MinRange = WDist.Zero;//The minimum range the weapon can fire.//武器可以射击的最小距离
 
         /// <summary>
         /// The sound played when the weapon is fired.
@@ -103,6 +105,7 @@ namespace EW
 
         /// <summary>
         /// Does the weapon aim at the target's center regardless of other targetable offsets?
+        /// 武器是否瞄准目标的中心而不管其它可定位的偏移量
         /// </summary>
         public readonly bool TargetActorCenter = false;
 
@@ -114,7 +117,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 加载飞行体
         /// </summary>
         /// <param name="yaml"></param>
         /// <returns></returns>
@@ -130,7 +133,7 @@ namespace EW
         }
 
         /// <summary>
-        /// 
+        /// 加载子弹头
         /// </summary>
         /// <param name="yaml"></param>
         /// <returns></returns>

@@ -438,6 +438,10 @@ namespace EW
             return r.Contains(p.ToPoint());
         }
 
+        public static T MaxByOrDefault<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
+        {
+            return ts.CompareBy(selector, -1, false);
+        }
 
         public static T MinBy<T,U>(this IEnumerable<T> ts,Func<T,U> selector)
         {
