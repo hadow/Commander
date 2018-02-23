@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 
 namespace EW.Mods.Common.Traits
@@ -11,6 +12,7 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         public readonly string Name = "primary";
 
+        public readonly string[] Armaments = { "primary", "secondary" };
         /// <summary>
         /// How much ammo does this pool contain when fully loaded.
         /// </summary>
@@ -52,48 +54,114 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         public readonly bool ResetOnFire = false;
 
+
+        [GrantedConditionReference]
+        public readonly string AmmoCondition = null;
+
         public object Create(ActorInitializer init) { return new AmmoPool(init.Self, this); }
     }
-    public class AmmoPool : INotifyAttack, ITick, ISync
+    public class AmmoPool : INotifyAttack, ITick, ISync,INotifyCreated
     {
+
+        ConditionManager conditionManager;
+
+        readonly Stack<int> tokens = new Stack<int>();
+
         public readonly AmmoPoolInfo Info;
 
         [Sync]
-        public int CurrentAmmo;
+        int currentAmmo;
 
         [Sync]
         public int RemainingTicks;
 
         public int PreviousAmmo;
 
+        public bool AutoReloads { get; private set; }
+
+
+        public bool FullAmmo() { return currentAmmo == Info.Ammo; }
+
+        public bool HasAmmo() { return currentAmmo > 0; }
+
+
         public AmmoPool(Actor self,AmmoPoolInfo info)
         {
             Info = info;
 
             if (Info.InitialAmmo < Info.Ammo && Info.InitialAmmo >= 0)
-                CurrentAmmo = Info.InitialAmmo;
+                currentAmmo = Info.InitialAmmo;
             else
-                CurrentAmmo = Info.Ammo;
+                currentAmmo = Info.Ammo;
 
-            RemainingTicks = Info.SelfReloadDelay;
-            
+
         }
         void ITick.Tick(Actor self)
         {
             if (!Info.SelfReloads)
                 return;
 
+            UpdateCondition(self);
+
         }
 
         void INotifyAttack.Attacking(Actor self,Target target,Armament a,Barrel barrel)
         {
-
+            if(a!= null && Info.a)
         }
 
 
         void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
         {
 
+        }
+
+        void INotifyCreated.Created(Actor self){
+
+            conditionManager = self.TraitOrDefault<ConditionManager>();
+            AutoReloads = self.TraitsImplementing<ReloadAmmoPool>().Any(r=>r.Info.AmmoPool == Info.Name && r.Info.RequiresCondition == null);
+
+            UpdateCondition(self);
+
+            RemainingTicks = Info.SelfReloadDelay;
+
+        }
+
+
+        void UpdateCondition(Actor self){
+
+            if (conditionManager == null || string.IsNullOrEmpty(Info.AmmoCondition))
+                return;
+
+            while (currentAmmo > tokens.Count && tokens.Count < Info.Ammo)
+                tokens.Push(conditionManager.GrantCondition(self, Info.AmmoCondition));
+
+
+            while (currentAmmo < tokens.Count && tokens.Count > 0)
+                conditionManager.RevokeCondition(self, tokens.Pop());
+
+
+        }
+
+        public bool TakeAmmo(Actor self,int count){
+
+            if (currentAmmo <= 0 || count < 0)
+                return false;
+
+            currentAmmo = (currentAmmo - count).Clamp(0, Info.Ammo);
+            UpdateCondition(self);
+            return true;
+
+        }
+
+        public bool GiveAmmo(Actor self,int count){
+
+            if (currentAmmo >= Info.Ammo || count < 0)
+                return false;
+
+            currentAmmo = (currentAmmo + count).Clamp(0, Info.Ammo);
+            UpdateCondition(self);
+            return true;
         }
 
     }

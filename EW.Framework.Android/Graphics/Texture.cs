@@ -46,8 +46,8 @@ namespace EW.Framework.Graphics
 
             Size = new Size(width, height);
             PrepareTexture();
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, IntPtr.Zero);
-            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+            //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
             GraphicsExtensions.CheckGLError();
         }
 
@@ -60,15 +60,16 @@ namespace EW.Framework.Graphics
 
             Size = new Size(width, height);
             //ConvertToABGR(height, width, colors);
+            colors = ConvertToRGBA(colors);
             unsafe
             {
                 fixed(byte*ptr = &colors[0])
                 {
                     var intPtr = new IntPtr((void*)ptr);
                     PrepareTexture();
-                    //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
-                    GL.TexImage2D(TextureTarget.Texture2D, 0,
-                                  PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
+                    //GL.TexImage2D(TextureTarget.Texture2D, 0,
+                      //            PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
                     //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
                     GraphicsExtensions.CheckGLError();
                 }
@@ -76,6 +77,18 @@ namespace EW.Framework.Graphics
         }
 
 
+        private static byte[] ConvertToRGBA(byte[] colors){
+
+            byte[] rgba = new byte[colors.Length];
+            for (int i = 0; i < colors.Length;i+=4){
+                rgba[i] = colors[i + 2];
+                rgba[i + 1] = colors[i + 1];
+                rgba[i + 2] = colors[i];
+                rgba[i + 3] = colors[i + 3];
+            }
+
+            return rgba;
+        }
         /// <summary>
         /// Convert from ARGB to ABGR
         /// </summary>

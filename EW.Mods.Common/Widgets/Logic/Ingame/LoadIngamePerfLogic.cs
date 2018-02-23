@@ -7,8 +7,8 @@ namespace EW.Mods.Common.Widgets.Logic
         [ObjectCreator.UseCtor]
         public LoadIngamePerfLogic(Widget widget,World world)
         {
-            var perfRoot = widget.Get("PERF_ROOT");
-            WarGame.LoadWidget(world,"PERF_WIDGETS",perfRoot,new WidgetArgs());
+            //var perfRoot = widget.Get("PERF_ROOT");
+            //WarGame.LoadWidget(world,"PERF_WIDGETS",perfRoot,new WidgetArgs());
         }
     }
 }

@@ -20,6 +20,13 @@ namespace EW.Framework.Mobile
 
 		public static event EventHandler Paused;
 		public static event EventHandler Resumed;
+
+
+        public override void OnConfigurationChanged(Android.Content.Res.Configuration newConfig){
+
+            base.OnConfigurationChanged(newConfig);
+        }
+
         /// <summary>
         /// OnCreate called when the activity is launched from cold or after the app
         /// has been killed due to a higher priority app needing the memory

@@ -70,15 +70,8 @@ namespace EW.Graphics
                 bitmap.Recycle();
 
             }
-                //using (var bitmap = (Bitmap)Image.FromStream(stream))
-                //{
-                //    Size = new Size(bitmap.Width, bitmap.Height);
-                //    data = new byte[4 * Size.Width * Size.Height];
-                //    Util.FastCopyIntoSprite(new Sprite(this, bitmap.Bounds2(), TextureChannel.Red), bitmap);
-                //}
 
-
-                Type = type;
+            Type = type;
             ReleaseBuffer();
         }
         public bool Buffered { get { return data != null || texture == null; } }

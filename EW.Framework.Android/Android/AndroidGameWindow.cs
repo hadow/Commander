@@ -84,9 +84,8 @@ namespace EW.Framework.Mobile
         {
 
             _clientBounds = new Rectangle(0, 0, context.Resources.DisplayMetrics.WidthPixels, context.Resources.DisplayMetrics.HeightPixels);
-
             GameView = new AndroidGameView(context, this,_game);
-            //GameView.LogFPS = true;
+            GameView.LogFPS = true;
             GameView.RenderOnUIThread = Game.Activity.RenderOnUIThread;
             GameView.RenderFrame += OnRenderFrame;
             GameView.UpdateFrame += OnUpdateFrame;

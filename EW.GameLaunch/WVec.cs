@@ -45,6 +45,7 @@ namespace EW
 
         public long HorizontalLengthSquared { get { return (long)X * X + (long)Y * Y; } }
 
+        public long VerticalLengthSquared{ get { return (long)Z * Z; }}
         public bool Equals(WVec other) { return other == this; }
 
         public override bool Equals(object obj)
@@ -89,6 +90,8 @@ namespace EW
         {
             return new WVec(WDist.FromPDF(r, samples), WDist.FromPDF(r, samples), WDist.Zero);
         }
+
+        public static int Dot(WVec a, WVec b) { return a.X * b.X + a.Y * b.Y + a.Z * b.Z; }
 
 
         public override string ToString()

@@ -33,15 +33,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <PlatformTarget>x86</PlatformTarget>
-    <AndroidSupportedAbis>x86;x86_64</AndroidSupportedAbis>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
+<AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -193,6 +190,39 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Air\FlyAttack.cs">
       <Link>External_Common\Activities\Air\FlyAttack.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\TakeOff.cs">
+      <Link>External_Common\Activities\Air\TakeOff.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FallToEarth.cs">
+      <Link>External_Common\Activities\Air\FallToEarth.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FlyCircle.cs">
+      <Link>External_Common\Activities\Air\FlyCircle.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FlyFollow.cs">
+      <Link>External_Common\Activities\Air\FlyFollow.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FlyOffMap.cs">
+      <Link>External_Common\Activities\Air\FlyOffMap.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\FlyTimed.cs">
+      <Link>External_Common\Activities\Air\FlyTimed.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\HeliLand.cs">
+      <Link>External_Common\Activities\Air\HeliLand.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\HeliAttack.cs">
+      <Link>External_Common\Activities\Air\HeliAttack.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\HeliFly.cs">
+      <Link>External_Common\Activities\Air\HeliFly.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\HeliReturnToBase.cs">
+      <Link>External_Common\Activities\Air\HeliReturnToBase.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\Fly.cs">
+      <Link>External_Common\Activities\Air\Fly.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Attack.cs">
       <Link>External_Common\Activities\Attack.cs</Link>
@@ -565,6 +595,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\AmmoPool.cs">
       <Link>External_Common\Traits\AmmoPool.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ReloadAmmoPool.cs">
+      <Link>External_Common\Traits\ReloadAmmoPool.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Armament.cs">
       <Link>External_Common\Traits\Armament.cs</Link>
@@ -1768,6 +1801,7 @@
     <Compile Include="SelectableExts.cs" />
     <Compile Include="Support\Evaluator.cs" />
     <Compile Include="Widgets\ChromeMetrics.cs" />
+    <Compile Include="Primitives\DisposableAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Content\settings.yaml" />

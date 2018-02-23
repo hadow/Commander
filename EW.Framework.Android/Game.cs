@@ -61,7 +61,7 @@ namespace EW.Framework
         }
 
 
-        private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667/2);//60 fps
+        private TimeSpan _targetElapsedTime = TimeSpan.FromTicks(166667);//60 fps
 
         private TimeSpan _maxElapsedTime = TimeSpan.FromMilliseconds(500);
         
@@ -477,18 +477,14 @@ namespace EW.Framework
         /// »æÖÆ
         /// </summary>
         /// <param name="gameTime"></param>
-        protected virtual void Draw(GameTime gameTime)
-        {
-        }
+        protected virtual void Draw(GameTime gameTime){}
 
 
         /// <summary>
         /// ¸üÐÂ
         /// </summary>
         /// <param name="gameTime"></param>
-        protected virtual void Update(GameTime gameTime)
-        {
-        }
+        protected virtual void Update(GameTime gameTime){}
         
 
         public void Dispose()

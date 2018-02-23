@@ -34,6 +34,10 @@ namespace EW.Traits
 
         Rectangle AutoBounds(Actor self,WorldRenderer wr){
 
+            if( autoBounds == null || !autoBounds.Any())
+            {
+                return Rectangle.Empty;
+            }
             return autoBounds.Select(s => s.AutoMouseoverBounds(self, wr)).FirstOrDefault(r => !r.IsEmpty);
 
         }

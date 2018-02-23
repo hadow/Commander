@@ -152,7 +152,17 @@ namespace EW.Framework.Graphics
             set
             {
                 _viewport = value;
+                PlatformSetViewport(ref value);
             }
+        }
+
+
+        private void PlatformSetViewport(ref Viewport value){
+            GL.Viewport(value.X, value.Y, value.Width, value.Height);
+            //GL.Viewport(value.X, PresentationParameters.BackBufferHeight - value.Y - value.Height, value.Width, value.Height);
+            GraphicsExtensions.CheckGLError();
+            GL.DepthRange(value.MinDepth,value.MaxDepth);
+            GraphicsExtensions.CheckGLError();
         }
 
         internal void AddResourceReference(WeakReference resourceReference)

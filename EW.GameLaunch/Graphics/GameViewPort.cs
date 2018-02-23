@@ -15,7 +15,7 @@ namespace EW.Graphics
     {
 
         Int2 viewportSize;
-        readonly float[] availableZoomSteps = new[] { 2.5f, 2f, 1.5f, 1f };
+        readonly float[] availableZoomSteps = new[] { 4.5f, 3.5f, 2.5f, 1.5f };
 
         public float[] AvailableZoomSteps
         {

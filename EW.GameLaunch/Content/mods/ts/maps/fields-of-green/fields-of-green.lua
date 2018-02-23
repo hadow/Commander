@@ -14,7 +14,7 @@ VNForce = { "bike", "sapc", "art2", "bggy", "e1", "repair", "e3","sapc","subtank
 VNForcePath = { South.Location, GDIBase.Location }
 VNForceInterval = 15
 
-GForce = { "e1", "e1", "e1", "e1", "e2", "e1", "e2","medic","ghost","medic","ghost","medic","ghost","medic","ghost" }
+GForce = { "e1", "jumpjet", "dshp", "e1", "e2", "e1", "e2","medic","ghost","medic","ghost","medic","ghost","medic","ghost" }
 GForcePath = { GDIW.Location, NodBase.Location }
 GForceInterval = 5
 

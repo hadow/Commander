@@ -97,6 +97,9 @@ namespace EW
             //    Initialize(new Arguments());
             //};
             DeviceManager.IsFullScreen = true;
+            //DeviceManager.PreferredBackBufferWidth = 960;
+            //DeviceManager.PreferredBackBufferHeight = 640;
+
             DeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
         }
 
@@ -548,6 +551,12 @@ namespace EW
                 {"orderManager",orderManager},
                 {"worldRenderer",worldRenderer}
             }, parent, id);
+        }
+
+
+        public static bool IsCurrentWorld(World world){
+
+            return orderManager != null && orderManager.World == world && !world.Disposing;
         }
     }
 }

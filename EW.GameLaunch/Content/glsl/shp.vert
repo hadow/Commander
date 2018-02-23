@@ -14,11 +14,11 @@ vec4 DecodeChannelMask(float x)
 	if (x > 0.7)
 		return vec4(0,0,0,1);
 	if (x > 0.5)
-		return vec4(1,0,0,0);
+		return vec4(0,0,1,0);
 	if (x > 0.3)
 		return vec4(0,1,0,0);
 	else
-		return vec4(0,0,1,0);
+		return vec4(1,0,0,0);
 }
 
 void main()

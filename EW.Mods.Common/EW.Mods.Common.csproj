@@ -530,6 +530,20 @@
     <Compile Include="Widgets\TooltipContainerWidget.cs" />
     <Compile Include="Widgets\Logic\Ingame\DisconnectWatcherLogic.cs" />
     <Compile Include="Scripting\Properties\ConditionProperties.cs" />
+    <Compile Include="Activities\Air\FallToEarth.cs" />
+    <Compile Include="Activities\Air\TakeOff.cs" />
+    <Compile Include="Activities\Air\FlyCircle.cs" />
+    <Compile Include="Activities\Air\FlyFollow.cs" />
+    <Compile Include="Activities\Air\FlyOffMap.cs" />
+    <Compile Include="Activities\Air\FlyTimed.cs" />
+    <Compile Include="Activities\Air\Land.cs" />
+    <Compile Include="Activities\Air\Fly.cs" />
+    <Compile Include="Activities\Air\HeliLand.cs" />
+    <Compile Include="Activities\Air\HeliFly.cs" />
+    <Compile Include="Activities\Air\HeliAttack.cs" />
+    <Compile Include="Activities\Air\HeliFlyCircle.cs" />
+    <Compile Include="Activities\Air\HeliReturnToBase.cs" />
+    <Compile Include="Traits\ReloadAmmoPool.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
