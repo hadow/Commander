@@ -34,7 +34,7 @@ namespace EW
                 var dir = "Content";
                 if (!dir.EndsWith(Path.DirectorySeparatorChar.ToString(), StringComparison.Ordinal))
                     dir += Path.DirectorySeparatorChar;
-                Console.WriteLine("platform t:" + Environment.OSVersion.Platform);
+                //Console.WriteLine("platform t:" + Environment.OSVersion.Platform);
                 return dir;
             }
         }

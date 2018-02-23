@@ -92,7 +92,7 @@ namespace EW
             settingFile = file;
             Sections = new Dictionary<string, object>()
             {
-                {"Game",Game }, { "Sound",Sound },{"Debug",Debug },
+                {"Game",Game }, { "Sound",Sound },{"Debug",Debug },{"Graphics",Graphics}
             };
 
             var err1 = FieldLoader.UnknownFieldAction;

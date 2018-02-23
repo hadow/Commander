@@ -136,6 +136,36 @@ namespace EW.Mods.Common.Traits
                                                   || (allowMove && self.Info.HasTraitInfo<IMoveInfo>()));
         }
 
+
+        public WDist GetMinimumRangeVersusTarget(Target target)
+        {
+
+            if (IsTraitDisabled)
+                return WDist.Zero;
+
+            //PERF: Avoid LINQ
+            var min = WDist.MaxValue;
+            foreach(var armament in Armaments)
+            {
+
+                if (armament.IsTraitDisabled)
+                    continue;
+
+                if (armament.IsTraitPaused)
+                    continue;
+
+                if (!armament.Weapon.IsValidAgainst(target, self.World, self))
+                    continue;
+
+                var range = armament.Weapon.MinRange;
+                if (min > range)
+                    min = range;
+            }
+
+            return min != WDist.MaxValue ? min : WDist.Zero;
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -148,23 +178,33 @@ namespace EW.Mods.Common.Traits
 
             //PERF:Avoid LINQ
             var max = WDist.Zero;
+
+            //We want actors to use only weapons with ammo for this,except when ALL weapons are out of ammo,
+            //then we use the paused,valid weapon with highest range.
+            var maxFallback = WDist.Zero;
+
+
             foreach(var armament in Armaments)
             {
                 if (armament.IsTraitDisabled)
                     continue;
 
+                if (!armament.Weapon.IsValidAgainst(target, self.World, self))
+                    continue;
+                
+                var range = armament.MaxRange();
+
+                if (maxFallback < range)
+                    maxFallback = range;
+
                 if (armament.IsTraitPaused)
                     continue;
 
-                if (!armament.Weapon.IsValidAgainst(target, self.World, self))
-                    continue;
-
-                var range = armament.MaxRange();
                 if (max < range)
                     max = range;
             }
 
-            return max;
+            return max != WDist.Zero ? max:maxFallback;
         }
 
         public IEnumerable<IOrderTargeter> Orders

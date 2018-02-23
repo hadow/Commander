@@ -107,14 +107,12 @@ namespace EW.Mods.Common.Traits
 
         void INotifyAttack.Attacking(Actor self,Target target,Armament a,Barrel barrel)
         {
-            if(a!= null && Info.a)
+            if (a != null && Info.Armaments.Contains(a.Info.Name))
+                TakeAmmo(self, 1);
         }
 
 
-        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel)
-        {
-
-        }
+        void INotifyAttack.PreparingAttack(Actor self, Target target, Armament a, Barrel barrel){}
 
         void INotifyCreated.Created(Actor self){
 

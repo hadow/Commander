@@ -58,6 +58,9 @@ namespace EW.Mods.Common.Traits
 
         [Desc("Does this actor need to turn before landing?")]
         public readonly bool TurnToLand = false;
+        
+        [Desc("Does this actor cancel its previous activity after resupplying?")]
+        public readonly bool AbortOnResupply = true;
 
         [Desc("Sound to play when the actor is landing.")]
         public readonly string LandingSound = null;
@@ -585,17 +588,26 @@ namespace EW.Mods.Common.Traits
 
         public Activity MoveTo(CPos cell,Actor ignoreActor)
         {
-            throw new NotImplementedException();
+            if (!Info.CanHover)
+                return new FlyAndContinueWithCirclesWhenIdle(self, Target.FromCell(self.World, cell));
+
+            return new HeliFly(self, Target.FromCell(self.World, cell));
         }
 
         public Activity MoveWithinRange(Target target,WDist range)
         {
-            throw new NotImplementedException();
+            if (!Info.CanHover)
+                return new FlyAndContinueWithCirclesWhenIdle(self, target, WDist.Zero, range);
+
+            return new HeliFly(self, target, WDist.Zero, range);
         }
 
         public Activity MoveWithinRange(Target target,WDist minRange,WDist maxRange)
         {
-            throw new NotImplementedException();
+            if (!Info.CanHover)
+                return new FlyAndContinueWithCirclesWhenIdle(self, target, minRange, maxRange);
+
+            return new HeliFly(self, target, minRange, maxRange);
         }
 
 

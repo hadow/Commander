@@ -18,9 +18,6 @@ namespace EW.Mods.Common.Traits
     }
     public class Armor:ConditionalTrait<ArmorInfo>
     {
-        public Armor(Actor self,ArmorInfo info):base(info)
-        {
-
-        }
+        public Armor(Actor self,ArmorInfo info):base(info){}
     }
 }

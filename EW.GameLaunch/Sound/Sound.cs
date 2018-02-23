@@ -168,6 +168,7 @@ namespace EW
             video = null;
         }
 
+        public ISound PlayToPlayer(SoundType type,Player player,string name,WPos pos) { return Play(type, player, name, false, pos.ToVector3(), 1f); }
 
         public ISound PlayLooped(SoundType type,string name) { return Play(type, null, name, true, Vector3.Zero, 1f, true); }
 
