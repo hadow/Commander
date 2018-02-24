@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using EW.Traits;
+﻿using EW.Traits;
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
     public class WandersInfo : ConditionalTraitInfo,Requires<IMoveInfo>
@@ -51,6 +50,45 @@ namespace EW.Mods.Common.Traits
         {
             if (IsTraitDisabled)
                 return;
+
+            if (firstTick)
+            {
+                countDown = self.World.SharedRandom.Next(info.MinMoveDelay, info.MaxMoveDelay);
+                firstTick = false;
+                return;
+            }
+
+            if (--countDown > 0)
+                return;
+
+            var targetCell = PickTargetLocation();
+            if (targetCell != CPos.Zero)
+                DoAction(self, targetCell);
+        }
+
+        CPos PickTargetLocation()
+        {
+            var target = self.CenterPosition + new WVec(0, -1024 * effectiveMoveRadius, 0).Rotate(WRot.FromFacing(self.World.SharedRandom.Next(255)));
+            var targetCell = self.World.Map.CellContaining(target);
+
+            if (!self.World.Map.Contains(targetCell))
+            {
+
+                if (++ticksIdle % info.ReduceMoveRadiusDelay == 0)
+                    effectiveMoveRadius--;
+
+                return CPos.Zero;
+            }
+
+            ticksIdle = 0;
+            effectiveMoveRadius = info.WanderMoveRadius;
+
+            return targetCell;
+        }
+
+        public virtual void DoAction(Actor self,CPos targetCell)
+        {
+            move.ResolveOrder(self, new Order("Move", self, Target.FromCell(self.World, targetCell), false));
         }
 
         void INotifyIdle.TickIdle(Actor self)

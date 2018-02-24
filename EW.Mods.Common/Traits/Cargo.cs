@@ -45,10 +45,11 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         public readonly Dictionary<string, string> PassengerConditions = new Dictionary<string, string>();
 
-
+        [Desc("Number of pips to display when this actor is selected.")]
+        public readonly int PipCount = 0;
         public object Create(ActorInitializer init) { return new Cargo(init, this); }
     }
-    public class Cargo:INotifyCreated,INotifyKilled,INotifyAddedToWorld,ITick,INotifyActorDisposing
+    public class Cargo:INotifyCreated,INotifyKilled,INotifyAddedToWorld,ITick,INotifyActorDisposing,IPips
     {
         readonly Actor self;
         public readonly CargoInfo Info;
@@ -294,6 +295,34 @@ namespace EW.Mods.Common.Traits
         public Actor Peek(Actor self)
         {
             return cargo.Peek();
+        }
+
+
+        public IEnumerable<PipType> GetPips(Actor self)
+        {
+            var numPips = Info.PipCount;
+
+            for (var i = 0; i < numPips; i++)
+                yield return GetPipAt(i);
+                
+        }
+
+
+        PipType GetPipAt(int i)
+        {
+            var n = i * Info.MaxWeight / Info.PipCount;
+
+            foreach(var c in cargo)
+            {
+                var pi = c.Info.TraitInfo<PassengerInfo>();
+                if (n < pi.Weight)
+                    return pi.PipType;
+                else
+                    n -= pi.Weight;
+
+            }
+
+            return PipType.Transparent;
         }
     }
 

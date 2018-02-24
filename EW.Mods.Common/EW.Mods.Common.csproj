@@ -55,6 +55,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Activities\Air\FlyAttack.cs" />
+    <Compile Include="Activities\Air\ResupplyAircraft.cs" />
+    <Compile Include="Activities\Air\ReturnToBase.cs" />
     <Compile Include="Activities\DeliverResources.cs" />
     <Compile Include="Activities\Drag.cs" />
     <Compile Include="Activities\FindResources.cs" />
@@ -66,6 +68,7 @@
     <Compile Include="Activities\Move\Move.cs" />
     <Compile Include="Activities\Move\MoveAdjacentTo.cs" />
     <Compile Include="Activities\Move\MoveWithinRange.cs" />
+    <Compile Include="Activities\RemoveSelf.cs" />
     <Compile Include="Activities\SimpleTeleport.cs" />
     <Compile Include="Activities\SpriteHarvesterDockSequence.cs" />
     <Compile Include="Activities\Turn.cs" />
@@ -105,6 +108,7 @@
     <Compile Include="Graphics\RailgunHelixRenderable.cs" />
     <Compile Include="Graphics\RangeCircleRenderable.cs" />
     <Compile Include="Graphics\SelectionBarsRenderable.cs" />
+    <Compile Include="Graphics\SelectionBoxRenderable.cs" />
     <Compile Include="Graphics\SpriteActorPreview.cs" />
     <Compile Include="Graphics\TextRenderable.cs" />
     <Compile Include="Graphics\TilesetSpecificSpriteSequenceLoader.cs" />

@@ -77,6 +77,10 @@ namespace EW.Mods.Common.Traits
         /// The pathfinding cost penalty applied for each harvester waiting to unload at a refinery.
         /// </summary>
         public readonly int UnloadQueueCostModifier = 12;
+
+        [Desc("How many squares to show the fill level.")]
+        public readonly int PipCount = 7;
+
         [VoiceReference]
         public readonly string HarvestVoice = "Action";
 
@@ -84,7 +88,7 @@ namespace EW.Mods.Common.Traits
         public readonly string DeliverVoice = "Action";
         public object Create(ActorInitializer init) { return new Harvester(init.Self, this); }
     }
-    public class Harvester:IResolveOrder,ISpeedModifier,ISync,INotifyCreated,INotifyIdle,INotifyBlockingMove
+    public class Harvester:IResolveOrder,ISpeedModifier,ISync,INotifyCreated,INotifyIdle,INotifyBlockingMove,IPips
     {
         public readonly HarvesterInfo Info;
         readonly Mobile mobile;
@@ -359,6 +363,27 @@ namespace EW.Mods.Common.Traits
         bool IsAcceptableProcType(Actor proc)
         {
             return Info.DeliveryBuildings.Count == 0 || Info.DeliveryBuildings.Contains(proc.Info.Name);
+        }
+
+        PipType GetPipAt(int i)
+        {
+            var n = i * Info.Capacity / Info.PipCount;
+
+            foreach (var rt in contents)
+                if (n < rt.Value)
+                    return rt.Key.PipColor;
+                else
+                    n -= rt.Value;
+            return PipType.Transparent;
+
+        }
+
+        public IEnumerable<PipType> GetPips(Actor self)
+        {
+            var numPips = Info.PipCount;
+
+            for (var i = 0; i < numPips; i++)
+                yield return GetPipAt(i);
         }
     }
 }

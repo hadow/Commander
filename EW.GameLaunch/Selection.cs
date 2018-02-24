@@ -33,5 +33,11 @@ namespace EW
 
 
         }
+
+
+        public bool Contains(Actor a)
+        {
+            return actors.Contains(a);
+        }
     }
 }

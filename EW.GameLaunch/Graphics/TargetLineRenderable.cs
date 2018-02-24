@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using EW.Framework;
 namespace EW.Graphics
 {
     public struct TargetLineRenderable:IRenderable,IFinalizedRenderable
@@ -45,7 +46,33 @@ namespace EW.Graphics
 
         public void Render(WorldRenderer wr)
         {
+            if (!waypoints.Any())
+                return;
 
+            var iz = 1 / wr.ViewPort.Zoom;
+            var first = wr.Screen3DPosition(waypoints.First());
+            var a = first;
+
+            foreach(var b in waypoints.Skip(1).Select(pos=>wr.Screen3DPosition(pos)))
+            {
+                WarGame.Renderer.WorldRgbaColorRenderer.DrawLine(a, b, iz, color);
+                DrawTargetMarker(wr, color, b);
+                a = b;
+            }
+
+            DrawTargetMarker(wr, color, first);
+
+
+        }
+
+        public static void DrawTargetMarker(WorldRenderer wr,Color color,Vector3 location)
+        {
+            var iz = 1 / wr.ViewPort.Zoom;
+            var offset = new Vector2(iz, iz);
+            var tl = location - offset;
+            var br = location + offset;
+
+            WarGame.Renderer.WorldRgbaColorRenderer.FillRect(tl, br, color);
         }
 
         public void RenderDebugGeometry(WorldRenderer wr) { }

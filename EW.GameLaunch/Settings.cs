@@ -4,7 +4,7 @@ using System.IO;
 using Java.IO;
 namespace EW
 {
-
+    public enum StatusBarsType { Standard,DamageShow,AlwaysShow}
 
     public class DebugSettings
     {
@@ -60,6 +60,7 @@ namespace EW
 
         public bool UsePlayerStanceColor = false;
 
+        public StatusBarsType StatusBars = StatusBarsType.Standard;
     }
 
     public class SoundSettings

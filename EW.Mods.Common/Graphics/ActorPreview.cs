@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using EW.Graphics;
 using EW.Primitives;
 using EW.Traits;
@@ -11,6 +11,8 @@ namespace EW.Mods.Common.Graphics
     public interface IActorPreview{
         void Tick();
         IEnumerable<IRenderable> Render(WorldRenderer wr, WPos pos);
+
+        IEnumerable<Rectangle> ScreenBounds(WorldRenderer wr, WPos pos);
     }
 
     /// <summary>

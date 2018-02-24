@@ -37,7 +37,8 @@
     <Debugger>Xamarin</Debugger>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
     <PlatformTarget>x86</PlatformTarget>
-    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
+    <AndroidSupportedAbis>
+    </AndroidSupportedAbis>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
     <AotAssemblies>false</AotAssemblies>
     <EnableLLVM>false</EnableLLVM>
@@ -194,6 +195,12 @@
     <Compile Include="..\EW.Mods.Common\Activities\Air\FlyAttack.cs">
       <Link>External_Common\Activities\Air\FlyAttack.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\ResupplyAircraft.cs">
+      <Link>External_Common\Activities\Air\ResupplyAircraft.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\ReturnToBase.cs">
+      <Link>External_Common\Activities\Air\ReturnToBase.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Air\TakeOff.cs">
       <Link>External_Common\Activities\Air\TakeOff.cs</Link>
     </Compile>
@@ -262,6 +269,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Move\MoveWithinRange.cs">
       <Link>External_Common\Activities\Move\MoveWithinRange.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\RemoveSelf.cs">
+      <Link>External_Common\Activities\RemoveSelf.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\SimpleTeleport.cs">
       <Link>External_Common\Activities\SimpleTeleport.cs</Link>
@@ -397,6 +407,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\SelectionBarsRenderable.cs">
       <Link>External_Common\Graphics\SelectionBarsRenderable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\SelectionBoxRenderable.cs">
+      <Link>External_Common\Graphics\SelectionBoxRenderable.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\SpriteActorPreview.cs">
       <Link>External_Common\Graphics\SpriteActorPreview.cs</Link>
@@ -1691,6 +1704,7 @@
     <Compile Include="Graphics\TerrainRenderer.cs" />
     <Compile Include="Graphics\TerrainSpriteLayer.cs" />
     <Compile Include="Graphics\Theater.cs" />
+    <Compile Include="Graphics\UISpriteRenderable.cs" />
     <Compile Include="Graphics\Util.cs" />
     <Compile Include="Graphics\ModelRenderer.cs" />
     <Compile Include="Graphics\WorldRenderer.cs" />

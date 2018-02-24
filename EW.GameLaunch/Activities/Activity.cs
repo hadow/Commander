@@ -243,6 +243,10 @@ namespace EW.Activities
 
     }
 
+    /// <summary>
+    /// In cointrast to the base activity class,which is responsible for running its children itself,
+    /// composite activities rely on the actor's activity-running logic for their children.
+    /// </summary>
     public  abstract class CompositeActivity : Activity
     {
         public override Activity NextActivity

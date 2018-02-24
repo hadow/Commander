@@ -429,6 +429,13 @@ namespace EW
                         if (isNetTick)
                             orderManager.Tick();
 
+
+                        Sync.CheckSyncUnchanged(world, () =>
+                        {
+                            world.OrderGenerator.Tick(world);
+                            world.Selection.Tick(world);
+                        });
+
                         world.Tick();
                         PerfHistory.Tick();
                     }

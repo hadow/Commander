@@ -6,7 +6,17 @@ namespace EW.Mods.Common.Traits
     {
         public object Create(ActorInitializer init) { return new DeveloperMode(); }
     }
-    class DeveloperMode
+    public class DeveloperMode:ISync,INotifyCreated
     {
+        public bool Enabled { get; private set; }
+
+        [Sync]bool pathDebug;
+
+        public bool PathDebug { get { return Enabled && pathDebug; } }
+
+        void INotifyCreated.Created(Actor self)
+        {
+
+        }
     }
 }

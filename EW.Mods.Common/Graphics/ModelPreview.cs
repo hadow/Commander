@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Graphics;
-
+using System.Drawing;
 namespace EW.Mods.Common.Graphics
 {
     public class ModelPreview:IActorPreview
@@ -39,6 +39,13 @@ namespace EW.Mods.Common.Graphics
         {
             yield return new ModelRenderable(components, pos + offset, zOffset, camera, scale, lightSource, lightAmbientColor, lightDiffuseColor, colorPalette, normalsPalette, shadowPalette);
         }
+
+        public IEnumerable<Rectangle> ScreenBounds(WorldRenderer wr,WPos pos)
+        {
+            foreach (var c in components)
+                yield return c.ScreenBounds(pos, wr, scale);
+        }
+
 
     }
 }

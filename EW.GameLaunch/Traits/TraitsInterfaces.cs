@@ -585,4 +585,7 @@ namespace EW.Traits
 
         bool HasVoice(Actor self, string voice);
     }
+
+    public interface IPips { IEnumerable<PipType> GetPips(Actor self); }
+
 }
