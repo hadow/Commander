@@ -6,6 +6,9 @@ namespace EW.Mods.Common.Traits
 {
     public class BuildableInfo : TraitInfo<Buildable>
     {
+
+        public readonly string[] Prerequisites = { };
+
         /// <summary>
         /// Production queue(s) that can produce this.
         /// </summary>
@@ -16,6 +19,8 @@ namespace EW.Mods.Common.Traits
         /// </summary>
         public readonly int BuildLimit = 0;
 
+
+        [Desc("Base build time in frames (-1 indicates to use the unit's value)")]
         public readonly int BuildDuration = -1;
 
 
@@ -43,7 +48,5 @@ namespace EW.Mods.Common.Traits
             return bi != null ? bi.ForceFaction ?? defaultFaction : defaultFaction;
         }
     }
-    public class Buildable
-    {
-    }
+    public class Buildable{}
 }

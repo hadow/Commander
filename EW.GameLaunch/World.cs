@@ -7,6 +7,7 @@ using EW.Primitives;
 using EW.Support;
 using EW.Graphics;
 using EW.Effects;
+using EW.Orders;
 namespace EW
 {
     public enum WorldT
@@ -122,6 +123,7 @@ namespace EW
         {
             Type = type;
             OrderManager = orderManager;
+            orderGenerator = new UnitOrderGenerator();
             Map = map;
             Timestep = orderManager.LobbyInfo.GlobalSettings.Timestep;
             SharedRandom = new MersenneTwister(orderManager.LobbyInfo.GlobalSettings.RandomSeed);

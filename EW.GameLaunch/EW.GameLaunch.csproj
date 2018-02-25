@@ -447,8 +447,20 @@
     <Compile Include="..\EW.Mods.Common\ModContent.cs">
       <Link>External_Common\ModContent.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\AircraftMoveOrderTargeter.cs">
+      <Link>External_Common\Orders\AircraftMoveOrderTargeter.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\BeaconOrderGenerator.cs">
+      <Link>External_Common\Orders\BeaconOrderGenerator.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Orders\DeployOrderTargeter.cs">
       <Link>External_Common\Orders\DeployOrderTargeter.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\GuardOrderGenerator.cs">
+      <Link>External_Common\Orders\GuardOrderGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\PlaceBuildingOrderGenerator.cs">
+      <Link>External_Common\Orders\PlaceBuildingOrderGenerator.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Pathfinder\BasePathSearch.cs">
       <Link>External_Common\Pathfinder\BasePathSearch.cs</Link>
@@ -611,6 +623,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\AmmoPool.cs">
       <Link>External_Common\Traits\AmmoPool.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Player\GrantConditionOnPrerequisiteManager.cs">
+      <Link>External_Common\Traits\Player\GrantConditionOnPrerequisiteManager.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\ReloadAmmoPool.cs">
       <Link>External_Common\Traits\ReloadAmmoPool.cs</Link>
@@ -839,9 +854,6 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Crates\GiveUnitCrateAction.cs">
       <Link>External_Common\Traits\Crates\GiveUnitCrateAction.cs</Link>
-    </Compile>
-    <Compile Include="..\EW.Mods.Common\Traits\Crates\GrantConditionOnPrerequisiteManager.cs">
-      <Link>External_Common\Traits\Crates\GrantConditionOnPrerequisiteManager.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\Crates\GrantExternalConditionCrateAction.cs">
       <Link>External_Common\Traits\Crates\GrantExternalConditionCrateAction.cs</Link>
@@ -1735,6 +1747,7 @@
     <Compile Include="NetWork\SyncReport.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="GameActivity.cs" />
+    <Compile Include="Orders\GenericSelectTarget.cs" />
     <Compile Include="Orders\IOrderGenerator.cs" />
     <Compile Include="Orders\UnitOrderGenerator.cs" />
     <Compile Include="Platform.cs" />

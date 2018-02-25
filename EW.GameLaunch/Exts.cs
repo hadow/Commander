@@ -488,6 +488,13 @@ namespace EW
             }
             return bytes;
         }
+
+
+        public static void Do<T>(this IEnumerable<T> e,Action<T> fn)
+        {
+            foreach (var ee in e)
+                fn(ee);
+        }
     }
     
 }

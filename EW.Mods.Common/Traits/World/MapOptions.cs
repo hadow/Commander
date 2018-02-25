@@ -23,6 +23,7 @@ namespace EW.Mods.Common.Traits
     {
         readonly MapOptionsInfo info;
 
+        public string TechLevel { get; private set; }
         public GameSpeed GameSpeed { get; private set; }
         public MapOptions(MapOptionsInfo info)
         {

@@ -7,13 +7,19 @@ namespace EW.Mods.Common.Traits
     {
         public readonly bool SpeedUp = false;
 
+
+        public readonly int[] BuildTimeSpeedReduction = { 100, 85, 75, 65, 60, 55, 50 };
+
         public override object Create(ActorInitializer init)
         {
-            return base.Create(init);
+            return new ClassicProductionQueue(init, this);
         }
     }
     public class ClassicProductionQueue:ProductionQueue
     {
+        static readonly ActorInfo[] NoItems = { };
+
+
         readonly Actor self;
         readonly ClassicProductionQueueInfo info;
 
@@ -22,5 +28,12 @@ namespace EW.Mods.Common.Traits
             self = init.Self;
             this.info = info;
         }
+
+
+        protected override void Tick(Actor self)
+        {
+
+        }
+
     }
 }

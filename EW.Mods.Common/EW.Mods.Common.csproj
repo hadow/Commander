@@ -120,7 +120,11 @@
     <Compile Include="LoadScreens\BlankLoadScreen.cs" />
     <Compile Include="LoadScreens\LogoStripeLoadScreen.cs" />
     <Compile Include="ModContent.cs" />
+    <Compile Include="Orders\AircraftMoveOrderTargeter.cs" />
+    <Compile Include="Orders\BeaconOrderGenerator.cs" />
     <Compile Include="Orders\DeployOrderTargeter.cs" />
+    <Compile Include="Orders\GuardOrderGenerator.cs" />
+    <Compile Include="Orders\PlaceBuildingOrderGenerator.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
@@ -244,7 +248,7 @@
     <Compile Include="Traits\Crates\GiveCashCrateAction.cs" />
     <Compile Include="Traits\Crates\GiveMcvCrateAction.cs" />
     <Compile Include="Traits\Crates\GiveUnitCrateAction.cs" />
-    <Compile Include="Traits\Crates\GrantConditionOnPrerequisiteManager.cs" />
+    <Compile Include="Traits\Player\GrantConditionOnPrerequisiteManager.cs" />
     <Compile Include="Traits\Crates\GrantExternalConditionCrateAction.cs" />
     <Compile Include="Traits\Crates\HealUnitsCrateAction.cs" />
     <Compile Include="Traits\Crates\HideMapCrateAction.cs" />

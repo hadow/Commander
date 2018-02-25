@@ -40,7 +40,7 @@ namespace EW.Mods.Common.Traits
             this.info = info;
         }
 
-        public void ResolveOrder(Actor self,Order order)
+        void IResolveOrder.ResolveOrder(Actor self, Order order)
         {
 
         }

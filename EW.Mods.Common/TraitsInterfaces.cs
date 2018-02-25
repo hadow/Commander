@@ -19,6 +19,23 @@ namespace EW.Mods.Common.Traits
 
     #region Notify
 
+    public interface INotifyObjectivesUpdated
+    {
+        void OnPlayerWon(Player winner);
+
+        void OnPlayerLost(Player loser);
+
+        void OnObjectiveAdded(Player player, int objectiveID);
+
+        void OnObjectiveCompleted(Player player, int objectiveID);
+
+        void OnObjectiveFailed(Player player, int objectiveID);
+    }
+
+
+    [RequireExplicitImplementation]
+    public interface INotifyPowerLevelChanged { void PowerLevelChanged(Actor self); }
+
     public interface INotifyDocking { void Docked(Actor self, Actor harvester); void Undocked(Actor self, Actor harvester); }
 
     public interface INotifyPassengerEntered { void OnPassengerEntered(Actor self, Actor passenger); }
@@ -251,6 +268,26 @@ namespace EW.Mods.Common.Traits
     public interface IRadarSignature
     {
         void PopulateRadarSignatureCells(Actor self, List<Pair<CPos, Color>> destinationBuffer);
+    }
+
+
+    public interface ITechTreeElement
+    {
+        void PrerequisitesAvailable(string key);
+
+        void PrerequisitesUnavailable(string key);
+
+        void PrerequisitesItemHidden(string key);
+
+        void PrerequisitesItemVisible(string key);
+    }
+
+
+    public interface ITechTreePrerequisiteInfo : ITraitInfo { }
+
+    public interface ITechTreePrerequisite
+    {
+        IEnumerable<string> ProvidesPrerequisites { get; }
     }
 
 }

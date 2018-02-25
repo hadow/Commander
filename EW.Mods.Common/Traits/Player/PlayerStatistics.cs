@@ -12,8 +12,13 @@ namespace EW.Mods.Common.Traits
     }
 
 
-    public class UpdatesPlayerStatistics
+    public class UpdatesPlayerStatistics:INotifyKilled
     {
+
+        void INotifyKilled.Killed(Actor self, AttackInfo attackInfo)
+        {
+
+        }
 
     }
 
@@ -21,7 +26,28 @@ namespace EW.Mods.Common.Traits
     {
         public object Create(ActorInitializer init) { return new PlayerStatistics(); }
     }
-    class PlayerStatistics
+    public class PlayerStatistics:ITick,IResolveOrder,INotifyCreated
     {
+        PlayerResources resources;
+        PlayerExperience experience;
+
+        public int OrderCount;
+
+
+        void INotifyCreated.Created(Actor self)
+        {
+
+        }
+
+        void ITick.Tick(Actor self)
+        {
+
+        }
+
+        void IResolveOrder.ResolveOrder(Actor self, NetWork.Order order)
+        {
+
+        }
+
     }
 }

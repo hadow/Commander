@@ -6,7 +6,14 @@ namespace EW.Mods.Common.Traits
     {
         public object Create(ActorInitializer init) { return new PlayerExperience(); }
     }
-    class PlayerExperience
+    public class PlayerExperience:ISync
     {
+
+        [Sync]public int Experience { get; private set; }
+
+        public void GiveExperience(int num)
+        {
+            Experience += num;
+        }
     }
 }
