@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-    public class SupportPowerManagerInfo : ITraitInfo, Requires<TechTreeInfo>
+    public class SupportPowerManagerInfo : ITraitInfo, Requires<TechTreeInfo>,Requires<DeveloperModeInfo>
     {
         public object Create(ActorInitializer init) { return new SupportPowerManager(init); }
     }

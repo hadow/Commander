@@ -53,7 +53,7 @@ namespace EW.Mods.Common.Traits
         readonly IEnumerable<ActorInfo> allProducibles;
         readonly IEnumerable<ActorInfo> buildableProducibles;
 
-        Production[] productionTrait;
+        Production[] productionTraits;
 
         //Will change if the owner changes
         PowerManager playerPower;
@@ -89,7 +89,7 @@ namespace EW.Mods.Common.Traits
 
         void INotifyCreated.Created(Actor self)
         {
-            productionTrait = self.TraitsImplementing<Production>().ToArray();
+            productionTraits = self.TraitsImplementing<Production>().ToArray();
         }
 
         void INotifyOwnerChanged.OnOwnerChanged(Actor self, Player oldOwner, Player newOwner)
@@ -101,6 +101,13 @@ namespace EW.Mods.Common.Traits
             developerMode = newOwner.PlayerActor.Trait<DeveloperMode>();
 
 
+        }
+
+        public virtual TraitPair<Production> MostLikelyProducer()
+        {
+            var traits = productionTraits.Where(p => !p.IsTraitDisabled && p.Info.Produces.Contains(Info.Type));
+            var unpaused = traits.FirstOrDefault(a => !a.IsTraitPaused);
+            return new TraitPair<Production>(self, unpaused != null ? unpaused : traits.FirstOrDefault());
         }
 
         void INotifyKilled.Killed(Actor killed, AttackInfo attackInfo)
@@ -292,6 +299,11 @@ namespace EW.Mods.Common.Traits
                     }
                     break;
             }
+        }
+
+        public ProductionItem CurrentItem()
+        {
+            return queue.ElementAtOrDefault(0);
         }
     }
 

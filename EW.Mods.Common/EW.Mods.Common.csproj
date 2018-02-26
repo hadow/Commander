@@ -59,6 +59,7 @@
     <Compile Include="Activities\Air\ReturnToBase.cs" />
     <Compile Include="Activities\DeliverResources.cs" />
     <Compile Include="Activities\Drag.cs" />
+    <Compile Include="Activities\Enter.cs" />
     <Compile Include="Activities\FindResources.cs" />
     <Compile Include="Activities\HarvesterDockSequence.cs" />
     <Compile Include="Activities\HarvestResource.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\PlayerCommands.cs" />
     <Compile Include="Effects\ContrailFader.cs" />
+    <Compile Include="Effects\FlashTarget.cs" />
     <Compile Include="Effects\FloatingText.cs" />
     <Compile Include="Effects\RallyPointIndicator.cs" />
     <Compile Include="Effects\RevealShroudEffect.cs" />
@@ -103,6 +105,7 @@
     <Compile Include="FileFormats\XORDeltaCompression.cs" />
     <Compile Include="Graphics\BeamRenderable.cs" />
     <Compile Include="Graphics\DefaultSpriteSequence.cs" />
+    <Compile Include="Graphics\DetectionCircleRenderable.cs" />
     <Compile Include="Graphics\ModelPreview.cs" />
     <Compile Include="Graphics\ModelRenderable.cs" />
     <Compile Include="Graphics\RailgunHelixRenderable.cs" />
@@ -125,6 +128,7 @@
     <Compile Include="Orders\DeployOrderTargeter.cs" />
     <Compile Include="Orders\GuardOrderGenerator.cs" />
     <Compile Include="Orders\PlaceBuildingOrderGenerator.cs" />
+    <Compile Include="Orders\UnitOrderTargeter.cs" />
     <Compile Include="Pathfinder\BasePathSearch.cs" />
     <Compile Include="Pathfinder\CellInfo.cs" />
     <Compile Include="Pathfinder\CellInfoLayerPool.cs" />
@@ -503,6 +507,7 @@
     <Compile Include="Widgets\Logic\Ingame\ControlGroupLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\GameTimerLogic.cs" />
     <Compile Include="Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs" />
+    <Compile Include="Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs" />
     <Compile Include="Widgets\Logic\Installation\DownloadPackageLogic.cs" />
     <Compile Include="Traits\BodyOrientation.cs" />
     <Compile Include="TraitsInterfaces.cs" />

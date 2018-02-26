@@ -103,5 +103,10 @@ namespace EW.Mods.Common
         {
             NotifyBlocker(self, positions.SelectMany(p => self.World.ActorMap.GetActorsAt(p)));
         }
+
+        public static CPos ClosestCell(this Actor self,IEnumerable<CPos> cells)
+        {
+            return cells.MinByOrDefault(c => (self.Location - c).LengthSquard);
+        }
     }
 }

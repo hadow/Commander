@@ -1,9 +1,7 @@
 ﻿using EW.Graphics;
 using EW.Effects;
 using System.Collections.Generic;
-
-
-namespace EW.Mods.Common.Traits
+namespace EW.Mods.Common.Effects
 {
     public class SpriteEffect:IEffect,ISpatiallyPartitionable
     {

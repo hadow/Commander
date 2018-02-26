@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
-
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Traits
 {
 

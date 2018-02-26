@@ -8,6 +8,9 @@ using EW.Graphics;
 using EW.Framework;
 using EW.Traits;
 using EW.Mods.Common.Graphics;
+using EW.Mods.Common.Effects;
+using EW.Orders;
+
 namespace EW.Mods.Common.Widgets
 {
     public class WorldInteractionControllerWidget:Widget
@@ -46,16 +49,86 @@ namespace EW.Mods.Common.Widgets
 
                 dragStart = mousePos;
                 isDragging = true;
+
+
+                //Place buildings,use support powers,and other non-unit things
+                if(!(World.OrderGenerator is UnitOrderGenerator))
+                {
+                    ApplyOrders(World, gs);
+                    isDragging = false;
+                    YieldFocus(gs);
+                    return true;
+                }
             }
 
             if(gs.GestureType == GestureType.DragComplete){
 
+
+                if(World.OrderGenerator is UnitOrderGenerator)
+                {
+
+                    if(isDragging && (!(World.OrderGenerator is GenericSelectTarget) || IsValidDragBox))
+                    {
+                        var newSelection = SelectActorsInBoxWithDeadzone(World, dragStart, mousePos);
+                        World.Selection.Combine(World, newSelection, false, dragStart == mousePos);
+                    }
+                    
+                    World.CancelInputMode();
+                }
                 isDragging = false;
                 YieldFocus(gs);
             }
 
+            if(gs.GestureType == GestureType.DoubleTap)
+            {
+                if (!IsValidDragBox)
+                {
+                    ApplyOrders(World, gs);
+                }
+            }
+
             return true;
 
+        }
+
+
+        void ApplyOrders(World world,GestureSample gs)
+        {
+            if (world.OrderGenerator == null)
+                return;
+
+            var cell = worldRenderer.ViewPort.ViewToWorld(gs.Position.ToInt2());
+            var worldPixel = worldRenderer.ViewPort.ViewToWorldPx(gs.Position.ToInt2());
+            var orders = world.OrderGenerator.Order(world, cell, worldPixel, gs).ToArray();
+            world.PlayVoiceForOrders(orders);
+
+            var flashed = false;
+
+            foreach(var order in orders)
+            {
+                var o = order;
+                if (o == null)
+                    continue;
+
+                if(!flashed && !o.SuppressVisualFeedback)
+                {
+                    var visualTargetActor = o.VisualFeedbackTarget ?? o.TargetActor;
+                    if(visualTargetActor != null)
+                    {
+                        world.AddFrameEndTask(w => w.Add(new FlashTarget(visualTargetActor)));
+                        flashed = true;
+
+                    }
+                    else if(o.TargetLocation != CPos.Zero)
+                    {
+                        var pos = world.Map.CenterOfCell(cell);
+                        world.AddFrameEndTask(w => w.Add(new SpriteEffect(pos, world, "moveflsh", "idle", "moveflash", true, true)));
+                        flashed = true;
+                    }
+                }
+
+                world.IssueOrder(o);
+            }
         }
 
 

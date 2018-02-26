@@ -147,6 +147,25 @@ namespace EW
 
         }
 
+        public void CancelInputMode()
+        {
+            OrderGenerator = new UnitOrderGenerator();
+        }
+
+        public bool ToggleInputMode<T>() where T : IOrderGenerator, new()
+        {
+            if(OrderGenerator is T)
+            {
+                CancelInputMode();
+                return false;
+            }
+            else
+            {
+                OrderGenerator = new T();
+                return true;
+            }
+        }
+
 
         public Actor GetActorById(uint actorID){
             Actor a;
@@ -423,6 +442,13 @@ namespace EW
             }
         }
 
+
+        public void RemoveAll(Predicate<IEffect> predicate)
+        {
+            effects.RemoveAll(predicate);
+            unpartitionedEffects.RemoveAll(e => predicate((IEffect)e));
+            syncedEffects.RemoveAll(e => predicate((IEffect)e));
+        }
 
         internal uint NextAID()
         {

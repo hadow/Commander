@@ -178,6 +178,13 @@ namespace EW.Mods.Common.Traits
 
             return w.ActorsWithTrait<BaseProvider>().SelectMany(a => a.Trait.RangeCircleRenderables(wr));
         }
+
+
+        public virtual bool IsCloseEnoughToBase(World world,Player p,string buildingName,CPos topLeft)
+        {
+
+            return false;
+        }
     }
 
 

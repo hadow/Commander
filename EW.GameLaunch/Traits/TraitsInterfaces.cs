@@ -172,7 +172,10 @@ namespace EW.Traits
 
     public interface INotifyDiscovered { void OnDiscovered(Actor self, Player discoverer, bool playNotification); }
 
+    [RequireExplicitImplementation]
     public interface INotifySelected { void Selected(Actor self); }
+    [RequireExplicitImplementation]
+    public interface INotifySelection { void SelectionChanged(); }
 
     public interface INotifyBecomingIdle { void OnBecomingIdle(Actor self); }
 

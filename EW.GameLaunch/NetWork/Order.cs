@@ -26,7 +26,7 @@ namespace EW.NetWork
         public readonly bool Queued;
         //public Actor TargetActor;
         public readonly Target Target;
-        public CPos TargetLocation;
+        //public CPos TargetLocation;
         public string TargetString;
         public CPos ExtraLocation;
         public uint ExtraData;
@@ -42,7 +42,15 @@ namespace EW.NetWork
             }
         }
 
+        public Actor TargetActor { get { return Target.SerializableActor; } }
 
+        public CPos TargetLocation
+        {
+            get
+            {
+                return Target.SerializableCell.HasValue ? Target.SerializableCell.Value : CPos.Zero;
+            }
+        }
 
         Order(string orderString,Actor subject,Target target,string targetString,bool queued,CPos extraLocation,uint extraData)
         {

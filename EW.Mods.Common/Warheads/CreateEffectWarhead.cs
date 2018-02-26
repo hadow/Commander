@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
 using EW.Mods.Common.Traits;
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Warheads
 {
     public class CreateEffectWarhead:Warhead,IRulesetLoaded<WeaponInfo>

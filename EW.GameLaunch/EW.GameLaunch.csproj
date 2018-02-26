@@ -90,6 +90,9 @@
     <Compile Include="..\EW.Mods.Cnc\CncLoadScreen.cs">
       <Link>External_CnC\CncLoadScreen.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Cnc\Effects\AnimatedBeacon.cs">
+      <Link>External_CnC\Effects\AnimatedBeacon.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Cnc\FileFormats\Blowfish.cs">
       <Link>External_CnC\FileFormats\Blowfish.cs</Link>
     </Compile>
@@ -195,6 +198,9 @@
     <Compile Include="..\EW.Mods.Common\Activities\Air\FlyAttack.cs">
       <Link>External_Common\Activities\Air\FlyAttack.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Air\Land.cs">
+      <Link>External_Common\Activities\Air\Land.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Air\ResupplyAircraft.cs">
       <Link>External_Common\Activities\Air\ResupplyAircraft.cs</Link>
     </Compile>
@@ -242,6 +248,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Drag.cs">
       <Link>External_Common\Activities\Drag.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Enter.cs">
+      <Link>External_Common\Activities\Enter.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
       <Link>External_Common\Activities\FindResources.cs</Link>
@@ -342,6 +351,9 @@
     <Compile Include="..\EW.Mods.Common\Effects\ContrailFader.cs">
       <Link>External_Common\Effects\ContrailFader.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\FlashTarget.cs">
+      <Link>External_Common\Effects\FlashTarget.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\FloatingText.cs">
       <Link>External_Common\Effects\FloatingText.cs</Link>
     </Compile>
@@ -392,6 +404,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\DefaultSpriteSequence.cs">
       <Link>External_Common\Graphics\DefaultSpriteSequence.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Graphics\DetectionCircleRenderable.cs">
+      <Link>External_Common\Graphics\DetectionCircleRenderable.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Graphics\ModelPreview.cs">
       <Link>External_Common\Graphics\ModelPreview.cs</Link>
@@ -461,6 +476,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Orders\PlaceBuildingOrderGenerator.cs">
       <Link>External_Common\Orders\PlaceBuildingOrderGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Orders\UnitOrderTargeter.cs">
+      <Link>External_Common\Orders\UnitOrderTargeter.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Pathfinder\BasePathSearch.cs">
       <Link>External_Common\Pathfinder\BasePathSearch.cs</Link>
@@ -1625,6 +1643,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\IngameRadarDisplayLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\PerfDebugLogic.cs">
       <Link>External_Common\Widgets\Logic\PerfDebugLogic.cs</Link>

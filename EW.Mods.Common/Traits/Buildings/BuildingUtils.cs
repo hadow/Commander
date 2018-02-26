@@ -23,5 +23,19 @@ namespace EW.Mods.Common.Traits
                 return false;
             return bi.TerrainTypes.Contains(world.Map.GetTerrainInfo(cell).Type);
         }
+
+
+
+
+        public static bool CanPlaceBuilding(this World world,string name,BuildingInfo building,CPos topLeft,Actor toIgnore)
+        {
+            if (building.AllowInvalidPlacement)
+                return true;
+
+            var res = world.WorldActor.TraitOrDefault<ResourceLayer>();
+            return building.Tiles(topLeft).All(t => world.Map.Contains(t) 
+            && (res == null || res.GetResource(t) == null) 
+            && world.IsCellBuildable(t, building, toIgnore));
+        }
     }
 }

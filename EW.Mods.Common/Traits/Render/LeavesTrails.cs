@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using EW.Traits;
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Traits.Render
 {
 

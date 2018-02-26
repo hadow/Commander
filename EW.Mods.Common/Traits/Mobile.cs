@@ -4,8 +4,10 @@ using System.Linq;
 using System.Drawing;
 using EW.Primitives;
 using EW.Traits;
+using EW.NetWork;
 using EW.Activities;
 using EW.Mods.Common.Activities;
+using EW.Mods.Common.Effects;
 namespace EW.Mods.Common.Traits
 {
     [Flags]
@@ -108,6 +110,10 @@ namespace EW.Mods.Common.Traits
         public readonly bool OnRails = false;
 
         public readonly bool MoveIntoShroud = true; //Can the actor be ordered to move in to shroud?
+
+        public readonly string Cursor = "move";
+
+        public readonly string BlockedCursor = "move-blocked";
 
         [VoiceReference]
         public readonly string Voice = "Action";
@@ -473,7 +479,11 @@ namespace EW.Mods.Common.Traits
         ISync,
         IActorPreviewInitModifier,
         IDeathActorInitModifier,
-        INotifyBlockingMove
+        INotifyBlockingMove,
+        IIssueOrder,
+        IResolveOrder,
+        IOrderVoice
+
     {
         const int AverageTicksBeforePathing = 5;
         const int SpreadTicksBeforePathing = 5;
@@ -747,7 +757,7 @@ namespace EW.Mods.Common.Traits
         }
 
         /// <summary>
-        /// 推动
+        /// 四处分散开
         /// </summary>
         /// <param name="self"></param>
         /// <param name="nudger">推动者</param>
@@ -966,5 +976,106 @@ namespace EW.Mods.Common.Traits
         {
             return Info.GetAvailableSubCell(self.World, self, a, preferredSubCell, ignoreActor, checkTransientActors ? CellConditions.All : CellConditions.None);
         }
+
+
+        #region Orders
+
+        class MoveOrderTargeter : IOrderTargeter
+        {
+            readonly Mobile mobile;
+            readonly bool rejectMove;
+
+            public MoveOrderTargeter(Actor self,Mobile unit)
+            {
+                mobile = unit;
+                rejectMove = !self.AcceptsOrder("Move");
+            }
+
+            public bool TargetOverridesSelection(TargetModifiers modifiers)
+            {
+                return modifiers.HasModifier(TargetModifiers.ForceMove);
+            }
+
+            public string OrderID { get { return "Move"; } }
+
+            public int OrderPriority { get { return 4; } }
+
+            public bool IsQueued { get; protected set; }
+
+            public bool CanTarget(Actor self,Target target,List<Actor> othersAtTarget,ref TargetModifiers modifiers,ref string cursor)
+            {
+                if (rejectMove || target.Type != TargetT.Terrain)
+                    return false;
+
+                var location = self.World.Map.CellContaining(target.CenterPosition);
+                IsQueued = modifiers.HasModifier(TargetModifiers.ForceQueue);
+
+                var explored = self.Owner.Shroud.IsExplored(location);
+
+                cursor = self.World.Map.Contains(location) ? (self.World.Map.GetTerrainInfo(location).CustomCursor ?? mobile.Info.Cursor) : mobile.Info.BlockedCursor;
+
+                if (mobile.IsTraitDisabled || (!explored && !mobile.Info.MoveIntoShroud)
+                    || (explored && mobile.Info.MovementCostForCell(self.World, location) == int.MaxValue))
+                    cursor = mobile.Info.BlockedCursor;
+
+                return true;
+            }
+        }
+        public IEnumerable<IOrderTargeter> Orders { get { yield return new MoveOrderTargeter(self, this); } }
+
+        public Order IssueOrder(Actor self,IOrderTargeter order,Target target,bool queued)
+        {
+            if (order is MoveOrderTargeter)
+                return new Order("Move", self, target, queued);
+
+            return null;
+        }
+
+
+        public void ResolveOrder(Actor self,Order order)
+        {
+            if(order.OrderString == "Move")
+            {
+                var loc = self.World.Map.Clamp(order.TargetLocation);
+
+                if (!Info.MoveIntoShroud && !self.Owner.Shroud.IsExplored(loc))
+                    return;
+
+                if (!order.Queued)
+                    self.CancelActivity();
+
+                TicksBeforePathing = AverageTicksBeforePathing + self.World.SharedRandom.Next(-SpreadTicksBeforePathing, SpreadTicksBeforePathing);
+
+                self.SetTargetLine(Target.FromCell(self.World, loc), Color.Green);
+                self.QueueActivity(order.Queued, new Move(self, loc, WDist.FromCells(8), null, true));
+
+            }
+
+            if (order.OrderString == "Stop")
+                self.CancelActivity();
+
+            if (order.OrderString == "Scatter")//分散开
+                Nudge(self, self, true);
+
+
+
+        }
+
+        public string VoicePhraseForOrder(Actor self,Order order)
+        {
+            if (!Info.MoveIntoShroud && !self.Owner.Shroud.IsExplored(order.TargetLocation))
+                return null;
+
+            switch (order.OrderString)
+            {
+                case "Move":
+                case "Scatter":
+                case "Stop":
+                    return Info.Voice;
+                default:
+                    return null;
+            }
+        }
+        #endregion
     }
 }

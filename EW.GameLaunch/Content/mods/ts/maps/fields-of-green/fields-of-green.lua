@@ -6,7 +6,7 @@
    the License, or (at your option) any later version. For more
    information, see COPYING.
 ]]
-NForce = { "dpod", "e1", "e3", "cyborg", "cyc2","mhijack","mhijack","umagon","mutant","orcab","apache"}
+NForce = { "dpod", "e1", "e3", "cyborg", "cyc2","mhijack","umagon","mutant","orcab","apache"}
 NForcePath = { NodW.Location, GDIBase.Location }
 NForceInterval = 5
 
@@ -14,7 +14,7 @@ VNForce = { "bike", "sapc", "art2", "bggy", "e1", "repair", "e3","sapc","subtank
 VNForcePath = { South.Location, GDIBase.Location }
 VNForceInterval = 15
 
-GForce = { "e1", "jumpjet", "dshp", "visc_lrg", "e2", "doggie", "visc_sml","medic","flameguy","medic","jfish","medic","ghost","orca","orcatran","scrin","transport" }
+GForce = { "e1", "jumpjet", "dshp", "visc_lrg", "e2", "doggie", "visc_sml","medic","flameguy","medic","jfish","medic","ghost","orca","orcatran","scrin"}
 GForcePath = { GDIW.Location, NodBase.Location }
 GForceInterval = 5
 
@@ -108,7 +108,7 @@ WorldLoaded = function()
 
     Utils.Do(ProducedUnitTypes, ProduceUnits)
     SendNodInfantry()
-    Trigger.AfterDelay(DateTime.Seconds(25), SendNodVehicles)
+    Trigger.AfterDelay(DateTime.Seconds(5), SendNodVehicles)
     SendGDIInfantry()
-    Trigger.AfterDelay(DateTime.Seconds(25), SendGDIVehicles)
+    Trigger.AfterDelay(DateTime.Seconds(5), SendGDIVehicles)
 end

@@ -4,7 +4,7 @@ using System.Linq;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-    public class PowerManagerInfo : ITraitInfo
+    public class PowerManagerInfo : ITraitInfo,Requires<DeveloperModeInfo>
     {
 
         public readonly int AdviceInterval = 250;

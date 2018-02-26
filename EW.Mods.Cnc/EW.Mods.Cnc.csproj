@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Activities\VoxelHarvesterDockSequence.cs" />
     <Compile Include="CncLoadScreen.cs" />
+    <Compile Include="Effects\AnimatedBeacon.cs" />
     <Compile Include="FileFormats\Blowfish.cs" />
     <Compile Include="FileFormats\BlowfishKeyProvider.cs" />
     <Compile Include="FileFormats\CRC32.cs" />

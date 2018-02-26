@@ -77,6 +77,9 @@ namespace EW.Mods.Common.Traits
         public readonly WDist WaitDistanceFromResupplyBase = new WDist(3072);
 
 
+        [Desc("The number of ticks that a airplane will wait to make a new search for an available airport.")]
+        public readonly int NumberOfTicksToVerifyAvailableAirport = 150;
+
         [Desc("Can the actor hover in place mid-air ?  If not,then the actor will have to remain in motion (circle around).")]
         public readonly bool CanHover = false;
 

@@ -290,4 +290,10 @@ namespace EW.Mods.Common.Traits
         IEnumerable<string> ProvidesPrerequisites { get; }
     }
 
+    public enum ActorPreviewType { PlaceBuilding,ColorPicker,MapEditorSidebar}
+    public interface IActorPreviewInitInfo : ITraitInfo
+    {
+        IEnumerable<object> ActorPreviewInits(ActorInfo ai, ActorPreviewType type);
+    }
+
 }

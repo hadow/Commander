@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Primitives;
-
+using EW.Traits;
 namespace EW
 {
     public class Selection
@@ -33,6 +34,66 @@ namespace EW
 
 
         }
+
+
+        public void Combine(World world,IEnumerable<Actor> newSelection,bool isCombine,bool isClick)
+        {
+            if (isClick)
+            {
+
+                var adjNewSelection = newSelection.Take(1);
+                if (isCombine)
+                    actors.SymmetricExceptWith(adjNewSelection);
+                else
+                {
+                    actors.Clear();
+                    actors.UnionWith(adjNewSelection);
+                }
+            }
+            else
+            {
+                if (isCombine)
+                    actors.UnionWith(newSelection);
+                else
+                {
+                    actors.Clear();
+                    actors.UnionWith(newSelection);
+                }
+            }
+
+            UpdateHash();
+
+            foreach (var a in newSelection)
+                foreach (var sel in a.TraitsImplementing<INotifySelected>())
+                    sel.Selected(a);
+
+            foreach (var ns in world.WorldActor.TraitsImplementing<INotifySelection>())
+                ns.SelectionChanged();
+
+            if (world.IsGameOver)
+                return;
+
+            foreach(var actor in actors)
+            {
+                if (actor.Owner != world.LocalPlayer || !actor.IsInWorld)
+                    continue;
+
+                var selectable = actor.Info.TraitInfoOrDefault<SelectableInfo>();
+                if (selectable == null || !actor.HasVoice(selectable.Voice))
+                    continue;
+
+                actor.PlayVoice(selectable.Voice);
+                break;
+            }
+        }
+
+
+        public void Clear()
+        {
+            actors.Clear();
+            UpdateHash();
+        }
+
 
 
         public bool Contains(Actor a)
