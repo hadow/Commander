@@ -6,6 +6,45 @@ namespace EW
 {
     public enum StatusBarsType { Standard,DamageShow,AlwaysShow}
 
+    public class ServerSettings
+    {
+        [Desc("Sets the server name.")]
+        public string Name = "";
+
+        [Desc("Sets the internal port")]
+        public int ListenPort = 1234;
+
+        [Desc("Sets the port advertised to the master server.")]
+        public int ExternalPort = 1234;
+
+        [Desc("Report the game to the master server list.")]
+        public bool AdvertiseOnline = true;
+
+        [Desc("Locks the game with a password.")]
+        public string Password = "";
+
+        public bool DiscoverNatDevices = false;
+
+        public int NatDiscoveryTimeout = 1000;
+
+        public string Map = null;
+
+        public string[] Ban = { };
+
+        public bool EnableSingleplayer = false;
+
+        public bool QueryMapRepository = true;
+
+        public string TimestampFormat = "s";
+
+
+        public ServerSettings Clone()
+        {
+            return (ServerSettings)MemberwiseClone();
+        }
+    }
+
+
     public class DebugSettings
     {
         public bool LuaDebug = false;
@@ -85,7 +124,7 @@ namespace EW
         public readonly GameSettings Game = new GameSettings();
         public readonly SoundSettings Sound = new SoundSettings();
         public readonly DebugSettings Debug = new DebugSettings();
-
+        public readonly ServerSettings Server = new ServerSettings();
         public Dictionary<string, object> Sections;
 
         public Settings(string file,Arguments args)
@@ -93,7 +132,11 @@ namespace EW
             settingFile = file;
             Sections = new Dictionary<string, object>()
             {
-                {"Game",Game }, { "Sound",Sound },{"Debug",Debug },{"Graphics",Graphics}
+                {"Game",Game },
+                {"Sound",Sound },
+                {"Debug",Debug },
+                {"Graphics",Graphics},
+                {"Server",Server}
             };
 
             var err1 = FieldLoader.UnknownFieldAction;

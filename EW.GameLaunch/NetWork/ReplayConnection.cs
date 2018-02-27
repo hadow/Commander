@@ -6,7 +6,7 @@ namespace EW.NetWork
 {
     public sealed class ReplayConnection:IConnection
     {
-
+        public readonly string Filename;
         public int LocalClientId { get { return 0; } }
 
 

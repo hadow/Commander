@@ -166,6 +166,10 @@
     <Compile Include="Scripting\Properties\ProductionProperties.cs" />
     <Compile Include="Scripting\Properties\TransportProperties.cs" />
     <Compile Include="Scripting\ScriptTriggers.cs" />
+    <Compile Include="ServerTraits\LobbyCommands.cs" />
+    <Compile Include="ServerTraits\LobbySettingsNotification.cs" />
+    <Compile Include="ServerTraits\MasterServerPinger.cs" />
+    <Compile Include="ServerTraits\PlayerPinger.cs" />
     <Compile Include="ShroudExts.cs" />
     <Compile Include="SpriteLoaders\ShpD2Loader.cs" />
     <Compile Include="SpriteLoaders\ShpTDLoader.cs" />

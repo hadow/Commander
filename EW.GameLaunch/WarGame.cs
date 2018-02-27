@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
+using System.Globalization;
 using System.Linq;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using EW.Framework;
 using EW.Framework.Graphics;
 using EW.Support;
@@ -54,6 +58,7 @@ namespace EW
         public static Sound Sound;
         public static Renderer Renderer;
         static WorldRenderer worldRenderer;
+        static Server.Server server;
         internal static OrderManager orderManager;
         static volatile ActionQueue delayedActions = new ActionQueue();
 
@@ -88,6 +93,10 @@ namespace EW
 
         bool _pinching = false;
         float _pinchInitialDistance;
+
+        public static event Action LobbyInfoChanged = () => { };
+
+        static Task discoverNat;
         public WarGame() {
 
             IsFixedTimeStep = true;
@@ -126,6 +135,9 @@ namespace EW
         {
             string customModPath = null;
             InitializeSettings(args);
+
+            if (Settings.Server.DiscoverNatDevices)
+                discoverNat = UPnP.DiscoverNatDevices(Settings.Server.NatDiscoveryTimeout);
 
             customModPath = Android.App.Application.Context.FilesDir.Path;
             Mods = new InstalledMods(customModPath);
@@ -197,6 +209,38 @@ namespace EW
             ModData.LoadScreen.StartGame(args);
         }
 
+        public static void CreateAndStartLocalServer(string mapUID,IEnumerable<Order> setupOrders)
+        {
+            OrderManager om = null;
+
+            Action lobbyReady = null;
+
+            lobbyReady = () =>
+            {
+                LobbyInfoChanged -= lobbyReady;
+                foreach (var o in setupOrders)
+                    om.IssueOrder(o);
+            };
+
+            LobbyInfoChanged += lobbyReady;
+
+            om = JoinServer(IPAddress.Loopback.ToString(), CreateLocalServer(mapUID), "");
+        }
+
+
+        public static int CreateLocalServer(string map)
+        {
+            var settings = new ServerSettings()
+            {
+                Name = "Skirmish Game",
+                Map = map,
+                AdvertiseOnline = false
+            };
+
+            server = new Server.Server(new IPEndPoint(IPAddress.Loopback, 0), settings, ModData, false);
+
+            return server.Port;
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -251,6 +295,24 @@ namespace EW
 
         static void JoinLocal(){
             JoinInner(new OrderManager("<no server>",-1,"",new EchoConnection()));
+        }
+
+        public static OrderManager JoinServer(string host,int port,string password,bool recordReplay = true)
+        {
+            var connection = new NetworkConnection(host, port);
+
+            if (recordReplay)
+                connection.StartRecording(() => { return TimestampedFilename(); });
+
+            var om = new OrderManager(host, port, password, connection);
+            JoinInner(om);
+            return om;
+        }
+
+        static string TimestampedFilename(bool includemilliseconds = false)
+        {
+            var format = includemilliseconds ? "yyyy-MM-ddTHHmmssfffZ" : "yyyy-MM-ddTHHmmssZ";
+            return "EastWood-" + DateTime.UtcNow.ToString(format, CultureInfo.InvariantCulture);
         }
 
 
@@ -455,6 +517,51 @@ namespace EW
             return ModData.ObjectCreator.CreateObject<T>(name);
         }
 
+
+        /// <summary>
+        /// ÷ÿ∆Ù”Œœ∑
+        /// </summary>
+        public static void RestartGame()
+        {
+            var replay = orderManager.Connection as ReplayConnection;
+            var replayName = replay != null ? replay.Filename : null;
+            var lobbyInfo = orderManager.LobbyInfo;
+
+            var orders = new[] {
+                Order.Command("sync_lobby {0}".F(lobbyInfo.Serialize())),
+                Order.Command("startgame")
+
+            };
+
+            Disconnect();
+            UI.ResetAll();
+
+            if(replay != null)
+            {
+
+            }
+            else
+            {
+                CreateAndStartLocalServer(lobbyInfo.GlobalSettings.Map, orders);
+            }
+        }
+
+        public static void Disconnect()
+        {
+            if(orderManager.World != null)
+            {
+
+            }
+            orderManager.Dispose();
+            CloseServer();
+            JoinLocal();
+        }
+
+        public static void CloseServer()
+        {
+            if (server != null)
+                server.Shutdown();
+        }
 
         //internal static RunStatus CustomRun()
         //{

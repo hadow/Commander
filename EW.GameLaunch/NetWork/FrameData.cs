@@ -56,7 +56,8 @@ namespace EW.NetWork
 
         }
 
-        public IEnumerable<ClientOrder> OrdersForFrame(World world,int frame){
+        public IEnumerable<ClientOrder> OrdersForFrame(World world,int frame)
+        {
 
             var frameData = framePackets[frame];
             var clientData = ClientsPlayingInFrame(frame).ToDictionary(k=>k,v=>frameData[v]);
@@ -69,6 +70,19 @@ namespace EW.NetWork
 
 
 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="lastClientFrame"></param>
+        public void ClientQuit(int clientId,int lastClientFrame)
+        {
+            if (lastClientFrame == -1)
+                lastClientFrame = framePackets.Where(x => x.Value.ContainsKey(clientId)).Select(x => x.Key).OrderBy(x => x).LastOrDefault();
+
+            clientQuitTimes[clientId] = lastClientFrame;
         }
 
 

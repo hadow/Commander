@@ -175,5 +175,11 @@ namespace EW.NetWork
         }
 
 
+        internal void DumpSyncReport(int frame,IEnumerable<FrameData.ClientOrder> orders)
+        {
+
+        }
+
+
     }
 }

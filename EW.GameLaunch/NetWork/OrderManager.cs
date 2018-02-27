@@ -59,7 +59,13 @@ namespace EW.NetWork
             byte[] existingSync;
 
             if(syncForFrame.TryGetValue(frame,out existingSync)){
-                
+
+                if (packet.Length != existingSync.Length)
+                    OutOfSync(frame);
+                else
+                    for (var i = 0; i < packet.Length; i++)
+                        if (packet[i] != existingSync[i])
+                            OutOfSync(frame);
             }
             else{
                 syncForFrame.Add(frame,packet);
@@ -72,7 +78,9 @@ namespace EW.NetWork
         /// <param name="frame">Frame.</param>
         void OutOfSync(int frame){
 
+            syncReport.DumpSyncReport(frame, frameData.OrdersForFrame(World, frame));
 
+            throw new InvalidOperationException("Out of sync in frame {0}.\n Compare syncreport.log with other players".F(frame));
         }
 
         public void StartGame()
@@ -135,13 +143,13 @@ namespace EW.NetWork
                 var frame = BitConverter.ToInt32(packet, 0);
 
                 if(packet.Length == 5 && packet[4] == 0xBF ){
-                    
+                    frameData.ClientQuit(clientId, frame);
                 }
                 else if(packet.Length>=5 && packet[4] == 0x65){
-                    
+                    CheckSync(packet);
                 }
                 else if(frame == 0){
-                    
+                    immediatePackets.Add(Pair.New(clientId, packet));
                 }
                 else{
                     frameData.AddFrameOrders(clientId,frame,packet);

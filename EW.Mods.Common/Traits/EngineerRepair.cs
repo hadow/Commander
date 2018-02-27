@@ -24,11 +24,29 @@ namespace EW.Mods.Common.Traits
             public EngineerRepairOrderTargeter() : base("EngineerRepair", 6,"goldwrench", false, true) { }
             public override bool CanTargetActor(Actor self, Actor target, TargetModifiers modifiers, ref string cursor)
             {
+                if (!target.Info.HasTraitInfo<EngineerRepairableInfo>())
+                    return false;
+
+                if (self.Owner.Stances[target.Owner] != Stance.Ally)
+                    return false;
+
+                if (target.GetDamageState() == DamageState.Undamaged)
+                    cursor = "goldwrench-blocked";
+
                 return true;
             }
 
             public override bool CanTargetFrozenActor(Actor self, FrozenActor target, TargetModifiers modifiers, ref string cursor)
             {
+                if (!target.Info.HasTraitInfo<EngineerRepairableInfo>())
+                    return false;
+
+                if (self.Owner.Stances[target.Owner] != Stance.Ally)
+                    return false;
+
+                if (target.DamageState == DamageState.Undamaged)
+                    cursor = "goldwrench-blocked";
+
                 return true;
             }
         }

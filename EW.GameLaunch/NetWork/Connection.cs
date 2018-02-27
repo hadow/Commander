@@ -36,7 +36,8 @@ namespace EW.NetWork
     }
 
 
-    class EchoConnection:IConnection{
+    class EchoConnection:IConnection
+    {
 
         protected struct ReceivedPacket{
             public int FromClient;
@@ -50,6 +51,8 @@ namespace EW.NetWork
 
         public virtual ConnectionState ConnectionState{ get { return ConnectionState.PreConnecting; }}
 
+        public ReplayRecorder Recorder { get; private set; }
+        
         public virtual void Send(int frame,List<byte[]> orders)
         {
             var ms = new MemoryStream();
@@ -60,8 +63,13 @@ namespace EW.NetWork
 
         }
 
-        public virtual void SendImmediate(List<byte[]> orders){
-            
+        public virtual void SendImmediate(List<byte[]> orders)
+        {
+            var ms = new MemoryStream();
+            ms.Write(BitConverter.GetBytes(0));
+            foreach (var o in orders)
+                ms.Write(o);
+            Send(ms.ToArray());
         }
 
         public virtual void SendSync(int frame,byte[] syncData){
@@ -88,16 +96,70 @@ namespace EW.NetWork
 
         }
 
-        public virtual void Receive(Action<int,byte[]> packetFn){
-            
+        public virtual void Receive(Action<int,byte[]> packetFn)
+        {
+            ReceivedPacket[] packets;
+            lock (receivedPackets)
+            {
+                packets = receivedPackets.ToArray();
+                receivedPackets.Clear();
+            }
+
+            foreach(var p in packets)
+            {
+                packetFn(p.FromClient, p.Data);
+                if (Recorder != null)
+                    Recorder.Receive(p.FromClient, p.Data);
+            }
+        }
+
+        public void StartRecording(Func<string> chooseFilename)
+        {
+
         }
 
         protected virtual void Dispose(bool disposing)
         {
+            if (disposing && Recorder != null)
+                Recorder.Dispose();
         }
 
-        public void Dispose(){
-            
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+
+
+    sealed class NetworkConnection : EchoConnection
+    {
+        readonly TcpClient tcp;
+        readonly List<byte[]> queuedSyncPackets = new List<byte[]>();
+        volatile ConnectionState connectionState = ConnectionState.Connecting;
+        volatile int clientId;
+        bool disposed;
+
+        public NetworkConnection(string host,int port)
+        {
+            try
+            {
+                tcp = new TcpClient(host, port) { NoDelay = true };
+                new Thread(NetworkConnectionReceive)
+                {
+                    Name = GetType().Name + " " + host + ":" + port,
+                    IsBackground = true
+                }.Start(tcp.GetStream());
+            }
+            catch
+            {
+                connectionState = ConnectionState.NotConnected;
+            }
+        }
+
+        void NetworkConnectionReceive(object networkStreamObject)
+        {
+
         }
     }
 }

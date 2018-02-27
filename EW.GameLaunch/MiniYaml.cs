@@ -23,6 +23,11 @@ namespace EW
                 }
             }
         }
+
+        public static string WriteToString(this MiniYamlNodes y)
+        {
+            return y.ToLines(true).Select(x => x.TrimEnd()).JoinWith("\n");
+        }
     }
     /// <summary>
     /// 

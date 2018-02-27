@@ -18,7 +18,10 @@ namespace EW
     /// </summary>
     public static class FieldLoader
     {
-
+        public static IEnumerable<FieldLoadInfo> GetTypeLoadInfo(Type type,bool includePrivateByDefault = false)
+        {
+            return TypeLoadInfo[type].Where(fli => includePrivateByDefault || fli.Field.IsPublic || (fli.Attribute.Serialize && !fli.Attribute.IsDefault));
+        }
         public class MissingFieldsException : YamlException
         {
             public readonly string[] Missing;

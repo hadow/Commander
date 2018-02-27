@@ -129,6 +129,10 @@ namespace EW.Graphics
             return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2") + color.A.ToString("X2");
         }
 
+        public string ToHexString()
+        {
+            return ToHexString(RGB);
+        }
 
     }
 }

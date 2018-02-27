@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -59,6 +59,9 @@
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Open.Nat">
+      <HintPath>..\packages\Open.Nat.dll</HintPath>
     </Reference>
     <Reference Include="SharpFont">
       <HintPath>..\packages\SharpFont\SharpFont.dll</HintPath>
@@ -590,6 +593,18 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Scripting\ScriptTriggers.cs">
       <Link>External_Common\Scripting\ScriptTriggers.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ServerTraits\LobbyCommands.cs">
+      <Link>External_Common\ServerTraits\LobbyCommands.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ServerTraits\LobbySettingsNotification.cs">
+      <Link>External_Common\ServerTraits\LobbySettingsNotification.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ServerTraits\MasterServerPinger.cs">
+      <Link>External_Common\ServerTraits\MasterServerPinger.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\ServerTraits\PlayerPinger.cs">
+      <Link>External_Common\ServerTraits\PlayerPinger.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\ShroudExts.cs">
       <Link>External_Common\ShroudExts.cs</Link>
@@ -1702,6 +1717,7 @@
     <Compile Include="Effects\IEffect.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
+    <Compile Include="FieldSaver.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="FileSystem\Folder.cs" />
     <Compile Include="FileSystem\IPackage.cs" />
@@ -1764,8 +1780,10 @@
     <Compile Include="NetWork\Order.cs" />
     <Compile Include="NetWork\OrderManager.cs" />
     <Compile Include="NetWork\ReplayConnection.cs" />
+    <Compile Include="NetWork\ReplayRecorder.cs" />
     <Compile Include="NetWork\Session.cs" />
     <Compile Include="NetWork\SyncReport.cs" />
+    <Compile Include="NetWork\UPnP.cs" />
     <Compile Include="ObjectCreator.cs" />
     <Compile Include="GameActivity.cs" />
     <Compile Include="Orders\GenericSelectTarget.cs" />
@@ -1801,6 +1819,10 @@
     <Compile Include="Scripting\LuaValueExts.cs" />
     <Compile Include="Scripting\ScriptPlayerInterface.cs" />
     <Compile Include="Selection.cs" />
+    <Compile Include="Server\Connection.cs" />
+    <Compile Include="Server\Server.cs" />
+    <Compile Include="Server\ServerOrder.cs" />
+    <Compile Include="Server\TraitsInterface.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Sound\Sound.cs" />
     <Compile Include="Sound\SoundDevice.cs" />

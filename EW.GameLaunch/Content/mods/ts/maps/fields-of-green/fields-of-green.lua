@@ -10,7 +10,7 @@ NForce = { "dpod", "e1", "e3", "cyborg", "cyc2","mhijack","umagon","mutant","orc
 NForcePath = { NodW.Location, GDIBase.Location }
 NForceInterval = 5
 
-VNForce = { "bike", "sapc", "art2", "bggy", "e1", "repair", "e3","sapc","subtank","stnk","lpst" }
+VNForce = { "bike", "sapc", "art2", "bggy", "e1", "repair", "e3","sapc","subtank","stnk","lpst","harv" }
 VNForcePath = { South.Location, GDIBase.Location }
 VNForceInterval = 15
 
@@ -18,7 +18,7 @@ GForce = { "e1", "jumpjet", "dshp", "visc_lrg", "e2", "doggie", "visc_sml","medi
 GForcePath = { GDIW.Location, NodBase.Location }
 GForceInterval = 5
 
-VGForce = { "e2", "smech", "mmch", "e1", "e1", "apc","hvr","hmec","sonic","jugg","lpst" }
+VGForce = { "e2", "smech", "mmch", "e1", "e1", "apc","hvr","hmec","sonic","jugg","lpst","harv"}
 VGForcePath = { North.Location, NodBase.Location }
 VGForceInterval = 15
 

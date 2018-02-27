@@ -247,5 +247,11 @@ namespace EW.NetWork
         {
             return new Order("PauseGame", null, false) { TargetString = paused ? "Pause" : "UnPause" };
         }
+
+
+        public static Order Command(string text)
+        {
+            return new Order("Command", null, false) { IsImmediate = true, TargetString = text };
+        }
     }
 }

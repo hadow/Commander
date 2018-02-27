@@ -6,7 +6,7 @@ using EW.Primitives;
 using EW.Activities;
 using EW.Framework;
 using EW.NetWork;
-
+using EW.Server;
 namespace EW.Traits
 {
     public sealed class RequireExplicitImplementationAttribute : Attribute { }
@@ -148,6 +148,9 @@ namespace EW.Traits
     }
 
     #region Notify Interface
+
+    
+
 
     public interface INotifyIdle { void TickIdle(Actor self); }
     
