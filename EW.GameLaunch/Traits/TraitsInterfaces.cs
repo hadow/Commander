@@ -594,4 +594,7 @@ namespace EW.Traits
 
     public interface IPips { IEnumerable<PipType> GetPips(Actor self); }
 
+
+    
+
 }

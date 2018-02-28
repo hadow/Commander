@@ -50,6 +50,7 @@ namespace EW
             Lazy<Ruleset> rules;
             public Ruleset Rules { get { return rules != null ? rules.Value : null; } }
 
+            
             public bool InvalidCustomRules { get; private set; }
             public bool RulesLoaded { get; private set; }
 
@@ -123,6 +124,16 @@ namespace EW
         public MapClassification Class { get { return innerData.Class; } }
 
         public MapVisibility Visibility { get { return innerData.Visibility; } }
+
+
+        public bool DefinesUnsafeCustomRules
+        {
+            get
+            {
+                var force = innerData.Rules;
+                return innerData.DefinesUnsafeCustomRules;
+            }
+        }
         public readonly string Uid;
 
         static readonly CPos[] NoSpawns = new CPos[] { };

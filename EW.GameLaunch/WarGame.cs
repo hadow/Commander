@@ -35,7 +35,8 @@ namespace EW
         public static ModData ModData;
         public static Settings Settings;
         public static InstalledMods Mods { get; private set; }
-   
+        public static ExternalMods ExternalMods { get; private set; }
+        public static string EngineVersion { get; private set; }
         public GraphicsDeviceManager DeviceManager;
 
 
@@ -141,6 +142,8 @@ namespace EW
 
             customModPath = Android.App.Application.Context.FilesDir.Path;
             Mods = new InstalledMods(customModPath);
+
+            ExternalMods = new ExternalMods();
 
             InitializeMod(Settings.Game.Mod, args);
         }
@@ -324,6 +327,11 @@ namespace EW
             ConnectionStateChanged(orderManager);
         }
 
+        internal static void SyncLobbyInfo()
+        {
+            LobbyInfoChanged();
+        }
+
         protected override void Update(GameTime gameTime)
         {
             currentTouchState = TouchPanel.GetState();
@@ -441,8 +449,15 @@ namespace EW
         {
             delayedActions.PerformActions(RunTime);
 
+            if(orderManager.Connection.ConnectionState != lastConnectionState)
+            {
+                lastConnectionState = orderManager.Connection.ConnectionState;
+                ConnectionStateChanged(orderManager);
+            }
 
             InnerLogicTick(orderManager,time);
+            if (worldRenderer != null && orderManager.World != worldRenderer.World)
+                InnerLogicTick(worldRenderer.World.OrderManager,time);
         }
 
         /// <summary>

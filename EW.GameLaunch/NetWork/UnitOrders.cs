@@ -5,6 +5,13 @@ namespace EW.NetWork
 {
     public static class UnitOrders
     {
+        static void SetOrderLag(OrderManager o)
+        {
+            if(o.FramesAhead != o.LobbyInfo.GlobalSettings.OrderLatency && !o.GameStarted)
+            {
+                o.FramesAhead = o.LobbyInfo.GlobalSettings.OrderLatency;
+            }
+        }
 
         /// <summary>
         /// Processes the order.
@@ -13,7 +20,8 @@ namespace EW.NetWork
         /// <param name="world">World.</param>
         /// <param name="clientId">Client identifier.</param>
         /// <param name="order">Order.</param>
-        internal static void ProcessOrder(OrderManager orderManager,World world,int clientId,Order order){
+        internal static void ProcessOrder(OrderManager orderManager,World world,int clientId,Order order)
+        {
 
             if(world != null){
 
@@ -23,20 +31,62 @@ namespace EW.NetWork
             }
 
             switch(order.OrderString){
+                case "Message":
+                    {
+
+                        break;
+                    }
                 case "Disconnected":
                     {
+                        var client = orderManager.LobbyInfo.ClientWithIndex(clientId);
+                        if (client != null)
+                            client.State = Session.ClientState.Disconnected;
                         break;
                     }
                 case "StartGame":
                     {
+                        if(WarGame.ModData.MapCache[orderManager.LobbyInfo.GlobalSettings.Map].Status != MapStatus.Available)
+                        {
+                            WarGame.Disconnect();
+                            WarGame.LoadShellMap();
+                            break;
+                        }
+                        WarGame.StartGame(orderManager.LobbyInfo.GlobalSettings.Map, WorldT.Regular);
+
                         break;
                     }
                 case "PauseGame":
                     {
                         break;
                     }
-                case "HandsshakeRequest":
+                case "HandshakeRequest":
                     {
+                        var mod = WarGame.ModData.Manifest;
+                        var request = HandshakeRequest.Deserialize(order.TargetString);
+
+                        WarGame.Settings.Player.Name = Settings.SanitizedPlayerName(WarGame.Settings.Player.Name);
+
+                        var info = new Session.Client()
+                        {
+                            Name = WarGame.Settings.Player.Name,
+                            PreferredColor = WarGame.Settings.Player.Color,
+                            Color = WarGame.Settings.Player.Color,
+                            Faction = "Random",
+                            SpawnPoint = 0,
+                            Team = 0,
+                            State = Session.ClientState.Invalid
+                        };
+
+                        var response = new HandshakeResponse()
+                        {
+                            Client = info,
+                            Mod = mod.Id,
+                            Version = mod.Metadata.Version,
+                            Password = orderManager.Password,
+                        };
+
+                        orderManager.IssueOrder(Order.HandshakeResponse(response.Serialize()));
+                        
                         break;
                     }
                 case "ServerError":
@@ -48,11 +98,14 @@ namespace EW.NetWork
                     }
                 case "SyncInfo":
                     {
-                        
+                        orderManager.LobbyInfo = Session.Deserialize(order.TargetString);
+                        SetOrderLag(orderManager);
+                        WarGame.SyncLobbyInfo();
                         break;
                     }
                 case "Ping":
                     {
+                        orderManager.IssueOrder(Order.Pong(order.TargetString));
                         break;
                     }
 

@@ -63,6 +63,9 @@
     <Reference Include="Open.Nat">
       <HintPath>..\packages\Open.Nat.dll</HintPath>
     </Reference>
+    <Reference Include="rix0rrr.BeaconLib">
+      <HintPath>..\packages\rix0rrr.BeaconLib.dll</HintPath>
+    </Reference>
     <Reference Include="SharpFont">
       <HintPath>..\packages\SharpFont\SharpFont.dll</HintPath>
     </Reference>
@@ -1632,6 +1635,9 @@
     <Compile Include="..\EW.Mods.Common\Warheads\Warhead.cs">
       <Link>External_Common\Warheads\Warhead.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\WebServices.cs">
+      <Link>External_Common\WebServices.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\BackgroundWidget.cs">
       <Link>External_Common\Widgets\BackgroundWidget.cs</Link>
     </Compile>
@@ -1643,6 +1649,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\ImageWidget.cs">
       <Link>External_Common\Widgets\ImageWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\ConnectionLogic.cs">
+      <Link>External_Common\Widgets\Logic\ConnectionLogic.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs</Link>
@@ -1661,6 +1670,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\MainMenuLogic.cs">
+      <Link>External_Common\Widgets\Logic\MainMenuLogic.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\PerfDebugLogic.cs">
       <Link>External_Common\Widgets\Logic\PerfDebugLogic.cs</Link>
@@ -1715,6 +1727,7 @@
     <Compile Include="Effects\DelayedAction.cs" />
     <Compile Include="Effects\DelayedImpact.cs" />
     <Compile Include="Effects\IEffect.cs" />
+    <Compile Include="ExternalMod.cs" />
     <Compile Include="Exts.cs" />
     <Compile Include="FieldLoader.cs" />
     <Compile Include="FieldSaver.cs" />
@@ -1777,6 +1790,8 @@
     <Compile Include="MiniYaml.cs" />
     <Compile Include="ModData.cs" />
     <Compile Include="NetWork\Connection.cs" />
+    <Compile Include="NetWork\GameServer.cs" />
+    <Compile Include="NetWork\HandshakeRequest.cs" />
     <Compile Include="NetWork\Order.cs" />
     <Compile Include="NetWork\OrderManager.cs" />
     <Compile Include="NetWork\ReplayConnection.cs" />
@@ -1820,6 +1835,7 @@
     <Compile Include="Scripting\ScriptPlayerInterface.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Server\Connection.cs" />
+    <Compile Include="Server\ProtocolVersion.cs" />
     <Compile Include="Server\Server.cs" />
     <Compile Include="Server\ServerOrder.cs" />
     <Compile Include="Server\TraitsInterface.cs" />
@@ -2184,6 +2200,8 @@
     <AndroidNativeLibrary Include="lib\armeabi-v7a\libfreetype.so" />
     <AndroidNativeLibrary Include="lib\x86_64\libfreetype.so" />
     <AndroidAsset Include="Content\mods\common\chrome\ingame.yaml" />
+    <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.yaml" />
     <None Include="Resources\AboutResources.txt" />
     <AndroidAsset Include="Content\mods\common\chrome\assetbrowser.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\color-picker.yaml" />
@@ -2266,6 +2284,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

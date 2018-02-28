@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EW.Graphics;
 namespace EW.NetWork
 {
     public class Session
@@ -20,6 +21,11 @@ namespace EW.NetWork
             }
         }
 
+        public IEnumerable<Client> NonBotPlayers
+        {
+            get { return Clients.Where(c => c.Bot == null && c.Slot != null); }
+        }
+
         public Client ClientWithIndex(int clientID){
             return Clients.SingleOrDefault(c => c.Index == clientID);
         }
@@ -27,6 +33,50 @@ namespace EW.NetWork
         public Client ClientInSlot(string slot)
         {
             return Clients.SingleOrDefault(c => c.Slot == slot);
+        }
+
+        public static Session Deserialize(string data)
+        {
+            try
+            {
+                var session = new Session();
+
+                var nodes = MiniYaml.FromString(data);
+
+                foreach(var node in nodes)
+                {
+                    var strings = node.Key.Split('@');
+
+                    switch (strings[0])
+                    {
+                        case "Client":
+                            session.Clients.Add(Client.Deserialize(node.Value));
+                            break;
+                        case "ClientPing":
+                            session.ClientPings.Add(ClientPing.Deserialize(node.Value));
+                            break;
+
+                        case "GlobalSettings":
+                            session.GlobalSettings = Global.Deserialize(node.Value);
+                            break;
+
+                        case "Slot":
+                            var s = Slot.Deserialize(node.Value);
+                            session.Slots.Add(s.PlayerReference, s);
+                            break;
+                    }
+                }
+
+                return session;
+            }
+            catch (YamlException)
+            {
+                throw new YamlException("Session deserialized invalid MiniYaml:\n{0}".F(data));
+            }
+            catch (InvalidOperationException)
+            {
+                throw new YamlException("Session deserialized invalid MiniYaml:\n{0}".F(data));
+            }
         }
 
         public enum ClientState{
@@ -38,6 +88,9 @@ namespace EW.NetWork
 
         public class Client
         {
+
+            public HSLColor PreferredColor;
+            public HSLColor Color;
 
             public ClientState State = ClientState.Invalid;
             public int Team;
@@ -51,7 +104,7 @@ namespace EW.NetWork
 
             public string IpAddress;
 
-            public string Slot;
+            public string Slot;//Slot ID,or null for observer
 
             public string Bot;//Bot type,null for real client.
 
@@ -68,6 +121,11 @@ namespace EW.NetWork
             public MiniYamlNode Serialize()
             {
                 return new MiniYamlNode("Client@{0}".F(Index), FieldSaver.Save(this));
+            }
+
+            public static Client Deserialize(MiniYaml data)
+            {
+                return FieldLoader.Load<Client>(data);
             }
         }
         public class ClientPing
@@ -95,6 +153,23 @@ namespace EW.NetWork
         {
             public string PlayerReference;
             public bool Closed;
+
+            public bool AllowBots;
+            public bool LockFaction;
+            public bool LockColor;
+            public bool LockSpawn;
+            public bool LockTeam;
+            public bool Required;
+
+            public static  Slot Deserialize(MiniYaml data)
+            {
+                return FieldLoader.Load<Slot>(data);
+            }
+
+            public MiniYamlNode Serialize()
+            {
+                return new MiniYamlNode("Slot@{0}".F(PlayerReference), FieldSaver.Save(this));
+            }
         }
 
 
@@ -118,6 +193,7 @@ namespace EW.NetWork
             public int RandomSeed = 0;
             public bool EnableSinglePlayer;
             public bool AllowSpectators = true;
+            public bool AllowVersionMismatch;
             public string GameUid;
 
             [FieldLoader.Ignore]
@@ -140,6 +216,33 @@ namespace EW.NetWork
 
                 return def;
             }
+
+
+            public static Global Deserialize(MiniYaml data)
+            {
+                var gs = FieldLoader.Load<Global>(data);
+
+                var optionsNode = data.Nodes.FirstOrDefault(n => n.Key == "Options");
+                if (optionsNode != null)
+                    foreach (var n in optionsNode.Value.Nodes)
+                        gs.LobbyOptions[n.Key] = FieldLoader.Load<LobbyOptionState>(n.Value);
+
+                return gs;
+            }
+
+            public MiniYamlNode Serialize()
+            {
+                var data = new MiniYamlNode("GlobalSettings", FieldSaver.Save(this));
+                var options = LobbyOptions.Select(kv => new MiniYamlNode(kv.Key, FieldSaver.Save(kv.Value))).ToList();
+                data.Value.Nodes.Add(new MiniYamlNode("Options", new MiniYaml(null, options)));
+
+                return data;
+            }
+        }
+
+        public ClientPing PingFromClient(Client client)
+        {
+            return ClientPings.SingleOrDefault(p => p.Index == client.Index);
         }
 
 
@@ -147,7 +250,23 @@ namespace EW.NetWork
         {
             var sessionData = new List<MiniYamlNode>();
 
+            foreach (var client in Clients)
+                sessionData.Add(client.Serialize());
+
+            foreach (var clientPing in ClientPings)
+                sessionData.Add(clientPing.Serialize());
+
+            foreach (var slot in Slots)
+                sessionData.Add(slot.Value.Serialize());
+
+            sessionData.Add(GlobalSettings.Serialize());
+
             return sessionData.WriteToString();
+        }
+
+        public string FirstEmptySlot()
+        {
+            return Slots.FirstOrDefault(s => !s.Value.Closed && ClientInSlot(s.Key) == null).Key;
         }
     }
 }

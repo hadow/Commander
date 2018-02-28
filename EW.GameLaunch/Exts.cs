@@ -263,6 +263,12 @@ namespace EW
             return d;
         }
 
+
+        public static bool TryParseInt64Invariant(string s,out long i)
+        {
+            return long.TryParse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out i);
+        }
+
         public static bool TryParseIntegerInvariant(string s,out int i)
         {
             return int.TryParse(s, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out i);

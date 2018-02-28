@@ -11,6 +11,7 @@ using EW.Support;
 using EW.NetWork;
 using EW.Primitives;
 using EW.Traits;
+using EW.Graphics;
 namespace EW.Server
 {
     public abstract class ServerTrait { }
@@ -24,6 +25,8 @@ namespace EW.Server
 
     public class Server
     {
+        public readonly string TwoHumansRequiredText = "This server requires at least two human players to start a match.";
+
         public readonly IPAddress Ip;
         public readonly int Port;
         public readonly MersenneTwister Random = new MersenneTwister();
@@ -58,6 +61,8 @@ namespace EW.Server
                 internalState = value;
             }
         }
+
+        int nextPlayerIndex;
 
         public Server(IPEndPoint endpoint,ServerSettings settings,ModData modData,bool dedicated)
         {
@@ -229,11 +234,32 @@ namespace EW.Server
                 newConn.Socket.Blocking = false;
                 newConn.Socket.NoDelay = true;
 
+                //assin the player number.
+                newConn.PlayerIndex = ChooseFreePlayerIndex();
+                SendData(newConn.Socket, BitConverter.GetBytes(ProtocolVersion.Version));
+                SendData(newConn.Socket, BitConverter.GetBytes(newConn.PlayerIndex));
+                PreConns.Add(newConn);
+
+                //Dispatch a handshake order
+                var request = new HandshakeRequest
+                {
+                    Mod = ModData.Manifest.Id,
+                    Version = ModData.Manifest.Metadata.Version,
+                    Map = LobbyInfo.GlobalSettings.Map,
+                };
+
+                DispatchOrdersToClient(newConn, 0, 0, new ServerOrder("HandshakeRequest", request.Serialize()).Serialize());
+
             }
             catch(Exception e)
             {
-
+                DropClient(newConn);
             }
+        }
+
+        public int ChooseFreePlayerIndex()
+        {
+            return nextPlayerIndex++;
         }
 
         public void SendMessage(string text)
@@ -305,7 +331,178 @@ namespace EW.Server
 
         void InterpretServerOrder(Connection conn,ServerOrder so)
         {
+            if (!conn.Validated)
+            {
+                if (so.Name == "HandshakeResponse")
+                    ValidateClient(conn, so.Data);
+                else
+                {
+                    DropClient(conn);
+                }
 
+                return;
+            }
+
+            switch (so.Name)
+            {
+                case "Command":
+                    {
+                        var handleBy = serverTraits.WithInterface<IInterpretCommand>().FirstOrDefault(t => t.InterpretCommand(this, conn, GetClient(conn), so.Data));
+
+                        if (handleBy == null)
+                            SendOrderTo(conn, "Message", "Unknown server command : {0}".F(so.Data));
+
+                        break;
+                    }
+                case "Pong":
+                    {
+                        long pingSent;
+                        if(!Exts.TryParseInt64Invariant(so.Data,out pingSent))
+                        {
+                            break;
+                        }
+
+                        var client = GetClient(conn);
+                        if (client == null)
+                            return;
+
+                        var pingFromClient = LobbyInfo.PingFromClient(client);
+                        if (pingFromClient == null)
+                            return;
+
+                        var history = pingFromClient.LatencyHistory.ToList();
+                        history.Add(WarGame.RunTime - pingSent);
+
+                        if (history.Count > 5)
+                            history.RemoveRange(0, history.Count - 5);
+
+                        pingFromClient.Latency = history.Sum() / history.Count;
+                        pingFromClient.LatencyJitter = (history.Max() - history.Min()) / 2;
+                        pingFromClient.LatencyHistory = history.ToArray();
+
+                        SyncClientPing();
+
+                        break;
+                    }
+            }
+
+
+        }
+
+
+        void ValidateClient(Connection newConn,string data)
+        {
+            try
+            {
+                if(State == ServerState.GameStarted)
+                {
+                    SendOrderTo(newConn, "ServerError", "The game has already started");
+                    DropClient(newConn);
+                    return;
+                }
+
+                var handshake = HandshakeResponse.Deserialize(data);
+
+                if(!string.IsNullOrEmpty(Settings.Password) && handshake.Password != Settings.Password)
+                {
+                    var message = string.IsNullOrEmpty(handshake.Password) ? "Server requires a password" : "Incorrect password";
+                    SendOrderTo(newConn, "AuthenticationError", message);
+                    DropClient(newConn);
+                    return;
+                }
+
+                var client = new Session.Client
+                {
+                    Name = EW.Settings.SanitizedPlayerName(handshake.Client.Name),
+                    IpAddress = ((IPEndPoint)newConn.Socket.RemoteEndPoint).Address.ToString(),
+                    Index = newConn.PlayerIndex,
+                    Slot = LobbyInfo.FirstEmptySlot(),
+                    PreferredColor = handshake.Client.PreferredColor,
+                    Color = handshake.Client.Color,
+                    Faction = "Random",
+                    SpawnPoint = 0,
+                    Team = 0,
+                    State = Session.ClientState.Invalid,
+                    IsAdmin = !LobbyInfo.Clients.Any(cl => cl.IsAdmin)
+
+                };
+
+                if(client.IsObserver && !LobbyInfo.GlobalSettings.AllowSpectators)
+                {
+                    SendOrderTo(newConn, "ServerError", "The game is full");
+                    DropClient(newConn);
+                    return;
+                }
+
+                if (client.Slot != null)
+                    SyncClientToPlayerReference(client, Map.Players.Players[client.Slot]);
+                else
+                    client.Color = HSLColor.FromRGB(255, 255, 255);
+
+                if(ModData.Manifest.Id != handshake.Mod)
+                {
+                    SendOrderTo(newConn, "ServerError", "Server is running an incompatible mod");
+                    DropClient(newConn);
+                    return;
+                }
+
+                if(ModData.Manifest.Metadata.Version != handshake.Version && !LobbyInfo.GlobalSettings.AllowVersionMismatch)
+                {
+                    SendOrderTo(newConn, "ServerError", "Server is running an incompatible version");
+                    DropClient(newConn);
+                    return;
+                }
+
+
+                //Check if IP is banned
+                var bans = Settings.Ban.Union(TempBans);
+                if (bans.Contains(client.IpAddress))
+                {
+                    SendOrderTo(newConn, "ServerError", "You have been {0} from the server".F(Settings.Ban.Contains(client.IpAddress) ? "banned" : "temporarily banned"));
+                    DropClient(newConn);
+                    return;
+                }
+
+                //Promote connection to a valid client
+                PreConns.Remove(newConn);
+                Conns.Add(newConn);
+                LobbyInfo.Clients.Add(client);
+                newConn.Validated = true;
+
+
+                var clientPing = new Session.ClientPing { Index = client.Index };
+                LobbyInfo.ClientPings.Add(clientPing);
+
+                foreach (var t in serverTraits.WithInterface<IClientJoined>())
+                    t.ClientJoined(this, newConn);
+
+                SyncLobbyInfo();
+
+                if (LobbyInfo.NonBotClients.Count() > 1)
+                    SendMessage("{0} has joined the game".F(client.Name));
+
+                SendOrderTo(newConn, "Ping", WarGame.RunTime.ToString(CultureInfo.InvariantCulture));
+
+                if (Dedicated)
+                {
+
+                }
+
+                if (Map.DefinesUnsafeCustomRules)
+                    SendOrderTo(newConn, "Message", "This map contains custom rules.Game experience may change.");
+
+                if (!LobbyInfo.GlobalSettings.EnableSinglePlayer)
+                    SendOrderTo(newConn, "Message", TwoHumansRequiredText);
+                else if (Map.Players.Players.Where(p => p.Value.Playable).All(p => !p.Value.AllowBots))
+                    SendOrderTo(newConn, "Message", "Bots have been disabled on this map");
+                
+
+
+            }
+            catch(Exception ex)
+            {
+                DropClient(newConn);
+            }
         }
 
         public void DropClient(Connection toDrop)
@@ -365,9 +562,39 @@ namespace EW.Server
             catch { }
         }
 
-        public void SyncLobbyClients()
+        public static void SyncClientToPlayerReference(Session.Client c,PlayerReference pr)
+        {
+            if (pr == null)
+                return;
+
+            if (pr.LockFaction)
+                c.Faction = pr.Faction;
+
+            if (pr.LockSpawn)
+                c.SpawnPoint = pr.Spawn;
+
+            if (pr.LockTeam)
+                c.Team = pr.Team;
+
+            c.Color = pr.LockColor ? pr.Color : c.PreferredColor;
+        }
+
+        public void SyncClientPing()
         {
 
+        }
+
+        public void SyncLobbyClients()
+        {
+            if (State != ServerState.WaitingPlayers)
+                return;
+
+            var clientData = LobbyInfo.Clients.Select(cl => cl.Serialize()).ToList();
+
+            DispatchOrders(null, 0, new ServerOrder("SyncLobbyClients", clientData.WriteToString()).Serialize());
+
+            foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
+                t.LobbyInfoSynced(this);
         }
 
         public void SyncLobbyInfo()

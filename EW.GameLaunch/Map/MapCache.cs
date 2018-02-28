@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Linq;
 using EW.Primitives;
 using EW.FileSystem;
+using EW.Support;
 namespace EW
 {
     /// <summary>
@@ -101,6 +103,37 @@ namespace EW
             }
         }
 
+        public string ChooseInitialMap(string initialUid,MersenneTwister random)
+        {
+            if(string.IsNullOrEmpty(initialUid) || previews[initialUid].Status != MapStatus.Available)
+            {
+                var selected = previews.Values.Where(IsSuitableInitialMap).RandomOrDefault(random) ??
+                    previews.Values.First(m => m.Status == MapStatus.Available && m.Visibility.HasFlag(MapVisibility.Lobby));
+                return selected.Uid;
+            }
+
+            return initialUid;
+        }
+
+        bool IsSuitableInitialMap(MapPreview map)
+        {
+            if (map.Status != MapStatus.Available || !map.Visibility.HasFlag(MapVisibility.Lobby))
+                return false;
+
+            //Other map types may have confusing settings or gameplay
+            if (!map.Categories.Contains("Conquest"))
+                return false;
+
+            if (map.Players.Players.Any(x => !x.Value.AllowBots))
+                return false;
+
+            //Large maps expose unfortunate performance problems
+            if (map.Bounds.Width > 128 || map.Bounds.Height > 128)
+                return false;
+
+            return true;
+
+        }
         public MapPreview this[string key]
         {
             get { return previews[key]; }

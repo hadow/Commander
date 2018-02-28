@@ -2,9 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Java.IO;
+using EW.Traits;
+using System.Linq;
+using EW.Graphics;
 namespace EW
 {
     public enum StatusBarsType { Standard,DamageShow,AlwaysShow}
+
+    public class PlayerSettings
+    {
+        public string Name = "Newbie";
+        public HSLColor Color = new HSLColor(75, 255, 180);
+        public string LastServer = "localhost:1234";
+    }
 
     public class ServerSettings
     {
@@ -100,6 +110,8 @@ namespace EW
         public bool UsePlayerStanceColor = false;
 
         public StatusBarsType StatusBars = StatusBarsType.Standard;
+
+        public bool AllowDownloading = true;
     }
 
     public class SoundSettings
@@ -119,7 +131,7 @@ namespace EW
     public class Settings
     {
         string settingFile;
-
+        public readonly PlayerSettings Player = new PlayerSettings();
         public readonly GraphicsSettings Graphics = new GraphicsSettings();
         public readonly GameSettings Game = new GameSettings();
         public readonly SoundSettings Sound = new SoundSettings();
@@ -132,6 +144,7 @@ namespace EW
             settingFile = file;
             Sections = new Dictionary<string, object>()
             {
+                {"Player",Player },
                 {"Game",Game },
                 {"Sound",Sound },
                 {"Debug",Debug },
@@ -165,6 +178,40 @@ namespace EW
         static void LoadSectionYaml(MiniYaml yaml,object section)
         {
             FieldLoader.Load(section, yaml);
+        }
+
+
+        public static string SanitizedPlayerName(string dirty)
+        {
+            var forbiddenNames = new string[] { "Open", "Closed" };
+            var botNames = WarGame.ModData.DefaultRules.Actors["player"].TraitInfos<IBotInfo>().Select(t => t.Name);
+
+            var clean = SanitizedName(dirty);
+
+            if (string.IsNullOrWhiteSpace(clean) || forbiddenNames.Contains(clean) || botNames.Contains(clean))
+                clean = new PlayerSettings().Name;
+
+            if (clean.Length > 16)
+                clean = clean.Substring(0, 16);
+
+            return clean;
+
+        }
+
+        static string SanitizedName(string dirty)
+        {
+            if (string.IsNullOrEmpty(dirty))
+                return null;
+
+            var clean = dirty;
+
+
+            // reserved characters for MiniYAML and JSON
+            var disallowedChars = new char[] { '#', '@', ':', '\n', '\t', '[', ']', '{', '}', '"', '`' };
+            foreach (var disallowedChar in disallowedChars)
+                clean = clean.Replace(disallowedChar.ToString(), string.Empty);
+
+            return clean;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.IO;
 using System.Threading;
-
+using EW.Server;
 namespace EW.NetWork
 {
 
@@ -31,10 +31,6 @@ namespace EW.NetWork
         
 
     }
-    class Connection
-    {
-    }
-
 
     class EchoConnection:IConnection
     {
@@ -140,6 +136,46 @@ namespace EW.NetWork
         volatile int clientId;
         bool disposed;
 
+
+        public override int LocalClientId { get { return clientId; } }
+
+        public override ConnectionState ConnectionState { get { return connectionState; } }
+
+        public override void SendSync(int frame, byte[] syncData)
+        {
+            var ms = new MemoryStream(4 + syncData.Length);
+            ms.Write(BitConverter.GetBytes(frame));
+            ms.Write(syncData);
+            queuedSyncPackets.Add(ms.GetBuffer());
+        }
+
+        protected override void Send(byte[] packet)
+        {
+            base.Send(packet);
+
+            try
+            {
+                var ms = new MemoryStream();
+                ms.Write(BitConverter.GetBytes(packet.Length));
+                ms.Write(packet);
+
+                foreach(var q in queuedSyncPackets)
+                {
+                    ms.Write(BitConverter.GetBytes(q.Length));
+                    ms.Write(q);
+                    base.Send(q);
+                }
+
+                queuedSyncPackets.Clear();
+                ms.WriteTo(tcp.GetStream());
+            }
+            catch (SocketException) { }
+            catch (ObjectDisposedException) { }
+            catch (InvalidOperationException) { }
+            catch (IOException) { }
+        }
+
+
         public NetworkConnection(string host,int port)
         {
             try
@@ -159,7 +195,50 @@ namespace EW.NetWork
 
         void NetworkConnectionReceive(object networkStreamObject)
         {
+            try
+            {
+                var networkStream = (NetworkStream)networkStreamObject;
+                var reader = new BinaryReader(networkStream);
+                var serverProtocol = reader.ReadInt32();
 
+                if (ProtocolVersion.Version != serverProtocol)
+                    throw new InvalidOperationException("Protocol version mismatch.Server={0} Client={1}".F(serverProtocol, ProtocolVersion.Version));
+
+                clientId = reader.ReadInt32();
+                connectionState = ConnectionState.Connected;
+
+                for(; ; )
+                {
+                    var len = reader.ReadInt32();
+                    var client = reader.ReadInt32();
+                    var buf = reader.ReadBytes(len);
+                    if (len == 0)
+                        throw new NotImplementedException();
+
+                    AddPacket(new ReceivedPacket { FromClient = client, Data = buf });
+                }
+
+            }
+            catch { }
+            finally
+            {
+                connectionState = ConnectionState.NotConnected;
+            }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+            disposed = true;
+
+            // Closing the stream will cause any reads on the receiving thread to throw.
+            // This will mark the connection as no longer connected and the thread will terminate cleanly.
+            //关闭流会导致接收线程上的任何读取操作抛出,这会将连接标记为不再连接,并且线程将干净地终止
+            if (tcp != null)
+                tcp.Close();
+
+            base.Dispose(disposing);
         }
     }
 }

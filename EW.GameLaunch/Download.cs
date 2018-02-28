@@ -19,6 +19,16 @@ namespace EW
             }
         }
 
+        public Download(string url, Action<DownloadProgressChangedEventArgs> onProgress, Action<DownloadDataCompletedEventArgs> onComplete)
+        {
+            lock (syncObject)
+            {
+                wc = new WebClient { Proxy = null };
+                wc.DownloadProgressChanged += (_, a) => onProgress(a);
+                wc.DownloadDataCompleted += (_, a) => { DisposeWebClient(); onComplete(a); };
+                wc.DownloadDataAsync(new Uri(url));
+            }
+        }
 
         void DisposeWebClient()
         {

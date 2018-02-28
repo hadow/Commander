@@ -194,4 +194,4 @@ World:
 	ObjectivesPanel:
 		PanelName: SKIRMISH_STATS
 	LoadWidgetAtGameStart:
-		ShellmapRoot: MAINMENU_PRERELEASE_NOTIFICATION
+		#ShellmapRoot: MAINMENU_PRERELEASE_NOTIFICATION

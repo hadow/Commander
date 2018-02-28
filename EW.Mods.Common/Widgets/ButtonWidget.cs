@@ -39,7 +39,7 @@ namespace EW.Mods.Common.Widgets
         public Func<bool> IsDisabled;
         public Func<bool> IsHighlighted;
         public Action OnClick = () => { };
-
+        public Action<GestureSample> OnMouseUp = _ => { };
         protected readonly Ruleset ModRules;
 
 
@@ -50,6 +50,7 @@ namespace EW.Mods.Common.Widgets
 
             GetText = () => Text;
             GetColor = () => TextColor;
+            OnMouseUp = _ => OnClick();
             GetColorDisabled = () => TextColorDisabled;
             IsHighlighted = () => Highlighted;
             IsDisabled = () => Disabled;
@@ -79,23 +80,25 @@ namespace EW.Mods.Common.Widgets
             }
             else if(HasFocus && gs.GestureType == GestureType.Tap)
             {
-
-            }
-
-            if (gs.GestureType == GestureType.Tap)
-            {
                 if (!disabled)
-                {
-                    Depressed = true;
-                    WarGame.Sound.PlayNotification(ModRules, null, "Sounds", "ClickSound", null);
-                }
-                else
-                {
-                    YieldFocus(gs);
-                }
+                    OnMouseUp(gs);
+                return YieldFocus(gs);
             }
-            else if (gs.GestureType == GestureType.FreeDrag)
-                Depressed = RenderBounds.Contains(gs.Position.ToInt2());
+
+            //if (gs.GestureType == GestureType.Tap)
+            //{
+            //    if (!disabled)
+            //    {
+            //        Depressed = true;
+            //        WarGame.Sound.PlayNotification(ModRules, null, "Sounds", "ClickSound", null);
+            //    }
+            //    else
+            //    {
+            //        YieldFocus(gs);
+            //    }
+            //}
+            //else if (gs.GestureType == GestureType.FreeDrag)
+            //    Depressed = RenderBounds.Contains(gs.Position.ToInt2());
 
             return Depressed;
         }

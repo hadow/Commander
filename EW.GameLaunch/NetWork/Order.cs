@@ -253,5 +253,15 @@ namespace EW.NetWork
         {
             return new Order("Command", null, false) { IsImmediate = true, TargetString = text };
         }
+
+        public static Order HandshakeResponse(string text)
+        {
+            return new Order("HandshakeResponse", null, false) { IsImmediate = true, TargetString = text };
+        }
+
+        public static Order Pong(string pingTime)
+        {
+            return new Order("Pong", null, false) { IsImmediate = true, TargetString = pingTime };
+        }
     }
 }

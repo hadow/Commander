@@ -128,6 +128,8 @@ Assemblies:
 ChromeLayout:
 	common|chrome/ingame.yaml
 	ts|chrome/ingame-player.yaml
+	common|chrome/mainmenu.yaml
+	common|chrome/connection.yaml
 	#common|chrome/ingame-perf.yaml
 
 Voices:

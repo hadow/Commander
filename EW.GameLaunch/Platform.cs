@@ -7,7 +7,7 @@ namespace EW
     public enum PlatformT { Unknown,Android,Ios,Windows,Linux,OSX}
     public static class Platform
     {
-
+        public static readonly Guid SessionGUID = Guid.NewGuid();
         public static PlatformT CurrentPlatform
         {
             get

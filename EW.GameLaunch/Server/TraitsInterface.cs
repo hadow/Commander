@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using EW.NetWork;
 namespace EW.Server
 {
     public interface INotifyServerStart { void ServerStarted(Server server); }
 
+    public interface INotifySyncLobbyInfo { void LobbyInfoSynced(Server server); }
 
     public interface INotifyServerShutdown { void ServerShutdown(Server server); }
 
@@ -19,4 +21,9 @@ namespace EW.Server
 
         int TickTimeout { get; }
     }
+
+
+    public interface IClientJoined { void ClientJoined(Server server, Connection conn); }
+
+    public interface IInterpretCommand { bool InterpretCommand(Server server, Connection conn, Session.Client client, string cmd); }
 }
