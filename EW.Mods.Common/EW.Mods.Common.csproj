@@ -528,6 +528,7 @@
     <Compile Include="Traits\Buildings\GivesBuildableArea.cs" />
     <Compile Include="Traits\Buildings\RequiresBuildableArea.cs" />
     <Compile Include="Effects\SpriteEffect.cs" />
+    <Compile Include="Widgets\Logic\Lobby\LobbyLogic.cs" />
     <Compile Include="Widgets\Logic\MainMenuLogic.cs" />
     <Compile Include="Widgets\Logic\PerfDebugLogic.cs" />
     <Compile Include="Widgets\PerfGraphWidget.cs" />

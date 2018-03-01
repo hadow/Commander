@@ -581,7 +581,12 @@ namespace EW.Server
 
         public void SyncClientPing()
         {
+            var clientPings = LobbyInfo.ClientPings.Select(ping => ping.Serialize()).ToList();
 
+            DispatchOrders(null, 0, new ServerOrder("SyncClientPings", clientPings.WriteToString()).Serialize());
+
+            foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
+                t.LobbyInfoSynced(this);
         }
 
         public void SyncLobbyClients()
@@ -599,7 +604,11 @@ namespace EW.Server
 
         public void SyncLobbyInfo()
         {
+            if (State == ServerState.WaitingPlayers)
+                DispatchOrders(null, 0, new ServerOrder("SyncInfo", LobbyInfo.Serialize()).Serialize());
 
+            foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
+                t.LobbyInfoSynced(this);
         }
 
         static void SendData(Socket s,byte[] data)

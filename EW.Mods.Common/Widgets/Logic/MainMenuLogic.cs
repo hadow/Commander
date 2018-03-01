@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using EW.Primitives;
 using EW.Widgets;
-
+using EW.NetWork;
 namespace EW.Mods.Common.Widgets.Logic
 {
     public class MainMenuLogic:ChromeLogic
@@ -36,6 +36,15 @@ namespace EW.Mods.Common.Widgets.Logic
 
             singleplayerMenu.Get<ButtonWidget>("SKIRMISH_BUTTON").OnClick = StartSkirmishGame;
             singleplayerMenu.Get<ButtonWidget>("BACK_BUTTON").OnClick = () => SwitchMenu(MenuType.Main);
+
+
+            var missionsButton = singleplayerMenu.Get<ButtonWidget>("MISSIONS_BUTTON");
+            missionsButton.OnClick = () =>
+            {
+                SwitchMenu(MenuType.None);
+                WarGame.orderManager.IssueOrder(Order.Command("state {0}".F(Session.ClientState.NotReady)));
+                WarGame.orderManager.IssueOrder(Order.Command("startgame"));
+            };
         }
 
         void SwitchMenu(MenuType type)
@@ -56,9 +65,22 @@ namespace EW.Mods.Common.Widgets.Logic
 
         void OpenSkirmishLobbyPanel()
         {
-            SwitchMenu(MenuType.None);
-
+            //SwitchMenu(MenuType.None);
+            
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                WarGame.BeforeGameStart -= RemoveShellmapUI;
+            }
+            base.Dispose(disposing);
+        }
+
+        void RemoveShellmapUI()
+        {
+            rootMenu.Parent.RemoveChild(rootMenu);
+        }
     }
 }

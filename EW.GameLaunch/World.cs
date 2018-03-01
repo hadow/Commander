@@ -192,8 +192,8 @@ namespace EW
             if (localPlayer == null)
             {
                 //test code,
-                localPlayer = Players.FirstOrDefault(p => p.InternalName == "GDI");
-                //return;
+                //localPlayer = Players.FirstOrDefault(p => p.InternalName == "GDI");
+                return;
             }
 
             if (!Players.Contains(localPlayer))

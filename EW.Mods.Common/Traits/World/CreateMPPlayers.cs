@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
 
@@ -92,13 +93,24 @@ namespace EW.Mods.Common.Traits
             if (p.PlayerReference.Enemies.Contains(q.InternalName))
                 return Stance.Enemy;
 
-            if(p.PlayerReference.Playable && q.PlayerReference.Playable){
-
+            //HACK:Map players share a ClientID with the host,so would otherwise take the host's team stance instead of being neutral
+            if(p.PlayerReference.Playable && q.PlayerReference.Playable)
+            {
+                //Stances set via lobby teams
+                var pc = GetClientForPlayer(p);
+                var qc = GetClientForPlayer(q);
+                if (pc != null && qc != null)
+                    return pc.Team != 0 && pc.Team == qc.Team ? Stance.Ally : Stance.Enemy;
 
             }
-
             //Otherwise,default to neutral.
             return Stance.Neutral;
+        }
+
+
+        static Session.Client GetClientForPlayer(Player p)
+        {
+            return p.World.LobbyInfo.ClientWithIndex(p.ClientIndex);
         }
     }
 

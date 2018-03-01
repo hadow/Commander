@@ -70,10 +70,13 @@ namespace EW
 
 
                 ClientIndex = client.Index;
+                Color = client.Color;
 
                 if (client.Bot != null)
                 {
-
+                    var botInfo = world.Map.Rules.Actors["player"].TraitInfos<IBotInfo>().First(b => b.Type == client.Bot);
+                    var botsOfSameType = world.LobbyInfo.Clients.Where(c => c.Bot == client.Bot).ToArray();
+                    PlayerName = botsOfSameType.Length == 1 ? botInfo.Name : "{0} {1}".F(botInfo.Name, botsOfSameType.IndexOf(client) + 1);
                 }
                 else
                 {
@@ -82,7 +85,7 @@ namespace EW
                 }
                 BotType = client.Bot;
                 Faction = ChooseFaction(world, client.Faction, !pr.LockFaction);
-                DisplayFaction = ChooseDisplayFaction(world, client.Faction);
+                //DisplayFaction = ChooseDisplayFaction(world, client.Faction);
                 
 
             }

@@ -1671,6 +1671,9 @@
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\OrderButtonsChromeLogic.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Lobby\LobbyLogic.cs">
+      <Link>External_Common\Widgets\Logic\Lobby\LobbyLogic.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\MainMenuLogic.cs">
       <Link>External_Common\Widgets\Logic\MainMenuLogic.cs</Link>
     </Compile>
@@ -2202,6 +2205,40 @@
     <AndroidAsset Include="Content\mods\common\chrome\ingame.yaml" />
     <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.bin" />
     <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\1ice6\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\arivruns\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\arivruns\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\arivruns\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\cliffsin\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\cliffsin\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\cliffsin\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\drawbrid\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\drawbrid\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\drawbrid\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\forestfr\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\forestfr\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\forestfr\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\karasjok\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\karasjok\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\karasjok\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\rivrrad4\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\rivrrad4\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\rivrrad4\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\springs\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\springs\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\springs\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\t_garden\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\t_garden\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\t_garden\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\tactical\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\tactical\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\tactical\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\terrace\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\terrace\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\terrace\map.png" />
+	<AndroidAsset Include="Content\mods\ts\maps\tread_l\map.bin" />
+    <AndroidAsset Include="Content\mods\ts\maps\tread_l\map.yaml" />
+	<AndroidAsset Include="Content\mods\ts\maps\tread_l\map.png" />
     <None Include="Resources\AboutResources.txt" />
     <AndroidAsset Include="Content\mods\common\chrome\assetbrowser.yaml" />
     <AndroidAsset Include="Content\mods\common\chrome\color-picker.yaml" />
@@ -2284,9 +2321,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FileFormats\" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidAsset Include="Content\mods\ts\maps\1ice6\map.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

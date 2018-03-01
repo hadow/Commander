@@ -63,6 +63,7 @@ namespace EW
         internal static OrderManager orderManager;
         static volatile ActionQueue delayedActions = new ActionQueue();
 
+        public static event Action BeforeGameStart = () => { };
         public static event Action<OrderManager> ConnectionStateChanged = _ => { };
         static ConnectionState lastConnectionState = ConnectionState.PreConnecting;
         public static int LocalClientId{
@@ -271,9 +272,11 @@ namespace EW
         /// <param name="type"></param>
         internal static void StartGame(string mapUID,WorldT type)
         {
-
+            //Dispose of the old world before creating a new one.
             if (worldRenderer != null)
                 worldRenderer.Dispose();
+
+            BeforeGameStart();
             Map map;
             using (new PerfTimer("PrepareMap"))
                 map = ModData.PrepareMap(mapUID);
@@ -282,18 +285,19 @@ namespace EW
 
             worldRenderer = new WorldRenderer(ModData, orderManager.World);
 
+            GC.Collect();
             using (new PerfTimer("LoadComplete"))
                 orderManager.World.LoadComplete(worldRenderer);
-
+            GC.Collect();
             if (orderManager.GameStarted)
                 return;
+            UI.FocusWidget = null;
 
             orderManager.LocalFrameNumber = 0;
             orderManager.LastTickTime = RunTime;
             orderManager.StartGame();
             worldRenderer.RefreshPalette();
             GC.Collect();
-            //CustomRun();
         }
 
         static void JoinLocal(){

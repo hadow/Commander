@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EW.Traits;
 using System.Linq;
 namespace EW.NetWork
@@ -91,9 +92,14 @@ namespace EW.NetWork
                     }
                 case "ServerError":
                     {
+                        orderManager.ServerError = order.TargetString;
+                        orderManager.AuthenticationFailed = false;
                         break;
                     }
                 case "AuthenticationError":{
+                        //
+                        orderManager.ServerError = order.TargetString;
+                        orderManager.AuthenticationFailed = false;
                         break;
                     }
                 case "SyncInfo":
@@ -101,6 +107,20 @@ namespace EW.NetWork
                         orderManager.LobbyInfo = Session.Deserialize(order.TargetString);
                         SetOrderLag(orderManager);
                         WarGame.SyncLobbyInfo();
+                        break;
+                    }
+                case "SyncClientPings":
+                    {
+                        var pings = new List<Session.ClientPing>();
+                        var nodes = MiniYaml.FromString(order.TargetString);
+                        foreach(var node in nodes)
+                        {
+                            var strings = node.Key.Split('@');
+                            if (strings[0] == "ClientPing")
+                                pings.Add(Session.ClientPing.Deserialize(node.Value));
+                        }
+
+                        orderManager.LobbyInfo.ClientPings = pings;
                         break;
                     }
                 case "Ping":

@@ -15,6 +15,9 @@ namespace EW.NetWork
         public readonly int Port;
         public readonly string Password = "";
 
+        public string ServerError = "Server is not responding";
+        public bool AuthenticationFailed = false;
+
         readonly SyncReport syncReport;
 
         readonly FrameData frameData = new FrameData();
@@ -88,7 +91,8 @@ namespace EW.NetWork
             if (GameStarted)
                 return;
             NetFrameNumber = 1;
-
+            for (var i = NetFrameNumber; i <= FramesAhead; i++)
+                Connection.Send(i, new List<byte[]>());
         }
 
 
