@@ -175,12 +175,12 @@ namespace EW.NetWork
 
         public class LobbyOptionState
         {
-            public string value;
+            public string Value;
             public string PreferredValue;
 
             public bool IsLocked;
 
-            public bool IsEnabled { get { return value == "True"; } }
+            public bool IsEnabled { get { return Value == "True"; } }
         }
 
 
@@ -189,7 +189,7 @@ namespace EW.NetWork
             public string Map;
             public string ServerName;
             public int Timestep = 40;
-            public int OrderLatency = 3;
+            public int OrderLatency = 3;  //net tick frames (x120 = ms)
             public int RandomSeed = 0;
             public bool EnableSinglePlayer;
             public bool AllowSpectators = true;
@@ -203,7 +203,7 @@ namespace EW.NetWork
             {
                 LobbyOptionState option;
                 if (LobbyOptions.TryGetValue(id, out option))
-                    return option.value;
+                    return option.Value;
 
                 return def;
             }

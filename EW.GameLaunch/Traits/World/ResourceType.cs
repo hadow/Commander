@@ -109,7 +109,7 @@ namespace EW.Traits
             }
         }
 
-        public void WorldLoaded(World w,WorldRenderer wr)
+        void IWorldLoaded.WorldLoaded(World w,WorldRenderer wr)
         {
             Palette = wr.Palette(Info.Palette);
         }

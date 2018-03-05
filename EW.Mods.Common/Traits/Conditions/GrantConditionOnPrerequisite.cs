@@ -60,7 +60,15 @@ namespace EW.Mods.Common.Traits
 
         public void PrerequisitesUpdated(Actor self,bool available)
         {
+            if (available == wasAvailable || conditionManager == null)
+                return;
 
+            if (available && conditionToken == ConditionManager.InvalidConditionToken)
+                conditionToken = conditionManager.GrantCondition(self, info.Condition);
+            else if (!available && conditionToken != ConditionManager.InvalidConditionToken)
+                conditionToken = conditionManager.RevokeCondition(self, conditionToken);
+
+            wasAvailable = available;
         }
 
 

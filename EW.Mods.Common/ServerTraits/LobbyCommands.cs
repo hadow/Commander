@@ -23,7 +23,7 @@ namespace EW.Mods.Common.Server
                 .Where(s => s != null)
                 .ToDictionary(s => s.PlayerReference, s => s);
 
-
+            LoadMapSettings(server,server.LobbyInfo.GlobalSettings,server.Map.Rules);
         }
 
         public static bool ValidateCommand(S server,EW.Server.Connection conn,Session.Client client,string cmd)
@@ -166,6 +166,48 @@ namespace EW.Mods.Common.Server
                 LockSpawn = pr.LockSpawn,
                 Required = pr.Required,
             };
+        }
+
+
+        public static void LoadMapSettings(S server,Session.Global gs,Ruleset rules){
+
+            var options = rules.Actors["player"].TraitInfos<ILobbyOptions>()
+                               .Concat(rules.Actors["world"].TraitInfos<ILobbyOptions>())
+                               .SelectMany(t => t.LobbyOptions(rules));
+
+            foreach (var o in options)
+            {
+                var value = o.DefaultValue;
+                var preferredValue = o.DefaultValue;
+                Session.LobbyOptionState state;
+                if (gs.LobbyOptions.TryGetValue(o.Id, out state))
+                {
+                    // Propagate old state on map change
+                    if (!o.IsLocked)
+                    {
+                        if (o.Values.Keys.Contains(state.PreferredValue))
+                            value = state.PreferredValue;
+                        else if (o.Values.Keys.Contains(state.Value))
+                            value = state.Value;
+                    }
+
+                    preferredValue = state.PreferredValue;
+                }
+                else
+                    state = new Session.LobbyOptionState();
+
+                state.IsLocked = o.IsLocked;
+                state.Value = value;
+                state.PreferredValue = preferredValue;
+                gs.LobbyOptions[o.Id] = state;
+
+                if (o.Id == "gamespeed")
+                {
+                    var speed = server.ModData.Manifest.Get<GameSpeeds>().Speeds[value];
+                    gs.Timestep = speed.Timestep;
+                    gs.OrderLatency = speed.OrderLatency;
+                }
+            }                  
         }
     }
 }

@@ -93,5 +93,21 @@ namespace EW.Mods.Common.Traits
 
             }
         }
+
+        public void RemoveActor(Actor a)
+        {
+            int amount;
+            if (!powerDrain.TryGetValue(a, out amount))
+                return;
+            powerDrain.Remove(a);
+
+            if (devMode.UnlimitedPower)
+                return;
+
+            if (amount > 0)
+                totalProvided -= amount;
+            else if (amount < 0)
+                totalDrained += amount;
+        }
     }
 }

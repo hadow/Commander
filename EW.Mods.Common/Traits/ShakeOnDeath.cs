@@ -5,9 +5,23 @@ namespace EW.Mods.Common.Traits
 
     public class ShakeOnDeathInfo : ITraitInfo
     {
-        public object Create(ActorInitializer init) { return new ShakeOnDeath(); }
+        public readonly int Intensity = 10;
+
+        public object Create(ActorInitializer init) { return new ShakeOnDeath(this); }
     }
-    public class ShakeOnDeath
+    public class ShakeOnDeath:INotifyKilled
     {
+
+
+        readonly ShakeOnDeathInfo info;
+
+        public ShakeOnDeath(ShakeOnDeathInfo info){
+            this.info = info;
+        }
+
+        void INotifyKilled.Killed(Actor self,AttackInfo e){
+
+            self.World.WorldActor.Trait<ScreenShaker>().AddEffect(info.Intensity,self.CenterPosition,1);
+        }
     }
 }

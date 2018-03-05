@@ -167,6 +167,7 @@ namespace EW
             currentSounds = new Dictionary<uint, ISound>();
             video = null;
         }
+        public ISound PlayToPlayer(SoundType type, Player player, string name) { return Play(type, player, name, true, Vector3.Zero, 1f); }
 
         public ISound PlayToPlayer(SoundType type,Player player,string name,WPos pos) { return Play(type, player, name, false, pos.ToVector3(), 1f); }
 

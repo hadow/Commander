@@ -16,6 +16,9 @@ namespace EW.Mods.Common.Traits
 
         public readonly string Group = null;
 
+        [Desc("The build time is multiplied with this value on low power.")]
+        public readonly int LowPowerSlowdown = 3;
+
         /// <summary>
         /// Only enable this queue for certain factions.
         /// </summary>
@@ -41,7 +44,7 @@ namespace EW.Mods.Common.Traits
 
 
 
-    public class ProductionQueue:IResolveOrder,ITick,ITechTreeElement,INotifyOwnerChanged,INotifyKilled,INotifySold,ISync,INotifyCreated
+    public class ProductionQueue:IResolveOrder,ITick,ITechTreeElement,INotifyOwnerChanged,INotifyKilled,INotifySold,ISync,INotifyCreated,INotifyTransform
     {
 
         public readonly ProductionQueueInfo Info;
@@ -67,6 +70,7 @@ namespace EW.Mods.Common.Traits
         [Sync] public int CurrentRemainingCost { get { return QueueLength == 0 ? 0 : queue[0].RemainingCost; } }
 
         [Sync] public int CurrentRemainingTime { get { return QueueLength == 0 ? 0 : queue[0].RemainingTime; } }
+        [Sync] public bool CurrentDone { get { return QueueLength != 0 && queue[0].Done; } }
 
         [Sync] public bool Enabled { get; protected set; }
         public string Faction { get; private set; }
@@ -82,10 +86,48 @@ namespace EW.Mods.Common.Traits
             developerMode = playerActor.Trait<DeveloperMode>();
 
             Faction = init.Contains<FactionInit>() ? init.Get<FactionInit, string>() : self.Owner.Faction.InternalName;
-
             IsValidFaction = !info.Factions.Any() || info.Factions.Contains(Faction);
 
+            Enabled = IsValidFaction;
+            CacheProducibles(playerActor);
+
+            allProducibles = producible.Where(a => a.Value.Buildable || a.Value.Visible).Select(a => a.Key);
+            buildableProducibles = producible.Where(a => a.Value.Buildable).Select(a => a.Key);
+
         }
+
+        void CacheProducibles(Actor playerActor){
+
+            producible.Clear();
+
+            if (!Enabled)
+                return;
+
+            var ttc = playerActor.Trait<TechTree>();
+
+            foreach(var a in AllBuildables(Info.Type)){
+
+                var bi = a.TraitInfo<BuildableInfo>();
+
+                producible.Add(a,new ProductionState());
+                ttc.Add(a.Name,bi.Prerequisites,bi.BuildLimit,this);
+            }
+
+        }
+
+
+        IEnumerable<ActorInfo> AllBuildables(string category)
+        {
+            return self.World.Map.Rules.Actors.Values
+                .Where(x =>
+                    x.Name[0] != '^' &&
+                    x.HasTraitInfo<BuildableInfo>() &&
+                    x.TraitInfo<BuildableInfo>().Queue.Contains(category));
+        }
+
+        void INotifyTransform.BeforeTransform(Actor self) { ClearQueue(); Enabled = false; }
+        void INotifyTransform.OnTransform(Actor self) { }
+        void INotifyTransform.AfterTransform(Actor self) { }
 
         void INotifyCreated.Created(Actor self)
         {
@@ -114,7 +156,8 @@ namespace EW.Mods.Common.Traits
         {
             if(killed == self)
             {
-
+                ClearQueue();
+                Enabled = false;
             }
         }
 
@@ -137,13 +180,41 @@ namespace EW.Mods.Common.Traits
 
         protected virtual void Tick(Actor self)
         {
+            // PERF: Avoid LINQ when checking whether all production traits are disabled/paused
+            var anyEnabledProduction = false;
+            var anyUnpausedProduction = false;
+            foreach (var p in productionTraits)
+            {
+                anyEnabledProduction |= !p.IsTraitDisabled;
+                anyUnpausedProduction |= !p.IsTraitPaused;
+            }
+
+            if (!anyEnabledProduction)
+                ClearQueue();
+
+            Enabled = IsValidFaction && anyEnabledProduction;
+
+            TickInner(self, !anyUnpausedProduction);
 
         }
 
 
-        protected virtual void TickInner(Actor self,bool allProductioniPaused)
+        protected virtual void TickInner(Actor self,bool allProductionPaused)
         {
+            while (queue.Count > 0 && BuildableItems().All(b => b.Name != queue[0].Item))
+            {
+                // Refund what's been paid so far
+                playerResources.GiveCash(queue[0].TotalCost - queue[0].RemainingCost);
+                FinishProduction();
+            }
 
+            if (queue.Count > 0 && !allProductionPaused)
+                queue[0].Tick(playerResources);
+        }
+
+        public IEnumerable<ProductionItem> AllQueued()
+        {
+            return queue;
         }
 
         public virtual IEnumerable<ActorInfo> AllItems()
@@ -244,7 +315,7 @@ namespace EW.Mods.Common.Traits
 
         }
 
-        public void ResolveOrder(Actor self,Order order)
+        void IResolveOrder.ResolveOrder(Actor self,Order order)
         {
             if (!Enabled)
                 return;
@@ -358,7 +429,39 @@ namespace EW.Mods.Common.Traits
         public void Tick(PlayerResources pr)
         {
 
+            if(!Started){
 
+                var time = Queue.GetBuildTime(ai, bi);
+                Started = true;
+            }
+
+            if(Done){
+
+                if (OnComplete != null)
+                    OnComplete();
+                return;
+            }
+
+            if (Paused) return;
+
+            if(pm.PowerState != PowerState.Normal){
+
+                if (--Slowdown <= 0)
+                    Slowdown = Queue.Info.LowPowerSlowdown;
+                else
+                    return;
+            }
+
+            var costThisFrame = RemainingCost / RemainingTime;
+            if (costThisFrame != 0 && !pr.TakeCash(costThisFrame, true))
+                return;
+
+            RemainingCost -= costThisFrame;
+            RemainingTime -= 1;
+
+            if (RemainingTime > 0)
+                return;
+            Done = true;
         }
     }
 }

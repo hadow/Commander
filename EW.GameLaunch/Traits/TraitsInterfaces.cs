@@ -595,6 +595,47 @@ namespace EW.Traits
     public interface IPips { IEnumerable<PipType> GetPips(Actor self); }
 
 
-    
+    public interface ILobbyOptions:ITraitInfoInterface{
+        IEnumerable<LobbyOption> LobbyOptions(Ruleset rules);
+    }
 
+
+
+    public class LobbyOption{
+
+        public readonly string Id;
+        public readonly string Name;
+        public readonly string Description;
+        public readonly IReadOnlyDictionary<string, string> Values;
+        public readonly string DefaultValue;
+        public readonly bool IsLocked;
+        public readonly bool IsVisible;
+        public readonly int DisplayOrder;
+
+        public LobbyOption(string id, string name, string description, bool visible, int displayorder,
+            IReadOnlyDictionary<string, string> values, string defaultValue, bool locked)
+        {
+            Id = id;
+            Name = name;
+            Description = description;
+            IsVisible = visible;
+            DisplayOrder = displayorder;
+            Values = values;
+            DefaultValue = defaultValue;
+            IsLocked = locked;
+        }
+
+    }
+
+
+    public class LobbyBooleanOption:LobbyOption{
+
+        static readonly Dictionary<string, string> BoolValues = new Dictionary<string, string>(){
+
+            {true.ToString(),"enabled"},
+            {false.ToString(),"disabled"}
+        };
+        public LobbyBooleanOption(string id, string name, string description, bool visible, int displayorder, bool defaultValue, bool locked)
+            : base(id, name, description, visible, displayorder, new ReadOnlyDictionary<string, string>(BoolValues), defaultValue.ToString(), locked) { }
+    }
 }

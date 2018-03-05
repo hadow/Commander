@@ -72,7 +72,15 @@ namespace EW.Mods.Common.Traits
 
             bool IsHidden(Cache<string,List<Actor>> ownedPrerequisites)
             {
-
+                // PERF: Avoid LINQ.
+                foreach (var prereq in prerequisites)
+                {
+                    if (!prereq.StartsWith("~", StringComparison.Ordinal))
+                        continue;
+                    var withoutTilde = prereq.Replace("~", "");
+                    if (withoutTilde.StartsWith("!", StringComparison.Ordinal) ^ !ownedPrerequisites.ContainsKey(withoutTilde.Replace("!", "")))
+                        return true;
+                }
 
 
                 return false;

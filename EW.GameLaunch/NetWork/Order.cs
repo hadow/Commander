@@ -211,7 +211,7 @@ namespace EW.NetWork
                         var extraLocation = (CPos)(flags.HasField(OrderFields.ExtraLocation) ? r.ReadInt2() : Int2.Zero);
                         var extraData = flags.HasField(OrderFields.ExtraData) ? r.ReadUInt32() : 0;
 
-                        if (world != null)
+                        if (world == null)
                             return new Order(order, null, target, targetString, queued, extraLocation, extraData);
 
                         if (subject == null && subjectId != uint.MaxValue)
@@ -262,6 +262,11 @@ namespace EW.NetWork
         public static Order Pong(string pingTime)
         {
             return new Order("Pong", null, false) { IsImmediate = true, TargetString = pingTime };
+        }
+
+        public static Order StartProduction(Actor subject, string item, int count)
+        {
+            return new Order("StartProduction", subject, false) { ExtraData = (uint)count, TargetString = item };
         }
     }
 }

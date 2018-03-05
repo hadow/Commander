@@ -79,7 +79,7 @@ namespace EW.Mods.Common.Widgets
                 YieldFocus(gs);
             }
 
-            if(gs.GestureType == GestureType.DoubleTap)
+            if(gs.GestureType == GestureType.Tap)
             {
                 if (!IsValidDragBox)
                 {

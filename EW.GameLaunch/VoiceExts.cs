@@ -37,7 +37,25 @@ namespace EW
 
         public static void PlayVoiceForOrders(this World w,Order[] orders)
         {
+            foreach(var o in orders){
 
+                if (o == null)
+                    continue;
+
+                var orderSubject = o.Subject;
+                if (orderSubject == null)
+                    continue;
+
+                foreach(var voice in orderSubject.TraitsImplementing<IVoiced>())
+                {
+
+                    foreach(var v in orderSubject.TraitsImplementing<IOrderVoice>())
+                    {
+                        if (voice.PlayVoice(orderSubject, v.VoicePhraseForOrder(orderSubject, o), orderSubject.Owner.Faction.InternalName))
+                            return;
+                    }
+                }
+            }
         }
 
         public static bool HasVoice(this Actor self,string voice)

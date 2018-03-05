@@ -1,4 +1,4 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
@@ -18,3 +18,11 @@
 /EW.Test
 /EW.Framework.Android/bin/Debug
 /EW.Framework.Android/obj/Debug
+
+*.dll
+
+*.pdb
+
+*.flag
+
+*.userprefs

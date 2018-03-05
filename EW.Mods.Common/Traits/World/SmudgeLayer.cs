@@ -106,7 +106,7 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        public void WorldLoaded(World w ,WorldRenderer wr)
+        void  IWorldLoaded.WorldLoaded(World w ,WorldRenderer wr)
         {
             var first = smudges.First().Value.First();
             var sheet = first.Sheet;

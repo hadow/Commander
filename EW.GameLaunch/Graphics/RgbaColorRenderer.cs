@@ -270,5 +270,20 @@ namespace EW.Graphics
         {
             shader.SetBool("EnableDepthPreview",enabled);
         }
+
+        public void FillEllipse(Vector3 tl, Vector3 br, Color color, int vertices = 32)
+        {
+            // TODO: Create an ellipse polygon instead
+            var a = (br.X - tl.X) / 2;
+            var b = (br.Y - tl.Y) / 2;
+            var xc = (br.X + tl.X) / 2;
+            var yc = (br.Y + tl.Y) / 2;
+            for (var y = tl.Y; y <= br.Y; y++)
+            {
+                var z = Vector2.Lerp(tl.Z, br.Z, (y - tl.Y) / (br.Y - tl.Y));
+                var dx = a * (float)Math.Sqrt(1 - (y - yc) * (y - yc) / b / b);
+                DrawLine(new Vector3(xc - dx, y, z), new Vector3(xc + dx, y, z), 1, color);
+            }
+        }
     }
 }

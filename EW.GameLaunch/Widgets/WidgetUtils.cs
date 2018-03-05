@@ -74,6 +74,11 @@ namespace EW.Widgets
                 }
         }
 
+        public static void DrawSHPCentered(Sprite s, Vector2 pos, PaletteReference p)
+        {
+            WarGame.Renderer.SpriteRenderer.DrawSprite(s, pos - 0.5f * s.Size, p);
+        }
+
         public static void DrawRGBA(Sprite s,Vector2 pos)
         {
             WarGame.Renderer.RgbaSpriteRenderer.DrawSprite(s, pos);

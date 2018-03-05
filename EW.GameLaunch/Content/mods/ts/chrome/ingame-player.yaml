@@ -73,8 +73,8 @@ Container@PLAYER_WIDGETS:
 							ImageName: guard
 				Button@DEPLOY:
 					X: 140
-					Width: 35
-					Height: 32
+					Width: 70
+					Height: 64
 					VisualHeight: 0
 					Background:
 					Children:
@@ -162,5 +162,138 @@ Container@PLAYER_WIDGETS:
 					Height: 22
 					Align: Center
 					Font: TinyBold
-		
+        Container@SIDEBAR_PRODUCTION:
+            Logic: ClassicProductionLogic
+            X: WINDOW_RIGHT - 235
+            Y: 260
+            Width: 235
+            Height: 250
+            Children:
+                Container@PALETTE_BACKGROUND:
+                    Children:
+                        Image@ROW_TEMPLATE:
+                            Logic: AddFactionSuffixLogic
+                            Width: 235
+                            Height: 52
+                            ClickThrough: false
+                            ImageCollection: sidebar
+                            ImageName: background-iconrow
+                        Image@BOTTOM_CAP:
+                            Logic: AddFactionSuffixLogic
+                            Width: 235
+                            Height: 26
+                            ClickThrough: false
+                            ImageCollection: sidebar
+                            ImageName: background-bottom
+                LogicTicker@PRODUCTION_TICKER:
+                ProductionPalette@PRODUCTION_PALETTE:
+                    X: 24
+                    Y: 1
+                    ReadyText: READY
+                    HoldText: ON HOLD
+                    ClockPalette: iconclock
+                    NotBuildableAnimation: darken
+                    NotBuildablePalette: chromewithshadow
+                    IconSize: 64, 48
+                    IconMargin: 3, 4
+                    IconSpriteOffset: 0, 0
+                    MinimumRows: 4
+                    MaximumRows: 6
+                Container@PRODUCTION_TYPES:
+                    X: 0
+                    Y: 0 - 32
+                    Width: 235
+                    Height: 311
+                    Children:
+                        ProductionTypeButton@BUILDING:
+                            Logic: AddFactionSuffixLogic
+                            X: 41
+                            Y: 1
+                            Width: 30
+                            Height: 31
+                            VisualHeight: 0
+                            Background: sidebar-button
+                            ProductionGroup: Building
+                            Children:
+                                Image@ICON:
+                                    Logic: AddFactionSuffixLogic
+                                    X: 7
+                                    Y: 7
+                                    ImageCollection: production-icons
+                        ProductionTypeButton@DEFENSE:
+                            Logic: AddFactionSuffixLogic
+                            X: 72
+                            Y: 1
+                            Width: 30
+                            Height: 31
+                            VisualHeight: 0
+                            Background: sidebar-button
+                            ProductionGroup: Defense
+                            Children:
+                                Image@ICON:
+                                    Logic: AddFactionSuffixLogic
+                                    X: 7
+                                    Y: 7
+                                    ImageCollection: production-icons
+                        ProductionTypeButton@INFANTRY:
+                            Logic: AddFactionSuffixLogic
+                            X: 103
+                            Y: 1
+                            Width: 30
+                            Height: 31
+                            VisualHeight: 0
+                            Background: sidebar-button
+                            ProductionGroup: Infantry
+                            Children:
+                                Image@ICON:
+                                    Logic: AddFactionSuffixLogic
+                                    X: 6
+                                    Y: 7
+                                    ImageCollection: production-icons
+                        ProductionTypeButton@VEHICLE:
+                            Logic: AddFactionSuffixLogic
+                            X: 134
+                            Y: 1
+                            Width: 30
+                            Height: 31
+                            VisualHeight: 0
+                            Background: sidebar-button
+                            ProductionGroup: Vehicle
+                            Children:
+                                Image@ICON:
+                                    Logic: AddFactionSuffixLogic
+                                    X: 7
+                                    Y: 7
+                                    ImageCollection: production-icons
+                        ProductionTypeButton@AIRCRAFT:
+                            Logic: AddFactionSuffixLogic
+                            X: 165
+                            Y: 1
+                            Width: 30
+                            Height: 31
+                            VisualHeight: 0
+                            Background: sidebar-button
+                            ProductionGroup: Air
+                            Children:
+                                Image@ICON:
+                                    Logic: AddFactionSuffixLogic
+                                    X: 7
+                                    Y: 7
+                                    ImageCollection: production-icons
+                        Button@SCROLL_UP_BUTTON:
+                            Logic: AddFactionSuffixLogic
+                            X: 74
+                            Y: PARENT_BOTTOM + 36
+                            Width: 34
+                            Height: 27
+                            VisualHeight: 0
+                            Background: scrollup-buttons
+                        Button@SCROLL_DOWN_BUTTON:
+                            Logic: AddFactionSuffixLogic
+                            X: 141
+                            Y: PARENT_BOTTOM + 36
+                            Width: 34
+                            Height: 27
+                            VisualHeight: 0
+                            Background: scrolldown-buttons	
 				

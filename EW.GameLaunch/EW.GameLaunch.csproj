@@ -24,7 +24,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>TRACE;DEBUG;ANDROID</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -40,9 +40,6 @@
     <AndroidSupportedAbis>
     </AndroidSupportedAbis>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
-    <AotAssemblies>false</AotAssemblies>
-    <EnableLLVM>false</EnableLLVM>
-    <BundleAssemblies>false</BundleAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -251,6 +248,15 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\DeliverResources.cs">
       <Link>External_Common\Activities\DeliverResources.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\DeployForGrantedCondition.cs">
+      <Link>External_Common\Activities\DeployForGrantedCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\UndeployForGrantedCondition.cs">
+      <Link>External_Common\Activities\UndeployForGrantedCondition.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\Transform.cs">
+      <Link>External_Common\Activities\Transform.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\Drag.cs">
       <Link>External_Common\Activities\Drag.cs</Link>
@@ -1650,11 +1656,24 @@
     <Compile Include="..\EW.Mods.Common\Widgets\ImageWidget.cs">
       <Link>External_Common\Widgets\ImageWidget.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ProductionPaletteWidget.cs">
+      <Link>External_Common\Widgets\ProductionPaletteWidget.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\ProductionTabsWidget.cs">
+      <Link>External_Common\Widgets\ProductionTabsWidget.cs</Link>
+    </Compile>
+
+    <Compile Include="..\EW.Mods.Common\Widgets\ProductionTypeButtonWidget.cs">
+      <Link>External_Common\Widgets\ProductionTypeButtonWidget.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\ConnectionLogic.cs">
       <Link>External_Common\Widgets\Logic\ConnectionLogic.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\AddFactionSuffixLogic.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\ClassicProductionLogic.cs">
+      <Link>External_Common\Widgets\Logic\Ingame\ClassicProductionLogic.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Widgets\Logic\Ingame\CommandBarLogic.cs">
       <Link>External_Common\Widgets\Logic\Ingame\CommandBarLogic.cs</Link>

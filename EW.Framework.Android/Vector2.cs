@@ -47,6 +47,13 @@ namespace EW.Framework
             this.X = value;
             this.Y = value;
         }
+
+
+        public Vector2(System.Drawing.Point point){
+
+            this.X = point.X;
+            this.Y = point.Y;
+        }
         public override bool Equals(object obj)
         {
             if(obj is Vector2)

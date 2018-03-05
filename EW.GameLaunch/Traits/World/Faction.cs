@@ -34,7 +34,5 @@ namespace EW.Traits
 
         public readonly bool Selectable = true;
     }
-    public class Faction
-    {
-    }
+    public class Faction{}
 }

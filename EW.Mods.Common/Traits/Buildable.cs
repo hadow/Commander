@@ -9,6 +9,9 @@ namespace EW.Mods.Common.Traits
 
         public readonly string[] Prerequisites = { };
 
+
+        [Desc("Override the production structure type (from the Production Produces list) that this unit should be built at.")]
+        public readonly string BuildAtProductionType = null;
         /// <summary>
         /// Production queue(s) that can produce this.
         /// </summary>
@@ -40,6 +43,7 @@ namespace EW.Mods.Common.Traits
         [Translate]
         public readonly string Description = "";
 
+        public readonly int BuildPaletteOrder = 9999;
 
         public static string GetInitialFaction(ActorInfo ai,string defaultFaction){
 

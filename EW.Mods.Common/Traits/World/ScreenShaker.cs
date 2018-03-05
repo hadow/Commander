@@ -39,13 +39,13 @@ namespace EW.Mods.Common.Traits
         }
 
 
-        public void WorldLoaded(World w,WorldRenderer wr)
+        void IWorldLoaded.WorldLoaded(World w,WorldRenderer wr)
         {
             worldRenderer = wr;
         }
 
 
-        public void Tick(Actor self)
+        void ITick.Tick(Actor self)
         {
             if (shakeEffects.Any())
             {
@@ -73,6 +73,18 @@ namespace EW.Mods.Common.Traits
 
             return Math.Min(intensity, 10);
         }
+
+
+        public void AddEffect(int time, WPos position, int intensity)
+        {
+            AddEffect(time, position, intensity, new Vector2(1, 1));
+        }
+
+        public void AddEffect(int time, WPos position, int intensity, Vector2 multiplier)
+        {
+            shakeEffects.Add(new ShakeEffect { ExpiryTime = ticks + time, Position = position, Intensity = intensity, Multiplier = multiplier });
+        }
+
 
     }
 }

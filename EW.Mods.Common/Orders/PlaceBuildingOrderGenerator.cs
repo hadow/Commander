@@ -41,6 +41,9 @@ namespace EW.Mods.Common.Orders
             building = name;
 
 
+            if (WarGame.Settings.Game.UseClassicMouseStyle)
+                world.Selection.Clear();
+            
             var map = world.Map;
             var tileset = world.Map.Tileset.ToLowerInvariant();
 

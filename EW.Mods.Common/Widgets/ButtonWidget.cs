@@ -56,6 +56,13 @@ namespace EW.Mods.Common.Widgets
             IsDisabled = () => Disabled;
         }
 
+        protected ButtonWidget(ButtonWidget other)
+            : base(other){
+
+            ModRules = other.ModRules;
+
+        }
+
 
         public override bool YieldFocus(GestureSample gs)
         {

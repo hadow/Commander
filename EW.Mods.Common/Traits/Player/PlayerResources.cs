@@ -79,6 +79,36 @@ namespace EW.Mods.Common.Traits
 
         }
 
+        public bool TakeResources(int num)
+        {
+            if (Resources < num) return false;
+            Resources -= num;
+            Spent += num;
+
+            return true;
+        }
+
+        public bool TakeCash(int num,bool notifyLowFunds = false){
+
+            if(Cash + Resources < num)
+            {
+                return false;
+
+            }
+            // Spend ore before cash
+            Resources -= num;
+            Spent += num;
+
+            if(Resources <= 0){
+
+                Cash += Resources;
+                Resources = 0;
+
+            }
+
+            return true;
+        }
+
         void ITick.Tick(Actor self)
         {
             ResourceCapacity = 0;

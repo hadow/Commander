@@ -24,7 +24,12 @@ namespace EW.Mods.Common.Orders
 
         public bool CanTarget(Actor self,Target target,List<Actor> othersAtTarget,ref TargetModifiers modifiers,ref string cursor)
         {
-            return false;
+            if (target.Type != TargetT.Actor)
+                return false;
+
+
+
+            return self == target.Actor;
         }
     }
 }

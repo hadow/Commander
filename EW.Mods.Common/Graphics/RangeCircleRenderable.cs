@@ -57,12 +57,32 @@ namespace EW.Mods.Common.Graphics
 
         public void Render(WorldRenderer wr){
 
+            DrawRangeCircle(wr, centerPosition, radius, 1, color, 3, contrastColor);
 
         }
+
 
         public Rectangle ScreenBounds(WorldRenderer wr) { return Rectangle.Empty; }
 
 
         public void RenderDebugGeometry(WorldRenderer wr){}
+
+        public static void DrawRangeCircle(WorldRenderer wr, WPos centerPosition, WDist radius,
+            float width, Color color, float contrastWidth, Color contrastColor)
+        {
+            var wcr = WarGame.Renderer.WorldRgbaColorRenderer;
+            var offset = new WVec(radius.Length, 0, 0);
+            for (var i = 0; i < RangeCircleSegments; i++)
+            {
+                var a = wr.Screen3DPosition(centerPosition + offset.Rotate(RangeCircleStartRotations[i]));
+                var b = wr.Screen3DPosition(centerPosition + offset.Rotate(RangeCircleEndRotations[i]));
+
+                if (contrastWidth > 0)
+                    wcr.DrawLine(a, b, contrastWidth / wr.ViewPort.Zoom, contrastColor);
+
+                if (width > 0)
+                    wcr.DrawLine(a, b, width / wr.ViewPort.Zoom, color);
+            }
+        }
     }
 }

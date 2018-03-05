@@ -58,6 +58,18 @@ namespace EW.NetWork
                     }
                 case "PauseGame":
                     {
+                        var client = orderManager.LobbyInfo.ClientWithIndex(clientId);
+                        if(client != null){
+
+                            var pause = order.TargetString == "Pause";
+                            if(orderManager.World.Paused != pause && world != null && world.LobbyInfo.NonBotClients.Count()>1){
+
+
+                            }
+                            orderManager.World.Paused = pause;
+                            orderManager.World.PredictedPaused = pause;
+                        }
+
                         break;
                     }
                 case "HandshakeRequest":
@@ -121,6 +133,18 @@ namespace EW.NetWork
                         }
 
                         orderManager.LobbyInfo.ClientPings = pings;
+                        break;
+                    }
+                case "SyncLobbyGlobalSettings":
+                    {
+                        var nodes = MiniYaml.FromString(order.TargetString);
+                        foreach(var node in nodes){
+                            var strings = node.Key.Split('@');
+                            if (strings[0] == "GlobalSettings")
+                                orderManager.LobbyInfo.GlobalSettings = Session.Global.Deserialize(node.Value);
+                        }
+                        SetOrderLag(orderManager);
+                        WarGame.SyncLobbyInfo();
                         break;
                     }
                 case "Ping":

@@ -5,7 +5,6 @@ using System.Drawing;
 using System.Collections.Generic;
 using EW.FileSystem;
 using EW.Primitives;
-using Android.Graphics;
 namespace EW
 {
     public enum MapClassification
@@ -124,6 +123,8 @@ namespace EW
         public MapClassification Class { get { return innerData.Class; } }
 
         public MapVisibility Visibility { get { return innerData.Visibility; } }
+
+        public Ruleset Rules { get { return innerData.Rules; } }
 
 
         public bool DefinesUnsafeCustomRules

@@ -3,7 +3,9 @@ using System.Linq;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
-
+    /// <summary>
+    /// 地下
+    /// </summary>
     public class SubterraneanActorLayerInfo : ITraitInfo
     {
 

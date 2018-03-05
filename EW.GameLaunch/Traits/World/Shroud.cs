@@ -286,6 +286,43 @@ namespace EW.Traits
         }
 
 
+        public void ExploreProjectedCells(World world,IEnumerable<PPos> cells){
+
+            var changed = new HashSet<PPos>();
+
+            foreach(var puv in cells){
+
+                var uv = (MPos)puv;
+                if(map.Contains(puv) && !explored[uv]){
+                    explored[uv] = true;
+                    changed.Add(puv);
+                }
+            }
+
+            Invalidate(changed);
+
+        }
+
+        public void ResetExploration(){
+
+            var changed = new List<PPos>();
+
+            foreach(var puv in map.ProjectedCellBounds){
+
+                var uv = (MPos)puv;
+                var visible = visibleCount[uv] + passiveVisibleCount[uv] > 0;
+
+                if(explored[uv] != visible){
+
+                    explored[uv] = visible;
+                    changed.Add(puv);
+                }
+            }
+
+            Invalidate(changed);
+        }
+
+
         public bool Contains(PPos uv)
         {
             //Check that uv is inside the map are.There is nothing special

@@ -21,6 +21,17 @@ namespace EW
             Hash++;
         }
 
+        public void Add(World w,Actor a){
+
+            actors.Add(a);
+            UpdateHash();
+
+            foreach (var sel in a.TraitsImplementing<INotifySelected>())
+                sel.Selected(a);
+            foreach (var ns in w.WorldActor.TraitsImplementing<INotifySelection>())
+                ns.SelectionChanged();
+        }
+
         public void Tick(World world){
 
             var removed = actors.RemoveWhere(a => !a.IsInWorld || (!a.Owner.IsAlliedWith(world.RenderPlayer) && world.FogObscures(a)));
@@ -99,6 +110,19 @@ namespace EW
         public bool Contains(Actor a)
         {
             return actors.Contains(a);
+        }
+
+        public void AddToControlGroup(Actor a, int group)
+        {
+            if (!controlGroups[group].Contains(a))
+                controlGroups[group].Add(a);
+        }
+
+        public int? GetControlGroupForActor(Actor a){
+
+
+            return controlGroups.Where(g => g.Value.Contains(a))
+                                .Select(g => (int?)g.Key).FirstOrDefault();
         }
     }
 }

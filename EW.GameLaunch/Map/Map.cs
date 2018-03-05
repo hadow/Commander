@@ -7,6 +7,7 @@ using System.Drawing;
 using EW.FileSystem;
 using EW.Traits;
 using EW.Primitives;
+using EW.Support;
 namespace EW
 {
     /// <summary>
@@ -330,6 +331,19 @@ namespace EW
             
         }
 
+        /// <summary>
+        /// The size of the map Height step in world units
+        /// </summary>
+        public WDist CellHeightStep
+        {
+            get
+            {
+                // RectangularIsometric defines 1024 units along the diagonal axis,
+                // giving a half-tile height step of sqrt(2) * 512
+                return new WDist(Grid.Type == MapGridT.RectangularIsometric ? 724 : 512);
+            }
+        }
+
         public bool Contains(CPos cell)
         {
             //.ToMPos() returns the same result if the X and Y coordinates are switched.X<Y is invalid in the RectangularIsometric coordinate system.
@@ -531,6 +545,8 @@ namespace EW
             return (PPos)CellContaining(projectedPos).ToMPos(Grid.Type);
         }
 
+
+
         /// <summary>
         /// 
         /// </summary>
@@ -697,13 +713,56 @@ namespace EW
 
         public CPos Clamp(CPos cell)
         {
-            return default(CPos);
+            return Clamp(cell.ToMPos(this)).ToCPos(this);
         }
 
 
         public MPos Clamp(MPos uv)
         {
-            return default(MPos);
+            if (Grid.MaximumTerrainHeight == 0)
+                return (MPos)Clamp((PPos)uv);
+
+            if (ContainsAllProjectedCellsCovering(uv))
+                return uv;
+
+            uv = cellProjection.Clamp(new MPos(uv.U.Clamp(Bounds.Left, Bounds.Right), uv.V));
+
+            var allProjected = ProjectedCellsCovering(uv);
+
+            var projected = allProjected.Any() ? allProjected.First() : new PPos(uv.U, uv.V.Clamp(Bounds.Top, Bounds.Bottom));
+
+            projected = Clamp(projected);
+
+            var unProjected = Unproject(projected);
+
+            if(!unProjected.Any()){
+
+                for (var x = 2; x <= 2 * Grid.MaximumTerrainHeight;x++){
+
+                    var dv = ((x & 1) == 1 ? 1 : -1) * x / 2;
+                    var test = new PPos(projected.U, projected.V + dv);
+                    if (!Contains(test))
+                        continue;
+
+                    unProjected = Unproject(test);
+                    if (unProjected.Any())
+                        break;
+                    
+                }
+
+
+                if(!unProjected.Any())
+                {
+                    return uv;
+
+                }
+            }
+
+            return projected.V == Bounds.Bottom ? unProjected.MaxBy(x => x.V) : unProjected.MinBy(x => x.V);
+
+
+
+
         }
 
         
@@ -961,6 +1020,27 @@ namespace EW
                         yield return t;
                 }
             }
+        }
+
+
+
+        public CPos ChooseRandomCell(MersenneTwister rand){
+
+
+            List<MPos> cells;
+
+            do
+            {
+
+                var u = rand.Next(Bounds.Left, Bounds.Right);
+                var v = rand.Next(Bounds.Top, Bounds.Bottom);
+
+                cells = Unproject(new PPos(u, v));
+            }
+            while (!cells.Any());
+
+            return cells.Random(rand).ToCPos(Grid.Type);
+                
         }
 
 

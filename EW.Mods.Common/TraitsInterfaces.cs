@@ -7,6 +7,8 @@ using EW.Primitives;
 using EW.Graphics;
 using EW.Mods.Common.Traits.Render;
 using EW.Mods.Common.Activities;
+using EW.NetWork;
+using EW.Framework;
 namespace EW.Mods.Common.Traits
 {
     public enum VisibilityType { Footprint, CenterPosition, GroundPosition }
@@ -17,7 +19,30 @@ namespace EW.Mods.Common.Traits
         IEnumerable<IRenderable> Render(WorldRenderer wr, World w, ActorInfo ai, WPos centerPosition);
     }
 
+    public interface IProductionIconOverlay
+    {
+        Sprite Sprite { get; }
+        string Palette { get; }
+        Vector2 Offset(Vector2 iconSize);
+        bool IsOverlayActive(ActorInfo ai);
+    }
+
     #region Notify
+
+    public interface INotifyParachute { void OnParachute(Actor self); void OnLanded(Actor self, Actor ignore); }
+
+
+    public interface INotifyBuildingPlaced { void BuildingPlaced(Actor self); }
+
+
+
+    public interface INotifyTransform
+    {
+        void BeforeTransform(Actor self);
+        void OnTransform(Actor self);
+        void AfterTransform(Actor toActor);
+    }
+
 
     public interface INotifyObjectivesUpdated
     {
@@ -294,6 +319,13 @@ namespace EW.Mods.Common.Traits
     public interface IActorPreviewInitInfo : ITraitInfo
     {
         IEnumerable<object> ActorPreviewInits(ActorInfo ai, ActorPreviewType type);
+    }
+
+    // For traits that want to be exposed to the "Deploy" UI button / hotkey
+    [RequireExplicitImplementation]
+    public interface IIssueDeployOrder
+    {
+        Order IssueDeployOrder(Actor self);
     }
 
 }

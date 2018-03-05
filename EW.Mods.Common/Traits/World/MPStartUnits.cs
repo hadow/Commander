@@ -25,6 +25,7 @@ namespace EW.Mods.Common.Traits
 
         /// <summary>
         /// A group of units ready to defend or scout.
+        ///一组准备防御或侦察的单位。
         /// </summary>
         public readonly string[] SupportActors = { };
 
@@ -50,7 +51,5 @@ namespace EW.Mods.Common.Traits
         public readonly int SupportActorsFacing = -1;
     }
 
-    public class MPStartUnits
-    {
-    }
+    public class MPStartUnits{}
 }

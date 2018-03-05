@@ -2,6 +2,7 @@
 using System.Linq;
 using EW.Traits;
 using EW.Mods.Common.Effects;
+using EW.NetWork;
 namespace EW.Mods.Common.Traits
 {
     /// <summary>
@@ -33,6 +34,9 @@ namespace EW.Mods.Common.Traits
 
     public class RallyPoint:ISync,INotifyCreated
     {
+
+        const string OrderID = "SetRallyPoint";
+
         const uint ForceSet = 1;
 
         [Sync]
@@ -61,6 +65,12 @@ namespace EW.Mods.Common.Traits
         public void ResetLocation(Actor self)
         {
             Location = self.Location + Info.Offset;
+        }
+
+
+        public static bool IsForceSet(Order order)
+        {
+            return order.OrderString == OrderID && order.ExtraData == ForceSet;
         }
     }
 }

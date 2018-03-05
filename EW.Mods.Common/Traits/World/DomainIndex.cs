@@ -43,6 +43,12 @@ namespace EW.Mods.Common.Traits
             return domainIndexes[movementClass].IsPassable(p1, p2); 
         }
 
+        public void AddFixedConnection(IEnumerable<CPos> cells)
+        {
+            foreach (var index in domainIndexes)
+                index.Value.AddFixedConnection(cells);
+        }
+
     }
 
     /// <summary>
@@ -150,6 +156,11 @@ namespace EW.Mods.Common.Traits
 
         public void AddFixedConnection(IEnumerable<CPos> cells){
 
+            // HACK: this is a temporary workaround to add a permanent connection between the domains of the listed cells.
+            // This is sufficient for fixed point-to-point tunnels, but not for dynamically updating custom layers
+            // such as destroyable elevated bridges.
+            // To support those the domain index will need to learn about custom movement layers, but that then requires
+            // a complete refactor of the domain code to deal with MobileInfo or better a shared pathfinder class type.
             var cellDomains = cells.Select(c => domains[c]).ToHashSet();
             foreach(var c1 in cellDomains){
                 foreach (var c2 in cellDomains.Where(c => c != c1))

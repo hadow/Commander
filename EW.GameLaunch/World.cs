@@ -497,6 +497,7 @@ namespace EW
 
             //Hash the shared random number generator.
             ret += SharedRandom.Last;
+
             return ret;
         }
 
@@ -507,10 +508,15 @@ namespace EW
             Disposing = true;
             frameEndActions.Clear();
 
+            WarGame.Sound.StopAudio();
+
+            ModelCache.Dispose();
+
             //Dispose newer actors first,and the world actor last
             foreach (var a in actors.Values.Reverse())
                 a.Dispose();
 
+            //Actor disposals are done in a FrameEndTask
             while (frameEndActions.Count != 0)
                 frameEndActions.Dequeue()(this);    //移除并返回位于Queue开始处的对象
         }

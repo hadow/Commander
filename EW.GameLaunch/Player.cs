@@ -41,6 +41,7 @@ namespace EW
         public readonly FactionInfo Faction;
         public readonly FactionInfo DisplayFaction;
         public Shroud Shroud;
+        public int SpawnPoint;
 
         public World World { get; private set; }
 

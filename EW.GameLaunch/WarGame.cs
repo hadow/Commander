@@ -101,7 +101,7 @@ namespace EW
         static Task discoverNat;
         public WarGame() {
 
-            IsFixedTimeStep = true;
+            //IsFixedTimeStep = false;
             DeviceManager = new GraphicsDeviceManager(this);
             //DeviceManager.DeviceCreated += (object sender, EventArgs args) => {
 
@@ -166,7 +166,6 @@ namespace EW
         {
             if (ModData != null)
             {
-
                 ModData = null;
             }
 
@@ -373,6 +372,7 @@ namespace EW
             }
             LogicTick(gameTime);
 
+            //Loop();
         }
 
 
@@ -608,72 +608,78 @@ namespace EW
         //}
 
 
-        static RunStatus state = RunStatus.Running;
-        //static void Loop()
-        //{
-        //    const int MaxLogicTicksBehind = 250;
+        static RunStatus state = RunStatus.Error;
+        static void Loop()
+        {
+            
+            if (state == RunStatus.Running)
+                return;
 
-        //    const int MinReplayFps = 10;
+            if (state != RunStatus.Running)
+                state = RunStatus.Running;
+            const int MaxLogicTicksBehind = 250;
 
-        //    //Timestamps for when the next logic and rendering should run
-        //    var nextLogic = RunTime;
-        //    var nextRender = RunTime;
-        //    var forcedNextRender = RunTime;
+            const int MinReplayFps = 10;
 
-        //    while(state == RunStatus.Running)
-        //    {
-        //        //Ideal time between logic updates.Timestep = 0 means the game is paused
-        //        //but we still call LogicTick() because it handles pausing internally.
-        //        var logicInterval = worldRenderer != null && worldRenderer.World.Timestep != 0 ? worldRenderer.World.Timestep : Timestep;
+            //Timestamps for when the next logic and rendering should run
+            var nextLogic = RunTime;
+            var nextRender = RunTime;
+            var forcedNextRender = RunTime;
 
-        //        //Ideal time between screen updates.
-        //        var maxFramerate = Settings.Graphics.CapFramerate ? Settings.Graphics.MaxFramerate.Clamp(1, 1000) : 1000;
-        //        var renderInterval = 1000 / maxFramerate;
+            while(state == RunStatus.Running)
+            {
+                //Ideal time between logic updates.Timestep = 0 means the game is paused
+                //but we still call LogicTick() because it handles pausing internally.
+                var logicInterval = worldRenderer != null && worldRenderer.World.Timestep != 0 ? worldRenderer.World.Timestep : Timestep;
 
-        //        var now = RunTime;
+                //Ideal time between screen updates.
+                var maxFramerate = Settings.Graphics.CapFramerate ? Settings.Graphics.MaxFramerate.Clamp(1, 1000) : 1000;
+                var renderInterval = 1000 / maxFramerate;
 
-        //        //If the logic has fallen behind to much,skip it and catch up
-        //        if (now - nextLogic > MaxLogicTicksBehind)
-        //            nextLogic = now;
+                var now = RunTime;
 
-        //        var nextUpdate = Math.Min(nextLogic, nextRender);
-        //        if (now >= nextUpdate)
-        //        {
-        //            var forceRender = now >= forcedNextRender;
+                //If the logic has fallen behind to much,skip it and catch up
+                if (now - nextLogic > MaxLogicTicksBehind)
+                    nextLogic = now;
 
-        //            if(now >= nextLogic)
-        //            {
-        //                nextLogic += logicInterval;
+                var nextUpdate = Math.Min(nextLogic, nextRender);
+                if (now >= nextUpdate)
+                {
+                    var forceRender = now >= forcedNextRender;
 
-        //                LogicTick();
+                    if(now >= nextLogic)
+                    {
+                        nextLogic += logicInterval;
 
-        //                //Force at least one render per tick during regular gameplay
-        //                if (orderManager.World != null && !orderManager.World.IsReplay)
-        //                    forceRender = true;
-        //            }
+                        LogicTick();
 
-        //            var haveSomeTimeUntilNextLogic = now < nextLogic;
-        //            var isTimeToRender = now >= nextRender;
+                        //Force at least one render per tick during regular gameplay
+                        if (orderManager.World != null && !orderManager.World.IsReplay)
+                            forceRender = true;
+                    }
 
-        //            if ((isTimeToRender && haveSomeTimeUntilNextLogic) || forceRender)
-        //            {
-        //                nextRender = now + renderInterval;
+                    var haveSomeTimeUntilNextLogic = now < nextLogic;
+                    var isTimeToRender = now >= nextRender;
 
-        //                var maxRenderInterval = Math.Max(1000 / MinReplayFps, renderInterval);
-        //                forcedNextRender = now + maxRenderInterval;
-        //                RenderTick();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            System.Threading.Thread.Sleep((int)(nextUpdate - now));
-        //        }
+                    if ((isTimeToRender && haveSomeTimeUntilNextLogic) || forceRender)
+                    {
+                        nextRender = now + renderInterval;
 
-        //    }
+                        var maxRenderInterval = Math.Max(1000 / MinReplayFps, renderInterval);
+                        forcedNextRender = now + maxRenderInterval;
+                        RenderTick();
+                    }
+                }
+                else
+                {
+                    System.Threading.Thread.Sleep((int)(nextUpdate - now));
+                }
+
+            }
 
 
 
-        //}
+        }
 
 
         public static Widget LoadWidget(World world,string id,Widget parent,WidgetArgs args){

@@ -23,6 +23,9 @@ namespace EW.Mods.Common.Widgets.Logic
         bool waypointModeDisabled = true;
 
 
+        TraitPair<IIssueDeployOrder>[] selectedDeploys = { };
+
+
         [ObjectCreator.UseCtor]
         public CommandBarLogic(Widget widget,World world,Dictionary<string,MiniYaml> logicArgs)
         {
@@ -65,6 +68,12 @@ namespace EW.Mods.Common.Widgets.Logic
             if (deployButton != null)
             {
                 BindButtonIcon(deployButton);
+
+                deployButton.OnClick = () =>
+                {
+                    PerformDeployOrderOnSelection();
+
+                };
             }
 
 
@@ -87,5 +96,39 @@ namespace EW.Mods.Common.Widgets.Logic
 
         }
 
+        void UpdateStateIfNecessary(){
+
+            if (selectionHash == world.Selection.Hash)
+                return;
+
+            selectedActors = world.Selection.Actors.Where(a => a.Owner == world.LocalPlayer && a.IsInWorld).ToArray();
+
+            attackMoveDisabled = !selectedActors.Any(a => a.Info.HasTraitInfo<AttackMoveInfo>() && a.Info.HasTraitInfo<AutoTargetInfo>());
+            guardDisabled = !selectedActors.Any(a => a.Info.HasTraitInfo<GuardInfo>() && a.Info.HasTraitInfo<AutoTargetInfo>());
+            forceMoveDisabled = !selectedActors.Any(a => a.Info.HasTraitInfo<MobileInfo>() || a.Info.HasTraitInfo<AircraftInfo>());
+            forceAttackDisabled = !selectedActors.Any(a => a.Info.HasTraitInfo<AttackBaseInfo>());
+            scatterDisabled = !selectedActors.Any(a => a.Info.HasTraitInfo<MobileInfo>());
+
+            selectedDeploys = selectedActors.SelectMany(a => a.TraitsImplementing<IIssueDeployOrder>().Select(d => new TraitPair<IIssueDeployOrder>(a, d))).ToArray();
+
+            selectionHash = world.Selection.Hash;
+
+        }
+
+
+        void PerformDeployOrderOnSelection()
+        {
+            UpdateStateIfNecessary();
+
+            var orders = selectedDeploys
+                .Where(pair => pair.Trait.IsTraitEnabled())
+                .Select(d => d.Trait.IssueDeployOrder(d.Actor))
+                .ToArray();
+
+            foreach (var o in orders)
+                world.IssueOrder(o);
+
+            world.PlayVoiceForOrders(orders);
+        }
     }
 }
