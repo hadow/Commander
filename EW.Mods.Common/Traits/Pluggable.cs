@@ -6,12 +6,19 @@ namespace EW.Mods.Common.Traits
 {
     public class PluggableInfo:ITraitInfo,UsesInit<PlugsInit>
     {
+
+        [Desc("Footprint cell offset where a plug can be placed.")]
         public readonly CVec Offset = CVec.Zero;
 
+        [Desc("Conditions to grant for each accepted plug type.",
+            "Key is the plug type.",
+            "Value is the condition that is granted when the plug is enabled.")]
         [FieldLoader.Require]
         public readonly Dictionary<string, string> Conditions = null;
 
-
+        [Desc("Requirements for accepting a plug type.",
+            "Key is the plug type that the requirements applies to.",
+            "Value is the condition expression defining the requirements to place the plug.")]
         public readonly Dictionary<string, BooleanExpression> Requirements = new Dictionary<string, BooleanExpression>();
 
 

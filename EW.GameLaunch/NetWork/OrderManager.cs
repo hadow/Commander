@@ -40,6 +40,7 @@ namespace EW.NetWork
         public bool GameStarted { get { return NetFrameNumber != 0; } }
 
         bool disposed;
+        public Session.Client LocalClient { get { return LobbyInfo.ClientWithIndex(Connection.LocalClientId); } }
 
         public OrderManager(string host,int port,string password,IConnection conn){
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
@@ -19,11 +20,13 @@ namespace EW.Mods.Common.Traits
     {
 
         public PowerManager PlayerPower { get; private set; }
+        readonly Lazy<IPowerModifier[]> powerModifiers;
 
 
         public Power(Actor self,PowerInfo info) : base(info)
         {
             PlayerPower = self.Owner.PlayerActor.Trait<PowerManager>();
+            powerModifiers = Exts.Lazy(() => self.TraitsImplementing<IPowerModifier>().ToArray());
 
         }
 
@@ -41,6 +44,11 @@ namespace EW.Mods.Common.Traits
             PlayerPower.UpdateActor(self);
         }
 
+
+        public int GetEnabledPower()
+        {
+            return Util.ApplyPercentageModifiers(Info.Amount, powerModifiers.Value.Select(m => m.GetPowerModifier()));
+        }
 
     }
 }

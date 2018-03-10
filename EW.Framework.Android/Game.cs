@@ -447,7 +447,7 @@ namespace EW.Framework
             if(Platform.BeforeDraw(gameTime) && BeginDraw())
             {
                 Draw(gameTime);
-                EndDraw();
+                //EndDraw();
             }
         }
 

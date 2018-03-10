@@ -20,6 +20,12 @@ namespace EW.Mods.Common.Traits
         public readonly bool DefaultCashDropdownVisible = true;
 
         public readonly int DefaultCashDropdownDisplayOrder = 0;
+
+        [Desc("Speech notification to play when the player does not have any funds.")]
+        public readonly string InsufficientFundsNotification = null;
+
+        [Desc("Delay (in ticks) during which warnings will be muted.")]
+        public readonly int InsufficientFundsNotificationDelay = 750;
         
         public object Create(ActorInitializer init) { return new PlayerResources(init.Self,this); }
     }
@@ -54,6 +60,11 @@ namespace EW.Mods.Common.Traits
             this.info = info;
             owner = self.Owner;
 
+            var startingCash = self.World.LobbyInfo.GlobalSettings
+                .OptionOrDefault("startingcash", info.DefaultCash.ToString());
+
+            if (!int.TryParse(startingCash, out Cash))
+                Cash = info.DefaultCash;
 
         }
 
@@ -76,7 +87,35 @@ namespace EW.Mods.Common.Traits
 
         public void GiveCash(int num)
         {
+            if (Cash < int.MaxValue)
+            {
+                try
+                {
+                    checked
+                    {
+                        Cash += num;
+                    }
+                }
+                catch (OverflowException)
+                {
+                    Cash = int.MaxValue;
+                }
+            }
 
+            if (Earned < int.MaxValue)
+            {
+                try
+                {
+                    checked
+                    {
+                        Earned += num;
+                    }
+                }
+                catch (OverflowException)
+                {
+                    Earned = int.MaxValue;
+                }
+            }
         }
 
         public bool TakeResources(int num)
@@ -92,6 +131,13 @@ namespace EW.Mods.Common.Traits
 
             if(Cash + Resources < num)
             {
+
+                if (notifyLowFunds && !string.IsNullOrEmpty(info.InsufficientFundsNotification) &&
+                    owner.World.WorldTick - lastNotificationTick >= info.InsufficientFundsNotificationDelay)
+                {
+                    lastNotificationTick = owner.World.WorldTick;
+                    WarGame.Sound.PlayNotification(owner.World.Map.Rules, owner, "Speech", info.InsufficientFundsNotification, owner.Faction.InternalName);
+                }
                 return false;
 
             }

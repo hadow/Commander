@@ -722,6 +722,7 @@ namespace EW.Mods.Common.Traits
             ToSubCell = toSub;
             AddInfluence();
 
+            // Tunnel condition is added/removed when starting the transition between layers
             if (toCell.Layer == CustomMovementLayerType.Tunnel && conditionManager != null &&
                 !string.IsNullOrEmpty(Info.TunnelCondition) && tunnelToken == ConditionManager.InvalidConditionToken)
                 tunnelToken = conditionManager.GrantCondition(self, Info.TunnelCondition);
@@ -737,6 +738,8 @@ namespace EW.Mods.Common.Traits
                     WarGame.Sound.Play(SoundType.World, Info.SubterraneanTransitionSound);
             }
 
+            // Grant the jumpjet condition as soon as the actor starts leaving the ground layer
+            // The condition is revoked from FinishedMoving
             if (toCell.Layer == CustomMovementLayerType.Jumpjet && conditionManager != null &&
                 !string.IsNullOrEmpty(Info.JumpjetCondition) && jumpjetToken == ConditionManager.InvalidConditionToken)
                 jumpjetToken = conditionManager.GrantCondition(self, Info.JumpjetCondition);
@@ -768,8 +771,9 @@ namespace EW.Mods.Common.Traits
                 return;
 
             if (!force && self.Owner.Stances[nudger.Owner] != Stance.Ally)
-                return;
-
+                return;     /* don't allow ourselves to be pushed around
+                             * by the enemy! */
+            /* don't nudge if we're busy doing something! */
             if (!force && !self.IsIdle)
                 return;
 

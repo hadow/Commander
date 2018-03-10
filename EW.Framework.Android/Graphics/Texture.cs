@@ -48,6 +48,7 @@ namespace EW.Framework.Graphics
             PrepareTexture();
             //GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, IntPtr.Zero);
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
+            //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, IntPtr.Zero);
             GraphicsExtensions.CheckGLError();
         }
 
@@ -70,7 +71,7 @@ namespace EW.Framework.Graphics
                     GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, width, height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
                     //GL.TexImage2D(TextureTarget.Texture2D, 0,
                       //            PixelInternalFormat.Rgba8, width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
-                    //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
+                    //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
                     GraphicsExtensions.CheckGLError();
                 }
             }
@@ -136,6 +137,7 @@ namespace EW.Framework.Graphics
                     PrepareTexture();
                     GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba8,
                         width, height, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
+                    //GL.TexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, width, height, PixelFormat.Rgba, PixelType.UnsignedByte, intPtr);
 
                 }
             }

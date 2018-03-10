@@ -579,6 +579,22 @@ namespace EW.Server
             c.Color = pr.LockColor ? pr.Color : c.PreferredColor;
         }
 
+
+        public void SyncLobbySlots(){
+
+            if (State != ServerState.WaitingPlayers)
+                return;
+
+            var slotData = LobbyInfo.Slots.Select(slot => slot.Value.Serialize()).ToList();
+
+            DispatchOrders(null, 0, new ServerOrder("SyncLobbySlots", slotData.WriteToString()).Serialize());
+
+            foreach (var t in serverTraits.WithInterface<INotifySyncLobbyInfo>())
+                t.LobbyInfoSynced(this);
+
+
+        }
+
         public void SyncClientPing()
         {
             var clientPings = LobbyInfo.ClientPings.Select(ping => ping.Serialize()).ToList();

@@ -86,7 +86,7 @@ namespace EW.Framework.Graphics
                 View view = ((AndroidGameWindow)Game.Instance.Window).GameView;
                 //return new DisplayMode(view.Width, view.Height, SurfaceFormat.Color);
                 return new DisplayMode(view.Width, view.Height, SurfaceFormat.Bgra32);
-                //return new DisplayMode(1280, 800, SurfaceFormat.Color);
+                //return new DisplayMode(1280, 720, SurfaceFormat.Color);
             }
         }
         public void Dispose()

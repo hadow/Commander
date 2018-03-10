@@ -249,7 +249,18 @@ namespace EW.Mods.Common.Traits
 
         public void ResolveOrder(Actor self,Order order)
         {
+            if(order.TargetString == "Harvest"){
 
+
+            }
+            else if(order.TargetString=="Deliver"){
+
+
+            }
+            else if(order.TargetString == "Stop" || order.TargetString=="Move"){
+
+
+            }
         }
 
 

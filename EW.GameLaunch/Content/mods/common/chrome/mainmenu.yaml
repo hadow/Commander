@@ -106,12 +106,12 @@ Container@MAINMENU:
 							Height: 60
 							Text: Missions
 							Font: Bold
-						Button@BACK_BUTTON:
+						Button@ADDBOT_BUTTON:
 							X: PARENT_RIGHT / 2 - WIDTH / 2
 							Y: 260
 							Width: 140
 							Height: 30
-							Text: Back
+							Text: Add Bot
 							Font: Bold
 		Container@PERFORMANCE_INFO:
 			Logic: PerfDebugLogic

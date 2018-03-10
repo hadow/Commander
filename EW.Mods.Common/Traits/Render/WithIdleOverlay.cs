@@ -38,7 +38,38 @@ namespace EW.Mods.Common.Traits.Render
         }
         public IEnumerable<IActorPreview> RenderPreviewSprites(ActorPreviewInitializer init,RenderSpritesInfo rs,string image,int facings,PaletteReference p)
         {
-            throw new NotImplementedException();
+
+            if (!EnabledByDefault)
+                yield break;
+
+            if (Palette != null)
+                p = init.WorldRenderer.Palette(Palette);
+
+            Func<int> facing;
+            if (init.Contains<DynamicFacingInit>())
+                facing = init.Get<DynamicFacingInit, Func<int>>();
+            else
+            {
+                var f = init.Contains<FacingInit>() ? init.Get<FacingInit, int>() : 0;
+                facing = () => f;
+
+            }
+
+            var anim = new Animation(init.World, image, facing);
+            anim.PlayRepeating(RenderSprites.NormalizeSequence(anim,init.GetDamageState(),Sequence));
+
+            var body = init.Actor.TraitInfo<BodyOrientationInfo>();
+            Func<WRot> orientation = () => body.QuantizeOrientation(WRot.FromFacing(facing()), facings);
+            Func<WVec> offset = () => body.LocalToWorld(Offset.Rotate(orientation()));
+            Func<int> zOffset = () =>
+            {
+                var tmpOffset = offset();
+                return tmpOffset.Y + tmpOffset.Z + 1;
+            };
+
+            yield return new SpriteActorPreview(anim, offset, zOffset, p, rs.Scale);
+
+
         }
     }
     public class WithIdleOverlay:PausableConditionalTrait<WithIdleOverlayInfo>,INotifyBuildComplete

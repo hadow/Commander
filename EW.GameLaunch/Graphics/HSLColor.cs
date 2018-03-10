@@ -134,5 +134,22 @@ namespace EW.Graphics
             return ToHexString(RGB);
         }
 
+
+        public static HSLColor FromHSV(float h, float s, float v)
+        {
+            var ll = 0.5f * (2 - s) * v;
+            var ss = (ll >= 1 || v <= 0) ? 0 : 0.5f * s * v / (ll <= 0.5f ? ll : 1 - ll);
+            return new HSLColor((byte)(255 * h), (byte)(255 * ss), (byte)(255 * ll));
+        }
+
+        public void ToHSV(out float h, out float s, out float v)
+        {
+            var ll = 2 * L / 255f;
+            var ss = S / 255f * ((ll <= 1) ? ll : 2 - ll);
+
+            h = H / 255f;
+            s = (2 * ss) / (ll + ss);
+            v = (ll + ss) / 2;
+        }
     }
 }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Graphics;
 using EW.Mods.Common.Traits;
+using EW.Mods.Common.Orders;
 using EW.Widgets;
-
+using EW.NetWork;
 namespace EW.Mods.Common.Widgets.Logic
 {
     public class CommandBarLogic:ChromeLogic
@@ -37,6 +38,14 @@ namespace EW.Mods.Common.Widgets.Logic
             {
                 BindButtonIcon(attackMoveButton);
 
+                Action<bool> toggle = allowCancel =>
+                {
+
+                    world.OrderGenerator = new AttackMoveOrderGenerator(selectedActors, Framework.Touch.GestureType.Tap);
+                };
+
+                attackMoveButton.OnClick = () => toggle(true);
+
             }
 
             var forceMoveButton = widget.GetOrNull<ButtonWidget>("FORCE_MOVE");
@@ -55,6 +64,14 @@ namespace EW.Mods.Common.Widgets.Logic
             if(guardButton != null)
             {
                 BindButtonIcon(guardButton);
+
+                Action<bool> toggle = allowCanel =>
+                {
+                    if(allowCanel)
+                        world.OrderGenerator = new GuardOrderGenerator(selectedActors, "Guard", "guard", Framework.Touch.GestureType.DoubleTap);
+                };
+                guardButton.OnClick = ()=> toggle(true);
+
             }
 
 
@@ -62,6 +79,14 @@ namespace EW.Mods.Common.Widgets.Logic
             if(scatterButton != null)
             {
                 BindButtonIcon(scatterButton);
+
+                scatterButton.OnClick = () =>
+                {
+
+                    PerformKeyboardOrderOnSelection(a => new Order("Scatter", a, false));
+                };
+
+
             }
 
             var deployButton = widget.GetOrNull<ButtonWidget>("DEPLOY");
@@ -81,6 +106,12 @@ namespace EW.Mods.Common.Widgets.Logic
             if(stopButton != null)
             {
                 BindButtonIcon(stopButton);
+
+                stopButton.OnClick = () =>
+                {
+
+                    PerformKeyboardOrderOnSelection(a=>new Order("Stop",a,false));
+                };
             }
         }
 
@@ -123,6 +154,21 @@ namespace EW.Mods.Common.Widgets.Logic
             var orders = selectedDeploys
                 .Where(pair => pair.Trait.IsTraitEnabled())
                 .Select(d => d.Trait.IssueDeployOrder(d.Actor))
+                .ToArray();
+
+            foreach (var o in orders)
+                world.IssueOrder(o);
+
+            world.PlayVoiceForOrders(orders);
+        }
+
+
+        void PerformKeyboardOrderOnSelection(Func<Actor, Order> f)
+        {
+            UpdateStateIfNecessary();
+
+            var orders = selectedActors
+                .Select(f)
                 .ToArray();
 
             foreach (var o in orders)

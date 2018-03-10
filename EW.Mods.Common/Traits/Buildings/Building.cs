@@ -183,7 +183,83 @@ namespace EW.Mods.Common.Traits
         public virtual bool IsCloseEnoughToBase(World world,Player p,string buildingName,CPos topLeft)
         {
 
-            return false;
+            var requiresBuildableArea = world.Map.Rules.Actors[buildingName].TraitInfoOrDefault<RequiresBuildableAreaInfo>();
+
+            var mapBuildRadius = world.WorldActor.Trait<MapBuildRadius>();
+
+            if (requiresBuildableArea == null || p.PlayerActor.Trait<DeveloperMode>().BuildAnywhere)
+                return true;
+            
+            var adjacent = requiresBuildableArea.Adjacent;
+            var buildingMaxBounds = Dimensions;
+
+            var scanStart = world.Map.Clamp(topLeft - new CVec(adjacent, adjacent));
+            var scanEnd = world.Map.Clamp(topLeft + buildingMaxBounds + new CVec(adjacent, adjacent));
+
+            var nearnessCandidates = new List<CPos>();
+            var bi = world.WorldActor.Trait<BuildingInfluence>();
+            var allyBuildEnabled = mapBuildRadius.AllyBuildRadiusEnabled;
+
+
+            for (var y = scanStart.Y; y < scanEnd.Y; y++)
+            {
+                for (var x = scanStart.X; x < scanEnd.X; x++)
+                {
+                    var pos = new CPos(x, y);
+
+                    var buildingAtPos = bi.GetBuildingAt(pos);
+
+                    if (buildingAtPos == null)
+                    {
+                        var unitsAtPos = world.ActorMap.GetActorsAt(pos).Where(a => a.IsInWorld
+                            && (a.Owner == p || (allyBuildEnabled && a.Owner.Stances[p] == Stance.Ally))
+                            && ActorGrantsValidArea(a, requiresBuildableArea));
+
+                        if (unitsAtPos.Any())
+                            nearnessCandidates.Add(pos);
+                    }
+                    else if (buildingAtPos.IsInWorld && ActorGrantsValidArea(buildingAtPos, requiresBuildableArea)
+                        && (buildingAtPos.Owner == p || (allyBuildEnabled && buildingAtPos.Owner.Stances[p] == Stance.Ally)))
+                        nearnessCandidates.Add(pos);
+                }
+            }
+            var buildingTiles = Tiles(topLeft).ToList();
+            return nearnessCandidates
+                .Any(a => buildingTiles
+                    .Any(b => Math.Abs(a.X - b.X) <= adjacent
+                        && Math.Abs(a.Y - b.Y) <= adjacent));        
+            
+        }
+
+        bool ActorGrantsValidArea(Actor a, RequiresBuildableAreaInfo rba)
+        {
+            return rba.AreaTypes.Overlaps(a.TraitsImplementing<GivesBuildableArea>()
+                .SelectMany(gba => gba.AreaTypes));
+        }
+
+        public Actor FindBaseProvider(World world,Player p,CPos topLeft){
+
+            var center = world.Map.CenterOfCell(topLeft) + CenterOffset(world);
+            var mapBuildRadius = world.WorldActor.Trait<MapBuildRadius>();
+            var allyBuildEnabled = mapBuildRadius.AllyBuildRadiusEnabled;
+
+            if (!mapBuildRadius.BuildRadiusEnabled)
+                return null;
+
+            foreach(var bp in world.ActorsWithTrait<BaseProvider>()){
+
+                var validOwner = bp.Actor.Owner == p || (allyBuildEnabled && bp.Actor.Owner.Stances[p] == Stance.Ally);
+                if (!validOwner || !bp.Trait.Ready())
+                    continue;
+
+
+                var target = Target.FromPos(bp.Actor.CenterPosition);
+                if (target.IsInRange(center, bp.Trait.Info.Range))
+                    return bp.Actor;
+                    
+            }
+
+            return null;
         }
     }
 

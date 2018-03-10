@@ -63,7 +63,7 @@ namespace EW
         readonly Stack<Rectangle> scissorState = new Stack<Rectangle>();
 
         public Size Resolution { get { return new Size(Device.Viewport.Width,Device.Viewport.Height); } }
-
+        //public Size Resolution { get { return new Size(1280, 720); } }
         public IReadOnlyDictionary<string, SpriteFont> Fonts;
         SheetBuilder fontSheetBuilder;
         public Renderer(GraphicsSettings graphicSettings,IGraphicsDevice device)

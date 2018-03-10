@@ -72,7 +72,7 @@ namespace EW.Mods.Common.Traits
         IVisibilityModifier,
         IRadarColorModifier,
         INotifyHarvesterAction,
-        INotifyUnload
+    INotifyUnload,INotifyInfiltration
 
     {
         [Sync]
@@ -260,6 +260,13 @@ namespace EW.Mods.Common.Traits
         void INotifyUnload.Unloading(Actor self)
         {
             if (Info.UncloakOn.HasFlag(UncloakType.Unload))
+                Uncloak();
+        }
+
+        void INotifyInfiltration.Infiltrating(Actor self){
+
+
+            if (Info.UncloakOn.HasFlag(UncloakType.Infiltrate))
                 Uncloak();
         }
 

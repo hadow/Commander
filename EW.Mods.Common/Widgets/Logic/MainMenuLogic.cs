@@ -6,6 +6,7 @@ using System.Net;
 using EW.Primitives;
 using EW.Widgets;
 using EW.NetWork;
+using EW.Traits;
 namespace EW.Mods.Common.Widgets.Logic
 {
     public class MainMenuLogic:ChromeLogic
@@ -35,8 +36,8 @@ namespace EW.Mods.Common.Widgets.Logic
             singleplayerMenu.IsVisible = () => menuType == MenuType.Singleplayer;
 
             singleplayerMenu.Get<ButtonWidget>("SKIRMISH_BUTTON").OnClick = StartSkirmishGame;
-            singleplayerMenu.Get<ButtonWidget>("BACK_BUTTON").OnClick = () => SwitchMenu(MenuType.Main);
-
+            //singleplayerMenu.Get<ButtonWidget>("BACK_BUTTON").OnClick = () => SwitchMenu(MenuType.Main);
+            singleplayerMenu.Get<ButtonWidget>("ADDBOT_BUTTON").OnClick = AddBot;
 
             var missionsButton = singleplayerMenu.Get<ButtonWidget>("MISSIONS_BUTTON");
             missionsButton.OnClick = () =>
@@ -45,6 +46,9 @@ namespace EW.Mods.Common.Widgets.Logic
                 WarGame.orderManager.IssueOrder(Order.Command("state {0}".F(Session.ClientState.NotReady)));
                 WarGame.orderManager.IssueOrder(Order.Command("startgame"));
             };
+
+
+
         }
 
         void SwitchMenu(MenuType type)
@@ -62,11 +66,23 @@ namespace EW.Mods.Common.Widgets.Logic
                 WarGame.CreateLocalServer(map), "", OpenSkirmishLobbyPanel, () => { WarGame.CloseServer();SwitchMenu(MenuType.Main); });
         }
 
+        void AddBot(){
+
+            ///var botTypes = map.Rules.Actors["player"].TraitInfos<IBotInfo>().Select(t => t.Type);
+
+
+        }
+
 
         void OpenSkirmishLobbyPanel()
         {
-            //SwitchMenu(MenuType.None);
-            
+            SwitchMenu(MenuType.None);
+            WarGame.OpenWindow("SERVER_LOBBY", new WidgetArgs
+            {
+                { "onExit", () => { WarGame.Disconnect(); SwitchMenu(MenuType.Singleplayer); } },
+                { "onStart", RemoveShellmapUI },
+                { "skirmishMode", true }
+            });
         }
 
         protected override void Dispose(bool disposing)

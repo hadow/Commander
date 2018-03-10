@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using EW.Traits;
+using EW.Primitives;
 namespace EW.Mods.Common.Traits
 {
     [Desc("Allows the player to execute build orders.", " Attach this to the player actor.")]
@@ -45,6 +46,7 @@ namespace EW.Mods.Common.Traits
 
             self.World.AddFrameEndTask(w=>{
 
+                var prevItems = GetNumBuildables(self.Owner);
 
 
                 var targetActor = w.GetActorById(order.ExtraData);
@@ -81,7 +83,48 @@ namespace EW.Mods.Common.Traits
                 else{
 
 
+                    if (!self.World.CanPlaceBuilding(order.TargetString, buildingInfo, order.TargetLocation, null)
+                       || !buildingInfo.IsCloseEnoughToBase(self.World, order.Player, order.TargetString, order.TargetLocation))
+                        return;
+
+
+                    var building = w.CreateActor(order.TargetString, new TypeDictionary()
+                    {
+                        new LocationInit(order.TargetLocation),
+                        new OwnerInit(order.Player),
+                        new FactionInit(faction),
+                    });
+
+                    foreach(var s in buildingInfo.BuildSounds){
+
+                        WarGame.Sound.PlayToPlayer(SoundType.World,order.Player,s,building.CenterPosition);
+                    }
                 }
+
+                if(producer.Actor!=null){
+
+
+                    foreach (var nbp in producer.Actor.TraitsImplementing<INotifyBuildingPlaced>())
+                        nbp.BuildingPlaced(producer.Actor);
+                }
+
+
+                queue.FinishProduction();
+
+                if(buildingInfo.RequiresBaseProvider){
+
+                    // May be null if the build anywhere cheat is active
+                    // BuildingInfo.IsCloseEnoughToBase has already verified that this is a valid build location
+                    var provider = buildingInfo.FindBaseProvider(w, self.Owner, order.TargetLocation);
+                    if(provider != null){
+
+                        provider.Trait<BaseProvider>().BeginCooldown();
+
+                    }
+                }
+
+                if (GetNumBuildables(self.Owner) > prevItems)
+                    triggerNotification = true;
 
 
             });
@@ -103,6 +146,17 @@ namespace EW.Mods.Common.Traits
             WarGame.Sound.PlayNotification(self.World.Map.Rules, self.Owner, "Speech", info.NewOptionsNotification, self.Owner.Faction.InternalName);
             triggerNotification = false;
             tick = 0;
+        }
+
+        static int GetNumBuildables(Player p)
+        {
+            // This only matters for local players.
+            if (p != p.World.LocalPlayer)
+                return 0;
+
+            return p.World.ActorsWithTrait<ProductionQueue>()
+                .Where(a => a.Actor.Owner == p)
+                .SelectMany(a => a.Trait.BuildableItems()).Distinct().Count();
         }
     }
 }

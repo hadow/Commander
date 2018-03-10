@@ -7,6 +7,7 @@ namespace EW.Mods.Common.Traits
 
     public enum ExplosionType { Footprint,CenterPosition}
 
+    [Desc("This actor explodes when killed.")]
     public class ExplodesInfo : ConditionalTraitInfo,Requires<HealthInfo>
     {
         [WeaponReference,FieldLoader.Require,]

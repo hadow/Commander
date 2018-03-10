@@ -61,10 +61,10 @@ namespace EW.Mods.Common.Widgets.Logic
                 palette.CurrentQueue = queues.FirstOrDefault(q => q.Enabled);
 
                 // When a tab is selected, scroll to the top because the current row position may be invalid for the new tab
-                //palette.ScrollToTop();
+                palette.ScrollToTop();
 
                 // Attempt to pick up a completed building (if there is one) so it can be placed
-                //palette.PickUpCompletedBuilding();
+                palette.PickUpCompletedBuilding();
             };
 
             button.OnClick = () => selectTab(false);

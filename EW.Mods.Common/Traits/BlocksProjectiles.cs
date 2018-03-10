@@ -3,6 +3,8 @@ using EW.Traits;
 using System.Linq;
 namespace EW.Mods.Common.Traits
 {
+
+    [Desc("This actor blocks bullets and missiles with 'Blockable' property.")]
     public class BlocksProjectilesInfo : ConditionalTraitInfo,IBlocksProjectilesInfo
     {
         public readonly WDist Height = WDist.FromCells(1);

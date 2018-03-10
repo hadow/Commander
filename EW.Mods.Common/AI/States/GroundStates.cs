@@ -67,9 +67,7 @@ namespace EW.Mods.Common.AI
             }
         }
 
-        public void Deactivate(Squad owner){
-            
-        }
+        public void Deactivate(Squad owner){}
 
     }
 

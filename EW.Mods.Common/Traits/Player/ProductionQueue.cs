@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using EW.Traits;
 using EW.NetWork;
+using EW.Primitives;
+
 namespace EW.Mods.Common.Traits
 {
 
@@ -266,17 +268,55 @@ namespace EW.Mods.Common.Traits
         
         protected virtual bool BuildUnit(ActorInfo unit)
         {
+
+            var mostLikelyProducerTrait = MostLikelyProducer().Trait;
+
+            // Cannot produce if I'm dead or trait is disabled
+            if (!self.IsInWorld || self.IsDead || mostLikelyProducerTrait == null)
+            {
+                CancelProduction(unit.Name, 1);
+                return false;
+            }
+
+            var inits = new TypeDictionary
+            {
+                new OwnerInit(self.Owner),
+                new FactionInit(BuildableInfo.GetInitialFaction(unit, Faction))
+            };
+
+            var bi = unit.TraitInfo<BuildableInfo>();
+            var type = developerMode.AllTech ? Info.Type : (bi.BuildAtProductionType ?? Info.Type);
+
+            if (!mostLikelyProducerTrait.IsTraitPaused && mostLikelyProducerTrait.Produce(self, unit, type, inits))
+            {
+                FinishProduction();
+                return true;
+            }
+
             return false;
+
         }
 
         protected void CancelProduction(string itemName,uint numberToCancel)
         {
-
+            for (var i = 0; i < numberToCancel; i++)
+                CancelProductionInner(itemName);
         }
 
         void CancelProductionInner(string itemName)
         {
+            var lastIndex = queue.FindLastIndex(a => a.Item == itemName);
 
+            if (lastIndex > 0)
+                queue.RemoveAt(lastIndex);
+            else if (lastIndex == 0)
+            {
+                var item = queue[0];
+
+                // Refund what has been paid
+                playerResources.GiveCash(item.TotalCost - item.RemainingCost);
+                FinishProduction();
+            }
         }
 
 
@@ -294,24 +334,27 @@ namespace EW.Mods.Common.Traits
             time = time * bi.BuildDurationModifier * Info.BuildDurationModifier / 10000;
             return time;
         }
+
         public void PrerequisitesAvailable(string key)
         {
-
+            producible[self.World.Map.Rules.Actors[key]].Buildable = true;
         }
 
         public void PrerequisitesUnavailable(string key)
         {
+            producible[self.World.Map.Rules.Actors[key]].Buildable = false;
 
         }
 
         public void PrerequisitesItemHidden(string key)
         {
+            producible[self.World.Map.Rules.Actors[key]].Visible = false;
 
         }
 
-
         public void PrerequisitesItemVisible(string key)
         {
+            producible[self.World.Map.Rules.Actors[key]].Visible = true;
 
         }
 

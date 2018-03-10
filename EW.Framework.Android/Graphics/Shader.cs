@@ -97,18 +97,7 @@ namespace EW.Framework.Graphics
 
             var shader = GL.CreateShader(type);
             GraphicsExtensions.CheckGLError();
-            
-            //string vertexShader = "uniform mat4 u_MVPMatrix; \n" +
-            //    "attribute vec4 a_Position;\n" +
-            //    "attribute vec4 a_Color;\n" +
-            //    "varying vec4 v_Color; \n" +
-            //    "void main()    \n" +
-            //    "{  \n" +
-            //    "v_Color = a_Color; \n" +
-            //    "gl_Position = u_MVPMatrix \n" +
-            //    "*a_Position;   \n" +
-            //    "}  \n";
-            //code = vertexShader;
+
             unsafe
             {
                 var length = code.Length;

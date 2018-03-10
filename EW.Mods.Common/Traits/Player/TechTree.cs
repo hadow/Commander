@@ -51,6 +51,23 @@ namespace EW.Mods.Common.Traits
                     hasPrerequisites = !nowHasPrerequisites;
                     hidden = !nowHidden;
                 }
+
+                // Hide the item from the UI if a prereq annotated with '~' is not met.
+                if (nowHidden && !hidden)
+                    watcher.PrerequisitesItemHidden(Key);
+
+                if (!nowHidden && hidden)
+                    watcher.PrerequisitesItemVisible(Key);
+
+                if (nowHasPrerequisites && !hasPrerequisites)
+                    watcher.PrerequisitesAvailable(Key);
+
+                if (!nowHasPrerequisites && hasPrerequisites)
+                    watcher.PrerequisitesUnavailable(Key);
+
+                hidden = nowHidden;
+                hasPrerequisites = nowHasPrerequisites;
+
             }
 
 

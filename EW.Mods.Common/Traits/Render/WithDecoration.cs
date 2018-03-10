@@ -5,7 +5,7 @@ using EW.Traits;
 namespace EW.Mods.Common.Traits
 {
 
-    public class WithDecorationInfo : UpgradableTraitInfo
+    public class WithDecorationInfo : ConditionalTraitInfo,Requires<IDecorationBoundsInfo>
     {
         public override object Create(ActorInitializer init)
         {
@@ -13,7 +13,7 @@ namespace EW.Mods.Common.Traits
         }
     }
 
-    public class WithDecoration:UpgradableTrait<WithDecorationInfo>
+    public class WithDecoration:ConditionalTrait<WithDecorationInfo>
     {
         public WithDecoration(Actor self,WithDecorationInfo info) : base(info) { }
     }

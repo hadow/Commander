@@ -6,6 +6,7 @@ using EW.Graphics;
 using EW.Framework;
 using EW.Effects;
 using EW.Primitives;
+using EW.Framework.Touch;
 namespace EW.Traits
 {
 
@@ -365,6 +366,11 @@ namespace EW.Traits
         //}
 
 
+        public IEnumerable<ActorBoundsPair> ActorsAtMouse(GestureSample gs){
+
+            return ActorsAtMouse(worldRenderer.ViewPort.ViewToWorldPx(gs.Position.ToInt2()));
+        }
+
         public IEnumerable<ActorBoundsPair> ActorsAtMouse(Int2 worldPx){
 
             return partitionedMouseActors.At(worldPx)
@@ -372,6 +378,8 @@ namespace EW.Traits
                                          .Select(selectActorAndBounds)
                                          .Where(x => x.Bounds.Contains(worldPx));
         }
+
+
 
         public IEnumerable<ActorBoundsPair> ActorsInMouseBox(Int2 a,Int2 b){
 

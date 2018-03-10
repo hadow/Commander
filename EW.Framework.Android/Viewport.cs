@@ -71,10 +71,7 @@ namespace EW.Framework
             this.maxDepth = maxDepth;
         }
 
-        public Viewport(Rectangle bounds) : this(bounds.X, bounds.Y, bounds.Width, bounds.Height)
-        {
-
-        }
+        public Viewport(Rectangle bounds) : this(bounds.X, bounds.Y, bounds.Width, bounds.Height){}
 
 
         /// <summary>

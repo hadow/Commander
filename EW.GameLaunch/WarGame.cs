@@ -101,16 +101,16 @@ namespace EW
         static Task discoverNat;
         public WarGame() {
 
-            //IsFixedTimeStep = false;
+            IsFixedTimeStep = true;
+            TargetElapsedTime = TimeSpan.FromTicks(166667/4);
             DeviceManager = new GraphicsDeviceManager(this);
             //DeviceManager.DeviceCreated += (object sender, EventArgs args) => {
 
             //    Initialize(new Arguments());
             //};
+            DeviceManager.PreferredBackBufferWidth = 1280;
+            DeviceManager.PreferredBackBufferHeight = 720;
             DeviceManager.IsFullScreen = true;
-            //DeviceManager.PreferredBackBufferWidth = 960;
-            //DeviceManager.PreferredBackBufferHeight = 640;
-
             DeviceManager.SupportedOrientations = DisplayOrientation.LandscapeLeft | DisplayOrientation.LandscapeRight;
         }
 
@@ -609,24 +609,25 @@ namespace EW
 
 
         static RunStatus state = RunStatus.Error;
-        static void Loop()
+        //Timestamps for when the next logic and rendering should run
+        long nextLogic = 0;
+        long nextRender = 0;
+        long forcedNextRender = 0;
+        bool firstLoop = false;
+
+        const int MaxLogicTicksBehind = 250;
+
+        const int MinReplayFps = 10;
+        void Loop()
         {
-            
-            if (state == RunStatus.Running)
-                return;
+            if(!firstLoop){
+                nextLogic = RunTime;
+                nextRender = RunTime;
+                forcedNextRender = RunTime;
+                firstLoop = true;
+            }
 
-            if (state != RunStatus.Running)
-                state = RunStatus.Running;
-            const int MaxLogicTicksBehind = 250;
-
-            const int MinReplayFps = 10;
-
-            //Timestamps for when the next logic and rendering should run
-            var nextLogic = RunTime;
-            var nextRender = RunTime;
-            var forcedNextRender = RunTime;
-
-            while(state == RunStatus.Running)
+            //while(state == RunStatus.Running)
             {
                 //Ideal time between logic updates.Timestep = 0 means the game is paused
                 //but we still call LogicTick() because it handles pausing internally.
@@ -667,7 +668,7 @@ namespace EW
 
                         var maxRenderInterval = Math.Max(1000 / MinReplayFps, renderInterval);
                         forcedNextRender = now + maxRenderInterval;
-                        RenderTick();
+                        //RenderTick();
                     }
                 }
                 else
@@ -679,6 +680,18 @@ namespace EW
 
 
 
+        }
+
+        // Who came up with the great idea of making these things
+        // impossible for the things that want them to access them directly?
+        public static Widget OpenWindow(string widget, WidgetArgs args)
+        {
+            return UI.OpenWindow(widget, new WidgetArgs(args)
+            {
+                { "world", worldRenderer.World },
+                { "orderManager", orderManager },
+                { "worldRenderer", worldRenderer },
+            });
         }
 
 

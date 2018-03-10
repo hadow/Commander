@@ -126,6 +126,8 @@ namespace EW
 
         public Ruleset Rules { get { return innerData.Rules; } }
 
+        public bool InvalidCustomRules { get { return innerData.InvalidCustomRules; } }
+
 
         public bool DefinesUnsafeCustomRules
         {
@@ -291,6 +293,11 @@ namespace EW
             //        newData.Preview = BitmapFactory.DecodeStream(dataStream);
 
             innerData = newData;
+        }
+
+        public void PreloadRules()
+        {
+            var unused = Rules;
         }
 
         /// <summary>

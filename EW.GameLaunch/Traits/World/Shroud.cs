@@ -109,6 +109,28 @@ namespace EW.Traits
                 self.World.AddFrameEndTask(w => ExploreAll());
         }
 
+
+
+        public void Explore(Shroud shroud){
+
+            if (map.Bounds != shroud.map.Bounds)
+                throw new ArgumentException("The map bounds of  these shrouds do not match.");
+
+            var changed = new List<PPos>();
+
+            foreach(var puv in map.ProjectedCellBounds){
+
+                var uv = (MPos)puv;
+                if(!explored[uv] && shroud.explored[uv]){
+
+                    explored[uv] = true;
+                    changed.Add(puv);
+                }
+            }
+
+            Invalidate(changed);
+        }
+
         public void ExploreAll()
         {
             var changed = new List<PPos>();

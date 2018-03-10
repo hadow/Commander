@@ -47,7 +47,10 @@ namespace EW.Mods.Common.Traits
         protected readonly CellLayer<CellContents> RenderContent;
 
         bool disposed;
-        int resCell;
+        int resCells;
+
+        public bool IsResourceLayerEmpty { get { return resCells < 1; } }
+
         public ResourceLayer(Actor self)
         {
             world = self.World;
@@ -199,7 +202,7 @@ namespace EW.Mods.Common.Traits
         CellContents CreateResourceCell(ResourceType t,CPos cell)
         {
             world.Map.CustomTerrain[cell] = world.Map.Rules.TileSet.GetTerrainIndex(t.Info.TerrainType);
-
+            ++resCells;
             return new CellContents
             {
                 Type = t,
@@ -297,7 +300,7 @@ namespace EW.Mods.Common.Traits
             {
                 Content[cell] = EmptyCell;
                 world.Map.CustomTerrain[cell] = byte.MaxValue;
-                --resCell;
+                --resCells;
             }
             else
                 Content[cell] = c;
@@ -326,6 +329,8 @@ namespace EW.Mods.Common.Traits
             //Don't break other users of CustomTerrain if there are no resources
             if (Content[cell].Type == null)
                 return;
+            
+            --resCells;
 
             //Clear cell
             Content[cell] = EmptyCell;

@@ -147,6 +147,40 @@ namespace EW.NetWork
                         WarGame.SyncLobbyInfo();
                         break;
                     }
+                case "SyncLobbyClients":
+                    {
+                        var clients = new List<Session.Client>();
+                        var nodes = MiniYaml.FromString(order.TargetString);
+                        foreach(var node in nodes){
+
+                            var strings = node.Key.Split('@');
+                            if(strings[0]=="Client"){
+
+                                clients.Add(Session.Client.Deserialize(node.Value));
+                            }
+                        }
+
+                        orderManager.LobbyInfo.Clients = clients;
+                        WarGame.SyncLobbyInfo();
+                        break;
+                    }
+                case "SyncLobbySlots":
+                    {
+                        var slots = new Dictionary<string, Session.Slot>();
+                        var nodes = MiniYaml.FromString(order.TargetString);
+                        foreach(var node in nodes){
+
+                            var strings = node.Key.Split('@');
+                            if(strings[0]=="Slot"){
+                                var slot = Session.Slot.Deserialize(node.Value);
+                                slots.Add(slot.PlayerReference, slot);
+                            }
+                        }
+
+                        orderManager.LobbyInfo.Slots = slots;
+                        WarGame.SyncLobbyInfo();
+                        break;
+                    }
                 case "Ping":
                     {
                         orderManager.IssueOrder(Order.Pong(order.TargetString));

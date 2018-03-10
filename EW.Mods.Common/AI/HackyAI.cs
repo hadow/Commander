@@ -7,9 +7,11 @@ using EW.Support;
 using EW.NetWork;
 using EW.Mods.Common.Traits;
 using EW.Mods.Common.Pathfinder;
+using EW.Mods.Common.Activities;
 namespace EW.Mods.Common.AI
 {
 
+    public enum BuildingType { Building, Defense, Refinery }
 
     public sealed class HackyAIInfo : ITraitInfo,IBotInfo
     {
@@ -29,6 +31,9 @@ namespace EW.Mods.Common.AI
             public readonly HashSet<string> Barracks = new HashSet<string>();//兵营
             public readonly HashSet<string> Production = new HashSet<string>();
             public readonly HashSet<string> Silo = new HashSet<string>();//仓
+
+            public readonly HashSet<string> NavalProduction = new HashSet<string>();//海军生产
+
 
         }
         /// <summary>
@@ -181,6 +186,57 @@ namespace EW.Mods.Common.AI
         [FieldLoader.LoadUsing("LoadBuildingCategories",true)]
         public readonly BuildingCategories BuildingCommonNames;
 
+        [Desc("After how many failed attempts to place a structure should AI give up and wait",
+            "for StructureProductionResumeDelay before retrying.")]
+        public readonly int MaximumFailedPlacementAttempts = 3;
+
+        [Desc("Try to build another production building if there is too much cash.")]
+        public readonly int NewProductionCashThreshold = 5000;
+
+
+        [Desc("Radius in cells around each building with ProvideBuildableArea",
+            "to check for a 3x3 area of water where naval structures can be built.",
+            "Should match maximum adjacency of naval structures.")]
+        public readonly int CheckForWaterRadius = 8;
+
+
+        [Desc("Terrain types which are considered water for base building purposes.")]
+        public readonly HashSet<string> WaterTerrainTypes = new HashSet<string> { "Water" };
+
+
+        [Desc("Minimum range at which to build defensive structures near a combat hotspot.")]
+        public readonly int MinimumDefenseRadius = 5;
+
+        [Desc("Maximum range at which to build defensive structures near a combat hotspot.")]
+        public readonly int MaximumDefenseRadius = 20;
+
+        [Desc("Minimum distance in cells from center of the base when checking for building placement.")]
+        public readonly int MinBaseRadius = 2;
+
+        [Desc("Radius in cells around the center of the base to expand.")]
+        public readonly int MaxBaseRadius = 20;
+
+        [Desc("How many randomly chosen cells with resources to check when deciding refinery placement.")]
+        public readonly int MaxResourceCellsToCheck = 3;
+
+
+        [Desc("Delay (in ticks) until rechecking for new BaseProviders.")]
+        public readonly int CheckForNewBasesDelay = 1500;
+
+        [Desc("A random delay (in ticks) of up to this is added to active/inactive production delays.")]
+        public readonly int StructureProductionRandomBonusDelay = 10;
+
+        [Desc("Additional delay (in ticks) added between structure production checks when actively building things.",
+            "Note: The total delay is gamespeed OrderLatency x 4 + this + StructureProductionRandomBonusDelay.")]
+        public readonly int StructureProductionActiveDelay = 0;
+
+
+        [Desc("Should deployment of additional MCVs be restricted to MaxBaseRadius if explicit deploy locations are missing or occupied?")]
+        public readonly bool RestrictMCVDeploymentFallbackToBase = true;
+
+        [Desc("Only produce units as long as there are less than this amount of units idling inside the base.")]
+        public readonly int IdleBaseUnitsMaximum = 12;
+
         public object Create(ActorInitializer init) { return new HackyAI(this, init); }
 
 
@@ -260,8 +316,6 @@ namespace EW.Mods.Common.AI
         public Player Player { get; private set; }
 
         readonly Queue<Order> orders = new Queue<Order>();
-
-
 
         int rushTicks;
         int assignRolesTicks;
@@ -361,6 +415,126 @@ namespace EW.Mods.Common.AI
             
         }
 
+        internal IEnumerable<ProductionQueue> FindQueues(string category){
+
+            return World.ActorsWithTrait<ProductionQueue>()
+                .Where(a => a.Actor.Owner == Player && a.Trait.Info.Type == category && a.Trait.Enabled)
+                .Select(a => a.Trait);
+        }
+
+
+        public bool EnoughWaterToBuildNaval(){
+
+            var baseProviders = World.ActorsHavingTrait<BaseProvider>()
+                .Where(a => a.Owner == Player);
+
+            foreach(var b in baseProviders){
+
+                var playerWorld = Player.World;
+                var countWaterCells = Map.FindTilesInCircle(b.Location, Info.MaxBaseRadius)
+                                         .Where(c => playerWorld.Map.Contains(c)
+                                                && Info.WaterTerrainTypes.Contains(playerWorld.Map.GetTerrainInfo(c).Type)
+                                                && Util.AdjacentCells(playerWorld, Target.FromCell(playerWorld, c))
+                                                .All(a => Info.WaterTerrainTypes.Contains(playerWorld.Map.GetTerrainInfo(a).Type))).Count();
+
+                if (countWaterCells > 0)
+                    return true;
+
+            }
+
+            return false;
+        }
+
+        // Check whether we have at least one building providing buildable area close enough to water to build naval structures
+        public bool CloseEnoughToWater(){
+
+            var areaProviders = World.ActorsHavingTrait<GivesBuildableArea>().Where(a => a.Owner == Player);
+
+            foreach (var a in areaProviders){
+
+                var playerWorld = Player.World;
+                var adjacentWater = Map.FindTilesInCircle(a.Location, Info.CheckForWaterRadius)
+                                       .Where(c => playerWorld.Map.Contains(c)
+                                              && Info.WaterTerrainTypes.Contains(playerWorld.Map.GetTerrainInfo(c).Type)
+                                              && Util.AdjacentCells(playerWorld, Target.FromCell(playerWorld, c))
+                                              .All(ac => Info.WaterTerrainTypes.Contains(playerWorld.Map.GetTerrainInfo(ac).Type))).Count();
+
+                if (adjacentWater > 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public CPos? ChooseBuildLocation(string actorType,bool distanceToBaseIsImportant,BuildingType type){
+
+            var bi = Map.Rules.Actors[actorType].TraitInfoOrDefault<BuildingInfo>();
+            if (bi == null)
+                return null;
+
+            // Find the buildable cell that is closest to pos and centered around center
+            Func<CPos, CPos, int, int, CPos?> findPos = (center, target, minRange, maxRange) =>
+            {
+                var cells = Map.FindTilesInAnnulus(center, minRange, maxRange);
+
+                // Sort by distance to target if we have one
+                if (center != target)
+                    cells = cells.OrderBy(c => (c - target).LengthSquard);
+                else
+                    cells = cells.Shuffle(Random);
+
+                foreach(var cell in cells){
+
+                    if (!World.CanPlaceBuilding(actorType, bi, cell, null))
+                        continue;
+
+                    if (distanceToBaseIsImportant && !bi.IsCloseEnoughToBase(World, Player, actorType, cell))
+                        continue;
+
+                    return cell;
+                }
+                return null;
+            };
+
+            var baseCenter = GetRandomBaseCenter();
+
+            switch(type){
+
+                case BuildingType.Defense:
+                    // Build near the closest enemy structure
+                    var closestEnemy = World.ActorsHavingTrait<Building>()
+                        .Where(a => !a.Disposed && Player.Stances[a.Owner] == Stance.Enemy).ClosestTo(World.Map.CenterOfCell(defenseCenter));
+
+                    var targetCell = closestEnemy != null ? closestEnemy.Location : baseCenter;
+                    return findPos(defenseCenter, targetCell, Info.MinimumDefenseRadius, Info.MaximumDefenseRadius);
+                case BuildingType.Refinery:
+
+                    // Try and place the refinery near a resource field
+                    var nearbyResources = Map.FindTilesInAnnulus(baseCenter, Info.MinBaseRadius, Info.MaxBaseRadius)
+                        .Where(a => resourceTypeIndices.Get(Map.GetTerrainIndex(a)))
+                        .Shuffle(Random).Take(Info.MaxResourceCellsToCheck);
+
+                    foreach(var r in nearbyResources){
+
+                        var found = findPos(baseCenter, r, Info.MinBaseRadius, Info.MaxBaseRadius);
+                        if (found != null)
+                            return found;
+                        
+                    }
+
+                    // Try and find a free spot somewhere else in the base
+                    return findPos(baseCenter, baseCenter, Info.MinBaseRadius, Info.MaxBaseRadius);
+
+                case BuildingType.Building:
+                    return findPos(baseCenter, baseCenter, Info.MinBaseRadius, distanceToBaseIsImportant ? Info.MaxBaseRadius : Map.Grid.MaximumTileSearchRange);
+
+            }
+
+            // Can't find a build location
+            return null;
+
+        }
+
         void SetRallyPointsForNewProductionBuildings(Actor self){
 
             foreach(var rp in self.World.ActorsWithTrait<RallyPoint>()){
@@ -424,6 +598,11 @@ namespace EW.Mods.Common.AI
             if(--assignRolesTicks<=0){
 
                 assignRolesTicks = Info.AssignRolesInterval;
+                if (resLayer != null && !resLayer.IsResourceLayerEmpty)
+                    GiveOrdersToIdleHarvesters();
+                
+                FindNewUnits(self);
+                FindAndDeployBackupMcv(self);
 
             }
 
@@ -445,12 +624,48 @@ namespace EW.Mods.Common.AI
 
         }
 
+
+        void GiveOrdersToIdleHarvesters(){
+
+
+            // Find idle harvesters and give them orders:
+            foreach(var harvester in activeUnits){
+
+                var harv = harvester.TraitOrDefault<Harvester>();
+                if (harv == null)
+                    continue;
+
+                if (!harv.IsEmpty)
+                    continue;
+
+                if(!harvester.IsIdle)
+                {
+                    var act = harvester.CurrentActivity;
+                    if (!harv.LastSearchFailed || act.NextActivity == null || act.NextActivity.GetType() != typeof(FindResources))
+                        continue;
+                    
+                }
+
+                var para = harvester.TraitOrDefault<Parachutable>();
+                if (para != null && para.IsInAir)
+                    continue;
+
+                // Tell the idle harvester to quit slacking:
+                var newSafeResourcePatch = FindNextResource(harvester, harv);
+
+                QueueOrder(new Order("Harvest",harvester,Target.FromCell(World,newSafeResourcePatch),false));
+
+            }
+        }
+
         /// <summary>
         /// Crates the attack force.
         /// </summary>
 
         void CreateAttackForce(){
 
+            // Create an attack force when we have enough units around our base.
+            // (don't bother leaving any behind for defense)
             var randomizedSquadSize = Info.SquadSize + Random.Next(Info.SquadSizeRandomBonus);
 
             if(unitsHangingAroundTheBase.Count >= randomizedSquadSize){
@@ -465,6 +680,7 @@ namespace EW.Mods.Common.AI
             }
 
         }
+
 
         Squad RegisterNewSquad(SquadT type,Actor target =null){
 
@@ -490,6 +706,17 @@ namespace EW.Mods.Common.AI
                 var enemies = World.FindActorsInCircle(b.CenterPosition, WDist.FromCells(Info.RushAttackScanRadius))
                                    .Where(unit => Player.Stances[unit.Owner] == Stance.Enemy && unit.Info.HasTraitInfo<AttackBaseInfo>()).ToList();
 
+                if(AttackOrFleeFuzzy.Rush.CanAttack(ownUnits,enemies)){
+
+                    var target = enemies.Any() ? enemies.Random(Random) : b;
+                    var rush = GetSquadOfType(SquadT.Rush);
+                    if (rush == null)
+                        rush = RegisterNewSquad(SquadT.Rush, target);
+                    foreach (var a3 in ownUnits)
+                        rush.Units.Add(a3);
+
+                    return;
+                }
 
             }
 
@@ -534,7 +761,107 @@ namespace EW.Mods.Common.AI
 
         void ProductionUnits(Actor self){
 
+            // Stop building until economy is restored
+            if (!HasAdequateProc())
+                return;
 
+            // No construction yards - Build a new MCV
+            if (Info.UnitsCommonNames.Mcv.Any() && !HasAdequateFact() && !self.World.Actors.Any(a => a.Owner == Player && Info.UnitsCommonNames.Mcv.Contains(a.Info.Name)))
+                BuildUnit("Vehicle", GetInfoByCommonName(Info.UnitsCommonNames.Mcv, Player).Name);
+
+            foreach (var q in Info.UnitQueues)
+                BuildUnit(q, unitsHangingAroundTheBase.Count < Info.IdleBaseUnitsMaximum);
+                
+        }
+
+        public ActorInfo GetInfoByCommonName(HashSet<string> names,Player owner){
+
+            return Map.Rules.Actors.Where(k => names.Contains(k.Key)).Random(Random).Value;
+        }
+
+        ActorInfo ChooseRandomUnitToBuild(ProductionQueue queue){
+
+            var buildableThings = queue.BuildableItems();
+            if (!buildableThings.Any())
+                return null;
+
+            var unit = buildableThings.Random(Random);
+            return HasAdequateAirUnitReloadBuildings(unit) ? unit : null;
+
+        }
+
+        ActorInfo ChooseUnitToBuild(ProductionQueue queue){
+
+            var buildableThings = queue.BuildableItems();
+            if (!buildableThings.Any())
+                return null;
+
+            var myUnits = Player.World.ActorsHavingTrait<IPositionable>()
+                                .Where(a => a.Owner == Player).Select(a => a.Info.Name).ToList();
+
+            foreach (var unit in Info.UnitsToBuild.Shuffle(Random))
+            {
+                if (buildableThings.Any(b => b.Name == unit.Key))
+                    if (myUnits.Count(a => a == unit.Key) < unit.Value * myUnits.Count)
+                        if (HasAdequateAirUnitReloadBuildings(Map.Rules.Actors[unit.Key]))
+                            return Map.Rules.Actors[unit.Key];
+            }
+            return null;
+        }
+
+
+        // For mods like RA (number of building must match the number of aircraft)
+        bool HasAdequateAirUnitReloadBuildings(ActorInfo actorInfo)
+        {
+            var aircraftInfo = actorInfo.TraitInfoOrDefault<AircraftInfo>();
+            if (aircraftInfo == null)
+                return true;
+
+            // If the aircraft has at least 1 AmmoPool and defines 1 or more RearmBuildings, check if we have enough of those
+            var hasAmmoPool = actorInfo.TraitInfos<AmmoPoolInfo>().Any();
+            if (hasAmmoPool && aircraftInfo.RearmBuildings.Count > 0)
+            {
+                var countOwnAir = CountUnits(actorInfo.Name, Player);
+                var countBuildings = aircraftInfo.RearmBuildings.Sum(b => CountBuilding(b, Player));
+                if (countOwnAir >= countBuildings)
+                    return false;
+            }
+
+            return true;
+        }
+
+
+        void BuildUnit(string category,string name){
+
+            var queue = FindQueues(category).FirstOrDefault(q => q.CurrentItem() == null);
+            if (queue == null)
+                return;
+
+            if (Map.Rules.Actors[name] != null)
+                QueueOrder(Order.StartProduction(queue.Actor, name, 1));
+        }
+
+        void BuildUnit(string category,bool buildRandom){
+
+
+            var queue = FindQueues(category).FirstOrDefault(q => q.CurrentItem() == null);
+            if (queue == null)
+                return;
+
+            var unit = buildRandom ? ChooseRandomUnitToBuild(queue) : ChooseUnitToBuild(queue);
+
+            if (unit == null)
+                return;
+
+            var name = unit.Name;
+
+            if (Info.UnitsToBuild != null && !Info.UnitsToBuild.ContainsKey(name))
+                return;
+
+            if (Info.UnitLimits != null && Info.UnitLimits.ContainsKey(name) && World.Actors.Count(a => a.Owner == Player && a.Info.Name == name) >= Info.UnitLimits[name])
+                return;
+
+            QueueOrder(Order.StartProduction(queue.Actor,name,1));
         }
 
        
@@ -558,6 +885,89 @@ namespace EW.Mods.Common.AI
                 return CPos.Zero;
             return path[0];
         }
+
+
+
+        // Find any newly constructed MCVs and deploy them at a sensible
+        // backup location.
+        void FindAndDeployBackupMcv(Actor self){
+
+
+            var mcvs = self.World.Actors.Where(a => a.Owner == Player && Info.UnitsCommonNames.Mcv.Contains(a.Info.Name));
+
+            foreach(var mcv in mcvs){
+
+                if (!mcv.IsIdle)
+                    continue;
+
+                var transformsInfo = mcv.Info.TraitInfoOrDefault<TransformsInfo>();
+                if (transformsInfo == null)
+                    continue;
+
+                var restrictToBase = Info.RestrictMCVDeploymentFallbackToBase 
+                                         && CountBuildingByCommonName(Info.BuildingCommonNames.ConstructionYard, Player) > 0;
+
+                var desiredLocation = ChooseBuildLocation(transformsInfo.IntoActor, restrictToBase, BuildingType.Building);
+                if (desiredLocation == null)
+                    continue;
+
+                QueueOrder(new Order("Move",mcv,Target.FromCell(World,desiredLocation.Value),true));
+                QueueOrder(new Order("DeployTransform",mcv,true));
+            }
+        }
+
+
+        //int CountBuildingByCommonName(HashSet<string> buildings,Player owner){
+
+        //    return World.ActorsHavingTrait<Building>().Count(a => a.Owner == owner && buildings.Contains(a.Info.Name));
+        //}
+
+        void FindNewUnits(Actor self){
+
+
+            var newUnits = self.World.ActorsHavingTrait<IPositionable>()
+                               .Where(a => a.Owner == Player && !Info.UnitsCommonNames.Mcv.Contains(a.Info.Name) &&
+                                      !Info.UnitsCommonNames.ExcludeFromSquads.Contains(a.Info.Name) && !activeUnits.Contains(a));
+
+            foreach(var a in newUnits){
+
+
+                if (a.Info.HasTraitInfo<HarvesterInfo>())
+                    QueueOrder(new Order("Harvest", a, false));
+                else
+                    unitsHangingAroundTheBase.Add(a);
+
+                if(a.Info.HasTraitInfo<AircraftInfo>() && a.Info.HasTraitInfo<AttackBaseInfo>())
+                {
+                    var air = GetSquadOfType(SquadT.Air);
+                    if (air == null)
+                        air = RegisterNewSquad(SquadT.Air);
+
+                    air.Units.Add(a);
+                }
+                else if(Info.UnitsCommonNames.NavalUnits.Contains(a.Info.Name)){
+
+                    var ships = GetSquadOfType(SquadT.Naval);
+                    if (ships == null)
+                        ships = RegisterNewSquad(SquadT.Naval);
+
+                    ships.Units.Add(a);
+                }
+
+                activeUnits.Add(a);
+            }
+
+        }
+
+
+
+        public bool HasAdequateFact(){
+
+            // Require at least one construction yard, unless we have no vehicles factory (can't build it).
+            return CountBuildingByCommonName(Info.BuildingCommonNames.ConstructionYard, Player) > 0 ||
+                CountBuildingByCommonName(Info.BuildingCommonNames.VehiclesFactory, Player) == 0;
+        }
+
         /// <summary>
         /// 
         /// 充足的
@@ -568,6 +978,15 @@ namespace EW.Mods.Common.AI
             return CountBuildingByCommonName(Info.BuildingCommonNames.Refinery, Player) > 0 ||
                 CountBuildingByCommonName(Info.BuildingCommonNames.Power, Player) == 0 ||
                 CountBuildingByCommonName(Info.BuildingCommonNames.ConstructionYard, Player) == 0;
+        }
+
+        public bool HasMinimumProc()
+        {
+            // Require at least two refineries, unless we have no power (can't build it)
+            // or barracks (higher priority?)
+            return CountBuildingByCommonName(Info.BuildingCommonNames.Refinery, Player) >= 2 ||
+                CountBuildingByCommonName(Info.BuildingCommonNames.Power, Player) == 0 ||
+                CountBuildingByCommonName(Info.BuildingCommonNames.Barracks, Player) == 0;
         }
 
         int CountBuildingByCommonName(HashSet<string> buildings,Player owner){

@@ -26,6 +26,22 @@ namespace EW.Mods.Common.Server
             LoadMapSettings(server,server.LobbyInfo.GlobalSettings,server.Map.Rules);
         }
 
+        static bool ValidateSlotCommand(S server, Connection conn, Session.Client client, string arg, bool requiresHost)
+        {
+
+            if(!server.LobbyInfo.Slots.ContainsKey(arg)){
+                return false;
+            }
+
+            if(requiresHost && !client.IsAdmin)
+            {
+                server.SendOrderTo(conn, "Message", "Only the host can do that");
+                return false;
+            }
+            return true;
+        }
+
+
         public static bool ValidateCommand(S server,EW.Server.Connection conn,Session.Client client,string cmd)
         {
             if (server.State == ServerState.GameStarted)
@@ -120,6 +136,83 @@ namespace EW.Mods.Common.Server
                         }
 
                         server.StartGame();
+                        return true;
+                    }
+                },
+                {
+                    "slot_bot",
+                    s=>{
+
+                        var parts = s.Split(' ');
+
+                        if(parts.Length < 3){
+                            server.SendOrderTo(conn,"Message"," Malformed slot_bot command");
+                            return true;
+                        }
+
+                        if(!ValidateSlotCommand(server,conn,client,parts[0],true))
+                            return false;
+
+                        var slot  = server.LobbyInfo.Slots[parts[0]];
+                        var bot = server.LobbyInfo.ClientInSlot(parts[0]);
+                        int controllerClientIndex;
+
+                        if(!Exts.TryParseIntegerInvariant(parts[1],out controllerClientIndex))
+                            return false;
+                        // Invalid slot
+
+                        if(bot != null && bot.Bot == null)
+                        {
+                            server.SendOrderTo(conn,"Message","Can't add bots to a slot with  another client");
+                            return true;
+                        }
+
+                        var botType = parts[2];
+                        var botInfo = server.Map.Rules.Actors["player"].TraitInfos<IBotInfo>().FirstOrDefault(b=>b.Type == botType);
+
+                        if(botInfo == null){
+                            server.SendOrderTo(conn,"Message","Invalid bot type.");
+                            return true;
+                        }
+
+                        slot.Closed  = false;
+                        if(bot == null){
+
+                            //Create a new bot
+                            bot = new Session.Client(){
+
+                                Index = server.ChooseFreePlayerIndex(),
+                                Name = botInfo.Name,
+                                Bot = botType,
+                                Slot =parts[0],
+                                Faction = "Random",
+                                SpawnPoint =  0,
+                                Team = 0,
+                                State = Session.ClientState.NotReady,
+                                BotControllerClientIndex = controllerClientIndex,
+                            };
+
+                            // Pick a random color for the bot
+                            var validator = server.ModData.Manifest.Get<ColorValidator>();
+                            var tileset = server.Map.Rules.TileSet;
+                            var terrainColors = tileset.TerrainInfo.Where(ti=>ti.RestrictPlayerColor).Select(ti=>ti.Color);
+                            var playerColors = server.LobbyInfo.Clients.Select(c=>c.Color.RGB)
+                                                     .Concat(server.Map.Players.Players.Values.Select(p=>p.Color.RGB));
+
+                            bot.Color = bot.PreferredColor = validator.RandomValidColor(server.Random, terrainColors, playerColors);
+
+                            server.LobbyInfo.Clients.Add(bot);
+                        }
+                        else{
+
+                            // Change the type of the existing bot
+                            bot.Name = botInfo.Name;
+                            bot.Bot = botType;
+                        }
+
+                        S.SyncClientToPlayerReference(bot,server.Map.Players.Players[parts[0]]);
+                        server.SyncLobbyClients();
+                        server.SyncLobbySlots();
                         return true;
                     }
                 }

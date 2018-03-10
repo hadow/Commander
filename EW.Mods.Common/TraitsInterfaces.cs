@@ -29,6 +29,18 @@ namespace EW.Mods.Common.Traits
 
     #region Notify
 
+    public interface INotifyCapture { void OnCapture(Actor self, Actor captor, Player oldOwner, Player newOwner); }
+
+
+    [RequireExplicitImplementation]
+    public interface INotifyInfiltration
+    {
+        void Infiltrating(Actor self);
+    }
+
+    [RequireExplicitImplementation]
+    public interface INotifyInfiltrated { void Infiltrated(Actor self, Actor infiltrator, HashSet<string> types); }
+
     public interface INotifyParachute { void OnParachute(Actor self); void OnLanded(Actor self, Actor ignore); }
 
 
@@ -254,6 +266,9 @@ namespace EW.Mods.Common.Traits
             Variables = variables;
         }
     }
+
+    [RequireExplicitImplementation]
+    public interface IPreventsShroudReset { bool PreventShroudReset(Actor self); }
 
     public interface IPreventsAutoTarget
     {

@@ -264,6 +264,9 @@
     <Compile Include="..\EW.Mods.Common\Activities\Enter.cs">
       <Link>External_Common\Activities\Enter.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\Activities\CaptureActor.cs">
+      <Link>External_Common\Activities\CaptureActor.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\Activities\FindResources.cs">
       <Link>External_Common\Activities\FindResources.cs</Link>
     </Compile>
@@ -333,6 +336,12 @@
     <Compile Include="..\EW.Mods.Common\AI\StateMachine.cs">
       <Link>External_Common\AI\StateMachine.cs</Link>
     </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\States\AirStates.cs">
+      <Link>External_Common\AI\States\AirStates.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\AI\States\ProtectionStates.cs">
+      <Link>External_Common\AI\States\ProtectionStates.cs</Link>
+    </Compile>
     <Compile Include="..\EW.Mods.Common\AI\States\GroundStates.cs">
       <Link>External_Common\AI\States\GroundStates.cs</Link>
     </Compile>
@@ -362,6 +371,9 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\ContrailFader.cs">
       <Link>External_Common\Effects\ContrailFader.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Effects\CrateEffect.cs">
+      <Link>External_Common\Effects\CrateEffect.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Effects\FlashTarget.cs">
       <Link>External_Common\Effects\FlashTarget.cs</Link>
@@ -635,6 +647,12 @@
     </Compile>
     <Compile Include="..\EW.Mods.Common\TraitsInterfaces.cs">
       <Link>External_Common\TraitsInterfaces.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\Parachutable.cs">
+      <Link>External_Common\Traits\Parachutable.cs</Link>
+    </Compile>
+    <Compile Include="..\EW.Mods.Common\Traits\ParaDrop.cs">
+      <Link>External_Common\Traits\ParaDrop.cs</Link>
     </Compile>
     <Compile Include="..\EW.Mods.Common\Traits\AcceptsDeliveredCash.cs">
       <Link>External_Common\Traits\AcceptsDeliveredCash.cs</Link>

@@ -32,7 +32,7 @@ namespace EW.Mods.Common.Traits
             return new SelfHealing(init.Self, this);
         }
     }
-    class SelfHealing:ConditionalTrait<SelfHealingInfo>,ITick
+    class SelfHealing:ConditionalTrait<SelfHealingInfo>,ITick,INotifyDamage
     {
         readonly Health health;
 

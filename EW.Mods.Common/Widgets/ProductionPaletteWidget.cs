@@ -65,6 +65,8 @@ namespace EW.Mods.Common.Widgets
         Animation cantBuild, clock;
         Rectangle eventBounds = Rectangle.Empty;
 
+        public override Rectangle EventBounds { get { return eventBounds; } }
+
         readonly WorldRenderer worldRenderer;
 
         SpriteFont overlayFont;
@@ -102,6 +104,11 @@ namespace EW.Mods.Common.Widgets
 
                 return CurrentQueue.AllItems().OrderBy(a => a.TraitInfo<BuildableInfo>().BuildPaletteOrder);
             }
+        }
+
+        public void ScrollToTop()
+        {
+            IconRowOffset = 0;
         }
 
         public void RefreshIcons(){
@@ -194,6 +201,15 @@ namespace EW.Mods.Common.Widgets
             return true;
         }
 
+        public void PickUpCompletedBuilding()
+        {
+            foreach (var icon in icons.Values)
+            {
+                var item = icon.Queued.FirstOrDefault();
+                if (PickUpCompletedBuildingIcon(icon, item))
+                    break;
+            }
+        }
 
         protected bool PickUpCompletedBuildingIcon(ProductionIcon icon,ProductionItem item){
 
@@ -249,6 +265,22 @@ namespace EW.Mods.Common.Widgets
 
                 WidgetUtils.DrawSHPCentered(icon.Sprite,icon.Pos + iconOffset,icon.Palette);
 
+                //Build progress
+                if(icon.Queued.Count > 0){
+
+                    var first = icon.Queued[0];
+
+                    clock.PlayFetchIndex(ClockSequence,()=>(first.TotalTime - first.RemainingTime) * (clock.CurrentSequence.Length  -1 )/first.TotalTime);
+                    clock.Tick();
+
+                    WidgetUtils.DrawSHPCentered(clock.Image, icon.Pos + iconOffset, icon.IconClockPalette);
+
+                }
+                else if(!buildableItems.Any(a => a.Name == icon.Name))
+                {
+                    WidgetUtils.DrawSHPCentered(cantBuild.Image, icon.Pos + iconOffset, icon.IconDarkenPalette);
+
+                }
 
             }
         }

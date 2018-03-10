@@ -268,5 +268,10 @@ namespace EW.NetWork
         {
             return new Order("StartProduction", subject, false) { ExtraData = (uint)count, TargetString = item };
         }
+
+        public static Order CancelProduction(Actor subject, string item, int count)
+        {
+            return new Order("CancelProduction", subject, false) { ExtraData = (uint)count, TargetString = item };
+        }
     }
 }

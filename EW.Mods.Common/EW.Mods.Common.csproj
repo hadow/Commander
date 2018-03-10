@@ -572,6 +572,12 @@
     <Compile Include="Widgets\ProductionPaletteWidget.cs" />
     <Compile Include="Widgets\ProductionTypeButtonWidget.cs" />
     <Compile Include="Widgets\ProductionTabsWidget.cs" />
+    <Compile Include="Effects\CrateEffect.cs" />
+    <Compile Include="Traits\Parachutable.cs" />
+    <Compile Include="Traits\ParaDrop.cs" />
+    <Compile Include="AI\States\ProtectionStates.cs" />
+    <Compile Include="AI\States\AirStates.cs" />
+    <Compile Include="Activities\CaptureActor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

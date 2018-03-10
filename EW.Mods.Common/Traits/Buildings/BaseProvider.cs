@@ -16,7 +16,7 @@ namespace EW.Mods.Common.Traits
         public readonly WDist Range = WDist.FromCells((10));
 
 
-        public readonly int CoolDown = 0;
+        public readonly int Cooldown = 0;
 
         public readonly int InitialDelay;
 
@@ -33,12 +33,12 @@ namespace EW.Mods.Common.Traits
 
         Building building;
 
+        readonly bool allyBuildEnabled;
+        readonly bool buildRadiusEnabled;
 
         int total;
 
         int progress;
-
-        bool allyBuildEnabled;
 
         public BaseProvider(Actor self, BaseProviderInfo info)
         {
@@ -46,8 +46,9 @@ namespace EW.Mods.Common.Traits
             this.self = self;
 
             progress = total = info.InitialDelay;
-
-            allyBuildEnabled = self.World.WorldActor.Trait<MapBuildRadius>().AllyBuildRadiusEnabled;
+            var mapBuildRadius = self.World.WorldActor.Trait<MapBuildRadius>();
+            allyBuildEnabled = mapBuildRadius.AllyBuildRadiusEnabled;
+            buildRadiusEnabled = mapBuildRadius.BuildRadiusEnabled;
         }
 
 
@@ -94,6 +95,10 @@ namespace EW.Mods.Common.Traits
 
         }
 
+        public void BeginCooldown()
+        {
+            progress = total = Info.Cooldown;
+        }
 
 
         void ITick.Tick(Actor self){

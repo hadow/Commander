@@ -50,10 +50,10 @@ namespace EW.Mods.Common.AI
                     FuzzyStateMachine.ChangeState(this, new GroundUnitsIdleState(), true);
                     break;
                 case SquadT.Air:
-
+                    FuzzyStateMachine.ChangeState(this, new AirIdleState(), true);
                     break;
                 case SquadT.Protection:
-
+                    FuzzyStateMachine.ChangeState(this, new UnitsForProtectionIdleState(), true);
                     break;
             }
         }

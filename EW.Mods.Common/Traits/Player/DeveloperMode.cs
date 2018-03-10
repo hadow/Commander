@@ -36,6 +36,9 @@ namespace EW.Mods.Common.Traits
 
         [Sync] bool fastBuild;
 
+        [Sync] bool buildAnywhere;
+
+
         bool enableAll;
 
         public bool PathDebug { get { return Enabled && pathDebug; } }
@@ -43,6 +46,8 @@ namespace EW.Mods.Common.Traits
         public bool DisableShroud { get { return Enabled && disableShroud; } }
 
         public bool UnlimitedPower { get { return Enabled && unlimitedPower; } }
+
+        public bool BuildAnywhere { get { return Enabled && buildAnywhere; } }
 
 
         public bool AllTech { get { return Enabled && allTech; } }

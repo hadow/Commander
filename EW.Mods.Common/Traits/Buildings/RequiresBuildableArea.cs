@@ -4,6 +4,8 @@ using EW.Traits;
 
 namespace EW.Mods.Common.Traits
 {
+    [Desc("This actor requires another actor with 'GivesBuildableArea' trait around to be placed.")]
+
     public class RequiresBuildableAreaInfo:TraitInfo<RequiresBuildableArea>,Requires<BuildingInfo>{
 
         public readonly HashSet<string> AreaTypes = new HashSet<string>();
@@ -17,10 +19,5 @@ namespace EW.Mods.Common.Traits
 
     }
 
-    public class RequiresBuildableArea
-    {
-        public RequiresBuildableArea()
-        {
-        }
-    }
+    public class RequiresBuildableArea{}
 }
