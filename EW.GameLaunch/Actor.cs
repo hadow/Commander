@@ -470,6 +470,8 @@ namespace EW
             return (int)ActorID;
         }
 
+        
+
         #endregion
         public void Dispose()
         {

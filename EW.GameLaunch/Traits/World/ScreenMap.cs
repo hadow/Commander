@@ -365,6 +365,21 @@ namespace EW.Traits
         //    partitionedActors.Update(a, ActorBounds(a));
         //}
 
+        public IEnumerable<FrozenActor> FrozenActorsAtMouse(Player viewer,GestureSample gs)
+        {
+            return FrozenActorsAtMouse(viewer, worldRenderer.ViewPort.ViewToWorldPx(gs.Position.ToInt2()));
+
+        }
+
+        public IEnumerable<FrozenActor> FrozenActorsAtMouse(Player viewer, Int2 worldPx)
+        {
+            if (viewer == null)
+                return NoFrozenActors;
+
+            return partitionedMouseFrozenActors[viewer].At(worldPx).Where(frozenActorIsValid).Where(x => x.MouseBounds.Contains(worldPx));
+
+        }
+
 
         public IEnumerable<ActorBoundsPair> ActorsAtMouse(GestureSample gs){
 

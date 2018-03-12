@@ -61,6 +61,19 @@ namespace EW.Orders
         static Target TargetForInput(World world,CPos cell,Int2 worldPixel,GestureSample gs)
         {
 
+            var actor = world.ScreenMap.ActorsAtMouse(gs)
+                .Where(a => a.Actor.Info.HasTraitInfo<ITargetableInfo>() && !world.FogObscures(a.Actor))
+                .WithHighestSelectionPriority(worldPixel);
+
+            if (actor != null)
+                return Target.FromActor(actor);
+
+            var frozen = world.ScreenMap.FrozenActorsAtMouse(world.RenderPlayer, gs)
+                .Where(a => a.Info.HasTraitInfo<ITargetableInfo>() && a.Visible && a.HasRenderables).WithHighestSelectionPriority(worldPixel);
+
+            if (frozen != null)
+                return Target.FromFrozenActor(frozen);
+
             return Target.FromCell(world, cell);
         }
 

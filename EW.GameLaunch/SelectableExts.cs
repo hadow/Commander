@@ -47,6 +47,12 @@ namespace EW.Traits
         }
 
 
+        public static FrozenActor WithHighestSelectionPriority(this IEnumerable<FrozenActor> actors,Int2 selectionPixel)
+        {
+            return actors.MaxByOrDefault(a => CalculateActorSelectionPriority(a.Info, a.MouseBounds, selectionPixel));
+        }
+
+
         static long CalculateActorSelectionPriority(ActorInfo info,Rectangle bounds,Int2 selectionPixel){
 
             if (bounds.IsEmpty)

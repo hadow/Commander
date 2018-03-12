@@ -103,6 +103,8 @@ namespace EW.Traits
             return Renderables;
         }
 
+        public bool HasRenderables { get { return !Shrouded && Renderables.Any(); } }
+
 
         public void RefreshState()
         {
