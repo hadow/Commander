@@ -195,7 +195,7 @@ namespace EW.NetWork
             public bool AllowSpectators = true;
             public bool AllowVersionMismatch;
             public string GameUid;
-
+            public bool EnableSingleplayer;
             [FieldLoader.Ignore]
             public Dictionary<string, LobbyOptionState> LobbyOptions = new Dictionary<string, LobbyOptionState>();
 

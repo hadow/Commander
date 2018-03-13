@@ -5,6 +5,7 @@ using EW.Graphics;
 using EW.NetWork;
 using EW.Server;
 using EW.Traits;
+using EW.Mods.Common.Traits;
 using S = EW.Server.Server;
 namespace EW.Mods.Common.Server
 {
@@ -215,6 +216,96 @@ namespace EW.Mods.Common.Server
                         server.SyncLobbySlots();
                         return true;
                     }
+                },
+                {
+                    "map",
+                    s =>
+                    {
+                        if(!client.IsAdmin)
+                        {
+                            server.SendOrderTo(conn,"Message","Only the host can change the map.");
+                            return true;
+                        }
+
+                        var lastMap = server.LobbyInfo.GlobalSettings.Map;
+
+                        Action<MapPreview> selectMap = map =>
+                        {
+                            if(server.LobbyInfo.GlobalSettings.Map != lastMap)
+                                return;
+
+                            server.LobbyInfo.GlobalSettings.Map = map.Uid;
+
+                            var oldSlots = server.LobbyInfo.Slots.Keys.ToArray();
+                            server.Map = server.ModData.MapCache[server.LobbyInfo.GlobalSettings.Map];
+
+                            server.LobbyInfo.Slots = server.Map.Players.Players
+                            .Select(p=>MakeSlotFromPlayerReference(p.Value))
+                            .Where(ss=>ss!=null)
+                            .ToDictionary(ss=>ss.PlayerReference,ss=>ss);
+
+                            LoadMapSettings(server,server.LobbyInfo.GlobalSettings,server.Map.Rules);
+
+                            //Reset Client states.
+                            foreach(var c in server.LobbyInfo.Clients)
+                                c.State = Session.ClientState.Invalid;
+
+                            var botTypes = server.Map.Rules.Actors["player"].TraitInfos<IBotInfo>().Select(t=>t.Type);
+                            var slots = server.LobbyInfo.Slots.Keys.ToArray();
+                            var i =0;
+                            foreach(var os in oldSlots)
+                            {
+                                var c = server.LobbyInfo.ClientInSlot(os);
+                                if(c == null)
+                                    continue;
+
+                                c.SpawnPoint =0;
+                                c.Slot = i<slots.Length?slots[i++]:null;
+                                if(c.Slot != null)
+                                {
+                                    if(c.Bot != null && (!server.Map.Players.Players[c.Slot].AllowBots || !botTypes.Contains(c.Bot)))
+                                        server.LobbyInfo.Clients.Remove(c);
+
+                                    S.SyncClientToPlayerReference(c,server.Map.Players.Players[c.Slot]);
+                                }
+                                else if(c.Bot != null)
+                                    server.LobbyInfo.Clients.Remove(c);
+                            }
+
+                            foreach(var c in server.LobbyInfo.Clients)
+                                if(c.Slot != null && !server.LobbyInfo.Slots[c.Slot].LockColor)
+                                    c.Color = c.PreferredColor = SanitizePlayerColor(server,c.Color,c.Index,conn);
+
+                            server.SyncLobbyInfo();
+
+                            server.SendMessage("{0} changed the map to {1}.".F(client.Name, server.Map.Title));
+
+                            if (!server.LobbyInfo.GlobalSettings.EnableSingleplayer)
+                                server.SendMessage(server.TwoHumansRequiredText);
+                            else if (server.Map.Players.Players.Where(p => p.Value.Playable).All(p => !p.Value.AllowBots))
+                                server.SendMessage("Bots have been disabled on this map.");
+
+                            var briefing = MissionBriefingOrDefault(server);
+                            if (briefing != null)
+                                server.SendMessage(briefing);
+
+
+                        };
+
+                        Action queryFailed = () =>
+                            server.SendOrderTo(conn, "Message", "Map was not found on server.");
+
+                        var m = server.ModData.MapCache[s];
+                        if(m.Status == MapStatus.Available || m.Status == MapStatus.DownloadAvailable)
+                            selectMap(m);
+                        else if(server.Settings.QueryMapRepository)
+                        {
+
+                        }
+                        else
+                            queryFailed();
+                        return true;
+                    }
                 }
             };
 
@@ -243,6 +334,34 @@ namespace EW.Mods.Common.Server
                 .ToDictionary(ss => ss.PlayerReference, ss => ss);
         }
 
+
+        static string MissionBriefingOrDefault(S server)
+        {
+            var missionData = server.Map.Rules.Actors["world"].TraitInfoOrDefault<MissionDataInfo>();
+            if (missionData != null && !string.IsNullOrEmpty(missionData.Briefing))
+                return missionData.Briefing.Replace("\\n", "\n");
+
+            return null;
+        }
+
+        static HSLColor SanitizePlayerColor(S server, HSLColor askedColor, int playerIndex, Connection connectionToEcho = null)
+        {
+            var validator = server.ModData.Manifest.Get<ColorValidator>();
+            var askColor = askedColor;
+
+            Action<string> onError = message =>
+            {
+                if (connectionToEcho != null)
+                    server.SendOrderTo(connectionToEcho, "Message", message);
+            };
+
+            var tileset = server.Map.Rules.TileSet;
+            var terrainColors = tileset.TerrainInfo.Where(ti => ti.RestrictPlayerColor).Select(ti => ti.Color).ToList();
+            var playerColors = server.LobbyInfo.Clients.Where(c => c.Index != playerIndex).Select(c => c.Color.RGB)
+                .Concat(server.Map.Players.Players.Values.Select(p => p.Color.RGB)).ToList();
+
+            return validator.MakeValid(askColor.RGB, server.Random, terrainColors, playerColors, onError);
+        }
 
         static Session.Slot MakeSlotFromPlayerReference(PlayerReference pr)
         {

@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Drawing;
+using Android.Graphics;
 using System.Collections.Generic;
 using EW.FileSystem;
+using EW.Graphics;
 using EW.Primitives;
 namespace EW
 {
@@ -41,7 +43,7 @@ namespace EW
             public CPos[] SpawnPoints;  //³öÉúµã
             public MapGridT GridT;
             public Rectangle Bounds;
-            //public Bitmap Preview;
+            public Bitmap Preview;
             public MapStatus Status;
             public MapVisibility Visibility;
             public MapClassification Class;
@@ -126,6 +128,8 @@ namespace EW
 
         public Ruleset Rules { get { return innerData.Rules; } }
 
+        public Bitmap Preview { get { return innerData.Preview; } }
+
         public bool InvalidCustomRules { get { return innerData.InvalidCustomRules; } }
 
 
@@ -163,7 +167,7 @@ namespace EW
                 SpawnPoints = NoSpawns,
                 GridT = gridT,
                 Bounds = Rectangle.Empty,
-                //Preview = null,
+                Preview = null,
                 Status = MapStatus.Unavailable,
                 Visibility = MapVisibility.Lobby,
             
@@ -288,9 +292,9 @@ namespace EW
 
             });
 
-            //if (Package.Contains("map.png"))
-            //    using (var dataStream = p.GetStream("map.png"))
-            //        newData.Preview = BitmapFactory.DecodeStream(dataStream);
+            if (Package.Contains("map.png"))
+                using (var dataStream = p.GetStream("map.png"))
+                    newData.Preview = BitmapFactory.DecodeStream(dataStream);
 
             innerData = newData;
         }
@@ -317,6 +321,28 @@ namespace EW
         public void Delete()
         {
 
+        }
+
+        Sprite minimap;
+        bool generatingMinimap;
+        public Sprite GetMinimap()
+        {
+            if (minimap != null)
+                return minimap;
+
+            if (!generatingMinimap && Status == MapStatus.Available)
+            {
+                generatingMinimap = true;
+                cache.CacheMinimap(this);
+            }
+
+            return null;
+        }
+
+        internal void SetMinimap(Sprite minimap)
+        {
+            this.minimap = minimap;
+            generatingMinimap = false;
         }
 
 

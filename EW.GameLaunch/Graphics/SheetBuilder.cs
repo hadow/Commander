@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using EW.Framework;
+using Android.Graphics;
 using EW.Framework.Graphics;
 namespace EW.Graphics
 {
@@ -77,6 +78,14 @@ namespace EW.Graphics
             current.CommitBufferedData();
             return rect;
 
+        }
+
+        public Sprite Add(Bitmap src)
+        {
+            var rect = Allocate(new Size(src.Width,src.Height));
+            Util.FastCopyIntoSprite(rect, src);
+            current.CommitBufferedData();
+            return rect;
         }
 
 

@@ -465,6 +465,7 @@
     <Compile Include="Traits\World\MapBuildRadius.cs" />
     <Compile Include="Traits\World\MapCreeps.cs" />
     <Compile Include="Traits\World\MapOptions.cs" />
+    <Compile Include="Traits\World\MissionData.cs" />
     <Compile Include="Traits\World\MPStartLocations.cs" />
     <Compile Include="Traits\World\MPStartUnits.cs" />
     <Compile Include="Traits\World\MusicPlaylist.cs" />
@@ -530,7 +531,9 @@
     <Compile Include="Effects\SpriteEffect.cs" />
     <Compile Include="Widgets\Logic\Lobby\LobbyLogic.cs" />
     <Compile Include="Widgets\Logic\MainMenuLogic.cs" />
+    <Compile Include="Widgets\Logic\MapChooserLogic.cs" />
     <Compile Include="Widgets\Logic\PerfDebugLogic.cs" />
+    <Compile Include="Widgets\MapPreviewWidget.cs" />
     <Compile Include="Widgets\PerfGraphWidget.cs" />
     <Compile Include="Widgets\RadarWidget.cs" />
     <Compile Include="Traits\Multipliers\RangeMultiplier.cs" />
@@ -539,6 +542,7 @@
     <Compile Include="AI\BaseBuilder.cs" />
     <Compile Include="AI\States\GroundStates.cs" />
     <Compile Include="AI\AttackOrFleeFuzzy.cs" />
+    <Compile Include="Widgets\ScrollItemWidget.cs" />
     <Compile Include="WorldExtensions.cs" />
     <Compile Include="Widgets\WorldInteractionControllerWidget.cs" />
     <Compile Include="Widgets\ViewportControllerWidget.cs" />

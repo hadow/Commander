@@ -46,7 +46,12 @@ namespace EW.Widgets
                 return "{0:D2}:{1:D2}".F(minutes, seconds % 60);
             return "{0:D}:{1:D2}".F(minutes, seconds % 60);
         }
-
+        public static void FillEllipseWithColor(Rectangle r, Color c)
+        {
+            var tl = new Vector2(r.Left, r.Top);
+            var br = new Vector2(r.Right, r.Bottom);
+            WarGame.Renderer.RgbaColorRenderer.FillEllipse(tl, br, c);
+        }
 
         public static void FillRectWithColor(Rectangle r,Color c)
         {

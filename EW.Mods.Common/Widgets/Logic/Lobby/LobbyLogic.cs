@@ -11,6 +11,8 @@ namespace EW.Mods.Common.Widgets.Logic
 {
     public class LobbyLogic:ChromeLogic
     {
+        static readonly Action DoNothing = () => { };
+
         readonly ModData modData;
         readonly Action onStart;
         readonly Action onExit;
@@ -53,6 +55,32 @@ namespace EW.Mods.Common.Widgets.Logic
 
             var mapButton = lobby.GetOrNull<ButtonWidget>("CHANGEMAP_BUTTON");
 
+            if(mapButton != null)
+            {
+                mapButton.OnClick = () =>
+                {
+                    var onSelect = new Action<string>(uid =>
+                    {
+                        //Don't select the same map again
+                        if (uid == map.Uid)
+                            return;
+
+                        orderManager.IssueOrder(Order.Command("map " + uid));
+                        WarGame.Settings.Server.Map = uid;
+
+                    });
+
+                    UI.OpenWindow("MAPCHOOSER_PANEL", new WidgetArgs()
+                    {
+                        { "initialMap", map.Uid },
+                        { "initialTab", MapClassification.System },
+                        { "onExit", DoNothing },
+                        { "onSelect", WarGame.IsHost ? onSelect : null },
+                        { "filter", MapVisibility.Lobby },
+                    });
+                };
+                
+            }
             Action startGame = () =>
              {
                  gameStarting = true;

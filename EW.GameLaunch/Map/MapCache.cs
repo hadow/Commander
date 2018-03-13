@@ -6,6 +6,7 @@ using System.Linq;
 using EW.Primitives;
 using EW.FileSystem;
 using EW.Support;
+using EW.Graphics;
 namespace EW
 {
     /// <summary>
@@ -27,9 +28,10 @@ namespace EW
         bool previewLoaderThreadShutDown = true;
 
         Queue<MapPreview> generateMinimap = new Queue<MapPreview>();
-        
 
+        object syncRoot = new object();
 
+        readonly SheetBuilder sheetBuilder;
         public MapCache(ModData modData)
         {
             this.modData = modData;
@@ -37,10 +39,106 @@ namespace EW
             var gridT = Exts.Lazy(() => modData.Manifest.Get<MapGrid>().Type);
 
             previews = new Cache<string, MapPreview>(uid => new MapPreview(modData, uid, gridT.Value, this));
-            
+
+            sheetBuilder = new SheetBuilder(SheetT.BGRA);
             MapLocations = new ReadOnlyDictionary<IReadOnlyPackage, MapClassification>(mapLocations);
 
 
+        }
+
+
+        void LoadAsyncInternal()
+        {
+            //Log.Write("debug", "MapCache.LoadAsyncInternal started");
+
+            // Milliseconds to wait on one loop when nothing to do
+            var emptyDelay = 50;
+
+            // Keep the thread alive for at least 5 seconds after the last minimap generation
+            var maxKeepAlive = 5000 / emptyDelay;
+            var keepAlive = maxKeepAlive;
+
+            for (; ; )
+            {
+                List<MapPreview> todo;
+                lock (syncRoot)
+                {
+                    todo = generateMinimap.Where(p => p.GetMinimap() == null).ToList();
+                    generateMinimap.Clear();
+                    if (keepAlive > 0)
+                        keepAlive--;
+                    if (keepAlive == 0 && todo.Count == 0)
+                    {
+                        previewLoaderThreadShutDown = true;
+                        break;
+                    }
+                }
+
+                if (todo.Count == 0)
+                {
+                    Thread.Sleep(emptyDelay);
+                    continue;
+                }
+                else
+                    keepAlive = maxKeepAlive;
+
+                // Render the minimap into the shared sheet
+                foreach (var p in todo)
+                {
+                    if (p.Preview != null)
+                    {
+                        WarGame.RunAfterTick(() =>
+                        {
+                            try
+                            {
+                                p.SetMinimap(sheetBuilder.Add(p.Preview));
+                            }
+                            catch (Exception e)
+                            {
+                                //Log.Write("debug", "Failed to load minimap with exception: {0}", e);
+                            }
+                        });
+                    }
+
+                    // Yuck... But this helps the UI Jank when opening the map selector significantly.
+                    Thread.Sleep(Environment.ProcessorCount == 1 ? 25 : 5);
+                }
+            }
+
+            // The buffer is not fully reclaimed until changes are written out to the texture.
+            // We will access the texture in order to force changes to be written out, allowing the buffer to be freed.
+            WarGame.RunAfterTick(() =>
+            {
+                sheetBuilder.Current.ReleaseBuffer();
+                sheetBuilder.Current.GetTexture();
+            });
+            //Log.Write("debug", "MapCache.LoadAsyncInternal ended");
+        }
+
+        public void CacheMinimap(MapPreview preview)
+        {
+            bool launchPreviewLoaderThread;
+            lock (syncRoot)
+            {
+                generateMinimap.Enqueue(preview);
+                launchPreviewLoaderThread = previewLoaderThreadShutDown;
+                previewLoaderThreadShutDown = false;
+            }
+
+            if (launchPreviewLoaderThread)
+                WarGame.RunAfterTick(() =>
+                {
+                    // Wait for any existing thread to exit before starting a new one.
+                    if (previewLoaderThread != null)
+                        previewLoaderThread.Join();
+
+                    previewLoaderThread = new Thread(LoadAsyncInternal)
+                    {
+                        Name = "Map Preview Loader",
+                        IsBackground = true
+                    };
+                    previewLoaderThread.Start();
+                });
         }
 
         /// <summary>
