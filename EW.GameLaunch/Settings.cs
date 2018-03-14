@@ -113,6 +113,8 @@ namespace EW
         public StatusBarsType StatusBars = StatusBarsType.Standard;
 
         public bool AllowDownloading = true;
+
+        public float UIScrollSpeed = 50f;
     }
 
     public class SoundSettings

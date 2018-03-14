@@ -67,6 +67,11 @@ namespace EW.Framework
 
         public int Length{ get { return Exts.ISqrt(LengthSquared); }}
 
+        public Int2 WithX(int newX)
+        {
+            return new Int2(newX, Y);
+        }
+
         public System.Drawing.Point ToPoint() { return new System.Drawing.Point(X, Y); }
     }
 }

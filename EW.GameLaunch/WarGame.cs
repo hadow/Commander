@@ -102,7 +102,7 @@ namespace EW
         public WarGame() {
 
             IsFixedTimeStep = true;
-            TargetElapsedTime = TimeSpan.FromTicks(166667/4);
+            //TargetElapsedTime = TimeSpan.FromTicks(166667/4);
             DeviceManager = new GraphicsDeviceManager(this);
             //DeviceManager.DeviceCreated += (object sender, EventArgs args) => {
 

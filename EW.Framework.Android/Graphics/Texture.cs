@@ -189,15 +189,17 @@ namespace EW.Framework.Graphics
 
             GraphicsExtensions.CheckGLError();
             GL.BindTexture(TextureTarget.Texture2D, texture);
-            unsafe
-            {
-                fixed(byte*ptr = &data[0])
-                {
-                    var intPtr = new IntPtr((void*)ptr);
+            //unsafe
+            //{
+            //    fixed(byte*ptr = &data[0])
+            //    {
+            //        var intPtr = new IntPtr((void*)ptr);
 
-                    GL.GetTexImageInternal(TextureTarget.Texture2D, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
-                }
-            }
+            //        GL.GetTexImageInternal(TextureTarget.Texture2D, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, intPtr);
+            //    }
+            //}
+
+            GL.GetTexImage(TextureTarget.Texture2D, 0, PixelFormat.BGRA_EXT, PixelType.UnsignedByte, data);
 
             
             GraphicsExtensions.CheckGLError();

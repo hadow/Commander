@@ -365,6 +365,11 @@ namespace EW.Widgets
             Children.Add(child);
         }
 
+        public virtual void RemoveChildren()
+        {
+            while (Children.Count > 0)
+                RemoveChild(Children[Children.Count - 1]);
+        }
 
         public virtual void RemoveChild(Widget child){
             if(child!=null){
@@ -396,11 +401,6 @@ namespace EW.Widgets
                 foreach (var lo in LogicObjects)
                     lo.Dispose();
             
-        }
-
-        public virtual void RemoveChildren(){
-            while (Children.Count > 0)
-                RemoveChild(Children[Children.Count - 1]);
         }
 
         public Widget Get(string id){

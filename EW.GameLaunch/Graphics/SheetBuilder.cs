@@ -84,6 +84,7 @@ namespace EW.Graphics
         {
             var rect = Allocate(new Size(src.Width,src.Height));
             Util.FastCopyIntoSprite(rect, src);
+            src.Recycle();
             current.CommitBufferedData();
             return rect;
         }

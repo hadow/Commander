@@ -31,7 +31,7 @@ namespace EW.Graphics
                 unsafe
                 {
                     //var c = (int*)srcData.Scan0;
-                    int[] pixels = new int[src.Width * src.Height];
+                    int[] pixels = new int[src.Width * src.Height*4];
                     src.GetPixels(pixels, 0, width, 0, 0, width, height);
                     //Cast the data to an int array so we can copy the src data directly
                     fixed (byte* bd = &destData[0])
@@ -44,9 +44,22 @@ namespace EW.Graphics
                         {
                             for (var i = 0; i < width; i++)
                             {
-                                //var cc = Color.FromArgb(*(c + (j * srcData.Stride >> 2) + i));
-                                var cc = Color.FromArgb(pixels[(y + j) * destStride + x + i]);
-                                data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
+                                if(destStride == 2048)
+                                {
+                                    var index = (y + j) * width + x + i;
+                                    var cc = Color.FromArgb(pixels[index]);
+                                    data[(y + j) * destStride + x + i] = PremultiplyAlpha(cc).ToArgb();
+                                }
+                                else
+                                {
+                                    var index = (y + j) * destStride + x + i;
+                                    //if(index>= pixels.Length)
+                                    //{
+                                    //    continue;
+                                    //}
+                                    var cc = Color.FromArgb(pixels[index]);
+                                    data[index] = PremultiplyAlpha(cc).ToArgb();
+                                }
                             }
                         }
                     }

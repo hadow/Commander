@@ -294,7 +294,15 @@ namespace EW
 
             if (Package.Contains("map.png"))
                 using (var dataStream = p.GetStream("map.png"))
-                    newData.Preview = BitmapFactory.DecodeStream(dataStream);
+                    newData.Preview = BitmapFactory.DecodeStream(dataStream, null,
+              new BitmapFactory.Options
+              {
+                  InScaled = false,
+                  InDither = false,
+                  InJustDecodeBounds = false,
+                  InPurgeable = true,
+                  InInputShareable = true,
+              });
 
             innerData = newData;
         }

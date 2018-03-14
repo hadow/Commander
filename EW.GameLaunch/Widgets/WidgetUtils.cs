@@ -21,6 +21,28 @@ namespace EW.Widgets
     public static class WidgetUtils
     {
 
+        public static string TruncateText(string text, int width, SpriteFont font)
+        {
+            var trimmedWidth = font.Measure(text).X;
+            if (trimmedWidth <= width)
+                return text;
+
+            var trimmed = text;
+            while (trimmedWidth > width && trimmed.Length > 3)
+            {
+                trimmed = text.Substring(0, trimmed.Length - 4) + "...";
+                trimmedWidth = font.Measure(trimmed).X;
+            }
+
+            return trimmed;
+        }
+
+        public static Rectangle InflateBy(this Rectangle rect, int l, int t, int r, int b)
+        {
+            return Rectangle.FromLTRB(rect.Left - l, rect.Top - t,
+                rect.Right + r, rect.Bottom + b);
+        }
+
         public static string FormatTime(int ticks,int timestep)
         {
             return FormatTime(ticks, true, timestep);

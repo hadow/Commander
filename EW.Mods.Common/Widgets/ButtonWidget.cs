@@ -60,7 +60,14 @@ namespace EW.Mods.Common.Widgets
             : base(other){
 
             ModRules = other.ModRules;
-
+            GetText = other.GetText;
+            GetColor = other.GetColor;
+            GetColorDisabled = other.GetColorDisabled;
+            Disabled = other.Disabled;
+            IsDisabled = other.IsDisabled;
+            IsHighlighted = other.IsHighlighted;
+            Highlighted = other.Highlighted;
+            OnMouseUp = mi => OnClick();
         }
 
 

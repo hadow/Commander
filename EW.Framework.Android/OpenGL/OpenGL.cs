@@ -1163,7 +1163,7 @@ namespace EW.Framework
 
         [System.Security.SuppressUnmanagedCodeSecurity ()]
         [MonoNativeFunctionWrapper]
-        internal delegate void GetTexImageDelegate (TextureTarget target, int level, PixelFormat format, PixelType type, [Out] IntPtr pixels);
+        internal delegate void GetTexImageDelegate (TextureTarget target, int level, PixelFormat format, PixelType type, IntPtr pixels);
         internal static GetTexImageDelegate GetTexImageInternal;
 
         [System.Security.SuppressUnmanagedCodeSecurity ()]
@@ -1694,7 +1694,8 @@ namespace EW.Framework
             var pixelsPtr = GCHandle.Alloc(pixels, GCHandleType.Pinned);
             try
             {
-                GetTexImageInternal(target, level, format, type, pixelsPtr.AddrOfPinnedObject());
+                if(GetTexImageInternal != null)
+                    GetTexImageInternal(target, level, format, type, pixelsPtr.AddrOfPinnedObject());
             }
             finally
             {

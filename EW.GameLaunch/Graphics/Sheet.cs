@@ -153,6 +153,7 @@ namespace EW.Graphics
             if (texture != null)
             {
                 texture.Dispose();
+                texture = null;
             }
         }
     }
